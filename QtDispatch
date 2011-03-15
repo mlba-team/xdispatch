@@ -1,0 +1,11 @@
+#ifndef QT_DISPATCH_H_
+#define QT_DISPATCH_H_
+
+#include "Qt/QBlockRunnable.h"
+#include "Qt/QIterationBlockRunnable.h"
+#include "Qt/QDispatch.h"
+#include "Qt/QDispatchGroup.h"
+#include "Qt/QDispatchQueue.h"
+#include "Qt/QDispatchSemaphore.h"
+
+#endif /* QT_DISPATCH_H_ */

@@ -1,0 +1,85 @@
+
+Status of API implementation
+============================
+(an X marks an API as done)
+
+
+General:
+----------------------------
+X support for serial queues
+X clean object hierarchy
+  increase performance (see test startfish)
+  reduce number of needed events (mainly dispatch_main)
+  improve priority balancing (see test priority & priority2)
+  port more of the original tests to MUnit
+
+queue.h:
+----------------------------
+X dispatch_get_main_queue
+X dispatch_async
+X dispatch_sync
+X dispatch_apply
+X dispatch_get_current_queue
+X dispatch_get_global_queue
+X dispatch_queue_create
+X dispatch_queue_get_label
+X dispatch_set_target_queue
+X dispatch_main
+X dispatch_after_f
+
+group.h:
+----------------------------
+X dispatch_group_create
+X dispatch_group_async
+X dispatch_group_wait
+X dispatch_group_notify
+X dispatch_group_enter
+X dispatch_group_leave
+  
+object.h:
+----------------------------
+X dispatch_debug
+X dispatch_debugv
+X dispatch_retain
+X dispatch_release
+X dispatch_get_context
+X dispatch_set_context
+X dispatch_suspend
+X dispatch_resume
+
+semaphore.h:
+----------------------------
+-> Note: currently this is using posix
+	 semaphores, eventually we can
+	 find another implementation here
+X dispatch_semaphore_create
+X dispatch_semaphore_wait
+X dispatch_semaphore_signal
+
+once.h:
+----------------------------
+  dispatch_once
+
+time.h:
+----------------------------
+X dispatch_time
+X dispatch_walltime
+  
+source.h:
+----------------------------
+  dispatch_source_create
+  dispatch_source_set_event_handler
+  dispatch_source_set_cancel_handler
+  dispatch_source_cancel
+  dispatch_source_testcancel
+  dispatch_source_get_handle
+  dispatch_source_get_mask
+  dispatch_source_get_data
+  dispatch_source_merge_data
+  dispatch_source_set_timer
+  
+Status of Qt API implementation
+===============================
+(an X marks an API as done)
+
+All done :)

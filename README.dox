@@ -1,0 +1,112 @@
+/**
+@defgroup libXDispatch
+
+@author Marius Zwicker / MLBA
+@date 09.02.2011
+@section intro_sec Introduction
+
+libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on mac os 10.6+ 
+but on lower (Intel) Mac OS versions, Windows and Linux. On each platform libXDispatch is built on, the build 
+system (in our case CMake) will automatically search for existing dispatch implementations. If found, this "native"
+implementation will automatically be used. If no implementation is available, our own (xdispatch) will be used. 
+
+Currently a native libdispatch is available on Mac OS X 10.6+ only and therefore will only be used when built on that 
+platform. 
+
+Please see Apple's documentation on http://developer.apple.com and the libdispatch project at http://libdispatch.macosforge.org
+as well.
+
+@subsection x1 Original Interface
+
+Except the source functions, the entire libdispatch interface is available and can be found in the following files (include xdispatch/dispatch.h) to use it:
+
+ - queue.h
+ - queue_blocks.h
+ - group.h
+ - group_blocks.h
+ - time.h
+ - object.h
+ - semaphore.h
+
+@subsection x2 Qt Interface
+
+Additionally an interface wrapping libdispatch as Qt Classes was created. All needed work was done to integrate it with Qt's main
+event loop. You can use it (in case you have Qt > 4.6 available on your system) by including QtDispatch. This will
+automatically include all other needed headers as well. Below you find a list of the available interfaces:
+
+ - QDispatch.h
+ - QDispatchQueue.h
+ - QDispatchGroup.h
+ - QDispatchSemaphore.h
+ - QBlockRunnable.h
+ - QIterationBlockRunnable.h
+ - QIterationRunnable.h
+ 
+@subsection x3 GCD's use of Blocks
+ 
+When Apple introduced Grand Central Dispatch it extended its compilers by a new feature they called "Blocks". Basically this
+is lambdas (sometimes called closures as well). They allow an easier way to utilize the libdispatch api and are available when using
+Clang or the gcc 4.2 that's shipped with Apple's current Developer Tools.
+
+As we wanted to provide this "Blocks support" on Windows (using Visual Studio or MinGW) and Linux (using GCC) as well, we had to come
+up with a way to achieve blocks behaviour without actually patching a compiler. Soon after discovering that Blocks are a bit borked when
+used with the patched gcc 4.2 in C++, we had a wonderful idea: As the emerging C++0x standard would indeed have lambda support, all we
+had to do was implement support for lambdas when using the libdispatch API in C++.
+
+The result can be found in blocks.h - Basically we added lambda detection and a macro to map between apples block syntax and the new
+lambda syntax. So basically the following lines do all the same:
+
+@code
+	dispatch_async(myQueue, ${ printf("Hey Dude"); }); // The $ is available on all platforms
+	dispatch_async(myQueue, [=]{ printf("Hey Dude"); }); // The [=] is available on all platforms
+	dispatch_async(myQueue, ^{ printf("Hey Dude"); }); // The ^ is available on clang / Apple's gcc only.
+@endcode 
+
+So whenever you use a compiler featuring C++0x or Blocks you can use the block syntax. If not, you can still
+use the function pointer or Qt object interface. To become independent from a specific syntax (may it be [=] or ^), simply
+use $ - this can be easily redefined.
+
+As the time of writing, usable C++0x syntax can be found in:
+ - Visual Studio 2010
+ - GCC 4.5.1+
+ 
+All of our tests passed when using those systems.
+ 
+@section x4 Requirements
+
+libXDispatch was tested on Linux and Windows using Visual Studio 2008 / 2010 and GCC 4.3 as well as GCC 4.5.1, thus it should work on all those platforms. Additionally you need CMake 2.8+ installed and reachable
+in your path. Also make sure that your folder is named 'xdispatch' as the tests expect to include the headers using 'xdispatch/dispatch.h' and 'xdispatch/QtSupport'.
+If all this is satisfied, enter the xdispatch directory (where you find the README.dox) and run (depending on you platform):
+
+@subsection x41 On Windows (Visual Studio)
+@code
+cmake
+@endcode
+Afterwards you should find a solution file in your xdispatch folder. Build it and the binaries can be found within the 'Bin' directory.
+
+@subsection x42 On Linux (Makefiles)
+@code
+cmake -G "Unix Makefiles"
+make all
+@endcode
+When finished, all binaries can be found within the 'Bin' directory.
+
+@subsection x43 On Mac OS (XCode)
+@code
+cmake -G "XCode"
+@endcode
+You should find an xcodeproject in your xdispatch folder. Upon build completion, all binaries can be found in the 'Bin' directory as well.
+
+Other generators are available as well, please consult the CMake documentation at http://www.cmake.org for more detailed information.
+
+@section m1 Get a copy
+
+The current xdispatch version can both be browsed at http://opensource.mlba-team.de/websvn and is accessable using subversion as well. To get your own copy, run:
+
+@code
+svn co http://opensource.mlba-team.de/svn/xdispatch
+@endcode
+
+Please do not forget to take a look at the requirements section. In case you want to report a bug or contribute to this project, please contact us using email via xdispatch (at) mlba-team.de
+
+**/
