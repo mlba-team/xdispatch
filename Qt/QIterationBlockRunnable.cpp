@@ -19,7 +19,7 @@
 */
 
 
-#include "QIterationBlockRunnable.h"
+#include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
 
 #ifdef HAS_BLOCKS
 

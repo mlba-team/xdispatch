@@ -23,7 +23,7 @@
 #ifndef XDISPATCH_H_
 #define XDISPATCH_H_
 
-#include "bc/blocks.h"
+#include "blocks.h"
 
 #ifdef __BLOCKS__
 #   include <dispatch/dispatch.h>

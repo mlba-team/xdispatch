@@ -42,8 +42,6 @@ See also Apple's Documentation of Dispatch Groups
 */
 
 class QDispatchGroup : public QObject {
-	friend class _GroupRunnable;
-	friend QDebug operator<<(QDebug, const QDispatchGroup&); 
 
 	Q_OBJECT
 
@@ -122,6 +120,9 @@ signals:
 	void allFinished();
 
 private:
+    friend class _GroupRunnable;
+	friend QDebug operator<<(QDebug, const QDispatchGroup&);
+    
 	class Private;
 	Private* d;
 };

@@ -23,7 +23,7 @@
 #define QT_TESTS_H_
 
 #include "munit/MUnit.h"
-#include "../bc/blocks.h"
+#include <xdispatch/blocks.h>
 
 
 /* detect wether to build blocks tests or not (the autodetection only works

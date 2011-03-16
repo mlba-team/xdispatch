@@ -21,7 +21,7 @@
 #ifdef QT_CORE_LIB
 
 #include <QCoreApplication>
-#include "../QtDispatch"
+#include <xdispatch/QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 #include "../core/atomic.h"

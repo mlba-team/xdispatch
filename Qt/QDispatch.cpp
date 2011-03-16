@@ -25,7 +25,7 @@
 #include "_DispatchQueueImpl.h"
 #include "_DispatchEventQueueImpl.h"
 
-#include "QDispatch.h"
+#include "../xdispatch/QtDispatch/qdispatch.h"
 
 class QDispatch::Private {
 public:

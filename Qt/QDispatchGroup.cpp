@@ -31,10 +31,10 @@
 #endif
 
 #include "../core/atomic.h"
-#include "QDispatchQueue.h"
-#include "QDispatchGroup.h"
-#include "QDispatch.h"
-#include "QBlockRunnable.h"
+#include "../xdispatch/QtDispatch/qdispatchqueue.h"
+#include "../xdispatch/QtDispatch/qdispatchgroup.h"
+#include "../xdispatch/QtDispatch/qdispatch.h"
+#include "../xdispatch/QtDispatch/qblockrunnable.h"
 #include "_DispatchEventQueueImpl.h"
 #include "_DispatchQueueImpl.h"
 #include "JavaUtils.h"

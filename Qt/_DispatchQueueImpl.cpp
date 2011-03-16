@@ -23,9 +23,9 @@
 #include "../core/atomic.h"
 
 #include <QRunnable>
-#include "QDispatch.h"
-#include "QBlockRunnable.h"
-#include "QIterationRunnable.h"
+#include "../xdispatch/QtDispatch/qdispatch.h"
+#include "../xdispatch/QtDispatch/qblockrunnable.h"
+#include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
 #include "_DispatchQueueImpl.h"
 
 struct IterationData {

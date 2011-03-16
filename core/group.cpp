@@ -20,7 +20,7 @@
 
 
 
-#include "../dispatch.h"
+#include "queue_internal.h"
 #include "runBlocks.h"
 
 #ifdef HAS_BLOCKS

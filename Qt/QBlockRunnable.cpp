@@ -20,7 +20,7 @@
 
 
 
-#include "QBlockRunnable.h"
+#include "../xdispatch/QtDispatch/qblockrunnable.h"
 
 #ifdef HAS_BLOCKS
 

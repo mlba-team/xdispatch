@@ -24,9 +24,9 @@
 #include <QTimer>
 #include <QTime>
 
-#include "QBlockRunnable.h"
-#include "QIterationBlockRunnable.h"
-#include "QDispatch.h"
+#include "../xdispatch/QtDispatch/qblockrunnable.h"
+#include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
+#include "../xdispatch/QtDispatch/qdispatch.h"
 #include "_MainEventLoopHandler.h"
 #include "_DispatchEvent.h"
 #include "_DelayedDispatchEvent.h"

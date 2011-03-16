@@ -20,7 +20,7 @@
 
 
 
-#include "QIterationRunnable.h"
+#include "../xdispatch/QtDispatch/qiterationrunnable.h"
 
 
 class QIterationRunnable::Private {

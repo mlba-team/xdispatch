@@ -23,8 +23,8 @@
 #ifndef _DISPATCHQUEUEIMPLH_H_
 #define _DISPATCHQUEUEIMPLT_H_
 
-#include "../dispatch.h"
-#include "QDispatchQueue.h"
+#include "../xdispatch/dispatch.h"
+#include "../xdispatch/QtDispatch/qdispatchqueue.h"
 
 class _DispatchQueueImpl : public QDispatchQueue {
 

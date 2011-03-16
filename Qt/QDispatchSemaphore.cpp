@@ -21,8 +21,8 @@
 
 #include <QTime>
 
-#include "QDispatch.h"
-#include "QDispatchSemaphore.h"
+#include "../xdispatch/QtDispatch/qdispatch.h"
+#include "../xdispatch/QtDispatch/qdispatchsemaphore.h"
 
 class QDispatchSemaphore::Private {
 public:
