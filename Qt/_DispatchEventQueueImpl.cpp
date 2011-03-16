@@ -58,10 +58,9 @@ void _DispatchEventQueueImpl::dispatch(QRunnable * runnable){
 }
 
 void _DispatchEventQueueImpl::dispatch(QIterationRunnable * runnable, int times){
-	runnable->setAutoDelete(false);
-	ATOMIC_INT* counter = new ATOMIC_INT;
+    QSharedPointer<_DispatchEventData> dt(new _DispatchEventData(runnable));
 	for(int i = 0; i < times; i++){
-		_DispatchEvent* e = new _DispatchEvent(runnable, i, counter);
+        _DispatchEvent* e = new _DispatchEvent(dt, i);
 		qApp->postEvent(_MainEventLoopHandler::instance, e);
 	}
 }

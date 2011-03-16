@@ -24,6 +24,8 @@
 #define QDISPATCH_H_
 
 #include "../dispatch.h"
+#include "qdispatchqueue.h"
+
 class QDispatchQueue;
 class QTime;
 class QString;
@@ -48,6 +50,7 @@ also see Apple's documentation on libDispatch.
 class QDispatch {
 
 public:
+    
 	/**
 	Three priority classes used for the three standard
 	global queues
@@ -83,13 +86,20 @@ public:
 	each other.
 	@return NULL if something went wrong
 	*/
-        QDispatchQueue* getGlobalQueue(Priority p = DEFAULT);
+    QDispatchQueue* getGlobalQueue(Priority p = DEFAULT);
 	/**
 	@return The queue this runnable is executed in or NULL if
 	this function is not called from a QRunnable executed
 	in a queue.
+     
+    @remarks The value returned here is wrapped within
+        QDispatchQueue::APtr which is a typedef for
+        std::auto_ptr. This has the benefit of calling
+        getCurrentQueue() without creating any leaks or a
+        need to call delete.
+    @see QDispatchQueue::APtr
 	*/
-	QDispatchQueue* getCurrentQueue();
+    QDispatchQueue::APtr getCurrentQueue();
 	/**
 	@return The given QTime converted to a dispatch_time_t
 	*/

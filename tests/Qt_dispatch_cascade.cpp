@@ -47,8 +47,7 @@ extern "C" void Qt_dispatch_cascade(){
 	
 	q->dispatch(new QBlockRunnable(${
 		int no2 = no+100;
-		QDispatchQueue* c = QDispatch::instance->getCurrentQueue();
-		MU_ASSERT_NOT_NULL(c);
+        QDispatchQueue::APtr c = QDispatch::instance->getCurrentQueue();
 		c->dispatch(${
 			int no3 = no2+20;
 			QDispatch::instance->getCurrentQueue()->dispatch(${

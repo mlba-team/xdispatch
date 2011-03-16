@@ -22,6 +22,9 @@
 
 #include <QTime>
 #include <QString>
+#include <QThread>
+#include <QCoreApplication>
+
 #include "_DispatchQueueImpl.h"
 #include "_DispatchEventQueueImpl.h"
 
@@ -62,11 +65,14 @@ QDispatchQueue* QDispatch::createQueue(const QString& label){
 	}
 }
 
-QDispatchQueue* QDispatch::getCurrentQueue(){
+QDispatchQueue::APtr QDispatch::getCurrentQueue(){
 	try {
-                return new _DispatchQueueImpl(dispatch_get_current_queue());
+        if(qApp && qApp->thread() == QThread::currentThread())
+           return QDispatchQueue::APtr(new _DispatchEventQueueImpl(*(_DispatchEventQueueImpl*)(d->mainQueue)) );
+        
+        return QDispatchQueue::APtr(new _DispatchQueueImpl(dispatch_get_current_queue()));
 	} catch(...) {
-		return NULL;
+		return QDispatchQueue::APtr(new _DispatchEventQueueImpl(*(_DispatchEventQueueImpl*)(d->mainQueue)) );
 	}
 }
 

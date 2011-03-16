@@ -38,7 +38,7 @@ QIterationBlockRunnable::QIterationBlockRunnable(const QIterationBlockRunnable &
 
 }
 
-QIterationBlockRunnable::QIterationBlockRunnable(dispatch_iteration_block_t b, int index) : QIterationRunnable(index), d(new Private(b)){
+QIterationBlockRunnable::QIterationBlockRunnable(dispatch_iteration_block_t b, size_t index) : QIterationRunnable(index), d(new Private(b)){
 
 }
 
@@ -50,7 +50,7 @@ QIterationBlockRunnable::~QIterationBlockRunnable(){
 	delete d;
 }
 
-void QIterationBlockRunnable::run(int index){
+void QIterationBlockRunnable::run(size_t index){
 	d->codeBlock(index);
 }
 

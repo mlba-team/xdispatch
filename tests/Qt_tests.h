@@ -41,6 +41,7 @@ extern "C" {
 #endif
 
 #ifdef QT_CORE_LIB
+void Qt_runnable();
 void Qt_dispatch_debug();
 void Qt_dispatch_cascade();
 void Qt_dispatch_group();
@@ -49,11 +50,13 @@ void Qt_dispatch_queue();
 void Qt_dispatch_serialqueue();
 void Qt_dispatch_after();
 void Qt_dispatch_semaphore();
+void Qt_dispatch_current();
 #endif
 
 static void register_qt_tests(){
 #ifdef QT_CORE_LIB
 #ifdef TEST_BLOCKS
+    MU_REGISTER_TEST(Qt_runnable);
 	MU_REGISTER_TEST(Qt_dispatch_debug);
 	MU_REGISTER_TEST(Qt_dispatch_queue);
 	MU_REGISTER_TEST(Qt_dispatch_mainqueue);
@@ -62,6 +65,7 @@ static void register_qt_tests(){
 	MU_REGISTER_TEST(Qt_dispatch_group);
 	MU_REGISTER_TEST(Qt_dispatch_serialqueue);
 	MU_REGISTER_TEST(Qt_dispatch_semaphore);
+    MU_REGISTER_TEST(Qt_dispatch_current);
 #endif
 #endif
 }

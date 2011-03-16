@@ -23,25 +23,37 @@
 #ifndef _DISPATCHEVENT_H_
 #define _DISPATCHEVENT_H_
 
+#include "QSharedPointer"
 #include <QEvent>
-#include "../core/atomic.h"
+#include <QRunnable>
 
-class QRunnable;
+class _DispatchEventData {
+    
+public:
+    _DispatchEventData(QRunnable* r) : content(r) {}
+    _DispatchEventData(const _DispatchEventData& other) : content(other.content) {}
+    ~_DispatchEventData(){
+        if(content->autoDelete()){
+            delete content;
+        }
+    }
+    
+    QRunnable* content;
+};
 
 class _DispatchEvent : public QEvent {
 public:
 	_DispatchEvent(QRunnable*);
-	_DispatchEvent(QRunnable*, int index, ATOMIC_INT* count);
-	~_DispatchEvent();
+	_DispatchEvent(QRunnable*, int index);
+    _DispatchEvent(const QSharedPointer<_DispatchEventData>&, int index);
 
 	void exec();
 
 	static QEvent::Type TYPECONSTANT;
 
 private:
-	QRunnable* content;
-	int index;
-	ATOMIC_INT* count;
+    int index;
+	QSharedPointer<_DispatchEventData> d;
 };
 
 #endif /* _DISPATCHEVENT_H_ */

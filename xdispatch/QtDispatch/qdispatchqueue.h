@@ -25,6 +25,8 @@
 
 #include "../dispatch.h"
 
+#include <memory>
+
 #include <QString>
 #include <QDebug>
 class QTime;
@@ -45,6 +47,12 @@ queues.
 class QDispatchQueue {
 
 public:
+    /**
+     A pointer automatically deleting
+     the QDispatchQueue when going out
+     of scope.
+     */
+    typedef std::auto_ptr< QDispatchQueue> APtr;
 
 	/**
 	Applies the given QRunnable for async execution
@@ -161,5 +169,11 @@ static QDebug operator<<(QDebug dbg, const QDispatchQueue* q)
         dbg.nospace() << "DispatchQueue " << q->label();
 	return dbg.space();
 }
+static QDebug operator<<(QDebug dbg, const QDispatchQueue::APtr q)
+{
+    dbg.nospace() << "DispatchQueue " << q->label();
+	return dbg.space();
+}
+
 
 #endif /* QDISPATCH_QUEUE */

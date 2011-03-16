@@ -42,14 +42,14 @@ public:
 	Constructs a new QBlockRunnable using the given block, e.g.
 
 	@code
-	QBlockRunnable task($(size_t index){cout << "Hello World at" << index << "\n";}, 3);
+	QIterationBlockRunnable task($(size_t index){cout << "Hello World at" << index << "\n";}, 3);
 	@endcode
 	*/
 	QIterationBlockRunnable(dispatch_iteration_block_t b);
-	QIterationBlockRunnable(dispatch_iteration_block_t b, int index);
+	QIterationBlockRunnable(dispatch_iteration_block_t b, size_t index);
 	QIterationBlockRunnable(const QIterationBlockRunnable&);
 	~QIterationBlockRunnable();
-	virtual void run(int);
+	virtual void run(size_t);
 
 private:
 	class Private;

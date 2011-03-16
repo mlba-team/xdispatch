@@ -44,18 +44,20 @@ extern "C" void Qt_dispatch_mainqueue(){
 	MU_BEGIN_TEST(Qt_dispatch_mainqueue);
 
 	unsigned int* worker = new unsigned int;
-	*worker = 0;
+    *worker = 0;
 
 	QDispatchQueue* q = QDispatch::instance->getMainQueue();
 	MU_ASSERT_NOT_NULL(q);
 
 	q->dispatch(new QIterationBlockRunnable($(size_t i){
 			atomic_inc_get(worker);
-		}),RUN_TIMES);
+            //MU_MESSAGE("Running worker %i", i);
+		}), RUN_TIMES);
 
 	QDispatch::instance->getMainQueue()->dispatch(new QBlockRunnable(${
-			MU_ASSERT_EQUAL(RUN_TIMES,*worker);
-			delete worker;
+            MU_ASSERT_EQUAL(RUN_TIMES, *worker);
+            delete worker;
+            //MU_MESSAGE("Deleted worker");
 			MU_PASS("");
 		}));
 

@@ -25,13 +25,13 @@
 
 class QIterationRunnable::Private {
 public:
-        Private(int index) : index(index) {}
-        Private(Private* d) : index(d->index) {}
+        Private(size_t index) : index(index) {}
+        Private(const Private& d) : index(d.index) {}
 
-        int index;
+        size_t index;
 };
 
-QIterationRunnable::QIterationRunnable(const QIterationRunnable & b) : QRunnable(), d(new Private(b.d)){
+QIterationRunnable::QIterationRunnable(const QIterationRunnable & b) : QRunnable(), d(new Private( *(b.d) )){
 
 }
 
@@ -39,7 +39,7 @@ QIterationRunnable::QIterationRunnable() : QRunnable(), d(new Private(0)){
 
 }
 
-QIterationRunnable::QIterationRunnable(int index) : QRunnable(), d(new Private(index)){
+QIterationRunnable::QIterationRunnable(size_t index) : QRunnable(), d(new Private(index)){
 
 }
 

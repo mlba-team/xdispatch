@@ -42,11 +42,11 @@ public:
 	the given parameter.
 	*/
 	QIterationRunnable();
-	QIterationRunnable(int index);
+	QIterationRunnable(size_t index);
 	QIterationRunnable(const QIterationRunnable&);
 	~QIterationRunnable();
 	virtual void run();
-	virtual void run(int index) = 0;
+	virtual void run(size_t index) = 0;
 
 private:
 	class Private;
