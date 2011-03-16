@@ -28,7 +28,20 @@
 
 typedef void (*dispatch_function_t)(void *);
 
-#include "core/atomic.h"
+#ifndef ATOMIC_INT
+
+#ifdef __GNUC__
+# define ATOMIC_INT unsigned int
+#endif
+#ifdef _MSC_VER
+# if _MSC_VER >= 1600
+#	define ATOMIC_INT unsigned int
+# else
+#	define ATOMIC_INT long
+# endif
+#endif
+
+#endif
 
 #ifdef __cplusplus
 /*
