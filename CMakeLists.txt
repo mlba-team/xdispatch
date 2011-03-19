@@ -132,3 +132,6 @@ if (CMAKE_COMPILER_IS_GNU_CXX OR UNIX)
 	endif()
 endif()
 mz_add_executable(tests tests)
+
+# documentation
+include(docs/docgen.cmake)

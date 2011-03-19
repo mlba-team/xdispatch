@@ -74,6 +74,7 @@ public:
 	All items dispatched to this queue will be executed
 	in FIFO order. Please note that still items in different
 	queues can and will be executed concurrently.
+
 	@return NULL if something went wrong
 	*/
 	QDispatchQueue* createQueue(const QString& label);
@@ -103,7 +104,10 @@ public:
         QDispatchQueue::APtr which is a typedef for
         std::auto_ptr. This has the benefit of calling
         getCurrentQueue() without creating any leaks or a
-        need to call delete.
+        need to call delete. To control the lifetime of
+        the QDispatchQueue object yourself, please use
+        APtr.release() and have a look at the documentation
+        of std::auto_ptr
     @see QDispatchQueue::APtr
 	*/
     QDispatchQueue::APtr getCurrentQueue();

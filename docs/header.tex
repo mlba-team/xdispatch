@@ -1,0 +1,50 @@
+\documentclass[a4paper]{book}
+\usepackage{a4wide}
+\usepackage{makeidx}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage{longtable}
+%\usepackage{times}
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\else
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue,
+            unicode
+           ]{hyperref}
+\usepackage{pspicture}
+\fi
+\usepackage[utf8]{inputenc}
+\usepackage{doxygen}
+\makeindex
+\setcounter{tocdepth}{3}
+\renewcommand{\footrulewidth}{0.4pt}
+\begin{document}
+\begin{titlepage}
+\vspace*{7cm}
+\begin{center}
+\includegraphics{SG_Logo_256.png}\\\mbox{}\\
+{\Large\Large SceneGraph Library Documentation}\\
+\vspace*{0.5cm}
+{\small MMSI 1 Project Edition}\\
+\end{center}
+\end{titlepage}
+\clearemptydoublepage
+\pagenumbering{roman}
+\tableofcontents
+\clearemptydoublepage
+\pagenumbering{arabic}

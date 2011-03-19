@@ -24,6 +24,17 @@
 
 #include <QtCore/qglobal.h>
 
+
+#ifndef QT_MODULE
+# define QT_MODULE(X)
+# define QT_LICENSED_MODULE(X)
+# define QT_BEGIN_NAMESPACE
+# define QT_END_NAMESPACE
+# define QT_BEGIN_HEADER
+# define QT_END_HEADER
+#endif
+
+
 QT_LICENSED_MODULE(Dispatch)
 
 #endif /* QDISPATCH_GLOBAL_H_ */

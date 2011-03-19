@@ -31,6 +31,10 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 
+/**
+  @file
+  */
+
 class QDispatchSynclock;
 
 /**
@@ -93,11 +97,16 @@ private:
 #  define Q_SYNCHRONIZED Q_SYNCHRONIZE(qGetLockForKey(__COUNTER__))
 
 /**
-  @macro synchronize( lock )
+  @def synchronize( lock )
 
   This macro is used to implement Qt's synchronize keyword. The lock
   parameter is an object is a variable of type QDispatchSynclock.
-   @codeline CONFIG += no_keywords
+
+  If you're worried about namespace pollution, you can disable this macro
+  by adding the following line to your .pro file:
+  @code
+   CONFIG += no_keywords
+  @endcode
 
   @see Q_SYNCHRONIZE()
 
@@ -159,12 +168,15 @@ private:
   */
 
 /**
-  @macro synchronized
+  @def synchronized
 
-  This macro is used to implement Qt's synchronized.
-  If you're worried about namespace pollution, you can disable this macro by adding the
-  following line to your .pro file:
-   @codeline CONFIG += no_keywords
+  This macro is used to implement Qt's synchronized keyword.
+
+  If you're worried about namespace pollution, you can disable this macro
+  by adding the following line to your .pro file:
+  @code
+   CONFIG += no_keywords
+  @endcode
 
   @see Q_SYNCHRONIZED( lock )
 
