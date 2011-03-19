@@ -51,6 +51,7 @@ void Qt_dispatch_serialqueue();
 void Qt_dispatch_after();
 void Qt_dispatch_semaphore();
 void Qt_dispatch_current();
+void Qt_synchronized();
 #endif
 
 static void register_qt_tests(){
@@ -66,6 +67,7 @@ static void register_qt_tests(){
 	MU_REGISTER_TEST(Qt_dispatch_serialqueue);
 	MU_REGISTER_TEST(Qt_dispatch_semaphore);
     MU_REGISTER_TEST(Qt_dispatch_current);
+    MU_REGISTER_TEST(Qt_synchronized);
 #endif
 #endif
 }

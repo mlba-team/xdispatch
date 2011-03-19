@@ -27,6 +27,8 @@
 #include "_DelayedDispatchEvent.h"
 #include "_MainEventLoopHandler.h"
 
+QT_BEGIN_NAMESPACE
+
 _DelayedDispatchEvent::_DelayedDispatchEvent(QRunnable* r) : QObject(), content(r){
 }
 
@@ -42,3 +44,5 @@ void _DelayedDispatchEvent::exec(){
 	qApp->postEvent(_MainEventLoopHandler::instance,e);
 	this->deleteLater();
 }
+
+QT_END_NAMESPACE

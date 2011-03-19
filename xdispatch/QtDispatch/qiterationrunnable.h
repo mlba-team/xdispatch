@@ -24,6 +24,12 @@
 #define QITERATIONRUNNABLE_H_
 
 #include <QRunnable>
+#include "qdispatchglobal.h"
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
 
 /**
 Provides a QRunnable Implementation for passing
@@ -53,5 +59,8 @@ private:
 	Private* d;
 
 };
+
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif /* QITERATIONRUNNABLE_H_ */

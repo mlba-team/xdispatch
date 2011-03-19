@@ -27,11 +27,17 @@
 
 #include <memory>
 
+#include "qdispatchglobal.h"
 #include <QString>
 #include <QDebug>
 class QTime;
 class QRunnable;
 class QIterationRunnable;
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
 
 /**
 Provides an interface for representing
@@ -70,14 +76,22 @@ public:
 	/**
 	Applies the given QRunnable for async execution
 	in this queue and returns immediately.
+
+    In case the autoDelete() flag of the passed QIterationRunnable
+    is set to true it is ensured that the runnable will be deleted
+    after being executed the requested number of times
+
 	@param times The number of times the QRunnable will be executed
 	*/
 	virtual void dispatch(QIterationRunnable*, int times) = 0;
 #ifdef HAS_BLOCKS
 	/**
 	Same as dispatch(QRunnable*,int times).
+
 	Will wrap the given block in a QRunnable and put it on the
 	queue.
+
+    @see dispatch(QRunnable*, int times)
 	*/
 	virtual void dispatch(dispatch_iteration_block_t, int times) = 0;
 #endif
@@ -175,5 +189,7 @@ static QDebug operator<<(QDebug dbg, const QDispatchQueue::APtr q)
 	return dbg.space();
 }
 
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif /* QDISPATCH_QUEUE */

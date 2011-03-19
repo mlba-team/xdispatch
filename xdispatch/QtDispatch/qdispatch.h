@@ -24,11 +24,18 @@
 #define QDISPATCH_H_
 
 #include "../dispatch.h"
+#include "qdispatchglobal.h"
 #include "qdispatchqueue.h"
+#include "qsynchronized.h"
 
 class QDispatchQueue;
 class QTime;
 class QString;
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
 
 /**
 A Shortcut for quickly accessing the
@@ -122,5 +129,8 @@ private:
 	class Private;
 	Private* d;
 };
+
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif /* QDISPATCH_H_ */

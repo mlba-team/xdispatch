@@ -32,6 +32,8 @@
 #include "_DelayedDispatchEvent.h"
 #include "_DispatchEventQueueImpl.h"
 
+QT_BEGIN_NAMESPACE
+
 _DispatchEventQueueImpl::_DispatchEventQueueImpl() : QDispatchQueue(), finalizer(NULL), finalQueue(NULL) {
 
 }
@@ -122,7 +124,7 @@ void _DispatchEventQueueImpl::resume(){
 }
 
 const QString _DispatchEventQueueImpl::label() const {
-	return QString("com.mlba.xdispatch.main-qtqueue");
+    return QString("com.mlba.QtDispatch.main-thread");
 }
 
 void _DispatchEventQueueImpl::setFinalizer(QRunnable* r, QDispatchQueue* dq){
@@ -133,3 +135,5 @@ void _DispatchEventQueueImpl::setFinalizer(QRunnable* r, QDispatchQueue* dq){
     this->finalizer = r;
     this->finalQueue = dq;
 }
+
+QT_USE_NAMESPACE

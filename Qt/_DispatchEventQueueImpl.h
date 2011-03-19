@@ -26,6 +26,8 @@
 #include "../xdispatch/dispatch.h"
 #include "../xdispatch/QtDispatch/qdispatchqueue.h"
 
+QT_BEGIN_NAMESPACE
+
 class _DispatchEventQueueImpl : public QDispatchQueue {
 
 public:
@@ -55,5 +57,7 @@ private:
         QRunnable* finalizer;
         QDispatchQueue* finalQueue;
 };
+
+QT_END_NAMESPACE
 
 #endif /* _DISPATCHEVENTQUEUEIMPLH_H_ */

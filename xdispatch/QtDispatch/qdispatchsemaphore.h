@@ -23,9 +23,15 @@
 #define QDISPATCH_SEMAPHORE_H_
 
 #include <QDebug>
+#include "qdispatchglobal.h"
 #include "../dispatch.h"
 
 class QTime;
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
 
 /**
   Wraps dispatch semaphores as provided by libDispatch/libXDispatch.
@@ -64,6 +70,14 @@ public:
 		@return non-zero if a thread was woken, zero otherwise.
 	*/
 	int release();
+    /**
+        Acquires the semaphore.
+
+        Decrements the counting semaphore. If the value is
+        less than zero it will wait until another
+        thread released the semaphore.
+     */
+    void acquire();
 	/**
 		Tries to acquire the semaphore.
 
@@ -92,5 +106,8 @@ private:
 };
 
 QDebug operator<<(QDebug, const QDispatchSemaphore&);
+
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif /* QDISPATCH_SEMAPHORE_H_ */

@@ -24,6 +24,8 @@
 #include "../xdispatch/QtDispatch/qdispatch.h"
 #include "../xdispatch/QtDispatch/qdispatchsemaphore.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDispatchSemaphore::Private {
 public:
 	Private(long v) : sem(dispatch_semaphore_create(v)) {}
@@ -49,6 +51,10 @@ QDispatchSemaphore::~QDispatchSemaphore(){
 	delete d;
 }
 
+void QDispatchSemaphore::acquire(){
+    tryAcquire(DISPATCH_TIME_FOREVER);
+}
+
 bool QDispatchSemaphore::tryAcquire(dispatch_time_t t) {
 	return dispatch_semaphore_wait(d->sem, t)==0;
 }
@@ -66,3 +72,5 @@ QDebug operator<<(QDebug dbg, const QDispatchSemaphore& s)
 	dbg.nospace() << "QDispatchSemaphore (no info available)";
 	return dbg.space();
 }
+
+QT_END_NAMESPACE

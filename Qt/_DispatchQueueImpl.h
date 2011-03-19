@@ -26,6 +26,8 @@
 #include "../xdispatch/dispatch.h"
 #include "../xdispatch/QtDispatch/qdispatchqueue.h"
 
+QT_BEGIN_NAMESPACE
+
 class _DispatchQueueImpl : public QDispatchQueue {
 
 public:
@@ -59,5 +61,7 @@ private:
 	static void execIterRunnable(void*, size_t);
 	static void finalizeMe(void*);
 };
+
+QT_END_NAMESPACE
 
 #endif /* _DISPATCHQUEUEIMPLT_H_ */

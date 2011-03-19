@@ -30,6 +30,8 @@
 
 #include "../xdispatch/QtDispatch/qdispatch.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDispatch::Private {
 public:
         Private() : highQueue(new _DispatchQueueImpl(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0))),
@@ -107,3 +109,5 @@ QTime QDispatch::asQTime(dispatch_time_t t){
 dispatch_time_t QDispatch::asDispatchTime(const QTime & t){
     return dispatch_time(DISPATCH_TIME_NOW, QTime::currentTime().msecsTo(t)*NSEC_PER_MSEC);
 }
+
+QT_END_NAMESPACE

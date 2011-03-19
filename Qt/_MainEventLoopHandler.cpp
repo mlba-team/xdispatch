@@ -24,6 +24,8 @@
 
 #include "_MainEventLoopHandler.h"
 
+QT_BEGIN_NAMESPACE
+
 _MainEventLoopHandler* _MainEventLoopHandler::instance = new _MainEventLoopHandler();
 
 _MainEventLoopHandler::_MainEventLoopHandler() : QObject() {
@@ -39,3 +41,5 @@ bool _MainEventLoopHandler::event(QEvent *e){
 	// we handled it, deletion will be done for us
 	return true;
 }
+
+QT_END_NAMESPACE

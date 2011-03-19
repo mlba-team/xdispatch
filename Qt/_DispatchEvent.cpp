@@ -22,6 +22,8 @@
 #include "_DispatchEvent.h"
 #include "../core/atomic.h"
 
+QT_BEGIN_NAMESPACE
+
 QEvent::Type _DispatchEvent::TYPECONSTANT = QEvent::Type(registerEventType(QEvent::User+2));
 
 _DispatchEvent::_DispatchEvent(QRunnable* r) : QEvent(TYPECONSTANT) , index(-1), d(new _DispatchEventData(r)) {
@@ -45,3 +47,5 @@ void _DispatchEvent::exec(){
         iter_run->run(index);
     }
 }
+
+QT_END_NAMESPACE

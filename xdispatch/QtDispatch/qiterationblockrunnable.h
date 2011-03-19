@@ -25,8 +25,14 @@
 
 #include "QIterationRunnable.h"
 #include "../dispatch.h"
+#include "qdispatchglobal.h"
 
 #ifdef HAS_BLOCKS
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
 
 /**
 Provides a QIteration Implementation for use with
@@ -56,6 +62,9 @@ private:
 	Private* d;
 
 };
+
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif
 

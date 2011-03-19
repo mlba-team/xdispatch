@@ -25,11 +25,17 @@
 
 #include <QObject>
 #include <QDebug>
+#include "qdispatchglobal.h"
 #include "../dispatch.h"
 
 class QRunnable;
 class QDispatchQueue;
 class QTime;
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
 
 /**
 A DispatchGroup is a group of QRunnables
@@ -50,7 +56,6 @@ public:
 	Creates a new QDispatchGroup.
 	*/
 	QDispatchGroup();
-	QDispatchGroup(const QDispatchGroup&);
 	~QDispatchGroup();
 
 	/**
@@ -120,7 +125,9 @@ signals:
 	void allFinished();
 
 private:
-    friend class _GroupRunnable;
+    Q_DISABLE_COPY(QDispatchGroup);
+
+    friend class Q_GroupRunnable;
 	friend QDebug operator<<(QDebug, const QDispatchGroup&);
     
 	class Private;
@@ -128,5 +135,8 @@ private:
 };
 
 QDebug operator<<(QDebug, const QDispatchGroup&);
+
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif /* QDISPATCH_GROUP_H_ */

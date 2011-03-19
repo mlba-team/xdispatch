@@ -28,6 +28,8 @@
 #include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
 #include "_DispatchQueueImpl.h"
 
+QT_BEGIN_NAMESPACE
+
 struct IterationData {
         ATOMIC_INT count;
         QIterationRunnable* work;
@@ -157,3 +159,5 @@ void _DispatchQueueImpl::finalizeMe(void* context){
         r->setAutoDelete(true);
         QD->getMainQueue()->dispatch(r);
 }
+
+QT_END_NAMESPACE

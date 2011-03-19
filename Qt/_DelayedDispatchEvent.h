@@ -24,6 +24,9 @@
 #define _DELAYEDDISPATCHEVENT_H_
 
 #include <QObject>
+#include "../xdispatch/QtDispatch/qdispatchglobal.h"
+
+QT_BEGIN_NAMESPACE
 
 class QRunnable;
 
@@ -41,5 +44,7 @@ public slots:
 private:
 	QRunnable* content;
 };
+
+QT_END_NAMESPACE
 
 #endif /* _DELAYEDDISPATCHEVENT_H_ */

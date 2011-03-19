@@ -30,7 +30,6 @@
 #	include <unistd.h>
 #endif
 
-#include "../core/atomic.h"
 #include "../xdispatch/QtDispatch/qdispatchqueue.h"
 #include "../xdispatch/QtDispatch/qdispatchgroup.h"
 #include "../xdispatch/QtDispatch/qdispatch.h"
@@ -39,12 +38,11 @@
 #include "_DispatchQueueImpl.h"
 #include "JavaUtils.h"
 
+QT_BEGIN_NAMESPACE
+
 class QDispatchGroup::Private {
 public:
-        Private() : obj(NULL), notify(NULL), queue(NULL), count(0){}
-        Private(const Private& p) : notify(p.notify), queue(p.queue), count(p.count){
-
-	}
+    Private() : obj(NULL), notify(NULL), queue(NULL), references(1), pending_jobs(0){}
 	~Private() {
 		if(notify)
 			delete notify;
@@ -53,65 +51,56 @@ public:
 	}
 
 	void runNotify(){
+        if(!obj)
+            return;
+
 		emit obj->allFinished();
 		if(queue && notify)
 			queue->dispatch(notify);
 	}
 
-	QDispatchGroup* obj;
+    QPointer<QDispatchGroup> obj;
 	QRunnable* notify;
 	QDispatchQueue* queue;
-	ATOMIC_INT count;
+    QAtomicInt references;
+    QAtomicInt pending_jobs;
 };
 
-class _GroupRunnable : public QRunnable {
+class Q_GroupRunnable : public QRunnable {
 public:
-#ifndef HAS_BLOCKS
-	_GroupRunnable(QRunnable* r, QDispatchGroup* g) : QRunnable(), work(r), group(g) {}
-#else
-	_GroupRunnable(QRunnable* r, QDispatchGroup* g) : QRunnable(), work(r), block(NULL), group(g) {}
-	_GroupRunnable(dispatch_block_t b, QDispatchGroup* g) : QRunnable(), work(NULL), block(new dispatch_block_t(b)), group(g) {}
-#endif
+    Q_GroupRunnable(QRunnable* r, QDispatchGroup::Private* g) : QRunnable(), work(r), group(g) {
+        group->references.ref();
+        group->pending_jobs.ref();
+    }
 
 	QRunnable* work;
-#ifdef HAS_BLOCKS
-	dispatch_block_t* block;
-#endif
-	QPointer<QDispatchGroup> group;
+    QDispatchGroup::Private* group;
 
 	virtual void run(){
-#ifdef HAS_BLOCKS
-		Q_ASSERT(work || block);
-#else
 		Q_ASSERT(work);
-#endif
+        Q_ASSERT(group);
+
 		if(work){
 			work->run();
 			if(work->autoDelete())
 				delete work;
 		}
-#ifdef HAS_BLOCKS
-		if(block){
-			(*block)();
-			delete block;
-		}
-#endif
-		if(group && atomic_dec_get(&group->d->count)==0 ) {
-			group->d->runNotify();
-		}
+
+        if(!group->pending_jobs.deref())
+            group->runNotify();
+
+        if(!group->references.deref())
+            delete group;
 	};
 };
-
-QDispatchGroup::QDispatchGroup(const QDispatchGroup& g) : d(new Private(*g.d)) {
-	d->obj = this;
-}
 
 QDispatchGroup::QDispatchGroup() : d(new Private()){
 	d->obj = this;
 }
 
 QDispatchGroup::~QDispatchGroup(){
-	delete d;
+    if(!d->references.deref())
+        delete d;
 }
 
 bool QDispatchGroup::wait(const QTime& t){
@@ -121,7 +110,7 @@ bool QDispatchGroup::wait(const QTime& t){
 bool QDispatchGroup::wait(dispatch_time_t t){
 	dispatch_time_t now = 0;
 
-	while(d->count>0 && t > now){
+    while(d->pending_jobs > 0 && t > now){
 #ifdef WIN32
 		Sleep(1);
 #else
@@ -130,30 +119,35 @@ bool QDispatchGroup::wait(dispatch_time_t t){
 		now = dispatch_time(0,0);
 	}
 
-	return (d->count==0);
+    return (d->pending_jobs == 0);
 }
 
 void QDispatchGroup::dispatch(QRunnable *r, QDispatchQueue *q){
 	if(q==NULL)
 		q = QD->getGlobalQueue();
 
-	Q_ASSERT(r!=NULL && q!=NULL);
+    Q_ASSERT(r!=NULL);
+    Q_ASSERT(q!=NULL);
 
-	_GroupRunnable* gr = new _GroupRunnable(r, this);
-	atomic_inc_get(&d->count);
+    Q_GroupRunnable* gr = new Q_GroupRunnable(r, this->d);
 	q->dispatch(gr);
+}
+
+void QDispatchGroup::notify(QRunnable *r, QDispatchQueue *q){
+    d->notify = r;
+    // this runnable will be reused, thus do not delete it
+    r->setAutoDelete(false);
+    d->queue = q==0 ? QD->getGlobalQueue() : q;
+
+    if(d->pending_jobs == 0)
+        d->runNotify();
 }
 
 #ifdef HAS_BLOCKS
 void QDispatchGroup::dispatch(dispatch_block_t b, QDispatchQueue *q){
-	if(q==NULL)
-		q = QD->getGlobalQueue();
-
-	Q_ASSERT(q!=NULL);
-
-	_GroupRunnable* gr = new _GroupRunnable(b, this);
-	atomic_inc_get(&d->count);
-	q->dispatch(gr);
+    QBlockRunnable* br = new QBlockRunnable(b);
+    br->setAutoDelete(true);
+    dispatch(br, q);
 }
 
 void QDispatchGroup::notify(dispatch_block_t b, QDispatchQueue* q){
@@ -161,18 +155,10 @@ void QDispatchGroup::notify(dispatch_block_t b, QDispatchQueue* q){
 }
 #endif
 
-void QDispatchGroup::notify(QRunnable *r, QDispatchQueue *q){
-	d->notify = r;
-	// this runnable will be reused, thus do not delete it
-	r->setAutoDelete(false);
-	d->queue = q==0 ? QD->getGlobalQueue() : q;
-
-	if(d->count == 0)
-		d->runNotify();
-}
-
 QDebug operator<<(QDebug dbg, const QDispatchGroup& g)
 {	
-	dbg.nospace() << "QDispatchGroup (" << g.d->count << " pending, " << (g.d->notify==0 ? "no" : "has") << " notifier)";
+    dbg.nospace() << "QDispatchGroup (" << g.d->pending_jobs << " pending, " << (g.d->notify==0 ? "no" : "has") << " notifier)";
 	return dbg.space();
 }
+
+QT_END_NAMESPACE

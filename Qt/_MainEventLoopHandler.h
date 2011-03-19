@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
+
 class _MainEventLoopHandler : public QObject {
 
 	Q_OBJECT
@@ -37,5 +39,7 @@ private:
 
 
 };
+
+QT_END_NAMESPACE
 
 #endif /* _MAINEVENTLOOPHANDLER_H_ */

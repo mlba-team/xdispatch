@@ -24,6 +24,8 @@
 
 #ifdef HAS_BLOCKS
 
+QT_BEGIN_NAMESPACE
+
 class QBlockRunnable::Private {
 public:
 	Private(dispatch_block_t b) : codeBlock(Block_copy(b)){}
@@ -50,5 +52,7 @@ QBlockRunnable::~QBlockRunnable(){
 void QBlockRunnable::run(){
 	d->codeBlock();
 }
+
+QT_END_NAMESPACE
 
 #endif

@@ -27,6 +27,8 @@
 #include <QEvent>
 #include <QRunnable>
 
+QT_BEGIN_NAMESPACE
+
 class _DispatchEventData {
     
 public:
@@ -55,5 +57,7 @@ private:
     int index;
 	QSharedPointer<_DispatchEventData> d;
 };
+
+QT_END_NAMESPACE
 
 #endif /* _DISPATCHEVENT_H_ */

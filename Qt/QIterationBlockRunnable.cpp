@@ -23,6 +23,8 @@
 
 #ifdef HAS_BLOCKS
 
+QT_BEGIN_NAMESPACE
+
 class QIterationBlockRunnable::Private {
 public:
 	Private(dispatch_iteration_block_t b) : codeBlock(Block_copy(b)){}
@@ -53,5 +55,7 @@ QIterationBlockRunnable::~QIterationBlockRunnable(){
 void QIterationBlockRunnable::run(size_t index){
 	d->codeBlock(index);
 }
+
+QT_END_NAMESPACE
 
 #endif
