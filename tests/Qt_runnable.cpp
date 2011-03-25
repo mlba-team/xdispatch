@@ -23,7 +23,7 @@
 
 #include <QCoreApplication>
 #include <QTime>
-#include <xdispatch/QtDispatch/QtDispatch>
+#include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 
@@ -38,7 +38,7 @@ public:
     
 };
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 static QIterationBlockRunnable* iter_block_run = NULL;
 static QBlockRunnable* block_run = NULL;
 
@@ -68,7 +68,7 @@ extern "C" void Qt_runnable(){
         test_run.run(i);
     MU_ASSERT_EQUAL(counter, 1+2+3+4);
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
     counter = 0;
     iter_block_run = new QIterationBlockRunnable($(size_t index){
         counter += index;

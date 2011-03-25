@@ -50,23 +50,21 @@ if(NOT HAVE_STDINT_H)
 	endif()
 endif()
 
-# blocks extension
-set(BC xdispatch/blocks.h)
-source_group(blocks FILES ${BC})
-
 # core lib
-file(GLOB INCL xdispatch/*.h)
-file(GLOB CORE core/*.c)
-file(GLOB CORE_HEADER core/*.h)
-file(GLOB CORE_BLOCKS core/*.cpp)
-source_group(includes FILES ${INCL})
-source_group(core FILES ${CORE} ${CORE_HEADER} ${CORE_BLOCKS})
+file(GLOB INCL include/libdispatch/*.h)
+file(GLOB CXX_INCL include/xdispatch/*.h)
+file(GLOB CORE core/*.c core/*.h)
+file(GLOB CXX cxx/*.cpp cxx/*.h)
+source_group(dispatch FILES ${INCL})
+source_group(xdispatch FILES ${CXX_INCL})
+source_group(core FILES ${CORE})
+source_group(cxx FILES ${CXX})
 
 
 if(NOT HAVE_NATIVE_DISPATCH_H)
   
   # add new target
-  add_library(${NAME} STATIC ${INCL} ${BC} ${CORE} ${CORE_HEADER} ${CORE_BLOCKS})
+  add_library(${NAME} STATIC ${INCL} ${CORE} ${CXX_INCL} ${CXX})
   
   # link this target with all needed libraries
   if(MZ_IS_VS)
@@ -89,7 +87,7 @@ else()
 	endif()
 	
 	  # add new target
-  add_library(${NAME} STATIC ${INCL} ${BC} ${CORE_HEADER} ${CORE_BLOCKS})
+  add_library(${NAME} STATIC ${INCL} ${CXX} ${CXX_INCL})
   
   # link this target with all needed libraries
   if(MZ_IS_VS)

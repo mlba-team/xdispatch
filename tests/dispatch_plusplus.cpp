@@ -21,7 +21,7 @@
 
 #include <xdispatch/dispatch.h>
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #include "tests.h"
 

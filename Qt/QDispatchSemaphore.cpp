@@ -21,8 +21,8 @@
 
 #include <QTime>
 
-#include "../xdispatch/QtDispatch/qdispatch.h"
-#include "../xdispatch/QtDispatch/qdispatchsemaphore.h"
+#include "../include/QtDispatch/qdispatch.h"
+#include "../include/QtDispatch/qdispatchsemaphore.h"
 
 QT_BEGIN_NAMESPACE
 

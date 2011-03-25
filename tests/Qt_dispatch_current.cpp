@@ -25,10 +25,10 @@
 #include <QTest>
 #include <QDebug>
 
-#include "../xdispatch/QtDispatch/QtDispatch"
+#include "../include/QtDispatch/QtDispatch"
 #include "Qt_tests.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 /*
  Little tests mainly checking the correct mapping of the Qt api

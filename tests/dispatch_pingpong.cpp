@@ -31,7 +31,7 @@
 #	include <time.h>
 #endif
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #include "../core/atomic.h"
 #include "tests.h"

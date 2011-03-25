@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #ifdef WIN32
 #	include <windows.h>

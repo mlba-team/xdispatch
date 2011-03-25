@@ -23,12 +23,12 @@
 
 #include <QTest>
 #include <QCoreApplication>
-#include <xdispatch/QtDispatch/QtDispatch>
+#include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 #include "../core/atomic.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 /*
  Little tests mainly checking the correct mapping of the Qt api

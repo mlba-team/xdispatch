@@ -25,9 +25,9 @@
 
 #include <QRunnable>
 #include "qdispatchglobal.h"
-#include "../dispatch.h"
+#include "../xdispatch/dispatch.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE

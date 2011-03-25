@@ -57,7 +57,7 @@ typedef long dispatch_once_t;
  * Always call dispatch_once() before using or testing any variables that are
  * initialized by the block.
  */
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 void
 dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
 #endif

@@ -23,12 +23,12 @@
 #define TESTS_H_
 
 #include "munit/MUnit.h"
-#include <xdispatch/blocks.h>
+#include <xdispatch/dispatch.h>
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
-#ifndef HAS_BLOCKS
-#	if (defined HAVE_BLOCKS_IMPL || defined __BLOCKS__ || _MSC_VER >= 1600)
+#ifndef XDISPATCH_HAS_BLOCKS
+#	if (defined __GXX_EXPERIMENTAL_CXX0X__ || defined __BLOCKS__ || _MSC_VER >= 1600)
 #		define TEST_BLOCKS
 #	endif
 #else

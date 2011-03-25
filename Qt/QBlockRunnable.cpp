@@ -20,9 +20,9 @@
 
 
 
-#include "../xdispatch/QtDispatch/qblockrunnable.h"
+#include "../include/QtDispatch/qblockrunnable.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 QT_BEGIN_NAMESPACE
 

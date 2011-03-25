@@ -413,7 +413,7 @@ dispatch_after_f(dispatch_time_t when,
 
 __DISPATCH_END_DECLS
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 /*!
  * @function dispatch_async

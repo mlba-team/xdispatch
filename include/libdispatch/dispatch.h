@@ -20,10 +20,8 @@
 */
 
 
-#ifndef XDISPATCH_H_
-#define XDISPATCH_H_
-
-#include "blocks.h"
+#ifndef DISPATCH_H_
+#define DISPATCH_H_
 
 #ifdef __BLOCKS__
 #   include <dispatch/dispatch.h>
@@ -78,4 +76,4 @@
 
 #endif // ELSE _BLOCKS_
 
-#endif /* XDISPATCH_H_ */
+#endif /* DISPATCH_H_ */

@@ -18,7 +18,7 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#include "../xdispatch/QtDispatch/qiterationrunnable.h"
+#include "../include/QtDispatch/qiterationrunnable.h"
 #include "_DispatchEvent.h"
 #include "../core/atomic.h"
 

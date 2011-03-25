@@ -22,8 +22,6 @@
 #ifndef QUEUE_INTERNAL_H_
 #define QUEUE_INTERNAL_H_
 
-#include "../xdispatch/blocks.h"
-
 #if defined(__cplusplus)
 #define __DISPATCH_BEGIN_DECLS	extern "C" {
 #define __DISPATCH_END_DECLS	}
@@ -108,16 +106,16 @@
 #	include "../queue_blocks.h"
 #elif !defined(HAVE_NATIVE_DISPATCH_H)
 
-#	include "../xdispatch/base.h"
-#	include "../xdispatch/object.h"
-#	include "../xdispatch/time.h"
-#	include "../xdispatch/queue.h"
+#	include "../include/libdispatch/base.h"
+#	include "../include/libdispatch/object.h"
+#	include "../include/libdispatch/time.h"
+#	include "../include/libdispatch/queue.h"
 /* DISABLED UNTIL CLEAN IMPLEMENTATION IS AVAILABLE
 #	include "source.h"
    */
-#	include "../xdispatch/group.h"
-#	include "../xdispatch/semaphore.h"
-#	include "../xdispatch/once.h"
+#	include "../include/libdispatch/group.h"
+#	include "../include/libdispatch/semaphore.h"
+#	include "../include/libdispatch/once.h"
 
 __DISPATCH_BEGIN_DECLS
 #	include "config.h"

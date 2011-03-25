@@ -22,12 +22,12 @@
 #ifdef QT_CORE_LIB
 
 #include <QCoreApplication>
-#include <xdispatch/QtDispatch/QtDispatch>
+#include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 #include "../core/atomic.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #define JOBS_NO 20
 

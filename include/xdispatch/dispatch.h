@@ -20,38 +20,25 @@
 */
 
 
-/* When building on 10.6 with gcc 4.5.1 we can bypass
-	Apple's blocks implementation in C++ as we have lambdas.
-	This prevents a lot of errors from occuring
-	*/
+#ifndef XDISPATCH_H_
+#define XDISPATCH_H_
 
-#ifndef XDISPATCH_BLOCKS_H_
-#define XDISPATCH_BLOCKS_H_
+# ifdef HAVE_NATIVE_DISPATCH_H
+#  include <dispatch/dispatch.h>
+#  define NSEC_PER_MSEC 1000000ll
+# else
+#  include "../libdispatch/dispatch.h"
+# endif
 
 #if defined(__cplusplus)
-#define __DISPATCH_BEGIN_DECLS	extern "C" {
-#define __DISPATCH_END_DECLS	}
-#else
-#define __DISPATCH_BEGIN_DECLS
-#define __DISPATCH_END_DECLS
+
+# define __XDISPATCH_BEGIN_NAMESPACE	namespace xdispatch {
+# define __XDISPATCH_END_NAMESPACE }
+
+# define __XDISPATCH_INDIRECT__
+# include "lambda_blocks.h"
+# undef __XDISPATCH_INDIRECT__
+
 #endif
 
-#include <stddef.h>
-#include <stdint.h>
-#ifndef WIN32
-#	include <stdbool.h>
-#endif
-#include <stdarg.h>
-
-#define DISPATCH_API_VERSION 20090501
-
-#ifndef __DISPATCH_INDIRECT__
-#define __DISPATCH_INDIRECT__
-#endif
-
-#include "group_blocks.h"
-#include "queue_blocks.h"
-
-#undef __DISPATCH_INDIRECT__
-
-#endif /* XDISPATCH_BLOCKS_H_ */
+#endif /* XDISPATCH_H_ */

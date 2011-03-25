@@ -19,41 +19,31 @@
 */
 
 
+#include <assert.h>
+#include "xdispatch_internal.h"
 
-#ifndef RUNBLOCKS_H_
-#define RUNBLOCKS_H_
+#ifdef XDISPATCH_HAS_BLOCKS
 
-#include "queue_internal.h"
-
-#ifdef HAS_BLOCKS
-#if defined(BLOCKS_IMPL_ONLY) || defined(DISPATCH_FULL_IMPL)
-
-#ifdef __cplusplus
-	extern "C" {
-#endif
-
-		typedef struct _block_function_s {
-#ifdef __BLOCKS__
-#	error "Not tested!"
+void run_block(void* block){
+    assert(block);
+    (*(dispatch_block_t*)block)();
+#ifndef __BLOCKS__
+    delete (dispatch_block_t*)block;
 #else
-		public:
-			dispatch_iteration_block_t func;
-			unsigned int ref;
+    XDISPATCH_BLOCK_RELEASE(block);
+#endif
+}
 
-			_block_function_s(const dispatch_iteration_block_t &b, size_t ct) : func(b), ref(ct){}
+void run_iteration_block(void* block, size_t s){
+    assert(block);
+    _block_function_t b = (_block_function_t)block;
+    b->func(s);
+    if(atomic_dec_get(&b->ref)==0)
+#ifndef __BLOCKS__
+        delete b;
+#else
+        XDISPATCH_BLOCK_RELEASE(block);
+#endif
+}
 
 #endif
-		} * _block_function_t;
-
-void runBlock(void* block);
-
-void runIterationBlock(void* block, size_t s);
-
-#ifdef __cplusplus
-	}
-#endif
-
-#endif
-#endif
-
-#endif /* RUNBLOCKS_H_ */

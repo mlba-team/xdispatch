@@ -24,9 +24,9 @@
 #include <QTimer>
 #include <QTime>
 
-#include "../xdispatch/QtDispatch/qblockrunnable.h"
-#include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
-#include "../xdispatch/QtDispatch/qdispatch.h"
+#include "../include/QtDispatch/qblockrunnable.h"
+#include "../include/QtDispatch/qiterationblockrunnable.h"
+#include "../include/QtDispatch/qdispatch.h"
 #include "_MainEventLoopHandler.h"
 #include "_DispatchEvent.h"
 #include "_DelayedDispatchEvent.h"
@@ -85,7 +85,7 @@ void _DispatchEventQueueImpl::dispatchSync(QRunnable * runnable){
 	qApp->flush();
 }
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 void _DispatchEventQueueImpl::dispatch(dispatch_block_t block){
 	_DispatchEvent* e = new _DispatchEvent(new QBlockRunnable(block));
 	qApp->postEvent(_MainEventLoopHandler::instance,e);

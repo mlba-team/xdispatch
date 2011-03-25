@@ -21,13 +21,13 @@
 #ifdef QT_CORE_LIB
 
 #include <QCoreApplication>
-#include <xdispatch/QtDispatch/QtDispatch>
+#include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 #include "../core/atomic.h"
 
 #define RUN_TIMES 20
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 /*
  Little tests mainly checking the correct mapping of the Qt api

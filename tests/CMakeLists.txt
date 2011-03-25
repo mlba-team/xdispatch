@@ -20,7 +20,7 @@ endif()
 INCLUDE_DIRECTORIES(
 	${QT_QTCORE_INCLUDE_DIR}
  	${QT_QTTEST_INCLUDE_DIR}
- 	${CMAKE_CURRENT_SOURCE_DIR}/../
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
 # add new exec target

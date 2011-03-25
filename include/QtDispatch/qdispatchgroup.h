@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QDebug>
 #include "qdispatchglobal.h"
-#include "../dispatch.h"
+#include "../xdispatch/dispatch.h"
 
 class QRunnable;
 class QDispatchQueue;
@@ -64,7 +64,7 @@ public:
 	@param q The Queue to use. If no Queue is given, the system default queue will be used
 	*/
 	void dispatch(QRunnable* r, QDispatchQueue* q = NULL);
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	Same as dispatch(QRunnable* r, ...)
 	Will wrap the given block in a QRunnable and put it on the queue.
@@ -98,7 +98,7 @@ public:
 	@see dispatch() for more information.
 	*/
 	void notify(QRunnable* r, QDispatchQueue* q = NULL);
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	This function schedules a notification block to be submitted to the specified
 	queue once all blocks associated with the dispatch group have completed.

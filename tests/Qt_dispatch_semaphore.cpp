@@ -23,11 +23,11 @@
 
 #include <QCoreApplication>
 #include <QTime>
-#include <xdispatch/QtDispatch/QtDispatch>
+#include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #define LAPS 10000
 

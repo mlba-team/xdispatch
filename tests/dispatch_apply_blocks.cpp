@@ -20,7 +20,7 @@
 */
 #include <xdispatch/dispatch.h>
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #include "../core/atomic.h"
 

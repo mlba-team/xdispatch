@@ -24,10 +24,10 @@
 #define QITERATIONBLOCKRUNNABLE_H_
 
 #include "QIterationRunnable.h"
-#include "../dispatch.h"
+#include "../xdispatch/dispatch.h"
 #include "qdispatchglobal.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
@@ -51,8 +51,8 @@ public:
 	QIterationBlockRunnable task($(size_t index){cout << "Hello World at" << index << "\n";}, 3);
 	@endcode
 	*/
-	QIterationBlockRunnable(dispatch_iteration_block_t b);
-	QIterationBlockRunnable(dispatch_iteration_block_t b, size_t index);
+    QIterationBlockRunnable(dispatch_iteration_block_t b);
+    QIterationBlockRunnable(dispatch_iteration_block_t b, size_t index);
 	QIterationBlockRunnable(const QIterationBlockRunnable&);
 	~QIterationBlockRunnable();
 	virtual void run(size_t);

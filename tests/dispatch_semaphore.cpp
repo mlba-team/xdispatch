@@ -29,7 +29,7 @@
 
 #define LAPS 10000
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 extern "C" void dispatch_semaphore()
 {

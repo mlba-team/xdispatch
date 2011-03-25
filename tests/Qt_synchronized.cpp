@@ -23,7 +23,7 @@
 
 #include <QMutex>
 #include <QTime>
-#include <xdispatch/QtDispatch/QtDispatch>
+#include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 

@@ -28,7 +28,7 @@
 #include "_DispatchQueueImpl.h"
 #include "_DispatchEventQueueImpl.h"
 
-#include "../xdispatch/QtDispatch/qdispatch.h"
+#include "../include/QtDispatch/qdispatch.h"
 
 QT_BEGIN_NAMESPACE
 

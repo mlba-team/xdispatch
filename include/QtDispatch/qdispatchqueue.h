@@ -23,7 +23,7 @@
 #ifndef QDISPATCH_QUEUE
 #define QDISPATCH_QUEUE
 
-#include "../dispatch.h"
+#include "../xdispatch/dispatch.h"
 
 #include <memory>
 
@@ -65,7 +65,7 @@ public:
 	in this queue and returns immediately.
 	*/
 	virtual void dispatch(QRunnable*) = 0;
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	Same as dispatch(QRunnable*).
 	Will wrap the given block in a QRunnable and put it on the
@@ -84,7 +84,7 @@ public:
 	@param times The number of times the QRunnable will be executed
 	*/
 	virtual void dispatch(QIterationRunnable*, int times) = 0;
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	Same as dispatch(QRunnable*,int times).
 
@@ -93,7 +93,7 @@ public:
 
     @see dispatch(QRunnable*, int times)
 	*/
-	virtual void dispatch(dispatch_iteration_block_t, int times) = 0;
+    virtual void dispatch(dispatch_iteration_block_t, int times) = 0;
 #endif
 	/**
 	Applies the given QRunnable for async execution
@@ -103,14 +103,14 @@ public:
 	*/
 	virtual void dispatchAfter(QRunnable*, const QTime& time) = 0;
 	virtual void dispatchAfter(QRunnable*, dispatch_time_t time) = 0;
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	Same as dispatchAfter().
 	Will wrap the given block in a QRunnable and put it on the
 	queue.
 	*/
-	virtual void dispatchAfter(dispatch_block_t, const QTime& time) = 0;
-	virtual void dispatchAfter(dispatch_block_t, dispatch_time_t time) = 0;
+    virtual void dispatchAfter(dispatch_block_t, const QTime& time) = 0;
+    virtual void dispatchAfter(dispatch_block_t, dispatch_time_t time) = 0;
 #endif
 	/**
 	Applies the given QRunnable for execution
@@ -118,7 +118,7 @@ public:
 	was executed
 	*/
 	virtual void dispatchSync(QRunnable*) = 0;
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	Same as dispatchSync(QRunnable*,int times).
 	Will wrap the given block in a QRunnable and put it on the
@@ -137,7 +137,7 @@ public:
 	global queues or the main queue.
 	*/
 	virtual void setFinalizer(QRunnable*, QDispatchQueue* = NULL) = 0;
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	/**
 	Same as dispatchSync(QRunnable*,int times).
 	Will wrap the given block in a QRunnable and store

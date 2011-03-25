@@ -23,7 +23,7 @@
 #ifndef QSYNCHRONIZED_H_
 #define QSYNCHRONIZED_H_
 
-#include "../dispatch.h"
+#include "../xdispatch/dispatch.h"
 #include "qdispatchglobal.h"
 
 QT_BEGIN_HEADER

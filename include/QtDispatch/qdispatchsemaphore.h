@@ -24,7 +24,7 @@
 
 #include <QDebug>
 #include "qdispatchglobal.h"
-#include "../dispatch.h"
+#include "../xdispatch/dispatch.h"
 
 class QTime;
 

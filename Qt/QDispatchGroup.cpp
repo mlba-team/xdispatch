@@ -30,10 +30,10 @@
 #	include <unistd.h>
 #endif
 
-#include "../xdispatch/QtDispatch/qdispatchqueue.h"
-#include "../xdispatch/QtDispatch/qdispatchgroup.h"
-#include "../xdispatch/QtDispatch/qdispatch.h"
-#include "../xdispatch/QtDispatch/qblockrunnable.h"
+#include "../include/QtDispatch/qdispatchqueue.h"
+#include "../include/QtDispatch/qdispatchgroup.h"
+#include "../include/QtDispatch/qdispatch.h"
+#include "../include/QtDispatch/qblockrunnable.h"
 #include "_DispatchEventQueueImpl.h"
 #include "_DispatchQueueImpl.h"
 #include "JavaUtils.h"
@@ -143,7 +143,7 @@ void QDispatchGroup::notify(QRunnable *r, QDispatchQueue *q){
         d->runNotify();
 }
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 void QDispatchGroup::dispatch(dispatch_block_t b, QDispatchQueue *q){
     QBlockRunnable* br = new QBlockRunnable(b);
     br->setAutoDelete(true);

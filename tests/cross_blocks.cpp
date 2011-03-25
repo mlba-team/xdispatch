@@ -22,7 +22,7 @@
 #include "tests.h"
 #include <xdispatch/dispatch.h>
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 /*
   A small test for checking the blocks functionality

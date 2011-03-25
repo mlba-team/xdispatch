@@ -21,9 +21,9 @@
 #include <QDebug>
 #include <QMutex>
 
-#include "../xdispatch/QtDispatch/qdispatch.h"
-#include "../xdispatch/QtDispatch/qdispatchsemaphore.h"
-#include "../xdispatch/QtDispatch/qsynchronized.h"
+#include "../include/QtDispatch/qdispatch.h"
+#include "../include/QtDispatch/qdispatchsemaphore.h"
+#include "../include/QtDispatch/qsynchronized.h"
 
 QT_BEGIN_NAMESPACE
 

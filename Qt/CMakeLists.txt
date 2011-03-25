@@ -1,8 +1,8 @@
 
 file(GLOB QSRC *.h *.cpp)
 file(GLOB QHEADER *.h)
-file(GLOB QINCLUDE_H ../xdispatch/QtDispatch/*.h)
-file(GLOB QINCLUDE ../xdispatch/QtDispatch/Q*)
+file(GLOB QINCLUDE_H ../include/QtDispatch/*.h)
+file(GLOB QINCLUDE ../include/QtDispatch/Q*)
 
 # include qt headers (if found)	
 INCLUDE_DIRECTORIES(

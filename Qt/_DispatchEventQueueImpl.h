@@ -23,8 +23,8 @@
 #ifndef _DISPATCHEVENTQUEUEIMPLH_H_
 #define _DISPATCHEVENTQUEUEIMPLH_H_
 
-#include "../xdispatch/dispatch.h"
-#include "../xdispatch/QtDispatch/qdispatchqueue.h"
+#include "../include/xdispatch/dispatch.h"
+#include "../include/QtDispatch/qdispatchqueue.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -41,7 +41,7 @@ public:
 	virtual void dispatchAfter(QRunnable*, dispatch_time_t timeout);
 	virtual void dispatchSync(QRunnable*);
 	virtual void setFinalizer(QRunnable*, QDispatchQueue*);
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 	virtual void dispatch(dispatch_block_t);
 	virtual void dispatch(dispatch_iteration_block_t, int times);
 	virtual void dispatchAfter(dispatch_block_t, const QTime& timeout);

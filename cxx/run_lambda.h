@@ -20,31 +20,23 @@
 
 
 
-#ifndef _DELAYEDDISPATCHEVENT_H_
-#define _DELAYEDDISPATCHEVENT_H_
+#ifndef RUNBLOCKS_H_
+#define RUNBLOCKS_H_
 
-#include <QObject>
-#include "../include/QtDispatch/qdispatchglobal.h"
+#ifdef XDISPATCH_HAS_BLOCKS
 
-QT_BEGIN_NAMESPACE
-
-class QRunnable;
-
-class _DelayedDispatchEvent : public QObject {
-
-	Q_OBJECT
-
+typedef struct _block_function_s {
 public:
-	_DelayedDispatchEvent(QRunnable*);
-	~_DelayedDispatchEvent();
+    dispatch_iteration_block_t func;
+    unsigned int ref;
 
-public slots:
-	void exec();
+    _block_function_s(const dispatch_iteration_block_t &b, size_t ct) : func(b), ref(ct){}
 
-private:
-	QRunnable* content;
-};
+} * _block_function_t;
 
-QT_END_NAMESPACE
+void run_block(void* block);
+void run_iteration_block(void* block, size_t s);
 
-#endif /* _DELAYEDDISPATCHEVENT_H_ */
+#endif
+
+#endif /* RUNBLOCKS_H_ */

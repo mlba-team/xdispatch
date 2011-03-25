@@ -23,9 +23,9 @@
 #include "../core/atomic.h"
 
 #include <QRunnable>
-#include "../xdispatch/QtDispatch/qdispatch.h"
-#include "../xdispatch/QtDispatch/qblockrunnable.h"
-#include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
+#include "../include/QtDispatch/qdispatch.h"
+#include "../include/QtDispatch/qblockrunnable.h"
+#include "../include/QtDispatch/qiterationblockrunnable.h"
 #include "_DispatchQueueImpl.h"
 
 QT_BEGIN_NAMESPACE
@@ -88,7 +88,7 @@ void _DispatchQueueImpl::setFinalizer(QRunnable* r, QDispatchQueue* dq){
         dispatch_set_context(q, r);
 }
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 void _DispatchQueueImpl::dispatch(dispatch_block_t block){
         dispatch_async(q, block);
 }

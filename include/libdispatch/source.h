@@ -277,11 +277,11 @@ dispatch_source_create(dispatch_source_type_t type,
  * @param handler
  * The event handler block to submit to the source's target queue.
  */
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 void
 dispatch_source_set_event_handler(dispatch_source_t source,
 	dispatch_block_t handler);
-#endif /* HAS_BLOCKS */
+#endif /* XDISPATCH_HAS_BLOCKS */
 
 /*!
  * @function dispatch_source_set_event_handler_f
@@ -330,11 +330,11 @@ dispatch_source_set_event_handler_f(dispatch_source_t source,
  * @param handler
  * The cancellation handler block to submit to the source's target queue.
  */
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 void
 dispatch_source_set_cancel_handler(dispatch_source_t source,
 	dispatch_block_t cancel_handler);
-#endif /* HAS_BLOCKS */
+#endif /* XDISPATCH_HAS_BLOCKS */
 
 /*!
  * @function dispatch_source_set_cancel_handler_f

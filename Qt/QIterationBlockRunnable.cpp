@@ -19,9 +19,9 @@
 */
 
 
-#include "../xdispatch/QtDispatch/qiterationblockrunnable.h"
+#include "../include/QtDispatch/qiterationblockrunnable.h"
 
-#ifdef HAS_BLOCKS
+#ifdef XDISPATCH_HAS_BLOCKS
 
 QT_BEGIN_NAMESPACE
 
