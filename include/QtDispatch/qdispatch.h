@@ -23,10 +23,8 @@
 #ifndef QDISPATCH_H_
 #define QDISPATCH_H_
 
-#include "../xdispatch/dispatch.h"
 #include "qdispatchglobal.h"
 #include "qdispatchqueue.h"
-#include "qsynchronized.h"
 
 class QDispatchQueue;
 class QTime;
@@ -114,7 +112,7 @@ public:
 	/**
 	@return The given QTime converted to a dispatch_time_t
 	*/
-	dispatch_time_t asDispatchTime(const QTime&);
+    static dispatch_time_t asDispatchTime(const QTime&);
 	/**
 	@remarks Please be careful when using this converter as
 	a QTime is tracking 24 hours max, whereas a
@@ -123,7 +121,7 @@ public:
 
 	@return The given dispatch_time_t as QTime
 	*/
-	QTime asQTime(dispatch_time_t t);
+    static QTime asQTime(dispatch_time_t t);
 
 private:
 	QDispatch();

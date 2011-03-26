@@ -22,8 +22,9 @@
 #ifndef QDISPATCH_GLOBAL_H_
 #define QDISPATCH_GLOBAL_H_
 
-#include <QtCore/qglobal.h>
+#include "../xdispatch/dispatch.h"
 
+#include <QtCore/qglobal.h>
 
 #ifndef QT_MODULE
 # define QT_MODULE(X)
@@ -34,7 +35,25 @@
 # define QT_END_HEADER
 #endif
 
-
 QT_LICENSED_MODULE(Dispatch)
+
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(Dispatch)
+
+/**
+  Provides an easy locking mechanism used to
+  ensure the threadsafety of a code area. Can
+  be used interchangeable with xdispatch::synclock
+
+  @see synchronized
+  @see synchronize
+  @see synclock
+  */
+typedef xdispatch::synclock QDispatchSynclock;
+
+QT_END_NAMESPACE
+QT_END_HEADER
 
 #endif /* QDISPATCH_GLOBAL_H_ */

@@ -22,28 +22,19 @@
 #include <assert.h>
 #include "xdispatch_internal.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
+__XDISPATCH_USE_NAMESPACE
 
-void run_block(void* block){
-    assert(block);
-    (*(dispatch_block_t*)block)();
-#ifndef __BLOCKS__
-    delete (dispatch_block_t*)block;
-#else
-    XDISPATCH_BLOCK_RELEASE(block);
-#endif
+void xdispatch::run_wrap(void* dt){
+    assert(dt);
+    wrap* w = static_cast<wrap*>(dt);
+    w->run();
+    delete w;
 }
 
-void run_iteration_block(void* block, size_t s){
-    assert(block);
-    _block_function_t b = (_block_function_t)block;
-    b->func(s);
-    if(atomic_dec_get(&b->ref)==0)
-#ifndef __BLOCKS__
-        delete b;
-#else
-        XDISPATCH_BLOCK_RELEASE(block);
-#endif
+void xdispatch::run_iter_wrap(void* dt, size_t index){
+    assert(dt);
+    iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
+    wrap->run(index);
+    if(wrap->deref())
+        delete wrap;
 }
-
-#endif

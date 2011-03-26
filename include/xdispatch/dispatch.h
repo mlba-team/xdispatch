@@ -1,5 +1,4 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
 * Copyright (c) 2011 MLBA. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
@@ -36,7 +35,12 @@
 # define __XDISPATCH_END_NAMESPACE }
 
 # define __XDISPATCH_INDIRECT__
+# include "synchronized.h"
 # include "lambda_blocks.h"
+# include "base.h"
+# include "queue.h"
+# include "group.h"
+# include "semaphore.h"
 # undef __XDISPATCH_INDIRECT__
 
 #endif

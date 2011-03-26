@@ -31,16 +31,25 @@
 
 #include "../core/atomic.h"
 
-#define __XDISPATCH_BEGIN_DECLS	namespace xdispatch {
-#define __XDISPATCH_END_DECLS	}
+#include <assert.h>
+#include <string>
+
+#define __XDISPATCH_BEGIN_NAMESPACE	namespace xdispatch {
+#define __XDISPATCH_END_NAMESPACE }
+#define __XDISPATCH_USE_NAMESPACE using namespace xdispatch;
 
 #ifndef __XDISPATCH_INDIRECT__
 #define __XDISPATCH_INDIRECT__
 #endif
 
 #include "../include/xdispatch/lambda_blocks.h"
+#include "../include/xdispatch/synchronized.h"
+#include "../include/xdispatch/base.h"
+#include "../include/xdispatch/queue.h"
+#include "../include/xdispatch/group.h"
+#include "../include/xdispatch/semaphore.h"
 
-#include "run_lambda.h"
+#include "execution.h"
 
 #undef __XDISPATCH_INDIRECT__
 

@@ -20,30 +20,30 @@
 
 
 
-#ifndef QSYNCHRONIZED_H_
-#define QSYNCHRONIZED_H_
+#ifndef SYNCHRONIZED_H_
+#define SYNCHRONIZED_H_
 
-#include "../xdispatch/dispatch.h"
-#include "qdispatchglobal.h"
+#ifndef __XDISPATCH_INDIRECT__
+#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+#endif
 
-QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
+#include "dispatch.h"
 
-QT_MODULE(Dispatch)
+__XDISPATCH_BEGIN_NAMESPACE
 
 /**
   @file
   */
 
-class QDispatchSynclock;
+class synclock;
 
 /**
-  Returns QDispatchSynclock used to protect the area
+  Returns the synclock used to protect the area
   identified by the given key.
 
   @see synchronized
   */
-QDispatchSynclock qGetLockForKey(uint key);
+synclock get_lock_for_key(unsigned int key);
 
 /**
   Provides an easy locking mechanism used to
@@ -52,12 +52,12 @@ QDispatchSynclock qGetLockForKey(uint key);
   @see synchronized
   @see synchronize
   */
-class QDispatchSynclock {
+class synclock {
 
 public:
-    QDispatchSynclock();
-    QDispatchSynclock(const QDispatchSynclock&);
-    ~QDispatchSynclock();
+    synclock();
+    synclock(const synclock&);
+    ~synclock();
 
     operator bool() const;
 
@@ -67,51 +67,53 @@ private:
     dispatch_semaphore_t sem;
     bool lock;
 
-    QDispatchSynclock& operator= (QDispatchSynclock);
+    synclock& operator= (synclock);
 
-    friend QDispatchSynclock qGetLockForKey(uint);
-    QDispatchSynclock(dispatch_semaphore_t);
+    friend synclock get_lock_for_key(unsigned int);
+    synclock(dispatch_semaphore_t);
 };
 
-# define QT_DISPATCH_CONCAT(A,B) A ## B
-# define QT_DISPATCH_LOCK_VAR(X) QT_DISPATCH_CONCAT(qt_synclock_, X)
+# define XDISPATCH_CONCAT(A,B) A ## B
+# define XDISPATCH_LOCK_VAR(X) XDISPATCH_CONCAT(xd_synclock_, X)
 
 /**
    Same as synchronize( lock )
 
-   This macro is available even when no_keywords is specified using
-   the .pro file's CONFIG variable.
+   This macro is available even when XDISPATCH_NO_KEYWORDS was
+   specified.
 
    @see synchronize( lock )
    */
-#  define Q_SYNCHRONIZE( lock ) for(QDispatchSynclock QT_DISPATCH_LOCK_VAR(__LINE__)(lock) ; QT_DISPATCH_LOCK_VAR(__LINE__) ; QT_DISPATCH_LOCK_VAR(__LINE__).unlock() )
+#  define XDISPATCH_SYNCHRONIZE( lock ) for(xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)(lock) ; XDISPATCH_LOCK_VAR(__LINE__) ; XDISPATCH_LOCK_VAR(__LINE__).unlock() )
 
 /**
    Same as synchronized( lock )
 
-   This macro is available even when no_keywords is specified using
-   the .pro file's CONFIG variable.
+   This macro is available even when XDISPATCH_NO_KEYWORDS was
+   specified.
 
    @see synchronized( lock )
    */
-#  define Q_SYNCHRONIZED Q_SYNCHRONIZE(qGetLockForKey(__COUNTER__))
+#  define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNCHRONIZE(xdispatch::get_lock_for_key(__COUNTER__))
 
 /**
   @def synchronize( lock )
 
   This macro is used to implement Qt's synchronize keyword. The lock
-  parameter is an object is a variable of type QDispatchSynclock.
+  parameter is an object is a variable of type synclock.
 
-  If you're worried about namespace pollution, you can disable this macro
-  by adding the following line to your .pro file:
+  If you're worried about namespace pollution, you can disable this macro by defining
+  the following macro before including xdispatch/dispatch.h:
+
   @code
-   CONFIG += no_keywords
+   #define XDISPATCH_NO_KEYWORDS
+   #include <xdispatch/dispatch.h>
   @endcode
 
-  @see Q_SYNCHRONIZE()
+  @see XDISPATCH_SYNCHRONIZE()
 
   Provides an easy way to make certain areas within your
-  code threadsafe. To do so, simply declare a QDispatchSynclock object
+  code threadsafe. To do so, simply declare a synclock object
   at some point in your code and pass it every time you need to make sure
   some area in your code can only be accessed exactly by one thread. Pass
   the same object to several synchronize() {} areas to ensure that a thread
@@ -119,7 +121,7 @@ private:
 
   @code
     // somewhere declare your lock
-    QDispatchSynclock age_lock;
+    synclock age_lock;
 
     // the variable that is protected by this lock
     int age = 0;
@@ -134,7 +136,7 @@ private:
         synchronize(age_lock) {
             // everything done in here is threadsafe
             age++;
-            qDebug() << "Age is" << age;
+            std::cout << "Age is" << age;
         }
     }
 
@@ -146,14 +148,14 @@ private:
         // in increase_age() or within this block
         synchronize(age_lock) {
             if(age > 18 && age < 19)
-                qDebug() << "Hey wonderful";
+                std::cout << "Hey wonderful";
         }
     }
   @endcode
 
   Tests have shown that marking your code this way is in no
-  way slower than using a QMutex and calling QMutex.lock()
-  or QMutex.unlock() every time.
+  way slower than using a mutex and calling lock()
+  or unlock() every time.
 
   The advantage of using the synchronized keyword over a classical
   mutex is that even if you throw an exception within your code or
@@ -172,13 +174,15 @@ private:
 
   This macro is used to implement Qt's synchronized keyword.
 
-  If you're worried about namespace pollution, you can disable this macro
-  by adding the following line to your .pro file:
+  If you're worried about namespace pollution, you can disable this macro by defining
+  the following macro before including xdispatch/dispatch.h:
+
   @code
-   CONFIG += no_keywords
+   #define XDISPATCH_NO_KEYWORDS
+   #include <xdispatch/dispatch.h>
   @endcode
 
-  @see Q_SYNCHRONIZED( lock )
+  @see XDISPATCH_SYNCHRONIZED( lock )
 
 
   Provides an easy way to mark an area within your
@@ -199,7 +203,7 @@ private:
         synchronized {
             // everything done in here is threadsafe
             age++;
-            qDebug() << "Age is" << age;
+            std::cout << "Age is" << age;
         }
     }
 
@@ -211,17 +215,17 @@ private:
             // as well, but can be called at the same
             // time as the synchronized block of increase_age
             if(age > 18 && age < 19)
-                qDebug() << "Hey wonderful";
+                std::cout << "Hey wonderful";
         }
     }
   @endcode
 
   Tests have shown that marking your code this way is in no
-  way slower than using a QMutex and calling QMutex.lock()
-  or QMutex.unlock() every time. However please note that
+  way slower than using a mutex and calling lock()
+  or unlock() every time. However please note that
   locking is a bit slower than when using synchronize(){} and
   managing the synclock by yourself. Additionally the internally
-  used QDispatchSynclock objects will exist as long as the entire
+  used synclock objects will exist as long as the entire
   program is executed and cannot be deleted.
 
   The advantage of using the synchronized keyword over a classical
@@ -235,17 +239,16 @@ private:
 
   @see synchronize
   */
-#ifndef QT_NO_KEYWORDS
+#ifndef XDISPATCH_NO_KEYWORDS
 # ifndef synchronize
-#  define synchronize( lock ) Q_SYNCHRONIZE(lock)
+#  define synchronize( lock ) XDISPATCH_SYNCHRONIZE(lock)
 # endif
 
 # ifndef synchronized
-#  define synchronized Q_SYNCHRONIZED
+#  define synchronized XDISPATCH_SYNCHRONIZED
 # endif
 #endif
 
-QT_END_NAMESPACE
-QT_END_HEADER
+__XDISPATCH_END_NAMESPACE
 
 #endif /* SYNCHRONIZED_H_ */
