@@ -573,7 +573,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = xdispatch README.dox
+INPUT                  = include/xdispatch include/libdispatch include/QtDispatch README.dox
 						
 
 # This tag can be used to specify the character encoding of the source files 

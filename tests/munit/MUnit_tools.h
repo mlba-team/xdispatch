@@ -25,6 +25,14 @@
 #include <stdarg.h>
 #include <string.h>
 
+#ifdef _WIN32
+# include <windows.h>
+# define MU_SLEEP(T) Sleep(1000*T)
+#else
+# include <unistd.h>
+# define MU_SLEEP(T) sleep(T)
+#endif
+
 #include "list.h"
 
 typedef void(*mu_test_func)();

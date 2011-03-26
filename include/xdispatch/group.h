@@ -27,6 +27,7 @@
 #endif
 
 #include "dispatch.h"
+#include <iostream>
 
 __XDISPATCH_BEGIN_NAMESPACE
 
@@ -120,6 +121,9 @@ private:
     class data;
     data* d;
 };
+
+std::ostream& operator<<(std::ostream& stream, const group* );
+std::ostream& operator<<(std::ostream& stream, const group& );
 
 __XDISPATCH_END_NAMESPACE
 

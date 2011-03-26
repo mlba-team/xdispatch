@@ -1,4 +1,5 @@
 /*
+* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
 * Copyright (c) 2011 MLBA. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
@@ -6,9 +7,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,27 +19,33 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#include "tests.h"
+
+#include "../include/xdispatch/dispatch"
 #include "cxx_tests.h"
-#include "Qt_tests.h"
+
+#include <iostream>
 
 /*
- The test program for testing the dispatch
- framework. The difficult task in here is
- that all functions dispatched can be started
- at any time. Thus each test has to run as own
- process, end when all functions were executed
- an be supervised by the test application
+ Little tests mainly checking the correct mapping of the c++ api
+ to the underlying C Api
  */
 
-int main(int argc, char* argv[]) {
-	int ret = 0;
-	MU_initFramework();
-	register_tests();
-    register_cxx_tests();
-    register_qt_tests();
+extern "C" void cxx_dispatch_debug(){
+    MU_BEGIN_TEST(cxx_dispatch_debug);
 
-	ret = MU_main(argc,argv);
+    xdispatch::queue* q = XDISPATCH->main_queue();
+    xdispatch::group g;
+    xdispatch::semaphore s(0);
+	
+    MU_MESSAGE("Begin testing debug output using std::cout");
 
-	return ret;
+    std::cout << q << std::endl;
+    std::cout << g << std::endl;
+    std::cout << s << std::endl;
+
+	delete q;
+
+	MU_MESSAGE("All output done.");
+
+	MU_END_TEST;
 }

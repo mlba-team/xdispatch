@@ -59,7 +59,7 @@ const dispatch_group_t group::native() const {
 
 void group::async(dispatch_block_t b, queue* q){
     dispatch_queue_t nat_q = q ? q->native() : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, NULL);
-    dispatch_group_async_f(d->native, nat_q, new wrap(b), run_wrap);
+    dispatch_group_async(d->native, nat_q, b);
 }
 
 void group::notify(dispatch_block_t b, queue* q){
@@ -67,3 +67,13 @@ void group::notify(dispatch_block_t b, queue* q){
     dispatch_group_notify_f(d->native, nat_q, new wrap(b), run_wrap);
 }
 #endif
+
+std::ostream& xdispatch::operator<<(std::ostream& stream, const group* q){
+    stream << "xdispatch::group";
+    return stream;
+}
+
+std::ostream& xdispatch::operator<<(std::ostream& stream, const group& q){
+    stream << "xdispatch::group";
+    return stream;
+}

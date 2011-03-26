@@ -50,3 +50,7 @@ dispatch_time_t dispatch::as_dispatch_time(const time_t& t){
 time_t dispatch::as_time_t(dispatch_time_t t){
     return t / NSEC_PER_SEC;
 }
+
+void dispatch::exec() {
+    dispatch_main();
+}

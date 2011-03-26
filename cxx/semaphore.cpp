@@ -52,3 +52,13 @@ bool semaphore::try_acquire(const time_t& time){
 const dispatch_semaphore_t semaphore::native() const {
     return d->native;
 }
+
+std::ostream& xdispatch::operator<<(std::ostream& stream, const semaphore* q){
+    stream << "xdispatch::semaphore";
+    return stream;
+}
+
+std::ostream& xdispatch::operator<<(std::ostream& stream, const semaphore& q){
+    stream << "xdispatch::semaphore";
+    return stream;
+}

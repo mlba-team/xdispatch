@@ -113,3 +113,19 @@ void queue::set_finalizer(dispatch_block_t b, queue* q){
 }
 
 #endif
+
+std::ostream& xdispatch::operator<<(std::ostream& stream, const queue* q)
+{
+    stream << "xdispatch::queue (" << q->label() << ")";
+    return stream;
+}
+std::ostream& xdispatch::operator<<(std::ostream& stream, const queue& q)
+{
+    stream << "xdispatch::queue (" << q.label() << ")";
+    return stream;
+}
+std::ostream& xdispatch::operator<<(std::ostream& stream, const queue::a_ptr q)
+{
+    stream << "xdispatch::queue (" << q->label() << ")";
+    return stream;
+}

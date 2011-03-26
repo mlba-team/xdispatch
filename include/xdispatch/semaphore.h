@@ -114,6 +114,9 @@ private:
 
 };
 
+std::ostream& operator<<(std::ostream& stream, const semaphore*);
+std::ostream& operator<<(std::ostream& stream, const semaphore&);
+
 __XDISPATCH_END_NAMESPACE
 
 #endif /* XDISPATCH_SEMAPHORE_H_ */

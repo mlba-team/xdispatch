@@ -228,6 +228,13 @@ public:
     @return The given dispatch_time_t as time_t
     */
     static time_t as_time_t(dispatch_time_t t);
+    /**
+    Enters the dispatching loop for the main thread.
+    Call this somewhere within the main thread to enable
+    dispatching operations to the main queue. Will never
+    return.
+    */
+    static void exec();
 
 private:
     dispatch();

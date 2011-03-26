@@ -24,12 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
-#	include <windows.h>
-#else
-#	include <unistd.h>
-#endif
-
 #include "../core/atomic.h"
 #include "tests.h"
 
@@ -42,17 +36,12 @@ void work(void* context){
 	free(context);
 	if (delay) {
 		MU_MESSAGE("sleeping...");
-#ifdef WIN32
-		// on windows, sleep is in ms
-		Sleep(delay*1000);
-#else
-		sleep(delay);
-#endif
+        MU_SLEEP(delay);
 		MU_MESSAGE("done.");
 	}
 }
 
-dispatch_group_t create_group(size_t count, int delay) {
+static dispatch_group_t create_group(size_t count, int delay) {
 	size_t i;
 	int* param;
 

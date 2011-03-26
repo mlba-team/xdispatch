@@ -29,6 +29,7 @@
 
 #include "dispatch.h"
 #include <memory>
+#include <iostream>
 
 __XDISPATCH_BEGIN_NAMESPACE
 
@@ -191,6 +192,10 @@ private:
     data* d;
 
 };
+
+std::ostream& operator<<(std::ostream& stream, const queue* q);
+std::ostream& operator<<(std::ostream& stream, const queue& q);
+std::ostream& operator<<(std::ostream& stream, const queue::a_ptr q);
 
 __XDISPATCH_END_NAMESPACE
 
