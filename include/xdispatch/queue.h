@@ -57,6 +57,7 @@ public:
       the given label
       */
     queue(const char* label);
+    queue(const std::string&);
     queue(const queue&);
     ~queue();
 

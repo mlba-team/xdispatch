@@ -108,7 +108,7 @@ public:
         of std::auto_ptr
     @see QDispatchQueue::APtr
 	*/
-    QDispatchQueue::APtr getCurrentQueue();
+    QDispatchQueue::a_ptr getCurrentQueue();
 	/**
 	@return The given QTime converted to a dispatch_time_t
 	*/

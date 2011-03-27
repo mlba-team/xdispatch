@@ -96,8 +96,6 @@ private:
 /**
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as operation
-
-  @note Pass NULL as object to encapsulate a single static function pointer
   */
 template <class T> class ptr_operation : public operation
 {
@@ -105,10 +103,7 @@ public:
     ptr_operation(T* object, void(T::*function)())
         : obj(object), func(function) {}
     virtual void operator()() {
-        if(obj==NULL)
-            (*func)();
-        else
-            (*obj.*func)();
+        (*obj.*func)();
     }
 
 private:
@@ -119,8 +114,6 @@ private:
 /**
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as iteration_operation
-
-  @note Pass NULL as object to encapsulate a single static function pointer
   */
 template <class T> class ptr_iteration_operation : public iteration_operation
 {
@@ -128,10 +121,7 @@ public:
     ptr_iteration_operation(T* object, void(T::*function)(size_t))
         : obj(object), func(function) {}
     virtual void operator()(size_t index) {
-        if(obj==NULL)
-            (*func)(index);
-        else
-            (*obj.*func)(index);
+        (*obj.*func)(index);
     }
 
 private:

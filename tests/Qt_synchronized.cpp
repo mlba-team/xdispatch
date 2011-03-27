@@ -118,7 +118,7 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* test1 = new SynchronizedRun;
     test1->setAutoDelete(true);
     watch.restart();
-    QD->getGlobalQueue()->dispatch(test1, ITERATIONS);
+    QD->getGlobalQueue()->apply(test1, ITERATIONS);
     MU_ASSERT_EQUAL(counter, ITERATIONS/2);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
 
@@ -133,8 +133,8 @@ extern "C" void Qt_synchronized() {
     QDispatchGroup group1;
     q->suspend();
     for(int i = 0; i < ITERATIONS; i++){
-        group1.dispatch(test1, q);
-        group1.dispatch(test1, q);
+        group1.async(test1, q);
+        group1.async(test1, q);
     }
     watch.restart();
     q->resume();
@@ -151,7 +151,7 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* test2a = new PartialRun1;
     test2a->setAutoDelete(true);
     watch.restart();
-    QD->getGlobalQueue()->dispatch(test2a, ITERATIONS);
+    QD->getGlobalQueue()->apply(test2a, ITERATIONS);
     MU_ASSERT_EQUAL(counter, ITERATIONS/2);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
 
@@ -168,8 +168,8 @@ extern "C" void Qt_synchronized() {
     QDispatchGroup group2;
     q->suspend();
     for(int i = 0; i < ITERATIONS; i++){
-        group2.dispatch(test2a, q);
-        group2.dispatch(test2b, q);
+        group2.async(test2a, q);
+        group2.async(test2b, q);
     }
     watch.restart();
     q->resume();
@@ -186,7 +186,7 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* mutexRun = new MutexRun;
     mutexRun->setAutoDelete(true);
     watch.restart();
-    QD->getGlobalQueue()->dispatch(mutexRun, ITERATIONS);
+    QD->getGlobalQueue()->apply(mutexRun, ITERATIONS);
     MU_ASSERT_EQUAL(counter, ITERATIONS/2);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
 

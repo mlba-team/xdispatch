@@ -47,7 +47,7 @@ executing.
 See also Apple's Documentation of Dispatch Groups
 */
 
-class QDispatchGroup : public QObject {
+class QDispatchGroup : public QObject, public xdispatch::group {
 
 	Q_OBJECT
 
@@ -56,6 +56,7 @@ public:
 	Creates a new QDispatchGroup.
 	*/
 	QDispatchGroup();
+    QDispatchGroup(dispatch_group_t);
 	~QDispatchGroup();
 
 	/**
@@ -63,21 +64,8 @@ public:
 	@param r The QRunnable to be dispatched
 	@param q The Queue to use. If no Queue is given, the system default queue will be used
 	*/
-	void dispatch(QRunnable* r, QDispatchQueue* q = NULL);
-#ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	Same as dispatch(QRunnable* r, ...)
-	Will wrap the given block in a QRunnable and put it on the queue.
-	*/
-	void dispatch(dispatch_block_t b, QDispatchQueue* q = NULL);
-#endif
-	/**
-	Waits until the given time has passed
-	or all dispatched runnables in the group were executed
-	@param t give a time here or a DISPATCH_TIME_FOREVER to wait until all runnables are done
-	@return false if the timeout occured or true if all runnables were executed
-	*/
-	bool wait(dispatch_time_t = DISPATCH_TIME_FOREVER);
+    void async(QRunnable* r, xdispatch::queue* q = NULL);
+    using xdispatch::group::async;
 	/**
 	Waits until the given time has passed
 	or all dispatched runnables in the group were executed
@@ -85,6 +73,7 @@ public:
 	@return false if the timeout occured or true if all runnables were executed
 	*/
 	bool wait(const QTime& t);
+    using xdispatch::group::wait;
 	/**
 	This function schedules a notification runnable to be submitted to the specified
 	queue once all runnables associated with the dispatch group have completed.
@@ -97,21 +86,16 @@ public:
 	or reused for additional operations.
 	@see dispatch() for more information.
 	*/
-	void notify(QRunnable* r, QDispatchQueue* q = NULL);
+    void notify(QRunnable* r, xdispatch::queue* q = NULL);
+    /**
+     @see notify(QRunnable* r, xdispatch::queue*);
+     */
+    void notify(xdispatch::operation*, xdispatch::queue* = NULL);
 #ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	This function schedules a notification block to be submitted to the specified
-	queue once all blocks associated with the dispatch group have completed.
-
-	If no blocks are associated with the dispatch group (i.e. the group is empty)
-	then the notification block will be submitted immediately.
-
-	The group will be empty at the time the notification block is submitted to
-	the target queue. The group may either be deleted
-	or reused for additional operations.
-	@see dispatch() for more information.
-	*/
-	void notify(dispatch_block_t b, QDispatchQueue* q = NULL);
+    /**
+     @see notify(QRunnable* r, xdispatch::queue*);
+     */
+    void notify(dispatch_block_t, xdispatch::queue* = NULL);
 #endif
 
 signals:
@@ -122,12 +106,11 @@ signals:
 	Every time the all work dispatched to the group (i.e.
 	the group is empty) this signal will be emitted.
 	*/
-	void allFinished();
+    void all_finished();
 
 private:
     Q_DISABLE_COPY(QDispatchGroup);
 
-    friend class Q_GroupRunnable;
 	friend QDebug operator<<(QDebug, const QDispatchGroup&);
     
 	class Private;

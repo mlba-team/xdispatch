@@ -21,7 +21,6 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QCoreApplication>
 #include <QTest>
 #include <QDebug>
 
@@ -38,15 +37,15 @@
 extern "C" void Qt_dispatch_current(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-	QCoreApplication app(argc,&argv);
+    QDispatchCoreApplication app(argc,&argv);
 	
 	MU_BEGIN_TEST(Qt_dispatch_current);
     
-    QD->getGlobalQueue()->dispatch(${
+    QD->getGlobalQueue()->async(${
         QTest::qSleep(10);
         MU_MESSAGE("Queue should be global default queue");
         qDebug() << QD->getCurrentQueue();
-        QD->getMainQueue()->dispatch(${
+        QD->getMainQueue()->async(${
             QTest::qSleep(10);
             MU_MESSAGE("Queue should be main queue");
             qDebug() << QD->getCurrentQueue();

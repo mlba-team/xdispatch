@@ -57,7 +57,7 @@ extern "C" void Qt_dispatch_serialqueue(){
 
 	// dispatch some jobs
 	for(unsigned int x = 0; x < JOBS_NO; x++) {
-		q->dispatch(new QBlockRunnable(${
+        q->async(new QBlockRunnable(${
 			MU_ASSERT_EQUAL(*worker,x);
 			// keep cpu busy
 			for(int i = 0; i < LOOP_COUNT;i++);
@@ -66,7 +66,7 @@ extern "C" void Qt_dispatch_serialqueue(){
 
 	}
 
-	q->dispatch(new QBlockRunnable(${
+    q->async(new QBlockRunnable(${
 		MU_ASSERT_EQUAL(*worker,JOBS_NO);
 		// Test passed
 		MU_PASS("Blocks were executed in correct order");

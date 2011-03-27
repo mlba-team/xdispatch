@@ -6,9 +6,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,27 +19,39 @@
 */
 
 
-#ifndef _MAINEVENTLOOPHANDLER_H_
-#define _MAINEVENTLOOPHANDLER_H_
 
-#include <QObject>
+#ifndef QDISPATCH_COREAPPLICATION_H_
+#define QDISPATCH_COREAPPLICATION_H_
 
+#include <QCoreApplication>
+#include <QDebug>
+#include "qdispatchglobal.h"
+#include "../xdispatch/dispatch.h"
+
+QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
-class _MainEventLoopHandler : public QObject {
+QT_MODULE(Dispatch)
 
-	Q_OBJECT
+class QDispatchApplicationPrivate;
+
+class QDispatchCoreApplication : public QCoreApplication {
+
+    Q_OBJECT
 
 public:
-	static _MainEventLoopHandler* instance;
-	virtual bool event(QEvent *e);
+    QDispatchCoreApplication(int& argc, char** argv);
+    ~QDispatchCoreApplication();
+
+    static int exec();
 
 private:
-	_MainEventLoopHandler();
-
+    QDispatchApplicationPrivate* d;
+    static QDispatchCoreApplication* self;
 
 };
 
 QT_END_NAMESPACE
+QT_END_HEADER
 
-#endif /* _MAINEVENTLOOPHANDLER_H_ */
+#endif /* QDISPATCH_EVENTDISPATCHER_H_ */

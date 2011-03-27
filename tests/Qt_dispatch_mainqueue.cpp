@@ -21,15 +21,32 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QCoreApplication>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 #include "../core/atomic.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#define RUN_TIMES 2000
 
-#define RUN_TIMES 20
+class MainWorker : public QRunnable {
+public:
+    MainWorker(unsigned int* work) : worker(work) {}
+    void run(){
+        if(*worker < RUN_TIMES) {
+            (*worker)++;
+            //MU_MESSAGE("Running worker %u", *worker);
+            QD->getMainQueue()->async(new MainWorker(worker));
+        } else {
+            MU_ASSERT_EQUAL(RUN_TIMES, *worker);
+            delete worker;
+            //MU_MESSAGE("Deleted worker");
+            MU_PASS("");
+        }
+    }
+
+private:
+    unsigned int* worker;
+};
 
 /*
  Little tests mainly checking the correct mapping of the Qt api
@@ -39,31 +56,19 @@
 extern "C" void Qt_dispatch_mainqueue(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-	QCoreApplication app(argc,&argv);
+    QDispatchCoreApplication app(argc,&argv);
 
 	MU_BEGIN_TEST(Qt_dispatch_mainqueue);
 
-	unsigned int* worker = new unsigned int;
+    unsigned int* worker = new unsigned int;
     *worker = 0;
 
 	QDispatchQueue* q = QDispatch::instance->getMainQueue();
 	MU_ASSERT_NOT_NULL(q);
-
-	q->dispatch(new QIterationBlockRunnable($(size_t i){
-			atomic_inc_get(worker);
-            //MU_MESSAGE("Running worker %i", i);
-		}), RUN_TIMES);
-
-	QDispatch::instance->getMainQueue()->dispatch(new QBlockRunnable(${
-            MU_ASSERT_EQUAL(RUN_TIMES, *worker);
-            delete worker;
-            //MU_MESSAGE("Deleted worker");
-			MU_PASS("");
-		}));
+    q->async(new MainWorker(worker));
 
 	app.exec();
 	MU_END_TEST;
 }
 
-#endif
 #endif

@@ -27,6 +27,13 @@ queue::queue(const queue& other) : d(new data){
     dispatch_retain(d->native);
 }
 
+queue::queue(const std::string & label) : d(new data){
+    assert(d);
+    d->native = dispatch_queue_create(label.c_str(),NULL);
+    assert(d->native);
+    d->label = label;
+}
+
 queue::queue(const char* label) : d(new data){
     assert(label);
     assert(d);

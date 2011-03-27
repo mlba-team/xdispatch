@@ -50,29 +50,28 @@ queues.
 
 @see QDispatch for creating QDispatchQueues
 */
-class QDispatchQueue {
+class QDispatchQueue : public xdispatch::queue {
 
 public:
+    QDispatchQueue(const QString& label);
+    QDispatchQueue(dispatch_queue_t);
+    QDispatchQueue(const xdispatch::queue&);
+    QDispatchQueue(const QDispatchQueue&);
+    ~QDispatchQueue();
+
     /**
      A pointer automatically deleting
      the QDispatchQueue when going out
      of scope.
      */
-    typedef std::auto_ptr< QDispatchQueue> APtr;
+    typedef std::auto_ptr< QDispatchQueue > a_ptr;
 
 	/**
 	Applies the given QRunnable for async execution
 	in this queue and returns immediately.
 	*/
-	virtual void dispatch(QRunnable*) = 0;
-#ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	Same as dispatch(QRunnable*).
-	Will wrap the given block in a QRunnable and put it on the
-	queue.
-	*/
-	virtual void dispatch(dispatch_block_t) = 0;
-#endif
+    virtual void async(QRunnable*);
+    using xdispatch::queue::async;
 	/**
 	Applies the given QRunnable for async execution
 	in this queue and returns immediately.
@@ -83,49 +82,32 @@ public:
 
 	@param times The number of times the QRunnable will be executed
 	*/
-	virtual void dispatch(QIterationRunnable*, int times) = 0;
-#ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	Same as dispatch(QRunnable*,int times).
-
-	Will wrap the given block in a QRunnable and put it on the
-	queue.
-
-    @see dispatch(QRunnable*, int times)
-	*/
-    virtual void dispatch(dispatch_iteration_block_t, int times) = 0;
-#endif
+    virtual void apply(QIterationRunnable*, int times);
+    using xdispatch::queue::apply;
 	/**
 	Applies the given QRunnable for async execution
 	in this queue after the given time and returns immediately
 	@param time The time to wait until the QRunnable is applied to
 	the queue.
 	*/
-	virtual void dispatchAfter(QRunnable*, const QTime& time) = 0;
-	virtual void dispatchAfter(QRunnable*, dispatch_time_t time) = 0;
+    virtual void after(QRunnable*, const QTime& time);
+    virtual void after(QRunnable*, dispatch_time_t time);
+    using xdispatch::queue::after;
 #ifdef XDISPATCH_HAS_BLOCKS
 	/**
-	Same as dispatchAfter().
+    Same as after().
 	Will wrap the given block in a QRunnable and put it on the
 	queue.
 	*/
-    virtual void dispatchAfter(dispatch_block_t, const QTime& time) = 0;
-    virtual void dispatchAfter(dispatch_block_t, dispatch_time_t time) = 0;
+    virtual void after(dispatch_block_t, const QTime& time);
 #endif
 	/**
 	Applies the given QRunnable for execution
 	int his queue and blocks until the QRunnable
 	was executed
 	*/
-	virtual void dispatchSync(QRunnable*) = 0;
-#ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	Same as dispatchSync(QRunnable*,int times).
-	Will wrap the given block in a QRunnable and put it on the
-	queue.
-	*/
-	virtual void dispatchSync(dispatch_block_t) = 0;
-#endif
+    virtual void sync(QRunnable*);
+    using xdispatch::queue::sync;
 	/**
 	Sets the given runnable as finalizer for this
 	queue. A finalizer is called before destroying
@@ -136,56 +118,18 @@ public:
 	@remarks Finalizers will never be called on the
 	global queues or the main queue.
 	*/
-	virtual void setFinalizer(QRunnable*, QDispatchQueue* = NULL) = 0;
-#ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	Same as dispatchSync(QRunnable*,int times).
-	Will wrap the given block in a QRunnable and store
-	it as finalizer.
-
-	@remarks Finalizers will never be called on the
-	global queues or the main queue.
-	*/
-	virtual void setFinalizer(dispatch_block_t, QDispatchQueue* = NULL) = 0;
-#endif
-	/**
-	@return The label of the queue that was used while creating it
-	*/
-	virtual const QString label() const = 0;
-	/**
-        Suspends the invocation of work items on this queue.
-
-        A suspended queue will not invoke any blocks associated with it. The
-        suspension of a queue will occur after any running work item associated with
-        the queue completes.
-
-        Calls to suspend() must be balanced with calls to resume().
-	*/
-        virtual void suspend() = 0;
-        /**
-        Resumes the invocation of work items on this queue.
-
-        Calls to suspend() must be balanced with calls to resume().
-        */
-        virtual void resume() = 0;
-	/**
-	@returns The dispatch_queue_t object associated with this
-	C++ object (if any). Use this, if you need to use the plain C Interface
-        of libDispatch/libXDispatch. Please not that in the mainqueue there
-	will be no native queue and NULL will be returned.
-	*/
-	virtual const dispatch_queue_t nativeQueue() const { return NULL; }
-
+    virtual void set_finalizer(QRunnable*, xdispatch::queue* = NULL);
+    using xdispatch::queue::set_finalizer;
 };
 
 static QDebug operator<<(QDebug dbg, const QDispatchQueue* q)
 {
-        dbg.nospace() << "DispatchQueue " << q->label();
+    dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
 	return dbg.space();
 }
-static QDebug operator<<(QDebug dbg, const QDispatchQueue::APtr q)
+static QDebug operator<<(QDebug dbg, const QDispatchQueue::a_ptr q)
 {
-    dbg.nospace() << "DispatchQueue " << q->label();
+    dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
 	return dbg.space();
 }
 

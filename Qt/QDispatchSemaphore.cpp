@@ -26,45 +26,28 @@
 
 QT_BEGIN_NAMESPACE
 
-class QDispatchSemaphore::Private {
-public:
-	Private(long v) : sem(dispatch_semaphore_create(v)) {}
-	Private(const Private& p) : sem(p.sem) {
-		dispatch_retain(sem);
-	}
-	~Private(){ 
-		dispatch_release(sem); 
-	}
-
-	dispatch_semaphore_t sem;
-};
-
-QDispatchSemaphore::QDispatchSemaphore(const QDispatchSemaphore &obj) : d(new Private(*obj.d)){
+QDispatchSemaphore::QDispatchSemaphore(const QDispatchSemaphore &obj) : xdispatch::semaphore(obj){
 
 }
 
-QDispatchSemaphore::QDispatchSemaphore(int value) : d(new Private(value)){
+QDispatchSemaphore::QDispatchSemaphore(int value) : xdispatch::semaphore(1){
+
+}
+
+QDispatchSemaphore::QDispatchSemaphore(dispatch_semaphore_t t) : xdispatch::semaphore(t){
+
+}
+
+QDispatchSemaphore::QDispatchSemaphore(const xdispatch::semaphore &obj) : xdispatch::semaphore(obj) {
 
 }
 
 QDispatchSemaphore::~QDispatchSemaphore(){
-	delete d;
+
 }
 
-void QDispatchSemaphore::acquire(){
-    tryAcquire(DISPATCH_TIME_FOREVER);
-}
-
-bool QDispatchSemaphore::tryAcquire(dispatch_time_t t) {
-	return dispatch_semaphore_wait(d->sem, t)==0;
-}
-
-bool QDispatchSemaphore::tryAcquire(const QTime& t){
-	return tryAcquire(QD->asDispatchTime(t));
-}
-
-int QDispatchSemaphore::release(){
-	return dispatch_semaphore_signal(d->sem);
+bool QDispatchSemaphore::try_acquire(const QTime& t){
+    return try_acquire(QD->asDispatchTime(t));
 }
 
 QDebug operator<<(QDebug dbg, const QDispatchSemaphore& s)

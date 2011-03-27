@@ -6,9 +6,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,31 +20,38 @@
 
 
 
-#ifndef _DELAYEDDISPATCHEVENT_H_
-#define _DELAYEDDISPATCHEVENT_H_
+#ifndef QDISPATCH_APPLICATION_H_
+#define QDISPATCH_APPLICATION_H_
 
-#include <QObject>
-#include "../include/QtDispatch/qdispatchglobal.h"
+#include <QApplication>
+#include <QDebug>
+#include "qdispatchglobal.h"
+#include "../xdispatch/dispatch.h"
 
+QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
-class QRunnable;
+QT_MODULE(Dispatch)
 
-class _DelayedDispatchEvent : public QObject {
+class QDispatchApplicationPrivate;
 
-	Q_OBJECT
+class QDispatchApplication : public QCoreApplication {
+
+    Q_OBJECT
 
 public:
-	_DelayedDispatchEvent(QRunnable*);
-	~_DelayedDispatchEvent();
+    QDispatchApplication(int& argc, char** argv);
+    ~QDispatchApplication();
 
-public slots:
-	void exec();
+    static int exec();
 
 private:
-	QRunnable* content;
+    QDispatchApplicationPrivate* d;
+    static QDispatchApplication* self;
+
 };
 
 QT_END_NAMESPACE
+QT_END_HEADER
 
-#endif /* _DELAYEDDISPATCHEVENT_H_ */
+#endif /* QDISPATCH_APPLICATION_H_ */

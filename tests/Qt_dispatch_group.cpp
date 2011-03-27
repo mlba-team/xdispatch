@@ -47,22 +47,22 @@ extern "C" void Qt_dispatch_group(){
 
 	QDispatchGroup group;
 
-	group.dispatch(${
+    group.async(${
 		QTest::qSleep(400);
 		atomic_inc_get(worker);
 	});
 
-	group.dispatch(${
+    group.async(${
 		QTest::qSleep(300);
 		atomic_inc_get(worker);
 	});
 
-	group.dispatch(${
+    group.async(${
 		QTest::qSleep(300);
 		atomic_inc_get(worker);
 	});
 
-	group.dispatch(${
+    group.async(${
 		QTest::qSleep(200);
 		atomic_inc_get(worker);
 	});

@@ -41,7 +41,7 @@ QT_MODULE(Dispatch)
   when the calling thread needs to be blocked. If the calling semaphore
   does not need to block, no kernel call is made."
   */
-class QDispatchSemaphore {
+class QDispatchSemaphore : public xdispatch::semaphore {
 	friend QDebug operator<<(QDebug, const QDispatchSemaphore&);
 
 public:
@@ -56,29 +56,13 @@ public:
 
 		@remarks Never pass a value less than zero here
 		*/
-	QDispatchSemaphore(int = 0);
+    QDispatchSemaphore(int = 1);
 	QDispatchSemaphore(const QDispatchSemaphore&);
+    QDispatchSemaphore(dispatch_semaphore_t);
+    QDispatchSemaphore(const xdispatch::semaphore&);
 	~QDispatchSemaphore();
 
 	/**
-		Release the semaphore.
-
-		Increments the counting semaphore. If the previous 
-		value was less than zero, this function wakes a
-		waiting thread before returning.
-
-		@return non-zero if a thread was woken, zero otherwise.
-	*/
-	int release();
-    /**
-        Acquires the semaphore.
-
-        Decrements the counting semaphore. If the value is
-        less than zero it will wait until another
-        thread released the semaphore.
-     */
-    void acquire();
-	/**
 		Tries to acquire the semaphore.
 
 		Decrements the counting semaphore. If the value is
@@ -87,21 +71,8 @@ public:
 
 		@return true if acquiring the semaphore succeeded.
 	*/
-	bool tryAcquire(dispatch_time_t);
-	/**
-		Tries to acquire the semaphore.
-
-		Decrements the counting semaphore. If the value is
-		less than zero it will wait until either another
-		thread released the semaphore or the timeout passed.
-
-		@return true if acquiring the semaphore succeeded.
-	*/
-	bool tryAcquire(const QTime&);
-
-private:
-	class Private;
-	Private* d;
+    bool try_acquire(const QTime&);
+    using xdispatch::semaphore::try_acquire;
 
 };
 

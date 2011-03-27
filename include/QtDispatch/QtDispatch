@@ -7,5 +7,7 @@
 #include "qdispatchgroup.h"
 #include "qdispatchqueue.h"
 #include "qdispatchsemaphore.h"
+#include "qdispatchcoreapplication.h"
+#include "qdispatchapplication.h"
 
 #endif /* QT_DISPATCH_H_ */

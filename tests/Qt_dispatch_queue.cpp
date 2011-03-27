@@ -47,11 +47,11 @@ extern "C" void Qt_dispatch_queue(){
 	QDispatchQueue* q = QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT);
 	MU_ASSERT_NOT_NULL(q);
 
-	q->dispatch(new QIterationBlockRunnable($(size_t i){
+    q->apply(new QIterationBlockRunnable($(size_t i){
 			atomic_inc_get(worker);
 	}),RUN_TIMES);
 
-	QDispatch::instance->getGlobalQueue(QDispatch::LOW)->dispatch(new QBlockRunnable(${
+    QDispatch::instance->getGlobalQueue(QDispatch::LOW)->async(new QBlockRunnable(${
 			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
 			MU_PASS("Queue executed");
 		}));

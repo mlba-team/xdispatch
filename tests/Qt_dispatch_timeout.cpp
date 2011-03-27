@@ -21,7 +21,6 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QCoreApplication>
 #include <QTime>
 #include <QtDispatch/QtDispatch>
 
@@ -38,20 +37,20 @@ extern "C" void Qt_dispatch_after(){
 	QTime watch;
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-	QCoreApplication app(argc,&argv);
+    QDispatchCoreApplication app(argc,&argv);
 
         MU_BEGIN_TEST(Qt_dispatch_after);
 
 	watch.start();
 
 	MU_ASSERT_NOT_NULL(QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT));
-	QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT)->dispatchAfter(${
+    QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT)->after(${
 		MU_MESSAGE("Should finish between 1s and 1.5s: %f", watch.elapsed()/1000.0);
 		MU_ASSERT_TRUE(watch.elapsed()>=1000);
 	},QTime::currentTime().addMSecs(1000));
 
 	MU_ASSERT_NOT_NULL(QDispatch::instance->getMainQueue());
-	QDispatch::instance->getMainQueue()->dispatchAfter(${
+    QDispatch::instance->getMainQueue()->after(${
 		MU_MESSAGE("Should finish between 2s and 2.5s: %f", watch.elapsed()/1000.0);
 		MU_ASSERT_TRUE(watch.elapsed()>=2000);
 		MU_PASS("");

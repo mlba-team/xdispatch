@@ -25,19 +25,16 @@
 #include <QThread>
 #include <QCoreApplication>
 
-#include "_DispatchQueueImpl.h"
-#include "_DispatchEventQueueImpl.h"
-
 #include "../include/QtDispatch/qdispatch.h"
 
 QT_BEGIN_NAMESPACE
 
 class QDispatch::Private {
 public:
-        Private() : highQueue(new _DispatchQueueImpl(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0))),
-                normalQueue(new _DispatchQueueImpl(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0))),
-                lowQueue(new _DispatchQueueImpl(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0))),
-		mainQueue(new _DispatchEventQueueImpl()) {}
+        Private() : highQueue(new QDispatchQueue(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0))),
+                normalQueue(new QDispatchQueue(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0))),
+                lowQueue(new QDispatchQueue(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0))),
+                mainQueue(new QDispatchQueue(dispatch_get_main_queue())) {}
 	~Private(){ 
 		delete mainQueue; 
 		delete normalQueue;
@@ -61,21 +58,16 @@ QDispatch::~QDispatch(){
 
 QDispatchQueue* QDispatch::createQueue(const QString& label){
 	try {
-                return new _DispatchQueueImpl(dispatch_queue_create(label.toAscii().data(),NULL));
+        return new QDispatchQueue(label);
 	} catch(...) {
 		return NULL;
 	}
 }
 
-QDispatchQueue::APtr QDispatch::getCurrentQueue(){
-	try {
-        if(qApp && qApp->thread() == QThread::currentThread())
-           return QDispatchQueue::APtr(new _DispatchEventQueueImpl(*(_DispatchEventQueueImpl*)(d->mainQueue)) );
-        
-        return QDispatchQueue::APtr(new _DispatchQueueImpl(dispatch_get_current_queue()));
-	} catch(...) {
-		return QDispatchQueue::APtr(new _DispatchEventQueueImpl(*(_DispatchEventQueueImpl*)(d->mainQueue)) );
-	}
+QDispatchQueue::a_ptr QDispatch::getCurrentQueue(){
+
+    return QDispatchQueue::a_ptr(new QDispatchQueue(dispatch_get_current_queue() ));
+
 }
 
 QDispatchQueue* QDispatch::getGlobalQueue(Priority p){
