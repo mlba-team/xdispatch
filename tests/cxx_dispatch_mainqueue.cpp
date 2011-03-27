@@ -40,20 +40,20 @@ extern "C" void cxx_dispatch_mainqueue(){
 	unsigned int* worker = new unsigned int;
     *worker = 0;
 
-    xdispatch::queue* q = XDISPATCH->main_queue();
-	MU_ASSERT_NOT_NULL(q);
+    xdispatch::queue q = xdispatch::main_queue();
+    MU_ASSERT_NOT_NULL(q.native());
 
-    XDISPATCH->global_queue()->apply($(size_t i){
+    xdispatch::global_queue().apply($(size_t i){
 			atomic_inc_get(worker);
         }, RUN_TIMES);
 
-    q->async(${
+    q.async(${
             MU_ASSERT_EQUAL(RUN_TIMES, *worker);
             delete worker;
 			MU_PASS("");
         });
 
-    XDISPATCH->exec();
+    xdispatch::exec();
 	MU_END_TEST;
 }
 

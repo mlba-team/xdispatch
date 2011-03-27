@@ -36,12 +36,6 @@ QT_BEGIN_NAMESPACE
 QT_MODULE(Dispatch)
 
 /**
-A Shortcut for quickly accessing the
-QDispatch instance of your program
-*/
-#define QD QDispatch::instance
-
-/**
 Single Instance Interface to control the dispatch behaviour.
 Use this object to create new queues, get one of the main or
 global queues.
@@ -60,55 +54,28 @@ public:
 	Three priority classes used for the three standard
 	global queues
 	*/
-        enum Priority { HIGH, DEFAULT, LOW };
+    enum Priority { HIGH, DEFAULT, LOW };
 
-	/**
-	Use this to access the QDispatch instance
-	of your program
-	*/
-	static QDispatch* instance;
-	/**
-	Create a new serial queue with the given label.
-	All items dispatched to this queue will be executed
-	in FIFO order. Please note that still items in different
-	queues can and will be executed concurrently.
-
-	@return NULL if something went wrong
-	*/
-	QDispatchQueue* createQueue(const QString& label);
 	/**
 	Returns the main queue. This is the queue running
 	within the Qt Event Loop. Thus only items put
 	on this queue can change the GUI.
-	@return NULL if something went wrong
 	*/
-	QDispatchQueue* getMainQueue();
+    static QDispatchQueue mainQueue();
 	/**
 	Returns the global queue associated to the given
 	Priority p.
 
 	Runnables submitted to these global concurrent queues
 	may be executed concurrently with respect to
-	each other.
-	@return NULL if something went wrong
+    each other.
 	*/
-    QDispatchQueue* getGlobalQueue(Priority p = DEFAULT);
+    static QDispatchQueue globalQueue(Priority p = DEFAULT);
 	/**
-	@return The queue this runnable is executed in or NULL if
-	this function is not called from a QRunnable executed
-	in a queue.
-     
-    @remarks The value returned here is wrapped within
-        QDispatchQueue::APtr which is a typedef for
-        std::auto_ptr. This has the benefit of calling
-        getCurrentQueue() without creating any leaks or a
-        need to call delete. To control the lifetime of
-        the QDispatchQueue object yourself, please use
-        APtr.release() and have a look at the documentation
-        of std::auto_ptr
-    @see QDispatchQueue::APtr
+    @return The queue the currently active
+        runnable (or block) is executed in.
 	*/
-    QDispatchQueue::a_ptr getCurrentQueue();
+    static QDispatchQueue currentQueue();
 	/**
 	@return The given QTime converted to a dispatch_time_t
 	*/
@@ -125,11 +92,7 @@ public:
 
 private:
 	QDispatch();
-	QDispatch(const QDispatch&);
-	~QDispatch();
 
-	class Private;
-	Private* d;
 };
 
 QT_END_NAMESPACE

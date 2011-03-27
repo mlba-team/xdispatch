@@ -43,14 +43,12 @@ extern "C" void Qt_dispatch_after(){
 
 	watch.start();
 
-	MU_ASSERT_NOT_NULL(QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT));
-    QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT)->after(${
+    QDispatch::globalQueue(QDispatch::DEFAULT).after(${
 		MU_MESSAGE("Should finish between 1s and 1.5s: %f", watch.elapsed()/1000.0);
 		MU_ASSERT_TRUE(watch.elapsed()>=1000);
 	},QTime::currentTime().addMSecs(1000));
 
-	MU_ASSERT_NOT_NULL(QDispatch::instance->getMainQueue());
-    QDispatch::instance->getMainQueue()->after(${
+    QDispatch::mainQueue().after(${
 		MU_MESSAGE("Should finish between 2s and 2.5s: %f", watch.elapsed()/1000.0);
 		MU_ASSERT_TRUE(watch.elapsed()>=2000);
 		MU_PASS("");

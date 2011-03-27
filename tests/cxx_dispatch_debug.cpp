@@ -33,7 +33,7 @@
 extern "C" void cxx_dispatch_debug(){
     MU_BEGIN_TEST(cxx_dispatch_debug);
 
-    xdispatch::queue* q = XDISPATCH->main_queue();
+    xdispatch::queue q = xdispatch::main_queue();
     xdispatch::group g;
     xdispatch::semaphore s(0);
 	
@@ -42,8 +42,6 @@ extern "C" void cxx_dispatch_debug(){
     std::cout << q << std::endl;
     std::cout << g << std::endl;
     std::cout << s << std::endl;
-
-	delete q;
 
 	MU_MESSAGE("All output done.");
 

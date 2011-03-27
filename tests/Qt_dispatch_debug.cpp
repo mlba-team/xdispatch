@@ -36,7 +36,7 @@ extern "C" void Qt_dispatch_debug(){
 
     MU_BEGIN_TEST(Qt_dispatch_debug);
 
-	QDispatchQueue* q = QD->getMainQueue();
+    QDispatchQueue q = QDispatch::mainQueue();
 	QDispatchGroup g;
 	QDispatchSemaphore s(0);
 	
@@ -45,8 +45,6 @@ extern "C" void Qt_dispatch_debug(){
 	qDebug() << q;
 	qDebug() << g;
 	qDebug() << s;
-
-	delete q;
 
 	MU_MESSAGE("All output done.");
 

@@ -34,19 +34,19 @@ extern "C" void cxx_dispatch_cascade(){
 	
     MU_BEGIN_TEST(cxx_dispatch_cascade);
 
-    xdispatch::queue* q = XDISPATCH->global_queue();
-	MU_ASSERT_NOT_NULL(q);
+    xdispatch::queue q = xdispatch::global_queue();
+    MU_ASSERT_NOT_NULL(q.native());
 
 	int no = 0;
 	
-    q->async(${
+    q.async(${
 		int no2 = no+100;
-        xdispatch::queue::a_ptr c = XDISPATCH->current_queue();
-        c->async(${
+        xdispatch::queue c = xdispatch::current_queue();
+        c.async(${
 			int no3 = no2+20;
-            XDISPATCH->current_queue()->async(${
+            xdispatch::current_queue().async(${
 				int no4 = no3+3 ;
-                XDISPATCH->current_queue()->async(${
+                xdispatch::current_queue().async(${
 					MU_ASSERT_EQUAL(no4,123);
 					MU_PASS("And Out");
                 });
@@ -54,7 +54,7 @@ extern "C" void cxx_dispatch_cascade(){
 		});
     });
 	
-    XDISPATCH->exec();
+    xdispatch::exec();
 	MU_END_TEST;
 }
 

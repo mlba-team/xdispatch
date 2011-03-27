@@ -20,7 +20,6 @@
 */
 #ifdef QT_CORE_LIB
 
-#include <QCoreApplication>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
@@ -37,21 +36,21 @@
 extern "C" void Qt_dispatch_queue(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-	QCoreApplication app(argc,&argv);
+    QDispatchCoreApplication app(argc,&argv);
 
 	MU_BEGIN_TEST(Qt_dispatch_queue);
 
 	unsigned int* worker = new unsigned int;
 	*worker = 0;
 
-	QDispatchQueue* q = QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT);
-	MU_ASSERT_NOT_NULL(q);
+    QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
+    MU_ASSERT_NOT_NULL(q.native());
 
-    q->apply(new QIterationBlockRunnable($(size_t i){
+    q.apply(new QIterationBlockRunnable($(size_t i){
 			atomic_inc_get(worker);
 	}),RUN_TIMES);
 
-    QDispatch::instance->getGlobalQueue(QDispatch::LOW)->async(new QBlockRunnable(${
+    QDispatch::globalQueue(QDispatch::LOW).async(new QBlockRunnable(${
 			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
 			MU_PASS("Queue executed");
 		}));

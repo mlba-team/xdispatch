@@ -25,8 +25,6 @@
 
 #include "../xdispatch/dispatch.h"
 
-#include <memory>
-
 #include "qdispatchglobal.h"
 #include <QString>
 #include <QDebug>
@@ -54,17 +52,11 @@ class QDispatchQueue : public xdispatch::queue {
 
 public:
     QDispatchQueue(const QString& label);
+    QDispatchQueue(const char*);
     QDispatchQueue(dispatch_queue_t);
     QDispatchQueue(const xdispatch::queue&);
     QDispatchQueue(const QDispatchQueue&);
     ~QDispatchQueue();
-
-    /**
-     A pointer automatically deleting
-     the QDispatchQueue when going out
-     of scope.
-     */
-    typedef std::auto_ptr< QDispatchQueue > a_ptr;
 
 	/**
 	Applies the given QRunnable for async execution
@@ -118,7 +110,7 @@ public:
 	@remarks Finalizers will never be called on the
 	global queues or the main queue.
 	*/
-    virtual void set_finalizer(QRunnable*, xdispatch::queue* = NULL);
+    virtual void set_finalizer(QRunnable*, const xdispatch::queue& = xdispatch::global_queue());
     using xdispatch::queue::set_finalizer;
 };
 
@@ -127,9 +119,9 @@ static QDebug operator<<(QDebug dbg, const QDispatchQueue* q)
     dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
 	return dbg.space();
 }
-static QDebug operator<<(QDebug dbg, const QDispatchQueue::a_ptr q)
+static QDebug operator<<(QDebug dbg, const QDispatchQueue& q)
 {
-    dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
+    dbg.nospace() << "QDispatchQueue (" << q.label().c_str() << ")";
 	return dbg.space();
 }
 

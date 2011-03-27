@@ -35,6 +35,10 @@ QDispatchQueue::QDispatchQueue(const QString &label) : xdispatch::queue(label.to
 
 }
 
+QDispatchQueue::QDispatchQueue(const char * label) : xdispatch::queue(label) {
+
+}
+
 QDispatchQueue::QDispatchQueue(dispatch_queue_t dq) : xdispatch::queue(dq){
     if(dq==NULL)
         throw("Cannot construct queue");
@@ -64,7 +68,7 @@ void QDispatchQueue::apply(QIterationRunnable * runnable, int times){
 
 void QDispatchQueue::after(QRunnable *runnable, const QTime& t){
     Q_ASSERT(runnable);
-    after(runnable, QD->asDispatchTime(t));
+    after(runnable, QDispatch::asDispatchTime(t));
 }
 
 void QDispatchQueue::after(QRunnable* r, dispatch_time_t t){
@@ -77,7 +81,7 @@ void QDispatchQueue::sync(QRunnable * runnable){
     sync(new RunnableOperation(runnable));
 }
 
-void QDispatchQueue::set_finalizer(QRunnable* r, xdispatch::queue* dq){
+void QDispatchQueue::set_finalizer(QRunnable* r, const xdispatch::queue& dq){
     Q_ASSERT(r);
 
     set_finalizer(new RunnableOperation(r), dq);
@@ -85,7 +89,7 @@ void QDispatchQueue::set_finalizer(QRunnable* r, xdispatch::queue* dq){
 
 #ifdef XDISPATCH_HAS_BLOCKS
 void QDispatchQueue::after(dispatch_block_t block, const QTime& t){
-    after(block, QD->asDispatchTime(t));
+    after(block, QDispatch::asDispatchTime(t));
 }
 #endif
 

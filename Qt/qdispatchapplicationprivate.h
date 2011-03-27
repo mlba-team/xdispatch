@@ -39,7 +39,7 @@ public:
     void operator ()(){
         app->processEvents(QEventLoop::WaitForMoreEvents | QEventLoop::EventLoopExec);
         //qDebug() << "Processed events";
-        xdispatch::dispatch::instance->current_queue()->async(new QProcessEventsOperation(app));
+        xdispatch::current_queue().async(new QProcessEventsOperation(app));
     }
 
 private:
@@ -49,23 +49,22 @@ private:
 class QDispatchApplicationPrivate {
 
 public:
-    QDispatchApplicationPrivate() : main(NULL), self(NULL) {
-        main = xdispatch::dispatch::instance->main_queue();
-        Q_ASSERT(main);
+    QDispatchApplicationPrivate() : main(xdispatch::main_queue()), self(NULL) {
+        Q_ASSERT(main.native());
     }
 
-    xdispatch::queue* main;
+    xdispatch::queue main;
     QCoreApplication* self;
 
     int exec() {
         Q_ASSERT(self);
-        Q_ASSERT(main);
+        Q_ASSERT(main.native());
 
         // add the first listen for events here
-        main->async(new QProcessEventsOperation(self));
+        main.async(new QProcessEventsOperation(self));
 
         // enter the dispatching loop
-        xdispatch::dispatch::exec();
+        xdispatch::exec();
 
         return 0;
     }

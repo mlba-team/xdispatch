@@ -42,7 +42,7 @@ extern "C" void Qt_dispatch_semaphore(){
 	MU_BEGIN_TEST(Qt_dispatch_semaphore);
 	QDispatchSemaphore* dsema = new QDispatchSemaphore(1);
 
-    QD->createQueue("")->apply($(size_t idx) {
+    QDispatchQueue("Qt_dispatch_semaphore").apply($(size_t idx) {
         dsema->try_acquire(DISPATCH_TIME_FOREVER);
 		total++;
 		dsema->release();

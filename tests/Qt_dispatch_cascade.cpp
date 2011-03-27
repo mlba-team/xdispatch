@@ -40,19 +40,19 @@ extern "C" void Qt_dispatch_cascade(){
 	
 	MU_BEGIN_TEST(Qt_dispatch_cascade);
 
-	QDispatchQueue* q = QDispatch::instance->getGlobalQueue(QDispatch::DEFAULT);
-	MU_ASSERT_NOT_NULL(q);
+    QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
+    MU_ASSERT_NOT_NULL(q.native());
 
 	int no = 0;
 	
-    q->async(new QBlockRunnable(${
+    q.async(new QBlockRunnable(${
 		int no2 = no+100;
-        QDispatchQueue::a_ptr c = QDispatch::instance->getCurrentQueue();
-        c->async(${
+        QDispatchQueue c = QDispatch::currentQueue();
+        c.async(${
 			int no3 = no2+20;
-            QDispatch::instance->getCurrentQueue()->async(${
+            QDispatch::currentQueue().async(${
 				int no4 = no3+3 ;
-                QDispatch::instance->getCurrentQueue()->async(new QBlockRunnable(${
+                QDispatch::currentQueue().async(new QBlockRunnable(${
 					MU_ASSERT_EQUAL(no4,123);
 					MU_PASS("And Out");
 				}));

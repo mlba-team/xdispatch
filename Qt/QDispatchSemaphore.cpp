@@ -47,7 +47,7 @@ QDispatchSemaphore::~QDispatchSemaphore(){
 }
 
 bool QDispatchSemaphore::try_acquire(const QTime& t){
-    return try_acquire(QD->asDispatchTime(t));
+    return try_acquire(QDispatch::asDispatchTime(t));
 }
 
 QDebug operator<<(QDebug dbg, const QDispatchSemaphore& s)

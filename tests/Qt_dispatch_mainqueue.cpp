@@ -35,7 +35,7 @@ public:
         if(*worker < RUN_TIMES) {
             (*worker)++;
             //MU_MESSAGE("Running worker %u", *worker);
-            QD->getMainQueue()->async(new MainWorker(worker));
+            QDispatch::mainQueue().async(new MainWorker(worker));
         } else {
             MU_ASSERT_EQUAL(RUN_TIMES, *worker);
             delete worker;
@@ -63,9 +63,9 @@ extern "C" void Qt_dispatch_mainqueue(){
     unsigned int* worker = new unsigned int;
     *worker = 0;
 
-	QDispatchQueue* q = QDispatch::instance->getMainQueue();
-	MU_ASSERT_NOT_NULL(q);
-    q->async(new MainWorker(worker));
+    QDispatchQueue q = QDispatch::mainQueue();
+    MU_ASSERT_NOT_NULL(q.native());
+    q.async(new MainWorker(worker));
 
 	app.exec();
 	MU_END_TEST;

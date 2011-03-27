@@ -39,19 +39,19 @@ extern "C" void cxx_dispatch_queue(){
 	unsigned int* worker = new unsigned int;
 	*worker = 0;
 
-    xdispatch::queue* q = XDISPATCH->global_queue(xdispatch::dispatch::HIGH);
-	MU_ASSERT_NOT_NULL(q);
+    xdispatch::queue q = xdispatch::global_queue(xdispatch::HIGH);
+    MU_ASSERT_NOT_NULL(q.native());
 
-    q->apply($(size_t i){
+    q.apply($(size_t i){
 			atomic_inc_get(worker);
     }, RUN_TIMES);
 
-    XDISPATCH->global_queue(xdispatch::dispatch::LOW)->async(${
+    xdispatch::global_queue(xdispatch::LOW).async(${
 			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
 			MU_PASS("Queue executed");
         });
 
-    XDISPATCH->exec();
+    xdispatch::exec();
 	MU_END_TEST;
 }
 

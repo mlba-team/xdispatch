@@ -56,7 +56,7 @@ void queue::apply(iteration_operation* op, size_t times){
 }
 
 void queue::after(operation* op, time_t time){
-    after(op, dispatch::as_dispatch_time(time) );
+    after(op, as_dispatch_time(time) );
 }
 
 void queue::after(operation* op, dispatch_time_t time){
@@ -67,11 +67,10 @@ void queue::sync(operation* op){
     dispatch_sync_f(d->native, new wrap(op), run_wrap);
 }
 
-void queue::set_finalizer(operation* op, queue* q){
+void queue::set_finalizer(operation* op, const queue& q){
     dispatch_set_finalizer_f(d->native, run_wrap);
     dispatch_set_context(d->native, new wrap(op));
-    if(q)
-        dispatch_set_target_queue(d->native, q->native());
+    dispatch_set_target_queue(d->native, q.native());
 }
 
 const std::string queue::label() const {
@@ -112,11 +111,10 @@ void queue::sync(dispatch_block_t b){
     dispatch_sync(d->native, b);
 }
 
-void queue::set_finalizer(dispatch_block_t b, queue* q){
+void queue::set_finalizer(dispatch_block_t b, const queue& q){
     dispatch_set_finalizer_f(d->native, run_wrap);
     dispatch_set_context(d->native, new wrap(b));
-    if(q)
-        dispatch_set_target_queue(d->native, q->native());
+    dispatch_set_target_queue(d->native, q.native());
 }
 
 #endif
@@ -131,8 +129,16 @@ std::ostream& xdispatch::operator<<(std::ostream& stream, const queue& q)
     stream << "xdispatch::queue (" << q.label() << ")";
     return stream;
 }
-std::ostream& xdispatch::operator<<(std::ostream& stream, const queue::a_ptr q)
-{
-    stream << "xdispatch::queue (" << q->label() << ")";
-    return stream;
+
+
+bool xdispatch::operator ==(const queue& a, const queue& b){
+    return a.native() == b.native();
+}
+
+bool xdispatch::operator ==(const dispatch_queue_t& a, const queue& b){
+    return a == b.native();
+}
+
+bool xdispatch::operator ==(const queue& a, const dispatch_queue_t& b){
+    return a.native() == b;
 }

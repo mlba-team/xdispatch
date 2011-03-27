@@ -52,12 +52,12 @@ extern "C" void cxx_dispatch_serialqueue(){
 	unsigned int* worker = new unsigned int;
 	*worker = 0;
 
-    xdispatch::queue* q = XDISPATCH->create_queue("cxx_dispatch_serialqueue");
-	MU_ASSERT_NOT_NULL(q);
+    xdispatch::queue q("cxx_dispatch_serialqueue");
+    MU_ASSERT_NOT_NULL(q.native());
 
 	// dispatch some jobs
 	for(unsigned int x = 0; x < JOBS_NO; x++) {
-        q->async(${
+        q.async(${
 			MU_ASSERT_EQUAL(*worker,x);
 			// keep cpu busy
 			for(int i = 0; i < LOOP_COUNT;i++);
@@ -66,13 +66,13 @@ extern "C" void cxx_dispatch_serialqueue(){
 
 	}
 
-    q->async(${
+    q.async(${
 		MU_ASSERT_EQUAL(*worker,JOBS_NO);
 		// Test passed
 		MU_PASS("Blocks were executed in correct order");
     });
 
-    XDISPATCH->exec();
+    xdispatch::exec();
 	MU_END_TEST;
 }
 

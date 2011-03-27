@@ -41,14 +41,14 @@ extern "C" void Qt_dispatch_current(){
 	
 	MU_BEGIN_TEST(Qt_dispatch_current);
     
-    QD->getGlobalQueue()->async(${
+    QDispatch::globalQueue().async(${
         QTest::qSleep(10);
         MU_MESSAGE("Queue should be global default queue");
-        qDebug() << QD->getCurrentQueue();
-        QD->getMainQueue()->async(${
+        qDebug() << QDispatch::currentQueue();
+        QDispatch::mainQueue().async(${
             QTest::qSleep(10);
             MU_MESSAGE("Queue should be main queue");
-            qDebug() << QD->getCurrentQueue();
+            qDebug() << QDispatch::currentQueue();
             
             MU_PASS("");
         });

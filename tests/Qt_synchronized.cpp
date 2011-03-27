@@ -109,7 +109,7 @@ public:
   */
 extern "C" void Qt_synchronized() {
     QTime watch;
-    QDispatchQueue* q = QD->getGlobalQueue();
+    QDispatchQueue q = QDispatch::globalQueue();
 
     MU_BEGIN_TEST(Qt_synchronized);
 
@@ -118,7 +118,7 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* test1 = new SynchronizedRun;
     test1->setAutoDelete(true);
     watch.restart();
-    QD->getGlobalQueue()->apply(test1, ITERATIONS);
+    QDispatch::globalQueue().apply(test1, ITERATIONS);
     MU_ASSERT_EQUAL(counter, ITERATIONS/2);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
 
@@ -131,13 +131,13 @@ extern "C" void Qt_synchronized() {
     test1 = new SynchronizedRun;
     test1->setAutoDelete(false);
     QDispatchGroup group1;
-    q->suspend();
+    q.suspend();
     for(int i = 0; i < ITERATIONS; i++){
         group1.async(test1, q);
         group1.async(test1, q);
     }
     watch.restart();
-    q->resume();
+    q.resume();
     group1.wait();
     MU_ASSERT_EQUAL(counter, ITERATIONS);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
@@ -151,7 +151,7 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* test2a = new PartialRun1;
     test2a->setAutoDelete(true);
     watch.restart();
-    QD->getGlobalQueue()->apply(test2a, ITERATIONS);
+    QDispatch::globalQueue().apply(test2a, ITERATIONS);
     MU_ASSERT_EQUAL(counter, ITERATIONS/2);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
 
@@ -166,13 +166,13 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* test2b = new PartialRun2;
     test2b->setAutoDelete(false);
     QDispatchGroup group2;
-    q->suspend();
+    q.suspend();
     for(int i = 0; i < ITERATIONS; i++){
         group2.async(test2a, q);
         group2.async(test2b, q);
     }
     watch.restart();
-    q->resume();
+    q.resume();
     group2.wait();
     MU_ASSERT_EQUAL(counter, ITERATIONS);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
@@ -186,7 +186,7 @@ extern "C" void Qt_synchronized() {
     QIterationRunnable* mutexRun = new MutexRun;
     mutexRun->setAutoDelete(true);
     watch.restart();
-    QD->getGlobalQueue()->apply(mutexRun, ITERATIONS);
+    QDispatch::globalQueue().apply(mutexRun, ITERATIONS);
     MU_ASSERT_EQUAL(counter, ITERATIONS/2);
     MU_MESSAGE("%f ms per Iteration", watch.elapsed() / (double)ITERATIONS);
 

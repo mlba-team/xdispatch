@@ -46,7 +46,7 @@ extern "C" void cxx_dispatch_semaphore(){
     MU_BEGIN_TEST(cxx_dispatch_semaphore);
     xdispatch::semaphore* dsema = new xdispatch::semaphore(1);
 
-    XDISPATCH->create_queue("cxx_dispatch_semaphore")->apply($(size_t idx) {
+    xdispatch::queue("cxx_dispatch_semaphore").apply($(size_t idx) {
         dsema->try_acquire(DISPATCH_TIME_FOREVER);
 		total++;
 		dsema->release();

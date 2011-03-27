@@ -33,8 +33,9 @@ group::~group() {
     delete d;
 }
 
-void group::async(operation* r, queue* q){
-    dispatch_queue_t nat_q = q ? q->native() : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, NULL);
+void group::async(operation* r, const queue& q){
+    dispatch_queue_t nat_q = q.native();
+    assert(nat_q);
     dispatch_group_async_f(d->native, nat_q, new wrap(r), run_wrap);
 }
 
@@ -43,11 +44,12 @@ bool group::wait(dispatch_time_t time){
 }
 
 bool group::wait(const time_t& t){
-    return wait(dispatch::as_dispatch_time(t));
+    return wait(as_dispatch_time(t));
 }
 
-void group::notify(operation* r, queue* q){
-    dispatch_queue_t nat_q = q ? q->native() : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, NULL);
+void group::notify(operation* r, const queue& q){
+    dispatch_queue_t nat_q = q.native();
+    assert(nat_q);
     dispatch_group_notify_f(d->native, nat_q, new wrap(r), run_wrap);
 }
 
@@ -57,13 +59,15 @@ const dispatch_group_t group::native() const {
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
-void group::async(dispatch_block_t b, queue* q){
-    dispatch_queue_t nat_q = q ? q->native() : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, NULL);
+void group::async(dispatch_block_t b, const queue& q){
+    dispatch_queue_t nat_q = q.native();
+    assert(nat_q);
     dispatch_group_async(d->native, nat_q, b);
 }
 
-void group::notify(dispatch_block_t b, queue* q){
-    dispatch_queue_t nat_q = q ? q->native() : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, NULL);
+void group::notify(dispatch_block_t b, const queue& q){
+    dispatch_queue_t nat_q = q.native();
+    assert(nat_q);
     dispatch_group_notify_f(d->native, nat_q, new wrap(b), run_wrap);
 }
 #endif

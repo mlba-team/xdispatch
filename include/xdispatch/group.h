@@ -60,13 +60,13 @@ public:
     @param r The operation to be dispatched
     @param q The Queue to use. If no Queue is given, the system default queue will be used
     */
-    void async(operation* r, queue* q = NULL);
+    void async(operation* r, const queue& q = global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
     /**
     Same as dispatch(operation* r, ...)
     Will wrap the given block in an operation and put it on the queue.
     */
-    void async(dispatch_block_t b, queue* q = NULL);
+    void async(dispatch_block_t b, const queue& q = global_queue());
 #endif
     /**
     Waits until the given time has passed
@@ -94,7 +94,7 @@ public:
     or reused for additional operations.
     @see dispatch() for more information.
     */
-    void notify(operation* r, queue* q = NULL);
+    void notify(operation* r, const queue& q = global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
     /**
     This function schedules a notification block to be submitted to the specified
@@ -108,7 +108,7 @@ public:
     or reused for additional operations.
     @see dispatch() for more information.
     */
-    void notify(dispatch_block_t b, queue* q = NULL);
+    void notify(dispatch_block_t b, const queue& q = global_queue());
 #endif
     /**
     @returns The dispatch_group_t object associated with this

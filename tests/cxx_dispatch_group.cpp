@@ -55,13 +55,12 @@ static xdispatch::group* create_group(size_t count, int delay) {
     xdispatch::group* group = new xdispatch::group();
 
     for (i = 0; i < count; ++i) {
-        xdispatch::queue* queue = XDISPATCH->create_queue("foo");
+        xdispatch::queue queue("foo");
 
-        MU_ASSERT_NOT_NULL(queue);
+        MU_ASSERT_NOT_NULL(queue.native());
         MU_ASSERT_NOT_NULL(group);
 
         group->async(new work(delay), queue);
-        delete queue;
     }
     return group;
 }
@@ -70,9 +69,9 @@ static xdispatch::group* create_group(size_t count, int delay) {
 class group_notify : public xdispatch::operation {
 public:
     void operator()() {
-        xdispatch::queue* m = XDISPATCH->main_queue();
-        xdispatch::queue::a_ptr c = XDISPATCH->current_queue();
-        MU_ASSERT_EQUAL(m->label(), c->label());
+        xdispatch::queue m = xdispatch::main_queue();
+        xdispatch::queue c = xdispatch::current_queue();
+        MU_ASSERT_EQUAL(m.label(), c.label());
         MU_PASS("Great!");
     }
 };
@@ -96,7 +95,7 @@ void cxx_dispatch_group() {
     group->wait();
 
     // should be OK to re-use a group
-    group->async(new foo, XDISPATCH->global_queue());
+    group->async(new foo, xdispatch::global_queue());
     group->wait();
 
     delete group;
@@ -118,12 +117,12 @@ void cxx_dispatch_group() {
     group = create_group(100, 0);
     MU_ASSERT_NOT_NULL(group);
 
-    group->notify(new group_notify, XDISPATCH->main_queue());
+    group->notify(new group_notify, xdispatch::main_queue());
 
     delete group;
     group = NULL;
 
-    XDISPATCH->exec();
+    xdispatch::exec();
 
     MU_FAIL("Should never reach this");
     MU_END_TEST

@@ -28,7 +28,6 @@
 #endif
 
 #include "dispatch.h"
-#include <memory>
 #include <iostream>
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -60,13 +59,6 @@ public:
     queue(const std::string&);
     queue(const queue&);
     ~queue();
-
-    /**
-     A pointer automatically deleting
-     the queue when going out
-     of scope.
-     */
-    typedef std::auto_ptr< queue > a_ptr;
 
     /**
       Will dispatch the given operation for
@@ -152,14 +144,14 @@ public:
     When not passing a queue, the finalizer operation
     will be executed on the queue itself.
     */
-    virtual void set_finalizer(operation*, queue* = NULL);
+    virtual void set_finalizer(operation*, const queue& = global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
     /**
     Same as set_finalizer(operation*, queue*).
     Will wrap the given block in an operation and store
     it as finalizer.
     */
-    virtual void set_finalizer(dispatch_block_t, queue* = NULL);
+    virtual void set_finalizer(dispatch_block_t, const queue& = global_queue());
 #endif
     /**
     @return The label of the queue that was used while creating it
@@ -196,7 +188,10 @@ private:
 
 std::ostream& operator<<(std::ostream& stream, const queue* q);
 std::ostream& operator<<(std::ostream& stream, const queue& q);
-std::ostream& operator<<(std::ostream& stream, const queue::a_ptr q);
+
+bool operator ==(const queue& a, const queue& b);
+bool operator ==(const queue& a, const dispatch_queue_t& b);
+bool operator ==(const dispatch_queue_t& a, const queue& b);
 
 __XDISPATCH_END_NAMESPACE
 

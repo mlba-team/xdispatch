@@ -57,6 +57,8 @@ public:
 	*/
 	QDispatchGroup();
     QDispatchGroup(dispatch_group_t);
+    QDispatchGroup(const QDispatchGroup&);
+    QDispatchGroup(const xdispatch::group&);
 	~QDispatchGroup();
 
 	/**
@@ -64,7 +66,7 @@ public:
 	@param r The QRunnable to be dispatched
 	@param q The Queue to use. If no Queue is given, the system default queue will be used
 	*/
-    void async(QRunnable* r, xdispatch::queue* q = NULL);
+    void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
     using xdispatch::group::async;
 	/**
 	Waits until the given time has passed
@@ -86,16 +88,16 @@ public:
 	or reused for additional operations.
 	@see dispatch() for more information.
 	*/
-    void notify(QRunnable* r, xdispatch::queue* q = NULL);
+    void notify(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
     /**
-     @see notify(QRunnable* r, xdispatch::queue*);
+     @see notify(QRunnable* r, const xdispatch::queue&);
      */
-    void notify(xdispatch::operation*, xdispatch::queue* = NULL);
+    void notify(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
     /**
-     @see notify(QRunnable* r, xdispatch::queue*);
+     @see notify(QRunnable* r, const xdispatch::queue&);
      */
-    void notify(dispatch_block_t, xdispatch::queue* = NULL);
+    void notify(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
 #endif
 
 signals:
@@ -109,7 +111,6 @@ signals:
     void all_finished();
 
 private:
-    Q_DISABLE_COPY(QDispatchGroup);
 
 	friend QDebug operator<<(QDebug, const QDispatchGroup&);
     

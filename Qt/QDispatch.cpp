@@ -29,63 +29,32 @@
 
 QT_BEGIN_NAMESPACE
 
-class QDispatch::Private {
-public:
-        Private() : highQueue(new QDispatchQueue(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0))),
-                normalQueue(new QDispatchQueue(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0))),
-                lowQueue(new QDispatchQueue(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0))),
-                mainQueue(new QDispatchQueue(dispatch_get_main_queue())) {}
-	~Private(){ 
-		delete mainQueue; 
-		delete normalQueue;
-		delete lowQueue;
-		delete highQueue;
-	}
+QDispatch::QDispatch() {}
 
-	QDispatchQueue* highQueue, *normalQueue, *lowQueue;
-	QDispatchQueue* mainQueue;
-};
+QDispatchQueue QDispatch::currentQueue(){
 
-QDispatch* QDispatch::instance = new QDispatch();
-
-QDispatch::QDispatch() : d(new Private){}
-
-QDispatch::QDispatch(const QDispatch&){}
-
-QDispatch::~QDispatch(){
-	delete d;
-}
-
-QDispatchQueue* QDispatch::createQueue(const QString& label){
-	try {
-        return new QDispatchQueue(label);
-	} catch(...) {
-		return NULL;
-	}
-}
-
-QDispatchQueue::a_ptr QDispatch::getCurrentQueue(){
-
-    return QDispatchQueue::a_ptr(new QDispatchQueue(dispatch_get_current_queue() ));
+    return QDispatchQueue(xdispatch::current_queue());
 
 }
 
-QDispatchQueue* QDispatch::getGlobalQueue(Priority p){
-	switch(p){
-	case HIGH:
-		return d->highQueue;
-		break;
-	case LOW:
-		return d->lowQueue;
-		break;
-	default:
-		return d->normalQueue;
-		break;
-	}
+QDispatchQueue QDispatch::globalQueue(Priority p){
+    xdispatch::queue_priority prio;
+    switch(p){
+    case QDispatch::LOW:
+        prio = xdispatch::LOW;
+        break;
+    case QDispatch::HIGH:
+        prio = xdispatch::HIGH;
+        break;
+    default:
+        prio = xdispatch::DEFAULT;
+    }
+
+    return QDispatchQueue(xdispatch::global_queue(prio));
 }
 
-QDispatchQueue* QDispatch::getMainQueue(){
-	return d->mainQueue;
+QDispatchQueue QDispatch::mainQueue(){
+    return QDispatchQueue(xdispatch::main_queue());
 }
 
 QTime QDispatch::asQTime(dispatch_time_t t){

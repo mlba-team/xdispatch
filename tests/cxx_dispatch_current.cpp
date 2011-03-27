@@ -34,7 +34,7 @@ class main_queue : public xdispatch::operation {
 public:
     void operator()() {
         MU_MESSAGE("Queue should be main queue");
-        std::cout << XDISPATCH->current_queue() << std::endl;
+        std::cout << xdispatch::current_queue() << std::endl;
 
         MU_PASS("");
     }
@@ -44,17 +44,17 @@ class global_queue : public xdispatch::operation {
 public:
     void operator() (){
         MU_MESSAGE("Queue should be global default queue");
-        std::cout << XDISPATCH->current_queue() << std::endl;
+        std::cout << xdispatch::current_queue() << std::endl;
 
-        XDISPATCH->main_queue()->async(new main_queue);
+        xdispatch::main_queue().async(new main_queue);
     }
 };
 
 extern "C" void cxx_dispatch_current(){
     MU_BEGIN_TEST(cxx_dispatch_current);
     
-    XDISPATCH->global_queue()->async(new global_queue);
+    xdispatch::global_queue().async(new global_queue);
 
-    XDISPATCH->exec();
+    xdispatch::exec();
     MU_END_TEST;
 }

@@ -74,39 +74,44 @@ QDispatchGroup::QDispatchGroup(dispatch_group_t o) : xdispatch::group(o), d(new 
     d->obj = this;
 }
 
+QDispatchGroup::QDispatchGroup(const QDispatchGroup & obj) : xdispatch::group(obj), d(new Private()){
+    d->obj = this;
+}
+
+QDispatchGroup::QDispatchGroup(const xdispatch::group & obj) : xdispatch::group(obj), d(new Private()){
+    d->obj = this;
+}
+
 QDispatchGroup::~QDispatchGroup(){
     if(!d->references.deref())
         delete d;
 }
 
 bool QDispatchGroup::wait(const QTime& t){
-	return wait(QD->asDispatchTime(t));
+    return wait(QDispatch::asDispatchTime(t));
 }
 
-void QDispatchGroup::async(QRunnable *r, xdispatch::queue *q){
-	if(q==NULL)
-		q = QD->getGlobalQueue();
-
-    Q_ASSERT(r!=NULL);
-    Q_ASSERT(q!=NULL);
-
+void QDispatchGroup::async(QRunnable *r, const xdispatch::queue& q){
+    Q_ASSERT(r);
     async(new RunnableOperation(r), q);
 }
 
-void QDispatchGroup::notify(QRunnable *r, xdispatch::queue *q){
+void QDispatchGroup::notify(QRunnable *r, const xdispatch::queue& q){
+    Q_ASSERT(r);
     notify(new RunnableOperation(r), q);
 }
 
-void QDispatchGroup::notify(xdispatch::operation* op, xdispatch::queue* q){
+void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q){
+    Q_ASSERT(op);
     d->notify = op;
-    d->queue = new QDispatchQueue(q==0 ? *xdispatch::dispatch::instance->global_queue() : *q);
+    d->queue = new QDispatchQueue(q);
 
     xdispatch::group::notify(new xdispatch::ptr_operation<QDispatchGroup::Private>(d, &QDispatchGroup::Private::runNotify), q);
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
-void QDispatchGroup::notify(dispatch_block_t b, xdispatch::queue* q){
+void QDispatchGroup::notify(dispatch_block_t b, const xdispatch::queue& q){
     notify(new QBlockRunnable(b), q);
 }
 
