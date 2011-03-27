@@ -45,7 +45,7 @@ void
 histogram(void) {
 	size_t counts[QUEUES];
 	size_t maxcount = 0;
-	//size_t x,y;
+    size_t x,y;
 	size_t q;
 	size_t i;
 	memset(counts,0,QUEUES);
@@ -66,7 +66,7 @@ histogram(void) {
 	
 	MU_MESSAGE("maxcount = %ld", maxcount);
 	
-	/*for (y = 20; y > 0; --y) {
+    for (y = 20; y > 0; --y) {
 		for (x = 0; x < QUEUES; ++x) {
 			double fraction = (double)counts[x] / (double)maxcount;
 			double value = fraction * (double)20;
@@ -74,7 +74,7 @@ histogram(void) {
 		}
 		printf("\n");
 	}
-	fflush(stdout);*/
+    fflush(stdout);
 }
 
 void

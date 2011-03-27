@@ -55,17 +55,25 @@ union {
 static size_t iterations = ITERATIONS;
 
 static void histogram(void) {
+    size_t maxcount = BLOCKS;
 	size_t sc[PRIORITIES];
 	size_t total = 0;
 
-	size_t y;
-	for (y = 0; y < PRIORITIES; ++y) {
+    size_t x, y;
+    for (y = 0; y < PRIORITIES; ++y) {
 		sc[y] = counts[y].count;
 	}
 
 	for (y = 0; y < PRIORITIES; ++y) {
 		MU_MESSAGE("%s: %ld",labels[y], sc[y]);
 		total += sc[y];
+
+        double fraction = (double)sc[y] / (double)maxcount;
+        double value = fraction * (double)80;
+        for (x = 0; x < 80; ++x) {
+            printf("%s", (value > x) ? "*" : " ");
+        }
+        printf("\n");
 	}
 	
 	MU_ASSERT_EQUAL(total, ITERATIONS);

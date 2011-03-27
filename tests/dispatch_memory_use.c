@@ -57,7 +57,7 @@ static void collect(void *context)
 	// ...also note, this is a total cheat.   dispatch_after lets this
 	// thread go idle, so dispatch cleans up the continuations cache.
 	// Doign the "old style" sleep left that stuff around and leaks
-	// took a LONG TIME to complete.   Long enough that the test harness
+    // took a LONG TIME to complete. Long enough that the test harness
 	// decided to kill us.
 	dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), NULL, MU_PASS_AFTER_DELAY);
 }

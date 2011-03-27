@@ -54,6 +54,7 @@ void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
 
 static void register_cxx_tests(){
+#ifdef TEST_BLOCKS
     MU_REGISTER_TEST(cxx_dispatch_debug);
     MU_REGISTER_TEST(cxx_dispatch_queue);
     MU_REGISTER_TEST(cxx_dispatch_mainqueue);
@@ -62,6 +63,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_serialqueue);
     MU_REGISTER_TEST(cxx_dispatch_semaphore);
     MU_REGISTER_TEST(cxx_dispatch_current);
+#endif
 }
 
 #ifdef __cplusplus

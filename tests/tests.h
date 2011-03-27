@@ -78,7 +78,7 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_testDebug);
 	MU_REGISTER_TEST(dispatch_apply_function);
 	MU_REGISTER_TEST(dispatch_priority);
-	//MU_REGISTER_TEST(dispatch_priority2);
+    MU_REGISTER_TEST(dispatch_priority2);
 	MU_REGISTER_TEST(dispatch_cascade);
 	MU_REGISTER_TEST(dispatch_apply_serialqueue);
 	MU_REGISTER_TEST(dispatch_after_function);

@@ -28,6 +28,10 @@
  queues is actually working
  */
 
+void pass(void* dt){
+    MU_PASS("Core API is working");
+}
+
 void dispatch_api() {
 	dispatch_queue_t q;
 
@@ -35,6 +39,7 @@ void dispatch_api() {
 
 	q = dispatch_get_main_queue();
 	MU_ASSERT_NOT_NULL(q);
+    dispatch_async_f(q, NULL, pass);
 
 	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
 	MU_ASSERT_NOT_NULL(q);
@@ -43,6 +48,7 @@ void dispatch_api() {
 	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
 	MU_ASSERT_NOT_NULL(q);
 
-	MU_PASS("All queue getter are working");
+    dispatch_main();
+
 	MU_END_TEST;
 }

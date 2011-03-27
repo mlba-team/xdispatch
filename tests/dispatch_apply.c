@@ -34,7 +34,7 @@ static void argumentFunction(void* data, size_t index){
 }
 
 void dispatch_apply_function() {
-		const unsigned int final = 32;
+    const unsigned int final = 32;
 	unsigned int* count = malloc(sizeof(unsigned int));
 	dispatch_queue_t  queue;
 	MU_BEGIN_TEST(dispatch_apply_function);
