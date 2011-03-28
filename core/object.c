@@ -24,10 +24,9 @@
 
 void
 	dispatch_debug(dispatch_object_t object, const char *message, ...){
-		if(!object)
-			return;
+        assert(object);
 
-		printf("dispatch_object_t:: references: %u | ", object->count);
+        printf("dispatch_object_t:: references: %u | ", object->references);
 
 		switch(object->type){
 		case DISPATCH_QUEUE:
@@ -44,10 +43,9 @@ void
 
 void
 	dispatch_debugv(dispatch_object_t object, const char *message, va_list ap){
-		if(!object)
-			return;
+        assert(object);
 
-		printf("references: %u | ", object->count);
+        printf("references: %u | ", object->references);
 
 		switch(object->type){
 		case DISPATCH_QUEUE:
@@ -55,7 +53,7 @@ void
 			printf("dispatch_queue: %s | ", cast_queue(object)->name);
 			break;
 		case DISPATCH_GROUP:
-			printf("dispatch_group: %i pending | ", cast_group(object)->count);
+            printf("dispatch_group: %i pending | ", cast_group(object)->count);
 			break;
 		default:
 			break;
@@ -65,7 +63,8 @@ void
 
 void
 	dispatch_retain(dispatch_object_t object){
-		atomic_inc_get(&object->count);
+        assert(object);
+        atomic_inc_get(&object->references);
 }
 
 
@@ -74,10 +73,8 @@ Invoked whenever an object is distroyed
 that had a target queue associated with it
 */
 void _finalize(void* context){
+    assert(context);
 	dispatch_object_t o = (dispatch_object_t)(context);
-
-	if(!context)
-		return;
 
 	if(o->finalizer)
 		o->finalizer(o->context);
@@ -86,7 +83,8 @@ void _finalize(void* context){
 
 void
 	dispatch_release(dispatch_object_t object){
-		int ct = atomic_dec_get(&object->count);
+        assert(object);
+        int ct = atomic_dec_get(&object->references);
 		if (ct == 0) {
 			if(object->target)
 				dispatch_async_f((dispatch_queue_t)object->target, object, _finalize);
@@ -98,41 +96,34 @@ void
 
 void *
 	dispatch_get_context(dispatch_object_t object){
-		if(!object)
-			return NULL;
-		else
-			return object->context;
+        assert(object);
+        return object->context;
 }
 
 void
 	dispatch_set_context(dispatch_object_t object, void *context){
-		if(!object)
-			return;
+        assert(object);
 
 		object->context = context;
 }
 
 void
 	dispatch_set_finalizer_f(dispatch_object_t object, dispatch_function_t finalizer){
-		if(!object)
-			return;
+        assert(object);
 
 		object->finalizer = finalizer;
 }
 
 void
 	dispatch_suspend(dispatch_object_t object){
-		if(!object)
-			return;
+        assert(object);
 
-		object->suspended = TRUE;
+        atomic_inc_get(&object->suspend_ct);
 }
 
 void
 	dispatch_resume(dispatch_object_t object){
-		if(!object)
-			return;
+        assert(object);
 
-		object->suspended = FALSE;
-		//_tp_signal(
+        atomic_dec_get(&object->suspend_ct);
 }

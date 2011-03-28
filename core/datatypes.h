@@ -37,6 +37,7 @@
 enum _obj_types {
 	DISPATCH_QUEUE,
 	DISPATCH_SERIAL_QUEUE,
+    DISPATCH_MAIN_QUEUE,
 	DISPATCH_SEMAPHORE,
 	DISPATCH_GROUP
 };
@@ -85,9 +86,9 @@ static dispatch_object_t _get_empty_object(){
 
 	if(obj){
 		memset(obj,0,size);
-		obj->count = 1;
+        obj->references = 1;
 		obj->type = -1;
-		obj->suspended = FALSE;
+        obj->suspend_ct = 0;
 		obj->obj = ((char*)obj) + obj_size;
 	}
 
@@ -110,7 +111,7 @@ static void _destroy_object(dispatch_object_t t){
 	case DISPATCH_GROUP:
 		break;
 	case DISPATCH_SEMAPHORE:
-                sem_destroy(&(cast_sem(t)->lock));
+        sem_destroy(&(cast_sem(t)->lock));
 		break;
 	default:
 		break;

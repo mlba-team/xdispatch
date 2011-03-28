@@ -33,11 +33,11 @@ void pass(void* dt){
 }
 
 void dispatch_api() {
-	dispatch_queue_t q;
+    dispatch_queue_t q = NULL;
 
 	MU_BEGIN_TEST(dispatch_api);
 
-	q = dispatch_get_main_queue();
+    q = dispatch_get_main_queue2();
 	MU_ASSERT_NOT_NULL(q);
     dispatch_async_f(q, NULL, pass);
 

@@ -23,7 +23,7 @@
 #ifndef EXECUTION_H_
 #define EXECUTION_H_
 
-#include "events.h"
+#include "queue_internal.h"
 
 //
 // @file execution.h
@@ -31,12 +31,28 @@
 // 
 
 //
+// Signals the main queue that work has to be done
+// @param q A pointer to the main queue
+//
+void _notify_main(dispatch_queue_t q);
+
+//
+// Assigns a new workitem to the given global queue
+// in order to make the threadpool execute it
+// @param q A pointer to the global queue
+//
+void _notify_global(dispatch_queue_t q);
+
+//
 // Handles all items on the queues
-// @param q The queue to handle, when
-//	passing NULL here, all queues except the
-//	main queue will be handled
+// @param q The queue to handle
 // 
-void _loop_worker(_evt_loop_t loop, int revent, void* data);
+void _loop_worker(void*);
+
+//
+// Handles all current items on the main queue
+//
+void _main_worker(_evt_loop_t loop, int revent, void* data);
 
 //
 // Traces the events on the give queue

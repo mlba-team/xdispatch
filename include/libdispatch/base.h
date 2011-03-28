@@ -52,11 +52,11 @@ typedef struct dispatch_object_s {
 public:
 	void* context;
 	int type;
-	unsigned int count;
+    unsigned int references;
 	ATOMIC_INT lock;
 	dispatch_function_t finalizer;
 	void* target;
-	char suspended;
+    ATOMIC_INT suspend_ct;
     void* obj;
 private:
 	dispatch_object_s();
@@ -67,11 +67,11 @@ private:
 typedef struct dispatch_object_s {
 	void* context;
 	int type;
-	unsigned int count;
+    unsigned int references;
 	ATOMIC_INT lock;
 	dispatch_function_t finalizer;
 	void* target;
-	char suspended;
+    ATOMIC_INT suspend_ct;
     void* obj;
 } *dispatch_object_t;
 #endif

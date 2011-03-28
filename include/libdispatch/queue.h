@@ -111,10 +111,43 @@ DISPATCH_DECL(dispatch_queue_attr);
  * scope in which it is allocated. That is a classic C bug.
  */
 #ifdef __BLOCKS__
-typedef void (dispatch_block_t)(void);
+typedef void (^dispatch_block_t)(void);
 #endif
 
 __DISPATCH_BEGIN_DECLS
+
+/*!
+ * @function dispatch_async
+ *
+ * @abstract
+ * Submits a block for asynchronous execution on a dispatch queue.
+ *
+ * @discussion
+ * The dispatch_async() function is the fundamental mechanism for submitting
+ * blocks to a dispatch queue.
+ *
+ * Calls to dispatch_async() always return immediately after the block has
+ * been submitted, and never wait for the block to be invoked.
+ *
+ * The target queue determines whether the block will be invoked serially or
+ * concurrently with respect to other blocks submitted to that same queue.
+ * Serial queues are processed concurrently with with respect to each other.
+ *
+ * @param queue
+ * The target dispatch queue to which the block is submitted.
+ * The system will hold a reference on the target queue until the block
+ * has finished.
+ * The result of passing NULL in this parameter is undefined.
+ *
+ * @param block
+ * The block to submit to the target dispatch queue. This function performs
+ * Block_copy() and Block_release() on behalf of callers.
+ * The result of passing NULL in this parameter is undefined.
+ */
+#ifdef __BLOCKS__
+DISPATCH_EXPORT void
+dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
+#endif
 
 /*!
  * @function dispatch_async_f
@@ -145,6 +178,40 @@ dispatch_async_f(dispatch_queue_t queue,
 	void *context,
 	dispatch_function_t work);
 
+/*!
+ * @function dispatch_sync
+ *
+ * @abstract
+ * Submits a block for synchronous execution on a dispatch queue.
+ *
+ * @discussion
+ * Submits a block to a dispatch queue like dispatch_async(), however
+ * dispatch_sync() will not return until the block has finished.
+ *
+ * Calls to dispatch_sync() targeting the current queue will result
+ * in dead-lock. Use of dispatch_sync() is also subject to the same
+ * multi-party dead-lock problems that may result from the use of a mutex.
+ * Use of dispatch_async() is preferred.
+ *
+ * Unlike dispatch_async(), no retain is performed on the target queue. Because
+ * calls to this function are synchronous, the dispatch_sync() "borrows" the
+ * reference of the caller.
+ *
+ * As an optimization, dispatch_sync() invokes the block on the current
+ * thread when possible.
+ *
+ * @param queue
+ * The target dispatch queue to which the block is submitted.
+ * The result of passing NULL in this parameter is undefined.
+ *
+ * @param block
+ * The block to be invoked on the target dispatch queue.
+ * The result of passing NULL in this parameter is undefined.
+ */
+#ifdef __BLOCKS__
+DISPATCH_EXPORT void
+dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);
+#endif
 
 /*!
  * @function dispatch_sync_f
@@ -172,6 +239,36 @@ DISPATCH_EXPORT void
 dispatch_sync_f(dispatch_queue_t queue,
 	void *context,
 	dispatch_function_t work);
+
+/*!
+ * @function dispatch_apply
+ *
+ * @abstract
+ * Submits a block to a dispatch queue for multiple invocations.
+ *
+ * @discussion
+ * Submits a block to a dispatch queue for multiple invocations. This function
+ * waits for the task block to complete before returning. If the target queue
+ * is a concurrent queue returned by dispatch_get_concurrent_queue(), the block
+ * may be invoked concurrently, and it must therefore be reentrant safe.
+ *
+ * Each invocation of the block will be passed the current index of iteration.
+ *
+ * @param iterations
+ * The number of iterations to perform.
+ *
+ * @param queue
+ * The target dispatch queue to which the block is submitted.
+ * The result of passing NULL in this parameter is undefined.
+ *
+ * @param block
+ * The block to be invoked the specified number of iterations.
+ * The result of passing NULL in this parameter is undefined.
+ */
+#ifdef __BLOCKS__
+DISPATCH_EXPORT void
+dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t));
+#endif
 
 /*!
  * @function dispatch_apply_f
@@ -237,7 +334,10 @@ dispatch_get_current_queue(void);
  * Returns the main queue. This queue is created automatically on behalf of
  * the main thread before main() is called.
  */
-DISPATCH_EXPORT dispatch_queue_t dispatch_get_main_queue();
+
+DISPATCH_EXPORT extern dispatch_queue_t _dispatch_main_q;
+#define dispatch_get_main_queue() (_dispatch_main_q)
+#define dispatch_get_main_queue2() (_dispatch_main_q)
 
 /*!
  * @enum dispatch_queue_priority_t
@@ -379,6 +479,35 @@ dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
  */
 DISPATCH_EXPORT void
 dispatch_main(void);
+
+/*!
+ * @function dispatch_after
+ *
+ * @abstract
+ * Schedule a block for execution on a given queue at a specified time.
+ *
+ * @discussion
+ * Passing DISPATCH_TIME_NOW as the "when" parameter is supported, but not as
+ * optimal as calling dispatch_async() instead. Passing DISPATCH_TIME_FOREVER
+ * is undefined.
+ *
+ * @param when
+ * A temporal milestone returned by dispatch_time() or dispatch_walltime().
+ *
+ * @param queue
+ * A queue to which the given block will be submitted at the specified time.
+ * The result of passing NULL in this parameter is undefined.
+ *
+ * @param block
+ * The block of code to execute.
+ * The result of passing NULL in this parameter is undefined.
+ */
+#ifdef __BLOCKS__
+DISPATCH_EXPORT void
+dispatch_after(dispatch_time_t when,
+    dispatch_queue_t queue,
+    dispatch_block_t block);
+#endif
 
 /*!
  * @function dispatch_after_f

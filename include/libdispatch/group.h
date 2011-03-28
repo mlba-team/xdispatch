@@ -78,12 +78,12 @@ dispatch_group_create(void);
  * @param block
  * The block to perform asynchronously.
  */
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef __BLOCKS__
 DISPATCH_EXPORT void
 dispatch_group_async(dispatch_group_t group,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
-#endif /* XDISPATCH_HAS_BLOCKS */
+#endif /* __BLOCKS__ */
 
 /*!
  * @function dispatch_group_async_f
@@ -185,12 +185,12 @@ dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout);
  * @param block
  * The block to submit when the group completes.
  */
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef __BLOCKS__
 DISPATCH_EXPORT void
 dispatch_group_notify(dispatch_group_t group,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
-#endif /* XDISPATCH_HAS_BLOCKS */
+#endif /* __BLOCKS__ */
 
 /*!
  * @function dispatch_group_notify_f

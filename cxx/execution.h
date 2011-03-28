@@ -27,9 +27,11 @@ class wrap {
 public:
 #ifdef XDISPATCH_HAS_BLOCKS
     wrap(operation* o)
-        : op(o), block(NULL) {}
-    wrap(const dispatch_block_t& b)
-        : op(NULL), block(b) {}
+        : op(o) {}
+    wrap(dispatch_block_t b)
+        : op(NULL) {
+        blck = XDISPATCH_BLOCK_COPY(b);
+    }
 #else
     wrap(iteration_operation* o)
         : op(o) {}
@@ -38,8 +40,8 @@ public:
         if(op && op->auto_delete())
             delete op;
 #ifdef XDISPATCH_HAS_BLOCKS
-        if(block)
-            XDISPATCH_BLOCK_RELEASE(block);
+        else
+            XDISPATCH_BLOCK_RELEASE(blck);
 #endif
     }
     void run(){
@@ -47,14 +49,14 @@ public:
             (*op)();
 #ifdef XDISPATCH_HAS_BLOCKS
         else
-            block();
+            blck();
 #endif
     }
 
 private:
     operation* op;
 #ifdef XDISPATCH_HAS_BLOCKS
-    dispatch_block_t block;
+    dispatch_block_t blck;
 #endif
 };
 

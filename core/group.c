@@ -21,6 +21,8 @@
 
 #include "queue_internal.h"
 
+#define _dispatch_Block_copy(x) ((typeof(x))_dispatch_Block_copy(x))
+
 dispatch_group_t
 dispatch_group_create(void){
          dispatch_group_t g = (dispatch_group_t)_get_empty_object();
@@ -65,6 +67,14 @@ dispatch_group_async_f(dispatch_group_t group, dispatch_queue_t queue, void *con
         dispatch_async_f(queue, dt, _group_helper);
 }
 
+#ifdef __BLOCKS__
+void
+dispatch_group_async(dispatch_group_t dg, dispatch_queue_t dq, dispatch_block_t db)
+{
+    dispatch_group_async_f(dg, dq, _dispatch_Block_copy(db), _dispatch_call_block_and_release);
+}
+#endif
+
 long
 dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout){
 	dispatch_time_t now = 0;
@@ -80,6 +90,14 @@ dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout){
 
    return !(cast_group(group)->count==0);
 }
+
+#ifdef __BLOCKS__
+void
+dispatch_group_notify(dispatch_group_t dg, dispatch_queue_t dq, dispatch_block_t db)
+{
+    dispatch_group_notify_f(dg, dq, _dispatch_Block_copy(db), _dispatch_call_block_and_release);
+}
+#endif
 
 void
 dispatch_group_notify_f(dispatch_group_t group, dispatch_queue_t queue, void *context, dispatch_function_t work){

@@ -27,7 +27,7 @@ queue xdispatch::current_queue(){
 }
 
 dispatch_time_t xdispatch::as_dispatch_time(const time_t& t){
-    return dispatch_time(t * NSEC_PER_SEC,0);
+    return dispatch_time(DISPATCH_TIME_NOW, t * NSEC_PER_SEC);
 }
 
 time_t xdispatch::as_time_t(dispatch_time_t t){

@@ -59,6 +59,12 @@
 #endif
 #include "shim/atomic.h"
 
+#ifdef __BLOCKS__
+# include <Block.h>
+# include "shim/Block_private.h"
+
+#endif
+
 #ifndef TRUE
 #	define TRUE 1
 #endif
@@ -84,18 +90,17 @@
 #	include "../include/libdispatch/semaphore.h"
 #	include "../include/libdispatch/once.h"
 
-__DISPATCH_BEGIN_DECLS
 #	include "config.h"
 #	include "datatypes.h"
 #	include "taskqueue.h"
-#	include "threadmanager.h"
 #	include "execution.h"
 #	include "events.h"
-#	include "threadpool.h"
-__DISPATCH_END_DECLS
+#   include "threadmanager.h"
 
 // the global queues
 extern dispatch_queue_t _dispatch_global_q[];
+//extern dispatch_queue_t _dispatch_main_q;
+extern const char* _dispatch_global_queues[];
 
 // some internally used funtions
 void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i);
@@ -103,6 +108,12 @@ void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_func
 struct timespec _dispatch_time_to_spec(dispatch_time_t t);
 dispatch_time_t _dispatch_spec_to_time(const struct timespec* s);
 
+#ifdef __BLOCKS__
+dispatch_block_t _dispatch_Block_copy(dispatch_block_t db);
+
+void _dispatch_call_block_and_release(void *block);
+void _dispatch_call_block_and_release2(void *block, void *ctxt);
+#endif
 #undef __DISPATCH_INDIRECT__
 
 #endif /* QUEUE_INTERNAL_H_ */

@@ -23,18 +23,14 @@
 #ifndef THREADMANAGER_H_
 #define THREADMANAGER_H_
 
-#include "threadpool.h"
-
 //
 // @file threadmanager.h
-// Manages all threads, i.e. controls the number of running
-// threads and suspends or wakes them if needed.
+// Manages all threads, i.e. which queue is currently
+// running on which thread
 // 
 
-//
-// The "main" of a thread
-// 
-void* _thread(void*);
+void _thread_man_init(void);
+void _thread_man_cleanup(void);
 
 //*
 // The "timer" thread
@@ -42,26 +38,9 @@ void* _thread(void*);
 void* _timer_thread(void*);
 
 //*
-// Spawns a new thread
-// 
-void _spawn_thread(_thread_t t);
-
-//*
 // Spawns a new timer thread
 // 
 void _spawn_timer_thread(void*);
-
-//
-// Returns the best number of threads to use
-// at the moment
-// defaults to the number of processors on the system
-// 
-unsigned int _ideal_thread_count();
-
-//
-// Tests if an additional thread should be spawned
-// 
-void _check_threads(_threadpool_t p);
 
 //
 // Sets the queue the thread is currently working on

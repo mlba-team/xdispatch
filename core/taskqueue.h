@@ -23,17 +23,19 @@
 #ifndef TASK_QUEUE_H_
 #define TASK_QUEUE_H_
 
-#include "shim/atomic.h"
+#include "queue_internal.h"
 #include "events.h"
 
-#ifdef WIN32
-#	define inline __inline
-#endif
-
-#ifdef WIN32
+#ifdef _WIN32
 #	define _d_suspend Sleep
 #else
 #	define _d_suspend usleep
+#endif
+
+#ifdef DEBUG
+# define Q_EXPORT DISPATCH_EXPORT
+#else
+# define Q_EXPORT DISPATCH_EXPORT
 #endif
 
 #define TQ_SAFE_ENTER(Q) while(atomic_swap_get(&(Q->access),1)==1) /*{ _d_suspend(1); } */
@@ -57,33 +59,35 @@ typedef struct _taskqueue_s {
 	_evt_loop_t loop;
 	char* name;
 	// The queue has a worker assigned
-	unsigned int worker;
+    ATOMIC_INT active_worker;
+    // or belongs to a thread pool
+    pthread_workqueue_t pool;
 }* _taskqueue_t;
 
 //
 //	Returns a new tasksqueue
-//	
-struct _taskqueue_s* _tq_create();
+//
+Q_EXPORT struct _taskqueue_s* _tq_create();
 //
 //	Sets a name for the queue
 //	
-void _tq_name(_taskqueue_t, const char* name);
+Q_EXPORT void _tq_name(_taskqueue_t, const char* name);
 //
 //	Initializes the given queue
 //	
-void _tq_init(struct _taskqueue_s* t);
+Q_EXPORT void _tq_init(struct _taskqueue_s* t);
 //
 //	Removes all items from the given queue
 //	
-void _tq_clear(struct _taskqueue_s* t);
+Q_EXPORT void _tq_clear(struct _taskqueue_s* t);
 //
 //	Destroys the given queue
 //	
-void _tq_destroy(struct _taskqueue_s* t);
+Q_EXPORT void _tq_destroy(struct _taskqueue_s* t);
 //
 //	Removes the given item from the given queue
 //	
-void _tq_remove(struct _taskqueue_s* t,_taskitem_t i);
+Q_EXPORT void _tq_remove(struct _taskqueue_s* t,_taskitem_t i);
 
 //
 //	Tests if the given queue is empty

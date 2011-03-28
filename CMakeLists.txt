@@ -66,7 +66,7 @@ source_group(core FILES ${CORE})
 source_group(cxx FILES ${CXX})
 
 
-if(HAVE_NATIVE_DISPATCH_H)
+if(NOT HAVE_NATIVE_DISPATCH_H)
   
   # add new target
   add_library(${NAME} SHARED ${INCL} ${CORE} ${CXX_INCL} ${CXX} ${SHIM})
@@ -86,7 +86,7 @@ else()
 	set(GCC_VERSION "${GCC_VERSION}")
 	#message("${GCC_VERSION}")
 	if(GCC_VERSION STREQUAL "45")
-		mz_add_definition(HAVE_NATIVE_DISPATCH_H)
+        mz_add_definition(HAVE_NATIVE_DISPATCH_H)
 		mz_add_definition(HAVE_BLOCKS_IMPL)
 		message("   >> bypassing Apple's crippled C++ blocks")
 	endif()
@@ -107,9 +107,9 @@ endif()
 # tell everybody we have libdispatch support here, perhaps even native by the OS
 if(HAVE_NATIVE_DISPATCH_H)
 	if(PARENT_SCOPE)
-		mz_add_definition("HAVE_NATIVE_DISPATCH_H" PARENT_SCOPE)
+        mz_add_definition("HAVE_NATIVE_DISPATCH_H" PARENT_SCOPE)
 	else()
-		mz_add_definition("HAVE_NATIVE_DISPATCH_H")
+        mz_add_definition("HAVE_NATIVE_DISPATCH_H")
 	endif()
 endif()
 
