@@ -27,7 +27,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include "dispatch.h"
 #include <iostream>
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -43,7 +42,7 @@ queues.
 
 @see xdispatch::dispatch for creation of queues
 */
-class queue {
+class XDISPATCH_EXPORT queue {
 
 public:
     /**
@@ -186,8 +185,8 @@ private:
 
 };
 
-std::ostream& operator<<(std::ostream& stream, const queue* q);
-std::ostream& operator<<(std::ostream& stream, const queue& q);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const queue* q);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const queue& q);
 
 bool operator ==(const queue& a, const queue& b);
 bool operator ==(const queue& a, const dispatch_queue_t& b);

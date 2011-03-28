@@ -47,7 +47,7 @@ executing.
 See also Apple's Documentation of Dispatch Groups
 */
 
-class QDispatchGroup : public QObject, public xdispatch::group {
+class Q_DECL_EXPORT QDispatchGroup : public QObject, public xdispatch::group {
 
 	Q_OBJECT
 
@@ -121,7 +121,7 @@ private:
 	Private* d;
 };
 
-QDebug operator<<(QDebug, const QDispatchGroup&);
+Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);
 
 QT_END_NAMESPACE
 QT_END_HEADER

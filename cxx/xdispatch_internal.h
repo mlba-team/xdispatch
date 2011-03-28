@@ -42,6 +42,12 @@
 #define __XDISPATCH_INDIRECT__
 #endif
 
+#ifdef _WIN32
+# define XDISPATCH_EXPORT __declspec(dllexport)
+#else
+# define XDISPATCH_EXPORT __attribute__((visibility("default")))
+#endif
+
 #include "../include/xdispatch/lambda_blocks.h"
 #include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/base.h"

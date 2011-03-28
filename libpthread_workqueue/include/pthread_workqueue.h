@@ -30,6 +30,8 @@
 #ifndef _PTHREAD_WORKQUEUE_H
 #define _PTHREAD_WORKQUEUE_H
 
+#define PTHREAD_WORKQUEUE_USER_IMPLEMENTATION
+
 #if _WIN32
 #define _PWQ_EXPORT __declspec(dllexport)
 #else
@@ -54,10 +56,6 @@ typedef struct {
 
 #if defined(__cplusplus)
 	extern "C" {
-#endif
-
-#ifdef _WIN32
-# define VISIBLE __declspec(dllexport)
 #endif
 		
 int _PWQ_EXPORT pthread_workqueue_create_np(pthread_workqueue_t * workqp,

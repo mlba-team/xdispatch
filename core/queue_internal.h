@@ -47,6 +47,12 @@
 #include <assert.h>
 
 #ifdef _WIN32
+# define DISPATCH_EXPORT __declspec(dllexport)
+#else
+# define DISPATCH_EXPORT __attribute__((visibility("default")))
+#endif
+
+#ifdef _WIN32
 # include "shim/windows.h"
 #else
 # include "shim/posix.h"

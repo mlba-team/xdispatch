@@ -23,6 +23,12 @@
 #ifndef DISPATCH_H_
 #define DISPATCH_H_
 
+#ifdef _WIN32
+# define DISPATCH_EXPORT __declspec(dllexport)
+#else
+# define DISPATCH_EXPORT __attribute__((visibility("default")))
+#endif
+
 #if defined(__cplusplus)
 #    define __DISPATCH_BEGIN_DECLS	extern "C" {
 #    define __DISPATCH_END_DECLS	}
@@ -56,6 +62,7 @@
 #include "once.h"
 
 #undef __DISPATCH_INDIRECT__
+#undef DISPATCH_EXPORT
 
 
 #endif /* DISPATCH_H_ */

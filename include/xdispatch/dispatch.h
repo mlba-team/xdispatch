@@ -31,6 +31,12 @@
 
 #if defined(__cplusplus)
 
+#ifdef _WIN32
+# define XDISPATCH_EXPORT __declspec(dllexport)
+#else
+# define XDISPATCH_EXPORT __attribute__((visibility("default")))
+#endif
+
 # define __XDISPATCH_BEGIN_NAMESPACE	namespace xdispatch {
 # define __XDISPATCH_END_NAMESPACE }
 
@@ -42,6 +48,8 @@
 # include "group.h"
 # include "semaphore.h"
 # undef __XDISPATCH_INDIRECT__
+
+#undef XDISPATCH_EXPORT
 
 #endif
 

@@ -27,15 +27,13 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include "dispatch.h"
-
 __XDISPATCH_BEGIN_NAMESPACE
 
 /**
   @file
   */
 
-class synclock;
+class XDISPATCH_EXPORT synclock;
 
 /**
   Returns the synclock used to protect the area
@@ -43,7 +41,7 @@ class synclock;
 
   @see synchronized
   */
-synclock get_lock_for_key(unsigned int key);
+XDISPATCH_EXPORT synclock get_lock_for_key(unsigned int key);
 
 /**
   Provides an easy locking mechanism used to
@@ -52,7 +50,7 @@ synclock get_lock_for_key(unsigned int key);
   @see synchronized
   @see synchronize
   */
-class synclock {
+class XDISPATCH_EXPORT synclock {
 
 public:
     synclock();

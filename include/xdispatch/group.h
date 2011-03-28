@@ -26,7 +26,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include "dispatch.h"
 #include <iostream>
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -41,7 +40,7 @@ executing.
 See also Apple's Documentation of Dispatch Groups
 */
 
-class group {
+class XDISPATCH_EXPORT group {
 
 public:
     /**
@@ -122,8 +121,8 @@ private:
     data* d;
 };
 
-std::ostream& operator<<(std::ostream& stream, const group* );
-std::ostream& operator<<(std::ostream& stream, const group& );
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const group* );
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const group& );
 
 __XDISPATCH_END_NAMESPACE
 

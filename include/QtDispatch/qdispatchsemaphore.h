@@ -41,7 +41,7 @@ QT_MODULE(Dispatch)
   when the calling thread needs to be blocked. If the calling semaphore
   does not need to block, no kernel call is made."
   */
-class QDispatchSemaphore : public xdispatch::semaphore {
+class Q_DECL_EXPORT QDispatchSemaphore : public xdispatch::semaphore {
 	friend QDebug operator<<(QDebug, const QDispatchSemaphore&);
 
 public:
@@ -76,7 +76,7 @@ public:
 
 };
 
-QDebug operator<<(QDebug, const QDispatchSemaphore&);
+Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchSemaphore&);
 
 QT_END_NAMESPACE
 QT_END_HEADER

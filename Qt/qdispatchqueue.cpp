@@ -90,4 +90,15 @@ void QDispatchQueue::after(dispatch_block_t block, const QTime& t){
 }
 #endif
 
+Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue* q)
+{
+    dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
+    return dbg.space();
+}
+Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue& q)
+{
+    dbg.nospace() << "QDispatchQueue (" << q.label().c_str() << ")";
+    return dbg.space();
+}
+
 QT_END_NAMESPACE

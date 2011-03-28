@@ -27,7 +27,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include "dispatch.h"
 #include <memory>
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -40,7 +39,7 @@ __XDISPATCH_BEGIN_NAMESPACE
   when the calling thread needs to be blocked. If the calling semaphore
   does not need to block, no kernel call is made."
   */
-class semaphore {
+class XDISPATCH_EXPORT semaphore {
 
 public:
     /**
@@ -114,8 +113,8 @@ private:
 
 };
 
-std::ostream& operator<<(std::ostream& stream, const semaphore*);
-std::ostream& operator<<(std::ostream& stream, const semaphore&);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const semaphore*);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const semaphore&);
 
 __XDISPATCH_END_NAMESPACE
 

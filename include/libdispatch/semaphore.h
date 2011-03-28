@@ -57,7 +57,7 @@ __DISPATCH_BEGIN_DECLS
  * @result
  * The newly created semaphore, or NULL on failure.
  */
-dispatch_semaphore_t
+DISPATCH_EXPORT dispatch_semaphore_t
 dispatch_semaphore_create(long value);
 
 /*!
@@ -80,7 +80,7 @@ dispatch_semaphore_create(long value);
  * @result
  * Returns zero on success, or non-zero if the timeout occurred.
  */
-long
+DISPATCH_EXPORT long
 dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
 
 /*!
@@ -100,7 +100,7 @@ dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
  * This function returns non-zero if a thread is woken. Otherwise, zero is
  * returned.
  */
-long
+DISPATCH_EXPORT long
 dispatch_semaphore_signal(dispatch_semaphore_t dsema);
 
 __DISPATCH_END_DECLS

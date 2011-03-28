@@ -26,6 +26,8 @@ if(NOT HAS_MZ_GLOBAL)
 		set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE} CACHE PATH "Library output path")
 		set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE} CACHE PATH "Executable output path")
 		message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE}")
+        set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -fvisibility=hidden)
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fvisibility=hidden)
 	endif()
 endif()
 
@@ -64,7 +66,7 @@ source_group(core FILES ${CORE})
 source_group(cxx FILES ${CXX})
 
 
-if(NOT HAVE_NATIVE_DISPATCH_H)
+if(HAVE_NATIVE_DISPATCH_H)
   
   # add new target
   add_library(${NAME} SHARED ${INCL} ${CORE} ${CXX_INCL} ${CXX} ${SHIM})
