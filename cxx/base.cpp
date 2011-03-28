@@ -19,7 +19,7 @@ queue xdispatch::global_queue(queue_priority p){
     default:
         selection = DISPATCH_QUEUE_PRIORITY_DEFAULT;
     }
-    return queue(dispatch_get_global_queue(selection, NULL));
+    return queue(dispatch_get_global_queue(selection, 0));
 }
 
 queue xdispatch::current_queue(){
