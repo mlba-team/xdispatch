@@ -1,0 +1,26 @@
+/**
+@page change_list CHANGELIST
+@author Marius Zwicker / MLBA
+@date 27.03.2011
+
+@section changes-2 Version 0.2
+
+ - Complete overhaul concerning code layout
+ - Introduction of an additional "plain c++" interface
+ - Extension of the Qt Interface to use a real dispatch_queue
+   in the main thread as well by using an experimental QDispatchCoreApplication
+ - Introduction of the 'synchronized' keyword
+ - Reduction of pointer use
+ - Simplification of the entire QtDispatch API
+ 
+
+@section changes-1 Version 0.1
+
+ - First release of libXDispatch
+ - Fully functional, but less performant - however completely
+   platform independent rewrite of libdispatch
+ - QtDispatch integrating the main dispatch queue as events into 
+   the main event loop of a QApplication as well as providing support
+   for QRunnables
+   
+*/

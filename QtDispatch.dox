@@ -1,0 +1,35 @@
+/**
+\addtogroup QtDispatch
+
+@author Marius Zwicker / MLBA
+@date 28.03.2011
+
+@section qt_about Overview
+
+QtDispatch is an additional Qt Module building on QtCore and providing a custom Qt adapted interface
+to use libDispatch. This interface is fully compatible with the generic C++ interface provided by
+\ref libXDispatch.
+
+As integration into Qt, it is possible to dispatch QRunnables onto groups and queues as well.
+For integrating the main queue into your Qt Application we created a (currently experimental) QDispatchCoreApplication
+and QDispatchApplication using the dispatch mechanisms for handling all incoming events and thus
+using the dispatch main loop. To simplify the use of blocks within your Qt code as well, we added
+QBlockRunnable, a simple QRunnable created by passing an individual block.
+
+@section qt_use Usage
+
+You can use QtDispach (in case you have Qt > 4.6 available on your system) by including QtDispatch or
+one of the individual modules (all found within include/QtDispatch). This will automatically include 
+all other needed headers as well. Below you find a list of the available classes:
+
+ - QDispatch
+ - QDispatchQueue
+ - QDispatchGroup
+ - QDispatchSemaphore
+ - QBlockRunnable
+ - QIterationBlockRunnable
+ - QIterationRunnable
+ - QDispatchCoreApplication
+ - QDispatchApplication
+   
+*/
