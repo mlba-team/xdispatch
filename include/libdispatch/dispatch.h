@@ -23,57 +23,39 @@
 #ifndef DISPATCH_H_
 #define DISPATCH_H_
 
-#ifdef __BLOCKS__
-#   include <dispatch/dispatch.h>
-#	define NSEC_PER_MSEC 1000000ll
+#if defined(__cplusplus)
+#    define __DISPATCH_BEGIN_DECLS	extern "C" {
+#    define __DISPATCH_END_DECLS	}
 #else
-#	ifdef HAVE_NATIVE_DISPATCH_H
-#		include <dispatch/dispatch.h>
-#       include "dispatch_blocks.h"
+#    define __DISPATCH_BEGIN_DECLS
+#    define __DISPATCH_END_DECLS
+#endif
 
-#		define NSEC_PER_MSEC 1000000ll
+#include <stddef.h>
+#include <stdint.h>
+#ifndef _WIN32
+#    include <stdbool.h>
+#endif
+#include <stdarg.h>
 
-/*#	elif defined(_GNUC__)
-#		warning "Working on support for this platform, but not completed yet"
-#	else
-#		pragma message("Working on support for this platform, but not completed yet")
-*/
-#	endif
+#define DISPATCH_API_VERSION 20090501
 
-#   if defined(__cplusplus)
-#       define __DISPATCH_BEGIN_DECLS	extern "C" {
-#       define __DISPATCH_END_DECLS	}
-#   else
-#       define __DISPATCH_BEGIN_DECLS
-#       define __DISPATCH_END_DECLS
-#   endif
+#ifndef __DISPATCH_INDIRECT__
+#define __DISPATCH_INDIRECT__
+#endif
 
-#   include <stddef.h>
-#   include <stdint.h>
-#   ifndef WIN32
-#       include <stdbool.h>
-#   endif
-#   include <stdarg.h>
-
-#   define DISPATCH_API_VERSION 20090501
-
-#   ifndef __DISPATCH_INDIRECT__
-#   define __DISPATCH_INDIRECT__
-#   endif
-
-#   include "base.h"
-#   include "object.h"
-#   include "time.h"
-#   include "queue.h"
+#include "base.h"
+#include "object.h"
+#include "time.h"
+#include "queue.h"
 /* DISABLED UNTIL CLEAN IMPLEMENTATION IS AVAILABLE
 #include "source.h"
    */
-#   include "group.h"
-#   include "semaphore.h"
-#   include "once.h"
+#include "group.h"
+#include "semaphore.h"
+#include "once.h"
 
-#   undef __DISPATCH_INDIRECT__
+#undef __DISPATCH_INDIRECT__
 
-#endif // ELSE _BLOCKS_
 
 #endif /* DISPATCH_H_ */

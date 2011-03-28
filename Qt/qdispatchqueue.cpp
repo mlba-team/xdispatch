@@ -19,9 +19,6 @@
 */
 
 
-
-#include "../core/atomic.h"
-
 #include <QRunnable>
 #include <QString>
 #include "../include/QtDispatch/qdispatch.h"

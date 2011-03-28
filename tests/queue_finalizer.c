@@ -31,7 +31,7 @@
 #	include <time.h>
 #endif
 
-#include "../core/atomic.h"
+#include "../core/shim/atomic.h"
 #include "tests.h"
 
 void *ctxt_magic;

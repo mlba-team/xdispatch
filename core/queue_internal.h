@@ -31,12 +31,13 @@
 #endif
 
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
+#include <pthread_workqueue.h>
 
 #ifndef DEBUG
 #	ifndef NDEBUG
@@ -45,28 +46,12 @@
 #endif
 #include <assert.h>
 
-#ifdef WIN32
-#	define inline __inline
-#endif
-
-#ifdef WIN32
-#	include <windows.h>
-#	include "../pthreads-w32/pthread.h"
-#	include "../pthreads-w32/semaphore.h"
+#ifdef _WIN32
+# include "shim/windows.h"
 #else
-#	include <sys/time.h>
-#	include <unistd.h>
-#	include <pthread.h>
-#   include <semaphore.h>
-#	include <stdbool.h>
+# include "shim/posix.h"
 #endif
-
-// memory leak detection on windows
-#if defined(WIN32) && defined(DEBUG)
-#	define _CRTDBG_MAP_ALLOC
-#	include <stdlib.h>
-#	include <crtdbg.h>
-#endif
+#include "shim/atomic.h"
 
 #ifndef TRUE
 #	define TRUE 1
@@ -76,35 +61,11 @@
 #	define FALSE 0
 #endif
 
-// define grade of implementation
-#ifdef HAVE_NATIVE_DISPATCH_H
-#   if !defined(__clang__) && defined(HAS_BLOCKS)
-#       define BLOCKS_IMPL_ONLY
-#   endif
-#else
-#   if defined(__BLOCKS__)
-#       define DISPATCH_IMPL_ONLY
-#   else
-#       define DISPATCH_FULL_IMPL
-#	endif
-#endif
-
 #define DISPATCH_API_VERSION 20090501
-
-// Apple specific hack
-#ifdef HAVE_NATIVE_DISPATCH_H
-#	include <dispatch/dispatch.h>
-#endif
 
 #ifndef __DISPATCH_INDIRECT__
 #define __DISPATCH_INDIRECT__
 #endif
-
-// Apple specific hack
-#ifdef BLOCKS_IMPL_ONLY 
-#	include "../group_blocks.h"
-#	include "../queue_blocks.h"
-#elif !defined(HAVE_NATIVE_DISPATCH_H)
 
 #	include "../include/libdispatch/base.h"
 #	include "../include/libdispatch/object.h"
@@ -119,7 +80,6 @@
 
 __DISPATCH_BEGIN_DECLS
 #	include "config.h"
-#	include "atomic.h"
 #	include "datatypes.h"
 #	include "taskqueue.h"
 #	include "threadmanager.h"
@@ -132,12 +92,10 @@ __DISPATCH_END_DECLS
 extern dispatch_queue_t _dispatch_global_q[];
 
 // some internally used funtions
-inline void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i);
-inline void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_function_t work);
+void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i);
+void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_function_t work);
 struct timespec _dispatch_time_to_spec(dispatch_time_t t);
 dispatch_time_t _dispatch_spec_to_time(const struct timespec* s);
-
-#endif
 
 #undef __DISPATCH_INDIRECT__
 

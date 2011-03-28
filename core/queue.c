@@ -45,7 +45,7 @@ dispatch_queue_t dispatch_get_main_queue(){
 //
 // Signals the workers that a new item is available
 //
-inline void _signal(dispatch_queue_t queue){
+void _signal(dispatch_queue_t queue){
 		_taskqueue_t q = cast_queue(queue);
 
 		// wake a sleeping thread to handle our task
@@ -62,7 +62,7 @@ inline void _signal(dispatch_queue_t queue){
 //
 // Dispatches an existing item without notification to the workers
 //
-inline void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i){
+void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i){
 		_taskqueue_t q = cast_queue(queue);
 		dispatch_retain(queue);
 
@@ -73,7 +73,7 @@ inline void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i)
 //
 // Dispatches a function without notification to the workers
 //
-inline void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_function_t work){
+void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_function_t work){
 		_taskitem_t i = _tq_item();
 
 		assert(queue);

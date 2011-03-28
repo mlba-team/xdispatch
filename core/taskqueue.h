@@ -23,7 +23,7 @@
 #ifndef TASK_QUEUE_H_
 #define TASK_QUEUE_H_
 
-#include "atomic.h"
+#include "shim/atomic.h"
 #include "events.h"
 
 #ifdef WIN32

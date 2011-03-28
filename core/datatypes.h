@@ -25,7 +25,6 @@
 
 #include "taskqueue.h"
 #include "queue_internal.h"
-#include "atomic.h"
 
 #ifndef TRUE
 #	define TRUE 1
@@ -71,7 +70,7 @@ typedef struct _sem_obj_s {
 static dispatch_object_t _get_empty_object(){
     size_t size = 0;
 	size_t obj_size = 0;
-	dispatch_object_t obj = NULL;
+    dispatch_object_t obj = NULL;
 	if(sizeof(struct _sem_obj_s) > size)
 		size = sizeof(struct _sem_obj_s);
 	if(sizeof(struct _group_obj_s) > size)

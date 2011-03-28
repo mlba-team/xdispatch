@@ -23,7 +23,7 @@
 #define CXX_TESTS_H_
 
 #include "munit/MUnit.h"
-#include "../core/atomic.h"
+#include "../core/shim/atomic.h"
 
 #ifdef __cplusplus
 # include <xdispatch/dispatch>

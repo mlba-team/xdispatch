@@ -22,10 +22,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#ifdef Darwin
-#	include <CoreServices/CoreServices.h>
-#endif
-
 #include "queue_internal.h"
 
 /* Once-only initialisation of the key */
@@ -130,7 +126,7 @@ unsigned int _ideal_thread_count(){
 		ct = sysinfo.dwNumberOfProcessors;
 #else
 #	ifdef Darwin
-		ct = MPProcessorsScheduled();
+        ct = 2;
 #	else
 		ct = (int)sysconf(_SC_NPROCESSORS_ONLN);
 #	endif

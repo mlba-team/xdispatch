@@ -25,7 +25,7 @@
 /**
 Selects the queue with the highest priority item
 */
-inline dispatch_queue_t _select_queue(){
+dispatch_queue_t _select_queue(){
 	// TODO we need a better bonus calculation time
 	clock_t bonus_times[3] = { 
 		BONUS_LOW,  

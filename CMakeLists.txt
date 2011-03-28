@@ -41,19 +41,6 @@ if(HAVE_PTHREAD_WORKQUEUE_H)
     message("   >> found native pthread_workqueue implementation, using it")
 endif()
 
-# do we have stdint?
-CHECK_INCLUDE_FILES (stdint.h HAVE_STDINT_H)
-if(NOT HAVE_STDINT_H)
-	if(MZ_IS_VS)
-		INCLUDE_DIRECTORIES(
-			${CMAKE_CURRENT_SOURCE_DIR}/win
-		)
-	else()
-		fail("stdint.h needed but not found")
-	endif()
-endif()
-
-
 # add pthreads on windows as well
 mz_add_library(pthreads-w32 pthreads-w32)
 
@@ -70,6 +57,7 @@ file(GLOB INCL include/libdispatch/*.h)
 file(GLOB CXX_INCL include/xdispatch/*.h)
 file(GLOB CORE core/*.c core/*.h)
 file(GLOB CXX cxx/*.cpp cxx/*.h)
+file(GLOB SHIM core/shim/*.h)
 source_group(dispatch FILES ${INCL})
 source_group(xdispatch FILES ${CXX_INCL})
 source_group(core FILES ${CORE})
@@ -79,7 +67,7 @@ source_group(cxx FILES ${CXX})
 if(NOT HAVE_NATIVE_DISPATCH_H)
   
   # add new target
-  add_library(${NAME} STATIC ${INCL} ${CORE} ${CXX_INCL} ${CXX})
+  add_library(${NAME} SHARED ${INCL} ${CORE} ${CXX_INCL} ${CXX} ${SHIM})
   
   # link this target with all needed libraries
   if(MZ_IS_VS)
@@ -102,15 +90,15 @@ else()
 	endif()
 	
 	  # add new target
-  add_library(${NAME} STATIC ${INCL} ${CXX} ${CXX_INCL})
+    add_library(${NAME} SHARED ${INCL} ${CXX} ${CXX_INCL})
   
-  # link this target with all needed libraries
-  if(MZ_IS_VS)
-    target_link_libraries(${NAME} pthreads-w32)
-  else()
-    target_link_libraries(${NAME} pthread)
-  endif()
-  mz_target_props(${NAME})
+      # link this target with all needed libraries
+      if(MZ_IS_VS)
+        target_link_libraries(${NAME} pthreads-w32)
+      else()
+        target_link_libraries(${NAME} pthread)
+      endif()
+      mz_target_props(${NAME})
 	
 endif()
 

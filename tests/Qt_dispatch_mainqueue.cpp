@@ -25,7 +25,7 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/atomic.h"
+#include "../core/shim/atomic.h"
 
 #define RUN_TIMES 2000
 

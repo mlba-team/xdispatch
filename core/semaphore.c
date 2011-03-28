@@ -32,9 +32,9 @@ dispatch_semaphore_create(long value){
 
 long
 dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout){
-    struct timespec out = _dispatch_time_to_spec(timeout);
+    //struct timespec out = _dispatch_time_to_spec(timeout);
 
-    return sem_timedwait(&cast_sem(dsema)->lock, &out);
+    return sem_wait(&cast_sem(dsema)->lock);
 }
 
 long
