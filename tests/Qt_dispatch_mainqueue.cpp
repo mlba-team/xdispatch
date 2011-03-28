@@ -21,6 +21,7 @@
 
 #ifdef QT_CORE_LIB
 
+#include <QTime>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
@@ -40,7 +41,10 @@ public:
             MU_ASSERT_EQUAL(RUN_TIMES, *worker);
             delete worker;
             //MU_MESSAGE("Deleted worker");
-            MU_PASS("");
+            MU_MESSAGE("System usage should be zero");
+            QDispatch::mainQueue().after(${
+                MU_PASS("");
+            }, QTime::currentTime().addSecs(20));
         }
     }
 

@@ -24,12 +24,6 @@
 #include <QPointer>
 #include <QTime>
 
-#ifdef WIN32
-#	include <Windows.h>
-#else
-#	include <unistd.h>
-#endif
-
 #include "../include/QtDispatch/qdispatchqueue.h"
 #include "../include/QtDispatch/qdispatchgroup.h"
 #include "../include/QtDispatch/qdispatch.h"
@@ -41,7 +35,7 @@ QT_BEGIN_NAMESPACE
 
 class QDispatchGroup::Private {
 public:
-    Private() : obj(NULL), notify(NULL), references(1), pending_jobs(0){}
+    Private() : obj(NULL), notify(NULL), references(2) {}
 	~Private() {
         if(notify && notify->auto_delete())
 			delete notify;
@@ -53,17 +47,23 @@ public:
         if(queue && notify)
             queue->async(notify);
 
-        if(!obj)
-            return;
-
-        emit obj->all_finished();
+        if(obj)
+            emit obj->all_finished();
 	}
+
+    static void notifier(void* dt){
+        Q_ASSERT(dt);
+        QDispatchGroup::Private* d = static_cast<QDispatchGroup::Private*>(dt);
+
+        d->runNotify();
+        if(!d->obj && !d->references.deref())
+            delete d;
+    }
 
     QPointer<QDispatchGroup> obj;
     xdispatch::operation* notify;
     QDispatchQueue* queue;
     QAtomicInt references;
-    QAtomicInt pending_jobs;
 };
 
 QDispatchGroup::QDispatchGroup() : d(new Private()){
@@ -85,6 +85,7 @@ QDispatchGroup::QDispatchGroup(const xdispatch::group & obj) : xdispatch::group(
 QDispatchGroup::~QDispatchGroup(){
     if(!d->references.deref())
         delete d;
+
 }
 
 bool QDispatchGroup::wait(const QTime& t){
@@ -94,11 +95,20 @@ bool QDispatchGroup::wait(const QTime& t){
 void QDispatchGroup::async(QRunnable *r, const xdispatch::queue& q){
     Q_ASSERT(r);
     async(new RunnableOperation(r), q);
+    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+}
+
+void QDispatchGroup::async(xdispatch::operation * op, const xdispatch::queue & q){
+    Q_ASSERT(op);
+    xdispatch::group::async(op, q);
+    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 void QDispatchGroup::notify(QRunnable *r, const xdispatch::queue& q){
     Q_ASSERT(r);
     notify(new RunnableOperation(r), q);
+
+    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q){
@@ -106,10 +116,14 @@ void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q)
     d->notify = op;
     d->queue = new QDispatchQueue(q);
 
-    xdispatch::group::notify(new xdispatch::ptr_operation<QDispatchGroup::Private>(d, &QDispatchGroup::Private::runNotify), q);
+    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS
+
+void QDispatchGroup::async(dispatch_block_t b, const xdispatch::queue & q){
+    async(new QBlockRunnable(b), q);
+}
 
 void QDispatchGroup::notify(dispatch_block_t b, const xdispatch::queue& q){
     notify(new QBlockRunnable(b), q);
@@ -119,7 +133,7 @@ void QDispatchGroup::notify(dispatch_block_t b, const xdispatch::queue& q){
 
 QDebug operator<<(QDebug dbg, const QDispatchGroup& g)
 {	
-    dbg.nospace() << "QDispatchGroup (" << g.d->pending_jobs << " pending, " << (g.d->notify==0 ? "no" : "has") << " notifier)";
+    dbg.nospace() << "QDispatchGroup (" << (g.d->notify==0 ? "no" : "has") << " notifier)";
 	return dbg.space();
 }
 

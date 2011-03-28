@@ -10,8 +10,8 @@ source_group(tests FILES ${TESTSRCS})
 
 if(QT4_FOUND)
 	# test cases for Qt Interface
-	file(GLOB QTESTHEADER *.h)
-	qt4_wrap_cpp(MOC ${QTESTHEADER})
+	file(GLOB QTESTHEADER Qt_*.cpp)
+	qt4_wrap_cpp(TESTMOC ${QTESTHEADER})
 	
   set(LIB ${QT_LIBRARIES} QtDispatch)
 endif()
@@ -20,11 +20,12 @@ endif()
 INCLUDE_DIRECTORIES(
 	${QT_QTCORE_INCLUDE_DIR}
  	${QT_QTTEST_INCLUDE_DIR}
+ 	${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
 # add new exec target
-add_executable(xdispatch_tests ${TESTSRCS} ${TESTMOC})
+add_executable(xdispatch_tests ${TESTSRCS})
 
 # link this target with all needed libraries
 if(MZ_IS_VS)
