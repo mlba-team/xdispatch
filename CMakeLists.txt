@@ -29,13 +29,16 @@ if(NOT HAS_MZ_GLOBAL)
 	endif()
 endif()
 
-# add pthreads on windows as well
-mz_add_library(pthreads-w32 pthreads-w32)
-
 # do we have native dispatch support on this platform?
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 if(HAVE_NATIVE_DISPATCH_H)
 	message("   >> found native libDispatch implementation, using it")
+endif()
+
+# do we have kernel support for pthread_workqueues?
+CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
+if(HAVE_PTHREAD_WORKQUEUE_H)
+    message("   >> found native pthread_workqueue implementation, using it")
 endif()
 
 # do we have stdint?
@@ -48,6 +51,18 @@ if(NOT HAVE_STDINT_H)
 	else()
 		fail("stdint.h needed but not found")
 	endif()
+endif()
+
+
+# add pthreads on windows as well
+mz_add_library(pthreads-w32 pthreads-w32)
+
+# add user space pthread_workqueue implementation (if needed)
+if(NOT HAVE_PTHREAD_WORKQUEUE_H)
+    mz_add_library(libpthread_workqueue libpthread_workqueue)
+    INCLUDE_DIRECTORIES(
+        libpthread_workqueue/include
+    )
 endif()
 
 # core lib

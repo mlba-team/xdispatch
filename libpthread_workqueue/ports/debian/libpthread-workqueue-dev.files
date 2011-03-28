@@ -1,0 +1,3 @@
+usr/lib/libpthread_workqueue.so
+usr/include/pthread_workqueue.h
+usr/share/man/man3/*

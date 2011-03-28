@@ -1,0 +1,6 @@
+libpthread-workqueue (@@VERSION@@-1) unstable; urgency=low
+
+  * Initial release (Closes: #???)
+
+ -- Mark Heily <mark@heily.com>  Sat, 19 Jun 2010 15:49:28 -0400
+

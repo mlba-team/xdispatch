@@ -1,0 +1,49 @@
+This package was debianized by Mark Heily <mark@heily.com> on
+Sat, 19 Jun 2010 15:49:28 -0400
+
+It was downloaded from http://mark.heily.com/libpthread_workqueue/trunk/
+
+Upstream Author(s):
+
+    Mark Heily <mark@heily.com>
+
+Copyright:
+
+    Copyright (c) 2010, Mark Heily <mark@heily.com>
+    Copyright (c) 2009, Stacey Son <sson@freebsd.org>
+    Copyright (c) 2000-2008, Apple Inc.
+
+License:
+
+    Copyright (c) 2010, Mark Heily <mark@heily.com>
+    Copyright (c) 2009, Stacey Son <sson@freebsd.org>
+    Copyright (c) 2000-2008, Apple Inc.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+        notice unmodified, this list of conditions, and the following
+        disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+   
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The Debian packaging is:
+
+    Copyright (C) 2010 Mark Heily <mark@heily.com>
+
+and is licensed under the BSD license,
+see `/usr/share/common-licenses/BSD'.
+
