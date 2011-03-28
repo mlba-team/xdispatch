@@ -67,7 +67,10 @@ public:
 	@param q The Queue to use. If no Queue is given, the system default queue will be used
 	*/
     void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
-    using xdispatch::group::async;
+    void async(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
+#ifdef XDISPATCH_HAS_BLOCKS
+    void async(dispatch_block_t b, const xdispatch::queue& = xdispatch::global_queue());
+#endif
 	/**
 	Waits until the given time has passed
 	or all dispatched runnables in the group were executed

@@ -22,11 +22,33 @@
 #ifdef QT_CORE_LIB
 
 #include <QTest>
+#include <QObject>
 #include <QCoreApplication>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 #include "../core/atomic.h"
+
+static unsigned int* worker = 0;
+
+class GroupTest : public QObject {
+
+    Q_OBJECT
+
+public slots:
+    void notify(){
+        MU_MESSAGE("signal 'all_finished' emitted");
+
+        if(*worker == 0)
+            return;
+
+        MU_ASSERT_EQUAL(*worker,4);
+        delete worker;
+        this->deleteLater();
+        MU_PASS("All Done");
+    }
+
+};
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
@@ -42,10 +64,12 @@ extern "C" void Qt_dispatch_group(){
 
 	MU_BEGIN_TEST(Qt_dispatch_group);
 
-	unsigned int* worker = new unsigned int;
+    worker = new unsigned int;
 	*worker = 0;
 
 	QDispatchGroup group;
+    GroupTest* gt = new GroupTest;
+    QObject::connect(&group, SIGNAL(all_finished()), gt, SLOT(notify()) );
 
     group.async(${
 		QTest::qSleep(400);
@@ -67,15 +91,12 @@ extern "C" void Qt_dispatch_group(){
 		atomic_inc_get(worker);
 	});
 
-	group.notify(new QBlockRunnable(${
-		MU_ASSERT_EQUAL(*worker,4);
-		delete worker;
-		MU_PASS("All Done");
-	}));
-
 	app.exec();
 	MU_END_TEST;
 }
 
 #endif
+
+#include <moc_Qt_dispatch_group.cxx>
+
 #endif
