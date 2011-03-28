@@ -22,6 +22,8 @@
 
 #if defined(XDISPATCH_HAS_BLOCKS) && !defined(__BLOCKS__)
 
+__XDISPATCH_USE_NAMESPACE
+
 void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
     dispatch_group_async_f(group,queue, new wrap(block), run_wrap);
 }
@@ -39,7 +41,7 @@ void dispatch_sync(dispatch_queue_t queue, dispatch_block_t block){
 }
 
 void dispatch_apply(size_t iterations, dispatch_queue_t queue, dispatch_iteration_block_t block){
-    dispatch_apply_f(iterations, queue, new iteration_wrap(block,iterations), run_iteration_wrap);
+    dispatch_apply_f(iterations, queue, new iteration_wrap(block,iterations), run_iter_wrap);
 }
 
 void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block){

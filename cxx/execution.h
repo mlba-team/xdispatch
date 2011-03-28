@@ -23,7 +23,7 @@
 
 __XDISPATCH_BEGIN_NAMESPACE
 
-struct wrap {
+class wrap {
 public:
 #ifdef XDISPATCH_HAS_BLOCKS
     wrap(operation* o)
@@ -58,7 +58,7 @@ private:
 #endif
 };
 
-struct iteration_wrap {
+class iteration_wrap {
 public:
 #ifdef XDISPATCH_HAS_BLOCKS
     iteration_wrap(iteration_operation* o, size_t ct)

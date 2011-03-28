@@ -65,11 +65,12 @@ static void histogram(void) {
 	}
 
 	for (y = 0; y < PRIORITIES; ++y) {
+		double fraction = 0, value = 0;
 		MU_MESSAGE("%s: %ld",labels[y], sc[y]);
 		total += sc[y];
 
-        double fraction = (double)sc[y] / (double)maxcount;
-        double value = fraction * (double)80;
+        fraction = (double)sc[y] / (double)maxcount;
+        value = fraction * (double)80;
         for (x = 0; x < 80; ++x) {
             printf("%s", (value > x) ? "*" : " ");
         }
