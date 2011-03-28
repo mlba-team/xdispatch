@@ -95,7 +95,7 @@ private:
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as operation
   */
-template <class T> XDISPATCH_EXPORT class ptr_operation : public operation
+template <class T>  class ptr_operation : public operation
 {
 public:
     ptr_operation(T* object, void(T::*function)())
@@ -113,7 +113,7 @@ private:
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as iteration_operation
   */
-template <class T> class XDISPATCH_EXPORT ptr_iteration_operation : public iteration_operation
+template <class T> class  ptr_iteration_operation : public iteration_operation
 {
 public:
     ptr_iteration_operation(T* object, void(T::*function)(size_t))

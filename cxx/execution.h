@@ -33,7 +33,7 @@ public:
         blck = XDISPATCH_BLOCK_COPY(b);
     }
 #else
-    wrap(iteration_operation* o)
+    wrap(operation* o)
         : op(o) {}
 #endif
     ~wrap() {

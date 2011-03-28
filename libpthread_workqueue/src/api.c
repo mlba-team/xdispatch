@@ -29,8 +29,12 @@
 
 #include "private.h"
 
-int DEBUG = 0;
-char *DEBUG_IDENT = "WQ";
+#ifdef pthread_workqueue_additem_np
+# undef pthread_workqueue_additem_np
+#endif
+
+int DEBUG_LEVEL = 0;
+char *DEBUG_LEVEL_IDENT = "WQ";
 
 static int
 valid_workq(pthread_workqueue_t workq) 
@@ -44,13 +48,13 @@ valid_workq(pthread_workqueue_t workq)
 int VISIBLE CONSTRUCTOR
 pthread_workqueue_init_np(void)
 {
-#ifdef NDEBUG
-    DEBUG = 0;
+#ifdef NDEBUG_LEVEL
+    DEBUG_LEVEL = 0;
 #elif _WIN32
-	/* Experimental port, always debug */
-	DEBUG = 1;
+	/* Experimental port, always DEBUG_LEVEL */
+	DEBUG_LEVEL = 1;
 #else
-    DEBUG = (getenv("PWQ_DEBUG") == NULL) ? 0 : 1;
+    DEBUG_LEVEL = (getenv("PWQ_DEBUG_LEVEL") == NULL) ? 0 : 1;
 #endif
 
     if (manager_init() < 0)
@@ -227,3 +231,4 @@ pthread_workqueue_main_np(void)
     }
     */
 }
+

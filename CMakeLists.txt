@@ -52,6 +52,7 @@ if(NOT HAVE_PTHREAD_WORKQUEUE_H)
     INCLUDE_DIRECTORIES(
         libpthread_workqueue/include
     )
+    set(WORKQUEUE_LIB libpthread_workqueue)
 endif()
 
 # core lib
@@ -73,9 +74,9 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
   
   # link this target with all needed libraries
   if(MZ_IS_VS)
-    target_link_libraries(${NAME} pthreads-w32)
+    target_link_libraries(${NAME} pthreads-w32 ${WORKQUEUE_LIB})
   else()
-    target_link_libraries(${NAME} pthread)
+    target_link_libraries(${NAME} pthread ${WORKQUEUE_LIB})
   endif()
   mz_target_props(${NAME})
   
@@ -138,3 +139,4 @@ mz_add_executable(tests tests)
 
 # documentation
 include(docs/docgen.cmake)
+
