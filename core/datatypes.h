@@ -106,6 +106,7 @@ static void _destroy_object(dispatch_object_t t){
 	switch(t->type){
 	case DISPATCH_QUEUE:
 	case DISPATCH_SERIAL_QUEUE:
+    case DISPATCH_MAIN_QUEUE:
 		_tq_clear(cast_queue(t));
 		break;
 	case DISPATCH_GROUP:

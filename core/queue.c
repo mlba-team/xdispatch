@@ -270,10 +270,7 @@ dispatch_queue_create(const char *label, dispatch_queue_attr_t attr){
     _taskqueue_t q;
 
     neu = (dispatch_queue_t)_get_empty_object();
-    if( label == NULL || strstr(label,"com.apple.") == NULL )
-        neu->type = DISPATCH_SERIAL_QUEUE;
-    else
-        neu->type = DISPATCH_QUEUE;
+    neu->type = DISPATCH_SERIAL_QUEUE;
     _tq_init(cast_queue(neu));
 
     q = cast_queue(neu);
@@ -295,13 +292,6 @@ dispatch_queue_get_label(dispatch_queue_t queue){
         return "";
 
     return cast_queue(queue)->name==0 ? "" : cast_queue(queue)->name;
-}
-
-void
-dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue){
-    assert(object);
-
-    object->target = queue;
 }
 
 void dispatch_main(void){

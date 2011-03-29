@@ -27,6 +27,8 @@
 #include "Qt_tests.h"
 #include "../core/shim/atomic.h"
 
+#ifdef XDISPATCH_HAS_BLOCKS
+
 #define RUN_TIMES 2000
 
 class MainWorker : public QRunnable {
@@ -75,4 +77,5 @@ extern "C" void Qt_dispatch_mainqueue(){
 	MU_END_TEST;
 }
 
+#endif
 #endif

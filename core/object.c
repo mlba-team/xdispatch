@@ -111,12 +111,22 @@ void
 	dispatch_set_finalizer_f(dispatch_object_t object, dispatch_function_t finalizer){
         assert(object);
 
+        // this is only allowed on non global objects
+        if(object->type == DISPATCH_MAIN_QUEUE
+                   || object->type == DISPATCH_QUEUE)
+            return;
+
 		object->finalizer = finalizer;
 }
 
 void
 	dispatch_suspend(dispatch_object_t object){
         assert(object);
+
+        // this is only allowed on non global objects
+        if(object->type == DISPATCH_MAIN_QUEUE
+                   || object->type == DISPATCH_QUEUE)
+            return;
 
         atomic_inc_get(&object->suspend_ct);
 }
@@ -125,5 +135,22 @@ void
 	dispatch_resume(dispatch_object_t object){
         assert(object);
 
+        // this is only allowed on non global objects
+        if(object->type == DISPATCH_MAIN_QUEUE
+                   || object->type == DISPATCH_QUEUE)
+            return;
+
         atomic_dec_get(&object->suspend_ct);
+}
+
+void
+dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue){
+    assert(object);
+
+    // this is only allowed on non global objects
+    if(object->type == DISPATCH_MAIN_QUEUE
+               || object->type == DISPATCH_QUEUE)
+        return;
+
+    object->target = queue;
 }
