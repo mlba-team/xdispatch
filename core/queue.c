@@ -32,6 +32,53 @@ const char* _dispatch_global_queues[] = {
 };
 dispatch_queue_t _dispatch_global_q[] = { NULL, NULL, NULL };
 
+// the priorities assigned to the work queues
+static inline int
+_dispatch_rootq2wq_pri(long idx)
+{
+    switch (idx) {
+    case 0:
+        return WORKQ_LOW_PRIOQUEUE;
+    case 1:
+    default:
+        return WORKQ_DEFAULT_PRIOQUEUE;
+    case 2:
+        return WORKQ_HIGH_PRIOQUEUE;
+    }
+}
+
+void _dispatch_root_queues_init(){
+    int i = 0;
+    int r;
+    pthread_workqueue_attr_t wq_attr;
+
+    // create global queues
+    r = pthread_workqueue_attr_init_np(&wq_attr);
+    (void)dispatch_assume_zero(r);
+
+    for(i = 0; i < 3; i++) {
+        _dispatch_global_q[i] = dispatch_queue_create(_dispatch_global_queues[i],NULL);
+        assert(cast_queue(_dispatch_global_q[i]));
+        r = pthread_workqueue_attr_setqueuepriority_np(&wq_attr, _dispatch_rootq2wq_pri(i));
+        (void)dispatch_assume_zero(r);
+        r = pthread_workqueue_attr_setovercommit_np(&wq_attr, i & 1);
+        (void)dispatch_assume_zero(r);
+        r = pthread_workqueue_create_np(&(cast_queue(_dispatch_global_q[i])->pool), &wq_attr);
+        (void)dispatch_assume_zero(r);
+        (void)dispatch_assume( cast_queue(_dispatch_global_q[i])->pool );
+        _dispatch_global_q[i]->type = DISPATCH_QUEUE;
+    }
+
+    pthread_workqueue_attr_destroy_np(&wq_attr);
+
+    // and the main queue
+    _dispatch_main_q = dispatch_queue_create("com.apple.main-thread", NULL);
+    (void)dispatch_assume( cast_queue(_dispatch_main_q) );
+    _dispatch_main_q->type = DISPATCH_MAIN_QUEUE;
+    cast_queue(_dispatch_main_q)->loop = _evt_create(_main_worker);
+    (void)dispatch_assume( cast_queue(_dispatch_main_q)->loop );
+}
+
 #ifdef __BLOCKS__
 dispatch_block_t
 _dispatch_Block_copy(dispatch_block_t db)
@@ -87,7 +134,7 @@ void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_func
     i->serial = FALSE;
     i->context = context;
     i->func = work;
-    i->prio = clock();
+    //i->prio = clock();
     _dispatch_async_fast_exists_f(queue, i);
 }
 
@@ -228,7 +275,7 @@ dispatch_apply_f(size_t iterations, dispatch_queue_t queue, void *context, void 
             if(i==iterations-1)
                 dispatch_sync_f(queue, dt, _apply_helper);
             else
-                _dispatch_async_fast_f(queue, dt, _apply_helper);
+                dispatch_async_f(queue, dt, _apply_helper);
         }
     }
 }
@@ -354,7 +401,7 @@ void dispatch_after_f(dispatch_time_t when, dispatch_queue_t queue, void *contex
 
     item->context = dt;
     item->func = _timer;
-    item->prio = (clock_t)(when/NSEC_PER_MSEC);
+    item->timeout = (clock_t)(when/NSEC_PER_MSEC);
 
     // make sure the event loop actually runs
     while(atomic_swap_get(&(guard),1)==1);

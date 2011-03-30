@@ -43,6 +43,8 @@
 #	ifndef NDEBUG
 #		define NDEBUG 
 #	endif
+#else
+# define DISPATCH_DEBUG
 #endif
 #include <assert.h>
 
@@ -73,6 +75,15 @@
 #	define FALSE 0
 #endif
 
+/* I wish we had __builtin_expect_range() */
+#if __GNUC__
+#define fastpath(x)	((typeof(x))__builtin_expect((long)(x), ~0l))
+#define slowpath(x)	((typeof(x))__builtin_expect((long)(x), 0l))
+#else
+#define fastpath(x) (x)
+#define slowpath(x) (x)
+#endif
+
 #define DISPATCH_API_VERSION 20090501
 
 #ifndef __DISPATCH_INDIRECT__
@@ -90,6 +101,7 @@
 #	include "../include/libdispatch/semaphore.h"
 #	include "../include/libdispatch/once.h"
 
+#   include "debug.h"
 #	include "config.h"
 #	include "datatypes.h"
 #	include "taskqueue.h"
@@ -99,8 +111,7 @@
 
 // the global queues
 extern dispatch_queue_t _dispatch_global_q[];
-//extern dispatch_queue_t _dispatch_main_q;
-extern const char* _dispatch_global_queues[];
+void _dispatch_root_queues_init();
 
 // some internally used funtions
 void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i);

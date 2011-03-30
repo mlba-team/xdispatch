@@ -27,19 +27,22 @@ void _loop_worker(void* ct) {
 
     _set_thread_queue(q);
 
-    while(!_tq_empty(cast_queue(q))){
-        task = _tq_pop(cast_queue(q));
-		if(task) {
-			task->func(task->context);
-			_tq_delete(task);
-            dispatch_release(q);
-		}
-	}
+
+    task = _tq_pop(cast_queue(q));
+    if(task) {
+        task->func(task->context);
+        _tq_delete(task);
+        dispatch_release(q);
+    }
+
 }
 
 void _main_worker(_evt_loop_t loop, int revent, void *data){
+    dispatch_queue_t q = (dispatch_queue_t)data;
     assert(data);
-    _loop_worker(data);
+
+    while(!_tq_empty( cast_queue(q) ))
+        _loop_worker(data);
 }
 
 void _timer_worker(_evt_loop_t loop, int revent, void* data){
@@ -55,7 +58,7 @@ void _timer_worker(_evt_loop_t loop, int revent, void* data){
 		count = _tq_count(q);
 		for(ct = 0; ct < count; ct++){
 			i = _tq_pop(q);
-			if(i->prio <= now) {
+            if(i->timeout <= now) {
 				i->func(i->context);
 				_tq_delete(i);
 			} else {
@@ -73,7 +76,7 @@ void _timer_worker(_evt_loop_t loop, int revent, void* data){
 
 void _serial_worker(void* context){
     /*char should_release = FALSE;
-	_taskqueue_t queue = NULL;
+ _taskqueue_t queue = NULL;
     _taskitem_t task = NULL;*/
     dispatch_queue_t target = NULL;
 	dispatch_queue_t o = (dispatch_queue_t)(context);
@@ -81,15 +84,16 @@ void _serial_worker(void* context){
 	assert(context);
 	assert(o->type == DISPATCH_SERIAL_QUEUE);
     //queue = cast_queue(o);
-    _loop_worker(o);
-/*
+    while(!_tq_empty(cast_queue(o)))
+        _loop_worker(o);
+    /*
     if(o->suspended <= 0) {
-		task = _tq_pop(queue);
-		if(task) {
-			task->func(task->context);
-			should_release = TRUE;
-		}
-	}
+  task = _tq_pop(queue);
+  if(task) {
+   task->func(task->context);
+   should_release = TRUE;
+  }
+ }
 */
 	OBJ_SAFE_ENTER(o);
 	// Ensure only one worker is running at a time
@@ -98,19 +102,19 @@ void _serial_worker(void* context){
         //_tq_delete(task);
     } else {
         /*if(task) {
-			_tq_init_item(task);
-			task->context = context;
-			task->func = _serial_worker;
-			task->prio = clock();
-			task->serial = FALSE;
-			_dispatch_async_fast_exists_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), task);
+   _tq_init_item(task);
+   task->context = context;
+   task->func = _serial_worker;
+   task->prio = clock();
+   task->serial = FALSE;
+   _dispatch_async_fast_exists_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), task);
         } else */
-            target = o->target ? : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async_f(target, context, _serial_worker);
+        target = o->target ? : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async_f(target, context, _serial_worker);
 	}
 	OBJ_SAFE_LEAVE(o);
 
-//	if(should_release) dispatch_release(o);
+    //	if(should_release) dispatch_release(o);
 }
 
 void _notify_main(dispatch_queue_t q){
@@ -123,5 +127,5 @@ void _notify_global(dispatch_queue_t q){
     assert(q);
     assert(cast_queue(q)->pool);
 
-    pthread_workqueue_additem_np(cast_queue(q)->pool, _loop_worker, (void*)q, NULL);
+    pthread_workqueue_additem_np(cast_queue(q)->pool, _loop_worker, (void*)q, NULL, NULL);
 }

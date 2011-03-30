@@ -48,7 +48,8 @@ typedef struct _taskitem_s {
 	task_function func;
 	struct _taskitem_s* next;
 	unsigned char serial;
-	clock_t prio;
+    //clock_t prio;
+    clock_t timeout;
 }* _taskitem_t;
 
 typedef struct _taskqueue_s {

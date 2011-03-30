@@ -7,9 +7,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,35 +19,42 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#include <stdlib.h>
-#include <xdispatch/dispatch.h>
+#include "queue_internal.h"
 
-#include "tests.h"
-#include "../core/shim/atomic.h"
+void
+_dispatch_bug(size_t line, long val)
+{
+    static void *last_seen;
+#ifdef _WIN32
+    void *ra = ReturnAddress();
+#else
+    void *ra = __builtin_return_address(0);
+#endif
 
-/*
-	A test for dispatching a function using dispatch_apply_f
-	*/
-
-static void argumentFunction(void* data, size_t index){
-	atomic_inc_get((int*)data);
+    if (last_seen != ra) {
+        last_seen = ra;
+        _dispatch_log("BUG in libdispatch: %lu - 0x%lx", (unsigned long)line, val);
+    }
 }
 
-void dispatch_apply_function() {
-    const unsigned int final = 32;
-	unsigned int* count = malloc(sizeof(unsigned int));
-	dispatch_queue_t  queue;
-	MU_BEGIN_TEST(dispatch_apply_function);
-	*count = 0;
-
-	queue = dispatch_get_global_queue(0, 0);
-	MU_ASSERT_NOT_NULL(queue);
-
-    dispatch_apply_f(final, queue, count, argumentFunction);
-
-	MU_ASSERT_EQUAL(*count, final);
-	free(count);
-
-	MU_PASS("Looping works");
-	MU_END_TEST
+void
+_dispatch_abort(size_t line, long val)
+{
+    _dispatch_bug(line, val);
+    abort();
 }
+
+void
+_dispatch_log(const char *format, ...)
+{
+#ifdef DISPATCH_DEBUG
+    va_list params;
+    char tmp[201];
+    va_start(params, format);
+    vsprintf(tmp, format, params);
+    va_end(params);
+    printf("%s\n",tmp);
+    fflush(stdout);
+#endif
+}
+

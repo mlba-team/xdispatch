@@ -64,7 +64,6 @@ int _PWQ_EXPORT pthread_workqueue_create_np(pthread_workqueue_t * workqp,
 int _PWQ_EXPORT pthread_workqueue_additem_np(pthread_workqueue_t workq,
             void (*workitem_func)(void *), void * workitem_arg,
             pthread_workitem_handle_t * itemhandlep, unsigned int *gencountp);
-#define pthread_workqueue_additem_np( workq, func, arg, handle ) pthread_workqueue_additem_np(workq, func, arg, handle, NULL)
 
 
 int _PWQ_EXPORT pthread_workqueue_attr_init_np(pthread_workqueue_attr_t * attrp);
