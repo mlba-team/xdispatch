@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 
-#include "../core/queue_internal.h"
+#include "../core/internal.h"
 
 #include "tests.h"
 

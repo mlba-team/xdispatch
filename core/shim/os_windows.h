@@ -23,7 +23,20 @@
 #define SHIM_WINDOWS_H_
 
 #include <Windows.h>
-#include "stdint.h"
+
+#if _MSC_VER < 1600
+# include "stdint.h"
+#else
+# include <stdint.h>
+#endif
+//typedef signed char int8_t;
+//typedef unsigned char uint8_t;
+//typedef signed int int16_t;
+//typedef unsigned int uint16_t;
+//typedef signed long int int32_t;
+//typedef unsigned long int uint32_t;
+typedef LONGLONG int64_t;
+typedef UINT64 uint64_t;
 
 #define inline __inline
 
@@ -35,31 +48,28 @@
 #endif
 
 #define sleep(sec) 	Sleep(1000*sec)
-#define strdup(p)	_strdup(p)
+#ifndef strdup
+# define strdup(p)	_strdup(p)
+#endif
 #define random()	rand()
 
-typedef HANDLE pthread_t;
+// really just a low level abort()
+#define _dispatch_hardware_crash() __debugbreak()
 
-/* Emulation of pthreads mutex functionality */
-/* (copied from libkqueue by mark heily) */
-#define PTHREAD_PROCESS_SHARED 1
-#define PTHREAD_PROCESS_PRIVATE 2
-typedef CRITICAL_SECTION pthread_mutex_t;
-typedef CRITICAL_SECTION pthread_spinlock_t;
-typedef CRITICAL_SECTION pthread_rwlock_t;
-#define _cs_init(x)  InitializeCriticalSection((x))
-#define _cs_lock(x)  EnterCriticalSection ((x))
-#define _cs_unlock(x)  LeaveCriticalSection ((x))
-#define pthread_mutex_lock _cs_lock
-#define pthread_mutex_unlock _cs_unlock
-#define pthread_mutex_init(x,y) _cs_init((x))
-#define pthread_spin_lock _cs_lock
-#define pthread_spin_unlock _cs_unlock
-#define pthread_spin_init(x,y) _cs_init((x))
-#define pthread_mutex_init(x,y) _cs_init((x))
-#define pthread_rwlock_rdlock _cs_lock
-#define pthread_rwlock_wrlock _cs_lock
-#define pthread_rwlock_unlock _cs_unlock
-#define pthread_rwlock_init(x,y) _cs_init((x))
+#define DISPATCH_NOINLINE
+
+// some date functions
+struct timezone
+{
+  int  tz_minuteswest; /* minutes W of Greenwich */
+  int  tz_dsttime;     /* type of dst correction */
+};
+
+struct timespec {
+    long tv_sec; /* seconds */
+    long tv_nsec; /* nanoseconds */
+};
+
+int gettimeofday(struct timeval *tv, struct timezone *tz);
 
 #endif /* SHIM_WINDOWS_H_ */

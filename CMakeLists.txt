@@ -58,7 +58,7 @@ endif()
 # core lib
 file(GLOB INCL include/libdispatch/*.h)
 file(GLOB CXX_INCL include/xdispatch/*.h)
-file(GLOB CORE core/*.c core/*.h)
+file(GLOB_RECURSE CORE core/*.c core/*.h)
 file(GLOB CXX cxx/*.cpp cxx/*.h)
 file(GLOB SHIM core/shim/*.h)
 source_group(dispatch FILES ${INCL})

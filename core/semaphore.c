@@ -20,7 +20,7 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 dispatch_semaphore_t
 dispatch_semaphore_create(long value){

@@ -19,14 +19,19 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#include "queue_internal.h"
+#define _CRT_SECURE_NO_WARNINGS
+#include "internal.h"
+
+#ifdef _WIN32
+ void * _ReturnAddress(void);
+#endif
 
 void
 _dispatch_bug(size_t line, long val)
 {
     static void *last_seen;
 #ifdef _WIN32
-    void *ra = ReturnAddress();
+    void *ra = _ReturnAddress();
 #else
     void *ra = __builtin_return_address(0);
 #endif

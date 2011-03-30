@@ -20,7 +20,7 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 #ifdef HAS_BLOCKS
 void

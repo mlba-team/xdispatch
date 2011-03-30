@@ -20,8 +20,8 @@
 
 
 
-#ifndef ATOMIC_H_
-#define ATOMIC_H_
+#ifndef DISPATCH_ATOMIC_H_
+#define DISPATCH_ATOMIC_H_
 
 /**
   Defines atomic operations in a platform independent way
@@ -29,39 +29,84 @@
 
 #ifdef __GNUC__
 
-#   ifdef WIN32_MINGW
+# ifdef WIN32_MINGW
 
     // on 32bit this is atomic by default
 #	define atomic_inc_get(a) ++(*a)
 #	define atomic_dec_get(a) --(*a)
 #	define atomic_swap_get(a,b) __sync_val_compare_and_swap(a,*a, b)
 
-#   else
+# else
 
 #	define atomic_inc_get(a) __sync_add_and_fetch(a,1)
 #	define atomic_dec_get(a) __sync_sub_and_fetch(a,1)
 #	define atomic_swap_get(a,b) __sync_val_compare_and_swap(a,*a, b)
 
-#   endif
-
-#   define ATOMIC_INT unsigned int
+# endif
 
 #endif
 
 #ifdef _MSC_VER
 
-#	include <windows.h>
+# include <windows.h>
 
-#		define atomic_inc_get(a) InterlockedIncrementAcquire(a)
-#		define atomic_dec_get(a) InterlockedDecrementAcquire(a)
-#		define atomic_swap_get(a,b) InterlockedExchange(a,b)
+# define atomic_inc_get(a) InterlockedIncrementAcquire(a)
+# define atomic_dec_get(a) InterlockedDecrementAcquire(a)
+# define atomic_swap_get(a,b) InterlockedExchange(a,b)
 
-#if _MSC_VER >= 1600
-#	define ATOMIC_INT unsigned int
+#endif
+
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)
+
+// GCC generates suboptimal register pressure
+// LLVM does better, but doesn't support tail calls
+// 6248590 __sync_*() intrinsics force a gratuitous "lea" instruction, with resulting register pressure
+# if 0 && defined(__i386__) || defined(__x86_64__)
+#  define dispatch_atomic_xchg(p, n)	({ typeof(*(p)) _r; asm("xchg %0, %1" : "=r" (_r) : "m" (*(p)), "0" (n)); _r; })
+# else
+#  define dispatch_atomic_xchg(p, n)	((typeof(*(p)))__sync_lock_test_and_set((p), (n)))
+# endif
+# define dispatch_atomic_cmpxchg(p, o, n)	__sync_bool_compare_and_swap((p), (o), (n))
+# define dispatch_atomic_inc(p)	__sync_add_and_fetch((p), 1)
+# define dispatch_atomic_dec(p)	__sync_sub_and_fetch((p), 1)
+# define dispatch_atomic_add(p, v)	__sync_add_and_fetch((p), (v))
+# define dispatch_atomic_sub(p, v)	__sync_sub_and_fetch((p), (v))
+# define dispatch_atomic_or(p, v)	__sync_fetch_and_or((p), (v))
+# define dispatch_atomic_and(p, v)	__sync_fetch_and_and((p), (v))
+# if defined(__i386__) || defined(__x86_64__)
+/* GCC emits nothing for __sync_synchronize() on i386/x86_64. */
+#  define dispatch_atomic_barrier()	__asm__ __volatile__("mfence")
+# else
+#  define dispatch_atomic_barrier()	__sync_synchronize()
+# endif
+# ifndef ATOMIC_INT
+    typedef unsigned int ATOMIC_INT;
+# endif
+
+#elif defined _MSC_VER
+
+# include <windows.h>
+
+# define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
+# define dispatch_atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((p), (n), (o))
+# define dispatch_atomic_inc(p)	InterlockedIncrementAcquire(p)
+# define dispatch_atomic_dec(p)	InterlockedDecrementAcquire(p)
+# define dispatch_atomic_add(p, v)	InterlockedExchangeAdd((p), (v))
+# define dispatch_atomic_sub(p, v)	InterlockedExchangeAdd((p), -(v))
+# define dispatch_atomic_or(p, v)	InterlockedOr((p), (v))
+# define dispatch_atomic_and(p, v)	InterlockedAnd((p), (v))
+# define dispatch_atomic_barrier()	 MemoryBarrier()
+
+# ifndef ATOMIC_INT
+#  if _MSC_VER >= 1600
+    typedef unsigned int ATOMIC_INT;
+#  else
+    typedef long ATOMIC_INT;
+#  endif
+# endif
+
 #else
-#	define ATOMIC_INT long
+# error "Compiler not supported."
 #endif
 
-#endif
-
-#endif /* ATOMIC_H_ */
+#endif /* DISPATCH_ATOMIC_H_ */

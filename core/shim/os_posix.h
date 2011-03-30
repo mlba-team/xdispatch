@@ -27,5 +27,11 @@
 #include <semaphore.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <semaphore.h>
+
+// really just a low level abort()
+#define _dispatch_hardware_crash() __builtin_trap()
+
+#define DISPATCH_NOINLINE	__attribute__((noinline))
 
 #endif /* SHIM_POSIX_H_ */

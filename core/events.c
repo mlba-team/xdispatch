@@ -18,9 +18,7 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-
-
-#include "queue_internal.h"
+#include "internal.h"
 
 void _evt_init(_evt_loop_t t, _evt_handler h){
 	assert(t);

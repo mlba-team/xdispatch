@@ -23,7 +23,7 @@
 #ifndef TASK_QUEUE_H_
 #define TASK_QUEUE_H_
 
-#include "queue_internal.h"
+#include "internal.h"
 #include "events.h"
 
 #ifdef _WIN32

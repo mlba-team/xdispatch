@@ -19,7 +19,7 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 void _loop_worker(void* ct) {
     dispatch_queue_t q = (dispatch_queue_t)ct;
@@ -109,7 +109,7 @@ void _serial_worker(void* context){
    task->serial = FALSE;
    _dispatch_async_fast_exists_f(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0), task);
         } else */
-        target = o->target ? : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        target = o->target ? o->target : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_async_f(target, context, _serial_worker);
 	}
 	OBJ_SAFE_LEAVE(o);

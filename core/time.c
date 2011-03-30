@@ -21,7 +21,7 @@
 
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 dispatch_time_t
 dispatch_time(dispatch_time_t when, int64_t delta){
@@ -29,7 +29,7 @@ dispatch_time(dispatch_time_t when, int64_t delta){
 	if(when != 0)
 		return when + delta;
 
-#ifdef WIN32
+#ifdef _WIN32
 	return GetTickCount()*NSEC_PER_MSEC + delta;
 #else
 	struct timeval now;

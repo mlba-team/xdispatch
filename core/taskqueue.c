@@ -19,7 +19,7 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 struct _taskqueue_s* _tq_create(){
 	struct _taskqueue_s* n = NULL;

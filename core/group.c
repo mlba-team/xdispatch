@@ -19,7 +19,7 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 #define _dispatch_Block_copy(x) ((typeof(x))_dispatch_Block_copy(x))
 

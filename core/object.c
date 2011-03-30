@@ -20,7 +20,7 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 void
 	dispatch_debug(dispatch_object_t object, const char *message, ...){
@@ -73,8 +73,8 @@ Invoked whenever an object is distroyed
 that had a target queue associated with it
 */
 void _finalize(void* context){
-    assert(context);
 	dispatch_object_t o = (dispatch_object_t)(context);
+	assert(context);
 
 	if(o->finalizer)
 		o->finalizer(o->context);
@@ -83,7 +83,6 @@ void _finalize(void* context){
 
 void
 	dispatch_release(dispatch_object_t object){
-        assert(object);
         int ct = atomic_dec_get(&object->references);
 		if (ct == 0) {
 			if(object->target)

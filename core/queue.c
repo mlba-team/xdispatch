@@ -20,9 +20,14 @@
 */
 
 
-#include "queue_internal.h"
+#include "internal.h"
 
 DISPATCH_EXPORT dispatch_queue_t _dispatch_main_q = NULL;
+
+dispatch_queue_t dispatch_get_main_queue(){
+    return _dispatch_main_q;
+}
+
 static _taskqueue_t _dispatch_event_q = NULL;
 
 const char* _dispatch_global_queues[] = {
@@ -54,18 +59,18 @@ void _dispatch_root_queues_init(){
 
     // create global queues
     r = pthread_workqueue_attr_init_np(&wq_attr);
-    (void)dispatch_assume_zero(r);
+    dispatch_assume_zero(r);
 
     for(i = 0; i < 3; i++) {
         _dispatch_global_q[i] = dispatch_queue_create(_dispatch_global_queues[i],NULL);
         assert(cast_queue(_dispatch_global_q[i]));
         r = pthread_workqueue_attr_setqueuepriority_np(&wq_attr, _dispatch_rootq2wq_pri(i));
-        (void)dispatch_assume_zero(r);
+        dispatch_assume_zero(r);
         r = pthread_workqueue_attr_setovercommit_np(&wq_attr, i & 1);
-        (void)dispatch_assume_zero(r);
+        dispatch_assume_zero(r);
         r = pthread_workqueue_create_np(&(cast_queue(_dispatch_global_q[i])->pool), &wq_attr);
-        (void)dispatch_assume_zero(r);
-        (void)dispatch_assume( cast_queue(_dispatch_global_q[i])->pool );
+        dispatch_assume_zero(r);
+        dispatch_assume( cast_queue(_dispatch_global_q[i])->pool );
         _dispatch_global_q[i]->type = DISPATCH_QUEUE;
     }
 
@@ -73,10 +78,10 @@ void _dispatch_root_queues_init(){
 
     // and the main queue
     _dispatch_main_q = dispatch_queue_create("com.apple.main-thread", NULL);
-    (void)dispatch_assume( cast_queue(_dispatch_main_q) );
+    dispatch_assume( cast_queue(_dispatch_main_q) );
     _dispatch_main_q->type = DISPATCH_MAIN_QUEUE;
     cast_queue(_dispatch_main_q)->loop = _evt_create(_main_worker);
-    (void)dispatch_assume( cast_queue(_dispatch_main_q)->loop );
+    dispatch_assume( cast_queue(_dispatch_main_q)->loop );
 }
 
 #ifdef __BLOCKS__
@@ -172,7 +177,7 @@ void dispatch_async_f(dispatch_queue_t queue, void *context, dispatch_function_t
     {
         OBJ_SAFE_ENTER(queue);
         if( atomic_swap_get(&(q->active_worker),1)==0 ) {
-            target = queue->target ? : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
+            target = queue->target ? queue->target : dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
             dispatch_async_f(target, queue, _serial_worker);
         }
         OBJ_SAFE_LEAVE(queue);

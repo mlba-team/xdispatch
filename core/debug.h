@@ -27,12 +27,13 @@ void _dispatch_bug(size_t line, long val);
 void _dispatch_abort(size_t line, long val);
 void _dispatch_log(const char *msg, ...);
 
+#if __GNUC__
 /*
  * For reporting bugs within libdispatch when using the "_debug" version of the library.
  */
-#define dispatch_assert(e)	do {	\
+# define dispatch_assert(e)	do {	\
         if (__builtin_constant_p(e)) {	\
-            char __compile_time_assert__[(bool)(e) ? 1 : -1];	\
+            char __compile_time_assert__[(bool)(e) ? 1 : -1] __attribute__((unused));	\
         } else {	\
             typeof(e) _e = fastpath(e); /* always eval 'e' */	\
             if (DISPATCH_DEBUG && !_e) {	\
@@ -41,9 +42,9 @@ void _dispatch_log(const char *msg, ...);
         }	\
     } while (0)
 /* A lot of API return zero upon success and not-zero on fail. Let's capture and log the non-zero value */
-#define dispatch_assert_zero(e)	do {	\
+# define dispatch_assert_zero(e)	do {	\
         if (__builtin_constant_p(e)) {	\
-            char __compile_time_assert__[(bool)(!(e)) ? 1 : -1];	\
+            char __compile_time_assert__[(bool)(!(e)) ? 1 : -1] __attribute__((unused));	\
         } else {	\
             typeof(e) _e = slowpath(e); /* always eval 'e' */	\
             if (DISPATCH_DEBUG && _e) {	\
@@ -58,32 +59,36 @@ void _dispatch_log(const char *msg, ...);
  *
  * In particular, we wrap all system-calls with assume() macros.
  */
-#define dispatch_assume(e)	({	\
-        if (e==0) {	\
+# define dispatch_assume(e)	(void)({	\
+        typeof(e) _e = fastpath(e); /* always eval 'e' */	\
+        if (!_e) {	\
             if (__builtin_constant_p(e)) {	\
                 char __compile_time_assert__[(e) ? 1 : -1];	\
                 (void)__compile_time_assert__;	\
             }	\
-            _dispatch_bug(__LINE__, (long)e);	\
+            _dispatch_bug(__LINE__, (long)_e);	\
         }	\
+        _e;	\
     })
 /* A lot of API return zero upon success and not-zero on fail. Let's capture and log the non-zero value */
-#define dispatch_assume_zero(e)	({	\
-        if (e!=0) {	\
+# define dispatch_assume_zero(e)	(void)({	\
+        typeof(e) _e = slowpath(e); /* always eval 'e' */	\
+        if (_e) {	\
             if (__builtin_constant_p(e)) {	\
-                char __compile_time_assert__[(e) ? 1 : -1];	\
+                char __compile_time_assert__[(e) ? -1 : 1];	\
                 (void)__compile_time_assert__;	\
             }	\
-            _dispatch_bug(__LINE__, (long)e);	\
+            _dispatch_bug(__LINE__, (long)_e);	\
         }	\
+        _e;	\
     })
 
 /*
  * For reporting bugs in clients when using the "_debug" version of the library.
  */
-#define dispatch_debug_assert(e, msg, args...)	do {	\
+# define dispatch_debug_assert(e, msg, args...)	do {	\
         if (__builtin_constant_p(e)) {	\
-            char __compile_time_assert__[(bool)(e) ? 1 : -1];	\
+            char __compile_time_assert__[(bool)(e) ? 1 : -1] __attribute__((unused));	\
         } else {	\
             typeof(e) _e = fastpath(e); /* always eval 'e' */	\
             if (DISPATCH_DEBUG && !_e) {	\
@@ -92,5 +97,79 @@ void _dispatch_log(const char *msg, ...);
             }	\
         }	\
     } while (0)
+
+#elif defined(_WIN32)
+
+/* MSVC can be really annoying as it does not allow us to specify
+   a new variable within this block... */
+
+# define dispatch_assert(e)	do {	\
+        if (DISPATCH_DEBUG && !(e)) {	\
+                _dispatch_abort(__LINE__, (long)0);	\
+            }	\
+    } while (0)
+
+# define dispatch_assert_zero(e)	do {	\
+        if (DISPATCH_DEBUG && (e)!=0) {	\
+                _dispatch_abort(__LINE__, (long)0);	\
+            }	\
+    } while (0)
+
+# define dispatch_assume(e)	\
+        if ((e)==0) {	\
+            _dispatch_bug(__LINE__, (long)0);	\
+        }
+
+# define dispatch_assume_zero(e) \
+        if ((e)!=0) {	\
+            _dispatch_bug(__LINE__, (long)0);	\
+		}
+
+# define dispatch_debug_assert(e, msg, ...)	do {	\
+        if (DISPATCH_DEBUG && !(e)) {	\
+                _dispatch_log("%s() 0x%lx: " msg, __func__, (long)0, ##args);	\
+                abort();	\
+        }	\
+    } while (0)
+
+#else
+
+# define dispatch_assert(e)	do {	\
+        long _e = (long)(e); \
+        if (DISPATCH_DEBUG && !(_e)) {	\
+                _dispatch_abort(__LINE__, (long)_e);	\
+            }	\
+    } while (0)
+
+# define dispatch_assert_zero(e)	do {	\
+        long _e = (long)(e); \
+        if (DISPATCH_DEBUG && (_e)!=0) {	\
+                _dispatch_abort(__LINE__, (long)_e);	\
+            }	\
+    } while (0)
+
+# define dispatch_assume(e)	({	\
+        long _e = (long)(e); \
+        if (!(_e)) {	\
+            _dispatch_bug(__LINE__, (long)_e);	\
+        }	\
+    })
+
+# define dispatch_assume_zero(e)	({	\
+        long _e = (long)(e); \
+        if ((_e)!=0) {	\
+            _dispatch_bug(__LINE__, (long)_e);	\
+        }	\
+    })
+
+# define dispatch_debug_assert(e, msg, ...)	do {	\
+        long _e = (long)(e); \
+        if (DISPATCH_DEBUG && !(_e)) {	\
+                _dispatch_log("%s() 0x%lx: " msg, __func__, (long)_e, ##args);	\
+                abort();	\
+        }	\
+    } while (0)
+
+#endif
 
 #endif /* DEBUG_H_ */

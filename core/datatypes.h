@@ -24,7 +24,7 @@
 #define DATATYPES_H_
 
 #include "taskqueue.h"
-#include "queue_internal.h"
+#include "internal.h"
 
 #ifndef TRUE
 #	define TRUE 1

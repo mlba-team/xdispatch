@@ -23,11 +23,7 @@
 #ifndef EVENTS_H_
 #define EVENTS_H_
 
-#ifdef WIN32
-#	include "../pthreads-w32/pthread.h"
-#else
-#	include <pthread.h>
-#endif
+# include "internal.h"
 
 //
 //	A signle event item, used internal only

@@ -1,5 +1,5 @@
 
-#include "queue_internal.h"
+#include "internal.h"
 
 #ifndef _WIN32
 
@@ -20,12 +20,12 @@ BOOL WINAPI DllMain(
         case DLL_PROCESS_ATTACH:
          // Initialize once for each new process.
          // Return FALSE to fail DLL load.
-            init();
+            _thread_man_init();
             break;
 
         case DLL_PROCESS_DETACH:
          // Perform any necessary cleanup.
-            cleanup
+            _thread_man_cleanup();
             break;
     }
     return TRUE;  // Successful DLL_PROCESS_ATTACH.

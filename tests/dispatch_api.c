@@ -37,7 +37,7 @@ void dispatch_api() {
 
 	MU_BEGIN_TEST(dispatch_api);
 
-    q = dispatch_get_main_queue2();
+    q = dispatch_get_main_queue();
 	MU_ASSERT_NOT_NULL(q);
     dispatch_async_f(q, NULL, pass);
 

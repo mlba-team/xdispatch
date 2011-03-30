@@ -335,9 +335,8 @@ dispatch_get_current_queue(void);
  * the main thread before main() is called.
  */
 
-DISPATCH_EXPORT extern dispatch_queue_t _dispatch_main_q;
-#define dispatch_get_main_queue() (_dispatch_main_q)
-#define dispatch_get_main_queue2() (_dispatch_main_q)
+DISPATCH_EXPORT dispatch_queue_t 
+dispatch_get_main_queue();
 
 /*!
  * @enum dispatch_queue_priority_t

@@ -52,18 +52,5 @@ void _set_thread_queue(dispatch_queue_t q);
 // 
 dispatch_queue_t _get_thread_queue();
 
-#ifdef WIN32
-
-#include <Windows.h>
-
-struct timezone
-{
-  int  tz_minuteswest; /* minutes W of Greenwich */
-  int  tz_dsttime;     /* type of dst correction */
-};
-
-int gettimeofday(struct timeval *tv, struct timezone *tz);
-
-#endif
 
 #endif /* THREADMANAGER_H_ */
