@@ -33,7 +33,7 @@
 #endif
 
 #if defined(_WIN32) || defined(__i386__) || defined(__x86_64__) || !defined(HAVE_MACH_ABSOLUTE_TIME)
- // these architectures always return mach_absolute_time() in nanoseconds
+// these architectures always return mach_absolute_time() in nanoseconds
 # define _dispatch_time_mach2nano(x) (x)
 # define _dispatch_time_nano2mach(x) (x)
 #else
@@ -81,34 +81,39 @@ _dispatch_time_nano2mach(int64_t nsec)
 #endif
 
 #ifdef _WIN32
-    static inline uint64_t
-    _dispatch_absolute_time(void)
-    {
-        // TODO: We need a more precise solution in here!
-        return GetTickCount()*1000*1000;
-    }
+static inline uint64_t
+_dispatch_absolute_time(void)
+{
+    // TODO: We need a more precise solution in here!
+    return GetTickCount()*1000*1000;
+}
 
 #else
-    static inline uint64_t
-    _dispatch_absolute_time(void)
-    {
-    #ifdef __MACH__
-        return mach_absolute_time();
-    #else
-        struct timespec ts;
-        int ret;
+static inline uint64_t
+_dispatch_absolute_time(void)
+{
+#ifdef __MACH__
+    return mach_absolute_time();
+#else
+    struct timespec ts;
+    int ret;
 
-    #if HAVE_DECL_CLOCK_UPTIME
-        ret = clock_gettime(CLOCK_UPTIME, &ts);
-    #else
-        ret = clock_gettime(CLOCK_MONOTONIC, &ts);
-    #endif
-        (void)dispatch_assume_zero(ret);
-
-        /* XXXRW: Some kind of overflow detection needed? */
-        return (ts.tv_sec * NSEC_PER_SEC + ts.tv_nsec);
-    #endif
-    }
+#if HAVE_DECL_CLOCK_UPTIME
+    ret = clock_gettime(CLOCK_UPTIME, &ts);
+#else
+    ret = clock_gettime(CLOCK_MONOTONIC, &ts);
 #endif
+    (void)dispatch_assume_zero(ret);
+
+    /* XXXRW: Some kind of overflow detection needed? */
+    return (ts.tv_sec * NSEC_PER_SEC + ts.tv_nsec);
+#endif
+}
+#endif
+
+static inline void _dispatch_to_realtime(struct timespec* target, struct timeval* src){
+    target->tv_sec = src->tv_sec;
+    target->tv_nsec = src->tv_usec * NSEC_PER_USEC;
+}
 
 #endif /* __DISPATCH_SHIMS_TIME__ */

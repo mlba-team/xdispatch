@@ -27,7 +27,6 @@
 #include <semaphore.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <semaphore.h>
 
 // really just a low level abort()
 #define _dispatch_hardware_crash() __builtin_trap()
