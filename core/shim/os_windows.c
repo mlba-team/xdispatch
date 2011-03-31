@@ -1,6 +1,5 @@
 /*
 * Copyright (c) 2011 MLBA. All rights reserved.
-* Copyright (c) 2010 Mark Heily <mark@heily.com>
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
 *

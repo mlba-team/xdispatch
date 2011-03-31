@@ -1,5 +1,27 @@
+/*
+* Copyright (c) 2011 MLBA. All rights reserved.
+*
+* @MLBA_OPEN_LICENSE_HEADER_START@
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* @MLBA_OPEN_LICENSE_HEADER_END@
+*/
 
 #include "internal.h"
+
+void init();
+void cleanup();
 
 #ifndef _WIN32
 
@@ -20,21 +42,24 @@ BOOL WINAPI DllMain(
         case DLL_PROCESS_ATTACH:
          // Initialize once for each new process.
          // Return FALSE to fail DLL load.
-            _thread_man_init();
+            init();
             break;
 
         case DLL_PROCESS_DETACH:
          // Perform any necessary cleanup.
-            _thread_man_cleanup();
+            cleanup();
             break;
     }
     return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
+
+void pthread_workqueue_init_np();
+
 #endif
 
 void init(){
 #ifdef PTHREAD_WORKQUEUE_USER_IMPLEMENTATION
-    int pthread_workqueue_init_np(void);
+    pthread_workqueue_init_np();
 #endif
 
     // init thread manager

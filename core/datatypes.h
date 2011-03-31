@@ -1,4 +1,5 @@
 /*
+* Copyright (c) 2010 Apple Inc. All rights reserved.
 * Copyright (c) 2011 MLBA. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@

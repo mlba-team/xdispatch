@@ -1,6 +1,5 @@
 /*
 * Copyright (c) 2011 MLBA. All rights reserved.
-* Copyright (c) 2010 Mark Heily <mark@heily.com>
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
 *
@@ -22,7 +21,7 @@
 #ifndef SHIM_WINDOWS_H_
 #define SHIM_WINDOWS_H_
 
-#define _WIN32_WINNT 0x0502
+#define WINVER 0x0501
 #include <Windows.h>
 
 #if _MSC_VER < 1600

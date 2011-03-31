@@ -116,7 +116,7 @@
 # endif
 # define XDISPATCH_BLOCK_COPY(A) A
 # define Block_copy(A) XDISPATCH_BLOCK_COPY(A)
-# define XDISPATCH_BLOCK_RELEASE(A)
+# define XDISPATCH_BLOCK_RELEASE(A) {}
 # define Block_release(A) XDISPATCH_BLOCK_RELEASE(A)
  typedef std::tr1::function< void (void) > dispatch_block_t;
  typedef std::tr1::function< void (size_t) > dispatch_iteration_block_t;
@@ -132,7 +132,7 @@
 # endif
 # define XDISPATCH_BLOCK_COPY(A) A
 # define Block_copy(A) XDISPATCH_BLOCK_COPY(A)
-# define XDISPATCH_BLOCK_RELEASE(A)
+# define XDISPATCH_BLOCK_RELEASE(A) {}
 # define Block_release(A) XDISPATCH_BLOCK_RELEASE(A)
  typedef std::tr1::function< void (void) > dispatch_block_t;
  typedef std::tr1::function< void (size_t) > dispatch_iteration_block_t;

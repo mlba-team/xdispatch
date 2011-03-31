@@ -19,9 +19,6 @@
 */
 
 
-
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "internal.h"
 
 /* Key for the thread-specific buffer */

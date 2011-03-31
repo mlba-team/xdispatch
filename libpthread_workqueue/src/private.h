@@ -30,6 +30,9 @@
 #ifndef _PTWQ_PRIVATE_H
 #define _PTWQ_PRIVATE_H 1
 
+// disable debug logging
+#define NDEBUG_LEVEL
+
 #include <errno.h>
 #include <limits.h>
 #include <signal.h>

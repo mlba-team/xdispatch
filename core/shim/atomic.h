@@ -1,4 +1,5 @@
 /*
+* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
 * Copyright (c) 2011 MLBA. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
@@ -22,6 +23,7 @@
 
 #ifndef DISPATCH_ATOMIC_H_
 #define DISPATCH_ATOMIC_H_
+
 
 /**
   Defines atomic operations in a platform independent way
@@ -48,10 +50,13 @@
 
 #ifdef _MSC_VER
 
-# include <windows.h>
+# ifndef WINVER
+#  define WINVER 0x0501
+#  include <Windows.h>
+# endif
 
-# define atomic_inc_get(a) InterlockedIncrementAcquire(a)
-# define atomic_dec_get(a) InterlockedDecrementAcquire(a)
+# define atomic_inc_get(a) InterlockedIncrement(a)
+# define atomic_dec_get(a) InterlockedDecrement(a)
 # define atomic_swap_get(a,b) InterlockedExchange(a,b)
 
 #endif
@@ -85,12 +90,10 @@
 
 #elif defined _MSC_VER
 
-# include <windows.h>
-
 # define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
 # define dispatch_atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((p), (n), (o))
-# define dispatch_atomic_inc(p)	InterlockedIncrementAcquire(p)
-# define dispatch_atomic_dec(p)	InterlockedDecrementAcquire(p)
+# define dispatch_atomic_inc(p)	InterlockedIncrement(p)
+# define dispatch_atomic_dec(p)	InterlockedDecrement(p)
 # define dispatch_atomic_add(p, v)	InterlockedExchangeAdd((p), (v))
 # define dispatch_atomic_sub(p, v)	InterlockedExchangeAdd((p), -(v))
 # define dispatch_atomic_or(p, v)	InterlockedOr((p), (v))
