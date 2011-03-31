@@ -22,6 +22,7 @@
 #ifndef SHIM_WINDOWS_H_
 #define SHIM_WINDOWS_H_
 
+#define _WIN32_WINNT 0x0502
 #include <Windows.h>
 
 #if _MSC_VER < 1600
@@ -56,7 +57,10 @@ typedef UINT64 uint64_t;
 // really just a low level abort()
 #define _dispatch_hardware_crash() __debugbreak()
 
+// some compiler hints
 #define DISPATCH_NOINLINE
+#define DISPATCH_UNUSED
+#define DISPATCH_NORETURN
 
 // some date functions
 struct timezone

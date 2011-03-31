@@ -32,6 +32,9 @@
 // really just a low level abort()
 #define _dispatch_hardware_crash() __builtin_trap()
 
+// some compiler hints
 #define DISPATCH_NOINLINE	__attribute__((noinline))
+#define DISPATCH_UNUSED __attribute__((unused))
+#define DISPATCH_NORETURN __attribute__((__noreturn__))
 
 #endif /* SHIM_POSIX_H_ */

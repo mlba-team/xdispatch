@@ -43,9 +43,6 @@ if(HAVE_PTHREAD_WORKQUEUE_H)
     message("   >> found native pthread_workqueue implementation, using it")
 endif()
 
-# add pthreads on windows as well
-mz_add_library(pthreads-w32 pthreads-w32)
-
 # add user space pthread_workqueue implementation (if needed)
 if(NOT HAVE_PTHREAD_WORKQUEUE_H)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
@@ -58,12 +55,13 @@ endif()
 # core lib
 file(GLOB INCL include/libdispatch/*.h)
 file(GLOB CXX_INCL include/xdispatch/*.h)
-file(GLOB_RECURSE CORE core/*.c core/*.h)
+file(GLOB CORE core/*.c core/*.h)
+file(GLOB SHIM core/shim/*.c core/shim/*.h)
 file(GLOB CXX cxx/*.cpp cxx/*.h)
-file(GLOB SHIM core/shim/*.h)
 source_group(dispatch FILES ${INCL})
 source_group(xdispatch FILES ${CXX_INCL})
 source_group(core FILES ${CORE})
+source_group(core/shim FILES ${SHIM})
 source_group(cxx FILES ${CXX})
 
 
@@ -74,7 +72,7 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
   
   # link this target with all needed libraries
   if(MZ_IS_VS)
-    target_link_libraries(${NAME} pthreads-w32 ${WORKQUEUE_LIB})
+    target_link_libraries(${NAME} ${WORKQUEUE_LIB})
   else()
     target_link_libraries(${NAME} pthread ${WORKQUEUE_LIB})
   endif()

@@ -28,10 +28,5 @@ INCLUDE_DIRECTORIES(
 add_executable(xdispatch_tests ${TESTSRCS})
 
 # link this target with all needed libraries
-if(MZ_IS_VS)
- set(LIB ${LIB} pthreads-w32)
-endif()
-
-# link this target with all needed libraries
 target_link_libraries(xdispatch_tests xdispatch ${LIB} munit)
 mz_target_props(xdispatch_tests)
