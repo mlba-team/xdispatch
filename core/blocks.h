@@ -18,3 +18,21 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
+
+#ifndef __HELP_BLOCKS_H_
+#define __HELP_BLOCKS_H_
+
+#ifdef __BLOCKS__
+dispatch_block_t
+_dispatch_Block_copy(dispatch_block_t db);
+#define _dispatch_Block_copy(x) ((typeof(x))_dispatch_Block_copy(x))
+
+void
+_dispatch_call_block_and_release(void *block);
+
+void
+_dispatch_call_block_and_release2(void *block, void *ctxt);
+
+#endif /* __BLOCKS__ */
+
+#endif /* __HELP_BLOCKS_H_ */

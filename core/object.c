@@ -22,134 +22,207 @@
 
 #include "internal.h"
 
+
 void
-	dispatch_debug(dispatch_object_t object, const char *message, ...){
-        assert(object);
+dispatch_debug(dispatch_object_t obj, const char *msg, ...)
+{
+    va_list ap;
 
-        printf("dispatch_object_t:: references: %u | ", object->references);
+    va_start(ap, msg);
 
-		switch(object->type){
-		case DISPATCH_QUEUE:
-		case DISPATCH_SERIAL_QUEUE:
-			printf("dispatch_queue: %s | %i items | Message: %s\n", cast_queue(object)->name, _tq_count(cast_queue(object)), message);
-			break;
-		case DISPATCH_GROUP:
-			printf("dispatch_group: %i pending | Message: %s\n", cast_group(object)->count, message);
-			break;
-		default:
-			printf("%s", message);
-		}
+    dispatch_debugv(obj, msg, ap);
+
+    va_end(ap);
 }
 
 void
-	dispatch_debugv(dispatch_object_t object, const char *message, va_list ap){
-        assert(object);
+dispatch_debugv(dispatch_object_t dou, const char *msg, va_list ap)
+{
+    char buf[4096];
+    size_t offs;
 
-        printf("references: %u | ", object->references);
+    struct dispatch_object_s *obj = DO_CAST(dou);
 
-		switch(object->type){
-		case DISPATCH_QUEUE:
-		case DISPATCH_SERIAL_QUEUE:
-			printf("dispatch_queue: %s | ", cast_queue(object)->name);
-			break;
-		case DISPATCH_GROUP:
-            printf("dispatch_group: %i pending | ", cast_group(object)->count);
-			break;
-		default:
-			break;
-		}
-		printf(message,ap);
+    if (obj && obj->do_vtable->do_debug) {
+        offs = dx_debug(obj, buf, sizeof(buf));
+    } else {
+        offs = snprintf(buf, sizeof(buf), "NULL vtable slot");
+    }
+
+    snprintf(buf + offs, sizeof(buf) - offs, ": %s", msg);
+
+    _dispatch_logv(buf, ap);
 }
 
 void
-	dispatch_retain(dispatch_object_t object){
-        assert(object);
-        atomic_inc_get(&object->references);
-}
+dispatch_retain(dispatch_object_t dou)
+{
+    struct dispatch_object_s *obj = DO_CAST(dou);
 
-
-/**
-Invoked whenever an object is distroyed 
-that had a target queue associated with it
-*/
-void _finalize(void* context){
-	dispatch_object_t o = (dispatch_object_t)(context);
-	assert(context);
-
-	if(o->finalizer)
-		o->finalizer(o->context);
-	_destroy_object(o);
+    if (obj->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
+        return; // global object
+    }
+    if ((dispatch_atomic_inc(&obj->do_xref_cnt) - 1) == 0) {
+        DISPATCH_CLIENT_CRASH("Resurrection of an object");
+    }
 }
 
 void
-	dispatch_release(dispatch_object_t object){
-        int ct = atomic_dec_get(&object->references);
-		if (ct == 0) {
-			if(object->target)
-				dispatch_async_f((dispatch_queue_t)object->target, object, _finalize);
-			else {
-				_finalize(object);
-			}
-		}
+_dispatch_retain(struct dispatch_object_s* obj)
+{
+
+    if (obj->do_ref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
+        return; // global object
+    }
+    if ((dispatch_atomic_inc(&obj->do_ref_cnt) - 1) == 0) {
+        DISPATCH_CLIENT_CRASH("Resurrection of an object");
+    }
+}
+
+void
+dispatch_release(dispatch_object_t dou)
+{
+    struct dispatch_object_s *obj = DO_CAST(dou);
+
+    unsigned int oldval;
+
+    if (obj->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
+        return;
+    }
+
+    oldval = dispatch_atomic_dec(&obj->do_xref_cnt) + 1;
+
+    if (fastpath(oldval > 1)) {
+        return;
+    }
+    if (oldval == 1) {
+        if ((uintptr_t)obj->do_vtable == (uintptr_t)&_dispatch_source_kevent_vtable) {
+            return _dispatch_source_xref_release(DSOURCE_CAST(dou));
+        }
+        if (slowpath(DISPATCH_OBJECT_SUSPENDED(obj))) {
+            // Arguments for and against this assert are within 6705399
+            DISPATCH_CLIENT_CRASH("Release of a suspended object");
+        }
+        return _dispatch_release(obj);
+    }
+    DISPATCH_CLIENT_CRASH("Over-release of an object");
+}
+
+void
+_dispatch_dispose(struct dispatch_object_s* obj)
+{
+
+    dispatch_queue_t tq = obj->do_targetq;
+    dispatch_function_t func = obj->do_finalizer;
+    void *ctxt = obj->do_ctxt;
+
+    obj->do_vtable = (struct dispatch_object_vtable_s *)0x200;
+
+    free(obj);
+
+    if (func && ctxt) {
+        dispatch_async_f(tq, ctxt, func);
+    }
+    _dispatch_release(DO_CAST(tq));
+}
+
+void
+_dispatch_release(struct dispatch_object_s* obj)
+{
+    unsigned int oldval;
+
+    if (obj->do_ref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
+        return; // global object
+    }
+
+    oldval = dispatch_atomic_dec(&obj->do_ref_cnt) + 1;
+
+    if (fastpath(oldval > 1)) {
+        return;
+    }
+    if (oldval == 1) {
+        if (obj->do_next != DISPATCH_OBJECT_LISTLESS) {
+            DISPATCH_CRASH("release while enqueued");
+        }
+        if (obj->do_xref_cnt) {
+            DISPATCH_CRASH("release while external references exist");
+        }
+
+        return dx_dispose(obj);
+    }
+    DISPATCH_CRASH("over-release");
 }
 
 void *
-	dispatch_get_context(dispatch_object_t object){
-        assert(object);
-        return object->context;
+dispatch_get_context(dispatch_object_t dou)
+{
+    struct dispatch_object_s *obj = DO_CAST(dou);
+
+    return obj->do_ctxt;
 }
 
 void
-	dispatch_set_context(dispatch_object_t object, void *context){
-        assert(object);
+dispatch_set_context(dispatch_object_t dou, void *context)
+{
+    struct dispatch_object_s *obj = DO_CAST(dou);
 
-		object->context = context;
+    if (obj->do_ref_cnt != DISPATCH_OBJECT_GLOBAL_REFCNT) {
+        obj->do_ctxt = context;
+    }
 }
 
 void
-	dispatch_set_finalizer_f(dispatch_object_t object, dispatch_function_t finalizer){
-        assert(object);
+dispatch_set_finalizer_f(dispatch_object_t dou, dispatch_function_t finalizer)
+{
+    struct dispatch_object_s *obj = DO_CAST(dou);
 
-        // this is only allowed on non global objects
-        if(object->type == DISPATCH_MAIN_QUEUE
-                   || object->type == DISPATCH_QUEUE)
-            return;
-
-		object->finalizer = finalizer;
+    obj->do_finalizer = finalizer;
 }
 
 void
-	dispatch_suspend(dispatch_object_t object){
-        assert(object);
+dispatch_suspend(dispatch_object_t dou)
+{
+    struct dispatch_object_s *obj = DO_CAST(dou);
 
-        // this is only allowed on non global objects
-        if(object->type == DISPATCH_MAIN_QUEUE
-                   || object->type == DISPATCH_QUEUE)
-            return;
-
-        atomic_inc_get(&object->suspend_ct);
-}
-
-void
-	dispatch_resume(dispatch_object_t object){
-        assert(object);
-
-        // this is only allowed on non global objects
-        if(object->type == DISPATCH_MAIN_QUEUE
-                   || object->type == DISPATCH_QUEUE)
-            return;
-
-        atomic_dec_get(&object->suspend_ct);
-}
-
-void
-dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue){
-    assert(object);
-
-    // this is only allowed on non global objects
-    if(object->type == DISPATCH_MAIN_QUEUE
-               || object->type == DISPATCH_QUEUE)
+    if (slowpath(obj->do_ref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT)) {
         return;
+    }
+    (void)dispatch_atomic_add(&obj->do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_INTERVAL);
+}
 
-    object->target = queue;
+void
+dispatch_resume(dispatch_object_t dou)
+{
+    struct dispatch_object_s* obj = DO_CAST(dou);
+
+    // Global objects cannot be suspended or resumed. This also has the
+    // side effect of saturating the suspend count of an object and
+    // guarding against resuming due to overflow.
+    if (slowpath(obj->do_ref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT)) {
+        return;
+    }
+
+    // Switch on the previous value of the suspend count.  If the previous
+    // value was a single suspend interval, the object should be resumed.
+    // If the previous value was less than the suspend interval, the object
+    // has been over-resumed.
+    switch (dispatch_atomic_sub(&obj->do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_INTERVAL) + DISPATCH_OBJECT_SUSPEND_INTERVAL) {
+    case DISPATCH_OBJECT_SUSPEND_INTERVAL:
+        _dispatch_wakeup((struct dispatch_queue_s*)obj);
+        break;
+    case DISPATCH_OBJECT_SUSPEND_LOCK:
+    case 0:
+        DISPATCH_CLIENT_CRASH("Over-resume of an object");
+        break;
+    default:
+        break;
+    }
+}
+
+size_t
+dispatch_object_debug_attr(struct dispatch_object_s* dou, char* buf, size_t bufsiz)
+{
+
+    return snprintf(buf, bufsiz, "refcnt = 0x%x, suspend_cnt = 0x%x, ",
+                    dou->do_ref_cnt, dou->do_suspend_cnt);
 }

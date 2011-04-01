@@ -18,3 +18,8 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
+
+
+#include "internal.h"
+
+malloc_zone_t *_dispatch_ccache_zone;

@@ -24,9 +24,33 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <semaphore.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <errno.h>
+#include <malloc/malloc.h>
+#include <sys/event.h>
+#include <sys/mount.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <signal.h>
+#include <semaphore.h>
+
+#if HAVE_MACH
+# include <mach/boolean.h>
+# include <mach/clock_types.h>
+# include <mach/clock.h>
+# include <mach/exception.h>
+# include <mach/mach.h>
+# include <mach/mach_error.h>
+# include <mach/mach_host.h>
+# include <mach/mach_interface.h>
+# include <mach/mach_time.h>
+# include <mach/mach_traps.h>
+# include <mach/message.h>
+# include <mach/mig_errors.h>
+# include <mach/host_info.h>
+# include <mach/notify.h>
+#endif
 
 // really just a low level abort()
 #define _dispatch_hardware_crash() __builtin_trap()

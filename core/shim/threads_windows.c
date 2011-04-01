@@ -71,6 +71,20 @@ int sem_init(sem_t * sem, int flag, unsigned int val){
     return *sem == 0;
 }
 
+int sem_timedwait(sem_t *restrict sem, const struct timespec * timeout){
+
+    DWORD duration = timeout->tv_nsec / NSEC_PER_MSEC + timeout->tv_set * 1000;
+
+    switch(WaitForSingleObject((s),duration) ){
+    case WAIT_TIMEOUT:
+        return ETIMEDOUT;
+    case WAIT_FAILED:
+        return EINVAL;
+    default:
+        return 0;
+    }
+}
+
 /* Credits for this pthread_cond_t implementation on windows go to
    the authors of http://www.cs.wustl.edu/~schmidt/win32-cv-1.html:
         Douglas C. Schmidt and Irfan Pyarali

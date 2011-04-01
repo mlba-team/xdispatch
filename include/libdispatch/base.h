@@ -49,37 +49,24 @@ typedef void (*dispatch_function_t)(void *);
  * aware of type compatibility.
  */
 typedef struct dispatch_object_s {
-public:
-	void* context;
-	int type;
-    unsigned int references;
-	ATOMIC_INT lock;
-	dispatch_function_t finalizer;
-	void* target;
-    ATOMIC_INT suspend_ct;
-    void* obj;
 private:
-	dispatch_object_s();
-	dispatch_object_s(const dispatch_object_s &);
-	void operator=(const dispatch_object_s &);
+    dispatch_object_s();
+    ~dispatch_object_s();
+    dispatch_object_s(const dispatch_object_s &);
+    void operator=(const dispatch_object_s &);
 } *dispatch_object_t;
 #else
-typedef struct dispatch_object_s {
-	void* context;
-	int type;
-    unsigned int references;
-	ATOMIC_INT lock;
-	dispatch_function_t finalizer;
-	void* target;
-    ATOMIC_INT suspend_ct;
-    void* obj;
-} *dispatch_object_t;
+// this is really really ugly but
+// there is no transparent union in MSVC
+struct dispatch_object_s;
+typedef void* dispatch_object_t;
 #endif
 
 #ifdef __cplusplus
 #	define DISPATCH_DECL(name) typedef struct name##_s : public dispatch_object_s {} *name##_t
 #else
-#	define DISPATCH_DECL(name) typedef struct dispatch_object_s *name##_t
+#   define DISPATCH_DECL(name) typedef struct name##_s *name##_t
+//#	define DISPATCH_DECL(name) typedef dispatch_object_t name##_t
 #endif
 
 

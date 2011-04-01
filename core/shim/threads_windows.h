@@ -118,7 +118,8 @@ typedef HANDLE sem_t;
 int sem_init(sem_t *, int, unsigned);
 #define sem_destroy(s) CloseHandle((s))
 #define sem_post(s) (!(ReleaseSemaphore((s),1,0)))
-#define sem_wait(s) (!(WaitForSingleObject((s),INFINITE)))
+#define sem_wait(s) ((WaitForSingleObject((s),INFINITE))==WAIT_FAILED)
+int sem_timedwait(sem_t *, const struct timespec *);
 
 /* custom dispatch code */
 

@@ -27,6 +27,29 @@
 // various configuration options
 //
 
+// define as 1 to enable the use of kevent
+#define USE_KEVENTS 1
+
+// mach kernel?
+#define HAVE_MACH 1
+
+// select the type of semaphore to use
+#define USE_MACH_SEM 1
+#define USE_POSIX_SEM 0
+
+// we only implement the most current interface
+#define DISPATCH_NO_LEGACY
+
+// we always have pthreads_workqueue
+#define HAVE_PTHREAD_WORKQUEUES 1
+#define HAVE_PTHREAD_MAIN_NP 1
+
+// no progname ?
+#define HAVE_GETPROGNAME
+
+// no performance monitor
+#define DISPATCH_PERF_MON 0
+
 // The number of threads
 #define MAX_THREADS		_ideal_thread_count()*2
 

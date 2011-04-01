@@ -62,26 +62,28 @@ void init(){
     pthread_workqueue_init_np();
 #endif
 
-    // init thread manager
-    _thread_man_init();
+    libdispatch_init();
 
-    // init the root queues
-    _dispatch_root_queues_init();
+//    // init thread manager
+//    _thread_man_init();
+
+//    // init the root queues
+//    _dispatch_root_queues_init();
 }
 
 void cleanup(){
-    //int i = 0;
+//    //int i = 0;
 
-    _thread_man_cleanup();
+//    _thread_man_cleanup();
 
-   /* for(i = 0; i < 3; i++) {
-#ifdef DEBUG
-        dispatch_debug(_dispatch_global_q[i], "release during cleanup");
-#endif
-        dispatch_release(_dispatch_global_q[i]);
-    }
-#ifdef DEBUG
-        dispatch_debug(_dispatch_main_q, "release during cleanup");
-#endif
-    dispatch_release(_dispatch_main_q); */
+//   /* for(i = 0; i < 3; i++) {
+//#ifdef DEBUG
+//        dispatch_debug(_dispatch_global_q[i], "release during cleanup");
+//#endif
+//        dispatch_release(_dispatch_global_q[i]);
+//    }
+//#ifdef DEBUG
+//        dispatch_debug(_dispatch_main_q, "release during cleanup");
+//#endif
+//    dispatch_release(_dispatch_main_q); */
 }

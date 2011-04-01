@@ -28,6 +28,10 @@
 #ifndef __DISPATCH_SHIMS_TSD__
 #define __DISPATCH_SHIMS_TSD__
 
+#ifdef __APPLE__
+int sem_timedwait(sem_t *, const struct timespec *);
+#endif
+
 #if HAVE_PTHREAD_KEY_INIT_NP
 static const unsigned long dispatch_queue_key = __PTK_LIBDISPATCH_KEY0;
 static const unsigned long dispatch_sema4_key = __PTK_LIBDISPATCH_KEY1;
@@ -43,10 +47,10 @@ extern pthread_key_t dispatch_bcounter_key;
 #endif
 
 #if USE_APPLE_TSD_OPTIMIZATIONS
-#define SIMULATE_5491082 1
-#ifndef _PTHREAD_TSD_OFFSET
-#define _PTHREAD_TSD_OFFSET 0
-#endif
+# define SIMULATE_5491082 1
+# ifndef _PTHREAD_TSD_OFFSET
+#  define _PTHREAD_TSD_OFFSET 0
+# endif
 
 static inline void
 _dispatch_thread_setspecific(unsigned long k, void *v)
@@ -117,5 +121,7 @@ _dispatch_thread_key_create(pthread_key_t *key, void (*destructor)(void *))
 #endif
 
 #define _dispatch_thread_self (uintptr_t)pthread_self
+
+int _dispatch_pthread_sigmask(int how, sigset_t *, sigset_t *);
 
 #endif /* __DISPATCH_SHIMS_TSD__ */

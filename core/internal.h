@@ -27,6 +27,9 @@
 #define __DISPATCH_BEGIN_DECLS
 #define __DISPATCH_END_DECLS
 
+// the configuration file
+#include "config.h"
+
 // common headers
 #include <stddef.h>
 #include <stdio.h>
@@ -37,9 +40,9 @@
 #include <pthread_workqueue.h>
 
 #ifndef DEBUG
-#	ifndef NDEBUG
-#		define NDEBUG
-#	endif
+#ifndef NDEBUG
+#	define NDEBUG
+#endif
 # define DISPATCH_DEGUG 0
 #else
 # define DISPATCH_DEBUG 1
@@ -77,6 +80,11 @@
 #include "shim/hardware.h"
 #include "shim/getprogname.h"
 #include "shim/time.h"
+#include "shim/perfmon.h"
+
+#if USE_KEVENTS
+# include "kevent_internal.h"
+#endif
 
 #ifdef __BLOCKS__
 # include <Block.h>
@@ -84,11 +92,11 @@
 #endif
 
 #ifndef TRUE
-#	define TRUE 1
+#define TRUE 1
 #endif
 
 #ifndef FALSE
-#	define FALSE 0
+#define FALSE 0
 #endif
 
 #define DISPATCH_API_VERSION 20090501
@@ -97,27 +105,46 @@
 #define __DISPATCH_INDIRECT__
 #endif
 
-#	include "../include/libdispatch/base.h"
-#	include "../include/libdispatch/object.h"
-#	include "../include/libdispatch/time.h"
-#	include "../include/libdispatch/queue.h"
+#include "../include/libdispatch/base.h"
+#include "../include/libdispatch/object.h"
+#include "../include/libdispatch/time.h"
+#include "../include/libdispatch/queue.h"
 /* DISABLED UNTIL CLEAN IMPLEMENTATION IS AVAILABLE
-#	include "source.h"
+#include "source.h"
    */
-#	include "../include/libdispatch/group.h"
-#	include "../include/libdispatch/semaphore.h"
-#	include "../include/libdispatch/once.h"
+#include "../include/libdispatch/group.h"
+#include "../include/libdispatch/semaphore.h"
+#include "../include/libdispatch/source.h"
+#include "../include/libdispatch/once.h"
 
-#	include "config.h"
-#	include "datatypes.h"
-#	include "taskqueue.h"
-#	include "execution.h"
-#	include "events.h"
-#   include "threadmanager.h"
+#include "datatypes.h"
+#include "taskqueue.h"
+#include "execution.h"
+#include "events.h"
+#include "blocks.h"
+#include "threadmanager.h"
+#include "continuation_cache.h"
+#include "object_internal.h"
+#include "queue_private.h"
+#include "semaphore_internal.h"
+#include "queue_internal.h"
+#include "source_internal.h"
+#include "source_private.h"
 
 // the global queues
 extern dispatch_queue_t _dispatch_global_q[];
 void _dispatch_root_queues_init();
+extern bool _dispatch_safe_fork;
+
+// other global  variables
+struct _dispatch_hw_config_s {
+    uint32_t cc_max_active;
+    uint32_t cc_max_logical;
+    uint32_t cc_max_physical;
+};
+
+extern bool _dispatch_safe_fork;
+extern struct _dispatch_hw_config_s _dispatch_hw_config;
 
 // some internally used funtions
 void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i);
@@ -126,13 +153,14 @@ struct timespec _dispatch_time_to_spec(dispatch_time_t t);
 dispatch_time_t _dispatch_spec_to_time(const struct timespec* s);
 uint64_t _dispatch_timeout(dispatch_time_t when);
 struct timespec _dispatch_timeout_ts(dispatch_time_t when);
+uint64_t _dispatch_get_nanoseconds(void);
+dispatch_semaphore_t _dispatch_get_thread_semaphore(void);
+void _dispatch_put_thread_semaphore(dispatch_semaphore_t);
+bool _dispatch_source_testcancel(dispatch_source_t);
+uint64_t _dispatch_timeout(dispatch_time_t when);
+struct timespec _dispatch_timeout_ts(dispatch_time_t when);
+void libdispatch_init(void);
 
-#ifdef __BLOCKS__
-dispatch_block_t _dispatch_Block_copy(dispatch_block_t db);
-
-void _dispatch_call_block_and_release(void *block);
-void _dispatch_call_block_and_release2(void *block, void *ctxt);
-#endif
 #undef DISPATCH_INTERNAL_H_
 
 #endif /* QUEUE_INTERNAL_H_ */

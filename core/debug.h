@@ -26,6 +26,18 @@
 void _dispatch_bug(size_t line, long val);
 void _dispatch_abort(size_t line, long val);
 void _dispatch_log(const char *msg, ...);
+void _dispatch_logv(const char *msg, va_list);
+
+#if HAVE_MACH
+// MIG_REPLY_MISMATCH means either:
+// 1) A signal handler is NOT using async-safe API. See the sigaction(2) man page for more info.
+// 2) A hand crafted call to mach_msg*() screwed up. Use MIG.
+#define DISPATCH_VERIFY_MIG(x) do {	\
+        if ((x) == MIG_REPLY_MISMATCH) {	\
+            _dispatch_hardware_crash();	\
+        }	\
+    } while (0)
+#endif
 
 #if __GNUC__
 /*
@@ -59,7 +71,7 @@ void _dispatch_log(const char *msg, ...);
  *
  * In particular, we wrap all system-calls with assume() macros.
  */
-# define dispatch_assume(e)	(void)({	\
+# define dispatch_assume(e)	({	\
         typeof(e) _e = fastpath(e); /* always eval 'e' */	\
         if (!_e) {	\
             if (__builtin_constant_p(e)) {	\
@@ -71,7 +83,7 @@ void _dispatch_log(const char *msg, ...);
         _e;	\
     })
 /* A lot of API return zero upon success and not-zero on fail. Let's capture and log the non-zero value */
-# define dispatch_assume_zero(e)	(void)({	\
+#define dispatch_assume_zero(e)	({	\
         typeof(e) _e = slowpath(e); /* always eval 'e' */	\
         if (_e) {	\
             if (__builtin_constant_p(e)) {	\
@@ -97,6 +109,12 @@ void _dispatch_log(const char *msg, ...);
             }	\
         }	\
     } while (0)
+
+/* Make sure the debug statments don't get too stale */
+#define _dispatch_debug(x, args...)	\
+    if (DISPATCH_DEBUG) {	\
+        _dispatch_log("libdispatch: %u\t%p\t" x, __LINE__, (void *)_dispatch_thread_self(), ##args);	\
+    }
 
 #elif defined(_WIN32)
 
@@ -170,6 +188,22 @@ void _dispatch_log(const char *msg, ...);
         }	\
     } while (0)
 
+/* Make sure the debug statments don't get too stale */
+#define _dispatch_debug(x, ...)	\
+    if (DISPATCH_DEBUG) {	\
+        _dispatch_log("libdispatch: %u\t%p\t" x, __LINE__, (void *)_dispatch_thread_self(), ##args);	\
+    }
+
 #endif
+
+#define DISPATCH_CRASH(x)	do {	\
+        _dispatch_log("BUG IN LIBDISPATCH: %S ", x);	\
+        _dispatch_hardware_crash();	\
+    } while (0)
+
+#define DISPATCH_CLIENT_CRASH(x)	do {	\
+        _dispatch_log("BUG IN CLIENT OF LIBDISPATCH: %S ", x);	\
+        _dispatch_hardware_crash();	\
+    } while (0)
 
 #endif /* DEBUG_H_ */

@@ -50,16 +50,40 @@ _dispatch_abort(size_t line, long val)
 }
 
 void
-_dispatch_log(const char *format, ...)
+_dispatch_log(const char *msg, ...)
 {
-#ifdef DISPATCH_DEBUG
-    va_list params;
-    char tmp[201];
-    va_start(params, format);
-    vsprintf(tmp, format, params);
-    va_end(params);
-    printf("%s\n",tmp);
-    fflush(stdout);
-#endif
+    va_list ap;
+
+    va_start(ap, msg);
+
+    _dispatch_logv(msg, ap);
+
+    va_end(ap);
 }
 
+void _dispatch_logv(const char *msg, va_list params){
+#if DISPATCH_DEBUG
+//    static FILE *logfile, *tmp;
+//    char newbuf[strlen(msg) + 2];
+//    char path[PATH_MAX];
+
+//    sprintf(newbuf, "%s\n", msg);
+
+////    if (!logfile) {
+////        snprintf(path, sizeof(path), "/var/tmp/libdispatch.%d.log", getpid());
+////        tmp = fopen(path, "a");
+////        assert(tmp);
+////        if (!dispatch_atomic_cmpxchg(&logfile, NULL, tmp)) {
+////            fclose(tmp);
+////        } else {
+////            struct timeval tv;
+////            gettimeofday(&tv, NULL);
+////            fprintf(logfile, "=== log file opened for %s[%u] at %ld.%06u ===\n",
+////                    getprogname() ?: "", getpid(), tv.tv_sec, tv.tv_usec);
+////        }
+////    }
+//    vfprintf(logfile, newbuf, ap);
+//    fflush(logfile);
+      printf(msg, params);
+#endif
+}

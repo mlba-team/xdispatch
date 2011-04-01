@@ -19,9 +19,27 @@
  * @APPLE_APACHE_LICENSE_HEADER_END@
  */
 
+#include <signal.h>
+
 #include "../internal.h"
 
 #ifndef _WIN32
+
+#ifdef __APPLE__
+int sem_timedwait(sem_t * sem, const struct timespec * timeout){
+    int res;
+    dispatch_time_t until = dispatch_walltime(timeout, 0);
+    while( (res = sem_trywait(sem)) == EAGAIN
+          && until < dispatch_time(DISPATCH_TIME_NOW,0))
+        sleep(1);
+
+    if (until >= dispatch_time(DISPATCH_TIME_NOW,0))
+        return ETIMEDOUT;
+
+    return res;
+}
+
+#endif
 
 #if !HAVE_PTHREAD_KEY_INIT_NP
 pthread_key_t dispatch_queue_key;
@@ -29,5 +47,35 @@ pthread_key_t dispatch_sema4_key;
 pthread_key_t dispatch_cache_key;
 pthread_key_t dispatch_bcounter_key;
 #endif
+
+
+int _dispatch_pthread_sigmask(int how, sigset_t *set, sigset_t *oset)
+{
+    int r;
+
+    /* Workaround: 6269619 Not all signals can be delivered on any thread */
+
+    r = sigdelset(set, SIGILL);
+    (void)dispatch_assume_zero(r);
+    r = sigdelset(set, SIGTRAP);
+    (void)dispatch_assume_zero(r);
+#if HAVE_DECL_SIGEMT
+    r = sigdelset(set, SIGEMT);
+    (void)dispatch_assume_zero(r);
+#endif
+    r = sigdelset(set, SIGFPE);
+    (void)dispatch_assume_zero(r);
+    r = sigdelset(set, SIGBUS);
+    (void)dispatch_assume_zero(r);
+    r = sigdelset(set, SIGSEGV);
+    (void)dispatch_assume_zero(r);
+    r = sigdelset(set, SIGSYS);
+    (void)dispatch_assume_zero(r);
+    r = sigdelset(set, SIGPIPE);
+    (void)dispatch_assume_zero(r);
+
+    return pthread_sigmask(how, set, oset);
+}
+
 
 #endif

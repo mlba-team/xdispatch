@@ -8,7 +8,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 * 
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http:www.apache.org/licenses/LICENSE-2.0
 * 
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@
 
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
-#include "base.h" // for HeaderDoc
+#include "base.h"  for HeaderDoc
 #endif
 
 /*!
@@ -260,9 +260,9 @@ __DISPATCH_BEGIN_DECLS
  */
 dispatch_source_t
 dispatch_source_create(dispatch_source_type_t type,
-	uintptr_t handle,
-	unsigned long mask,
-	dispatch_queue_t queue);
+    uintptr_t handle,
+    unsigned long mask,
+    dispatch_queue_t queue);
 
 /*!
  * @function dispatch_source_set_event_handler
@@ -280,7 +280,7 @@ dispatch_source_create(dispatch_source_type_t type,
 #ifdef XDISPATCH_HAS_BLOCKS
 void
 dispatch_source_set_event_handler(dispatch_source_t source,
-	dispatch_block_t handler);
+    dispatch_block_t handler);
 #endif /* XDISPATCH_HAS_BLOCKS */
 
 /*!
@@ -301,7 +301,7 @@ dispatch_source_set_event_handler(dispatch_source_t source,
  */
 void
 dispatch_source_set_event_handler_f(dispatch_source_t source,
-	dispatch_function_t handler);
+    dispatch_function_t handler);
 
 /*!
  * @function dispatch_source_set_cancel_handler
@@ -333,7 +333,7 @@ dispatch_source_set_event_handler_f(dispatch_source_t source,
 #ifdef XDISPATCH_HAS_BLOCKS
 void
 dispatch_source_set_cancel_handler(dispatch_source_t source,
-	dispatch_block_t cancel_handler);
+    dispatch_block_t cancel_handler);
 #endif /* XDISPATCH_HAS_BLOCKS */
 
 /*!
@@ -356,7 +356,7 @@ dispatch_source_set_cancel_handler(dispatch_source_t source,
  */
 void
 dispatch_source_set_cancel_handler_f(dispatch_source_t source,
-	dispatch_function_t cancel_handler);
+    dispatch_function_t cancel_handler);
 
 /*!
  * @function dispatch_source_cancel
@@ -539,9 +539,9 @@ dispatch_source_merge_data(dispatch_source_t source, unsigned long value);
  */
 void
 dispatch_source_set_timer(dispatch_source_t source,
-	dispatch_time_t start,
-	uint64_t interval,
-	uint64_t leeway);
+    dispatch_time_t start,
+    uint64_t interval,
+    uint64_t leeway);
 
 __DISPATCH_END_DECLS
 

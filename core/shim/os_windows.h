@@ -23,6 +23,7 @@
 
 #define WINVER 0x0501
 #include <Windows.h>
+#include <Error.h>
 
 #if _MSC_VER < 1600
 # include "stdint.h"

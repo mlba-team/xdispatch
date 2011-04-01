@@ -23,7 +23,7 @@
 #ifndef EXECUTION_H_
 #define EXECUTION_H_
 
-#include "queue_internal.h"
+#include "internal.h"
 
 //
 // @file execution.h
