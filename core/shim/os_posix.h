@@ -57,6 +57,7 @@
 
 // some compiler hints
 #define DISPATCH_NOINLINE	__attribute__((noinline))
+#define DISPATCH_INLINE __attribute__((always_inline))
 #define DISPATCH_UNUSED __attribute__((unused))
 #define DISPATCH_NORETURN __attribute__((__noreturn__))
 

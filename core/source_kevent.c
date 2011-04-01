@@ -30,7 +30,7 @@ static void _dispatch_kevent_machport_enable(dispatch_kevent_t dk);
 static void _dispatch_kevent_machport_disable(dispatch_kevent_t dk);
 
 static void _dispatch_drain_mach_messages(struct kevent *ke);
-static void _dispatch_mach_notify_source_init(void *context __attribute__((unused)));
+static void _dispatch_mach_notify_source_init(void *context DISPATCH_UNUSED);
 #endif
 
 #define DISPATCH_EVFILT_TIMER	(-EVFILT_SYSCOUNT - 1)
@@ -997,7 +997,7 @@ _dispatch_drain_mach_messages(struct kevent *ke)
 }
 
 void
-_dispatch_port_set_init(void *context __attribute__((unused)))
+_dispatch_port_set_init(void *context DISPATCH_UNUSED)
 {
     struct kevent kev = {
         .filter = EVFILT_MACHPORT,
@@ -1171,7 +1171,7 @@ _dispatch_mach_notify_source2(void *context)
 }
 
 static void
-_dispatch_mach_notify_source_init(void *context __attribute__((unused)))
+_dispatch_mach_notify_source_init(void *context DISPATCH_UNUSED)
 {
     _dispatch_get_port_set();
 
@@ -1183,7 +1183,7 @@ _dispatch_mach_notify_source_init(void *context __attribute__((unused)))
 }
 
 kern_return_t
-_dispatch_mach_notify_port_deleted(mach_port_t notify __attribute__((unused)), mach_port_name_t name)
+_dispatch_mach_notify_port_deleted(mach_port_t notify DISPATCH_UNUSED, mach_port_name_t name)
 {
     dispatch_source_t dsi;
     dispatch_kevent_t dk;
@@ -1216,7 +1216,7 @@ out:
 }
 
 kern_return_t
-_dispatch_mach_notify_port_destroyed(mach_port_t notify __attribute__((unused)), mach_port_t name)
+_dispatch_mach_notify_port_destroyed(mach_port_t notify DISPATCH_UNUSED, mach_port_t name)
 {
     kern_return_t kr;
     // this function should never be called
@@ -1228,7 +1228,7 @@ _dispatch_mach_notify_port_destroyed(mach_port_t notify __attribute__((unused)),
 }
 
 kern_return_t
-_dispatch_mach_notify_no_senders(mach_port_t notify, mach_port_mscount_t mscnt __attribute__((unused)))
+_dispatch_mach_notify_no_senders(mach_port_t notify, mach_port_mscount_t mscnt DISPATCH_UNUSED)
 {
     // this function should never be called
     (void)dispatch_assume_zero(notify);
@@ -1236,7 +1236,7 @@ _dispatch_mach_notify_no_senders(mach_port_t notify, mach_port_mscount_t mscnt _
 }
 
 kern_return_t
-_dispatch_mach_notify_send_once(mach_port_t notify __attribute__((unused)))
+_dispatch_mach_notify_send_once(mach_port_t notify DISPATCH_UNUSED)
 {
     // we only register for dead-name notifications
     // some code deallocated our send-once right without consuming it
@@ -1247,7 +1247,7 @@ _dispatch_mach_notify_send_once(mach_port_t notify __attribute__((unused)))
 }
 
 kern_return_t
-_dispatch_mach_notify_dead_name(mach_port_t notify __attribute__((unused)), mach_port_name_t name)
+_dispatch_mach_notify_dead_name(mach_port_t notify DISPATCH_UNUSED, mach_port_name_t name)
 {
     dispatch_source_t dsi;
     dispatch_kevent_t dk;
@@ -1282,14 +1282,14 @@ out:
 }
 
 kern_return_t
-_dispatch_wakeup_main_thread(mach_port_t mp __attribute__((unused)))
+_dispatch_wakeup_main_thread(mach_port_t mp DISPATCH_UNUSED)
 {
     // dummy function just to pop out the main thread out of mach_msg()
     return 0;
 }
 
 kern_return_t
-_dispatch_consume_send_once_right(mach_port_t mp __attribute__((unused)))
+_dispatch_consume_send_once_right(mach_port_t mp DISPATCH_UNUSED)
 {
     // dummy function to consume a send-once right
     return 0;

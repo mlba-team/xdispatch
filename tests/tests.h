@@ -67,14 +67,8 @@ void dispatch_semaphore();
 void dispatch_timer_bit31();
 void dispatch_timer_bit63();
 #endif
-#ifndef HAVE_NATIVE_DISPATCH_H
-void core_taskqueue();
-#endif
 
 static void register_tests(){
-#ifndef HAVE_NATIVE_DISPATCH_H
-	MU_REGISTER_TEST(core_taskqueue);
-#endif
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);
 	MU_REGISTER_TEST(dispatch_test_sync);

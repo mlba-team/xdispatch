@@ -800,7 +800,7 @@ _dispatch_sync_f_slow(dispatch_queue_t dq)
 
 #if DISPATCH_COCOA_COMPAT
 static void
-_dispatch_main_q_port_init(void *ctxt __attribute__((unused)))
+_dispatch_main_q_port_init(void *ctxt DISPATCH_UNUSED)
 {
     kern_return_t kr;
 
@@ -830,11 +830,11 @@ _dispatch_queue_set_mainq_drain_state(bool arg)
  * noreturn.  Mask by marking __builtin_trap() as noreturn locally.
  */
 #ifndef HAVE_NORETURN_BUILTIN_TRAP
-void __builtin_trap(void) __attribute__((__noreturn__));
+void __builtin_trap(void) DISPATCH_NORETURN;
 #endif
 
 static void
-_dispatch_sigsuspend(void *ctxt __attribute__((unused)))
+_dispatch_sigsuspend(void *ctxt DISPATCH_UNUSED)
 {
     static const sigset_t mask;
 
@@ -1441,7 +1441,7 @@ dispatch_debug_queue(dispatch_queue_t dq, const char* str) {
 
 #if DISPATCH_COCOA_COMPAT
 void
-_dispatch_main_queue_callback_4CF(mach_msg_header_t *msg __attribute__((unused)))
+_dispatch_main_queue_callback_4CF(mach_msg_header_t *msg DISPATCH_UNUSED)
 {
     if (main_q_is_draining) {
         return;
@@ -1550,7 +1550,7 @@ dispatch_queue_attr_set_finalizer(dispatch_queue_attr_t attr,
 #endif /* DISPATCH_NO_LEGACY */
 
 static void
-_dispatch_ccache_init(void *context __attribute__((unused)))
+_dispatch_ccache_init(void *context DISPATCH_UNUSED)
 {
     _dispatch_ccache_zone = malloc_create_zone(0, 0);
     dispatch_assert(_dispatch_ccache_zone);
@@ -1631,7 +1631,7 @@ dispatch_atfork_child(void)
 }
 
 void
-dispatch_init_pthread(pthread_t pthr __attribute__((unused)))
+dispatch_init_pthread(pthread_t pthr DISPATCH_UNUSED)
 {
 }
 

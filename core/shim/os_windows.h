@@ -59,6 +59,7 @@ typedef UINT64 uint64_t;
 
 // some compiler hints
 #define DISPATCH_NOINLINE
+#define DISPATCH_INLINE
 #define DISPATCH_UNUSED
 #define DISPATCH_NORETURN
 

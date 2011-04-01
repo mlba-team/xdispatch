@@ -116,10 +116,8 @@
 #include "../include/libdispatch/source.h"
 #include "../include/libdispatch/once.h"
 
-#include "datatypes.h"
-#include "taskqueue.h"
-#include "execution.h"
 #include "events.h"
+#include "execution.h"
 #include "blocks.h"
 #include "threadmanager.h"
 #include "continuation_cache.h"
@@ -146,8 +144,6 @@ extern bool _dispatch_safe_fork;
 extern struct _dispatch_hw_config_s _dispatch_hw_config;
 
 // some internally used funtions
-void _dispatch_async_fast_exists_f(dispatch_queue_t queue, _taskitem_t i);
-void _dispatch_async_fast_f(dispatch_queue_t queue, void *context, dispatch_function_t work);
 struct timespec _dispatch_time_to_spec(dispatch_time_t t);
 dispatch_time_t _dispatch_spec_to_time(const struct timespec* s);
 uint64_t _dispatch_timeout(dispatch_time_t when);

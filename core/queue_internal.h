@@ -77,7 +77,7 @@ void _dispatch_queue_push_list_slow(struct dispatch_queue_s* dq, struct dispatch
 void _dispatch_queue_serial_drain_till_empty(struct dispatch_queue_s* dq);
 void _dispatch_force_cache_cleanup(void);
 
-__attribute__((always_inline))
+DISPATCH_INLINE
 static inline void
 _dispatch_queue_push_list(struct dispatch_queue_s* dq, struct dispatch_object_s* _head, struct dispatch_object_s* _tail)
 {
@@ -101,7 +101,7 @@ _dispatch_queue_push_list(struct dispatch_queue_s* dq, struct dispatch_object_s*
 #if DISPATCH_DEBUG
 void dispatch_debug_queue(dispatch_queue_t dq, const char* str);
 #else
-static inline void dispatch_debug_queue(dispatch_queue_t dq __attribute__((unused)), const char* str __attribute__((unused))) {}
+static inline void dispatch_debug_queue(dispatch_queue_t dq DISPATCH_UNUSED, const char* str DISPATCH_UNUSED) {}
 #endif
 
 size_t dispatch_queue_debug(struct dispatch_queue_s* dq, char* buf, size_t bufsiz);
