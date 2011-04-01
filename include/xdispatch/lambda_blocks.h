@@ -158,6 +158,10 @@ XDISPATCH_EXPORT void dispatch_group_async(dispatch_group_t group, dispatch_queu
 
 XDISPATCH_EXPORT void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);
 
+XDISPATCH_EXPORT void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler);
+
+XDISPATCH_EXPORT void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler);
+
 #endif
 
 #endif /* XDISPATCH_BLOCKS_H_ */

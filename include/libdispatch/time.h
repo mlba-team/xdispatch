@@ -48,10 +48,10 @@ struct timespec;
 #ifdef NSEC_PER_MSEC
 #undef NSEC_PER_MSEC
 #endif
-#define NSEC_PER_SEC 1000000000ll
-#define NSEC_PER_MSEC 1000000ll
-#define USEC_PER_SEC 1000000ll
-#define NSEC_PER_USEC 1000ll
+#define NSEC_PER_SEC (uint64_t)1000000000
+#define NSEC_PER_MSEC (uint64_t)1000000
+#define USEC_PER_SEC (uint64_t)1000000
+#define NSEC_PER_USEC (uint64_t)1000
 
 /*!
  * @typedef dispatch_time_t

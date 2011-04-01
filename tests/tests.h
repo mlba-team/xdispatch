@@ -24,6 +24,7 @@
 
 #include "munit/MUnit.h"
 #include <xdispatch/dispatch.h>
+#include "shims/platform.h"
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
@@ -63,6 +64,8 @@ void dispatch_after_blocks();
 void dispatch_group_blocks();
 void dispatch_pingpong_blocks();
 void dispatch_semaphore();
+void dispatch_timer_bit31();
+void dispatch_timer_bit63();
 #endif
 #ifndef HAVE_NATIVE_DISPATCH_H
 void core_taskqueue();
@@ -94,6 +97,8 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_after_blocks);
 	MU_REGISTER_TEST(dispatch_pingpong_blocks);
 	MU_REGISTER_TEST(dispatch_semaphore);
+    MU_REGISTER_TEST(dispatch_timer_bit31);
+    MU_REGISTER_TEST(dispatch_timer_bit63);
 #endif
 }
 

@@ -26,7 +26,7 @@
 
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
-#include "base.h"  for HeaderDoc
+#include "base.h"  // for HeaderDoc
 #endif
 
 /*!
@@ -69,7 +69,7 @@ typedef const struct dispatch_source_type_s *dispatch_source_type_t;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_DATA_ADD (&_dispatch_source_type_data_add)
-const struct dispatch_source_type_s _dispatch_source_type_data_add;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_data_add;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_DATA_OR
@@ -80,7 +80,7 @@ const struct dispatch_source_type_s _dispatch_source_type_data_add;
  * dispatch_source_merge_data().
  */
 #define DISPATCH_SOURCE_TYPE_DATA_OR (&_dispatch_source_type_data_or)
-const struct dispatch_source_type_s _dispatch_source_type_data_or;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_data_or;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_MACH_SEND
@@ -90,7 +90,7 @@ const struct dispatch_source_type_s _dispatch_source_type_data_or;
  * The mask is a mask of desired events from dispatch_source_mach_send_flags_t.
  */
 #define DISPATCH_SOURCE_TYPE_MACH_SEND (&_dispatch_source_type_mach_send)
-const struct dispatch_source_type_s _dispatch_source_type_mach_send;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_mach_send;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_MACH_RECV
@@ -99,7 +99,7 @@ const struct dispatch_source_type_s _dispatch_source_type_mach_send;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_MACH_RECV (&_dispatch_source_type_mach_recv)
-const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_PROC
@@ -109,7 +109,7 @@ const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
  * The mask is a mask of desired events from dispatch_source_proc_flags_t.
  */
 #define DISPATCH_SOURCE_TYPE_PROC (&_dispatch_source_type_proc)
-const struct dispatch_source_type_s _dispatch_source_type_proc;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_proc;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_READ
@@ -119,7 +119,7 @@ const struct dispatch_source_type_s _dispatch_source_type_proc;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_READ (&_dispatch_source_type_read)
-const struct dispatch_source_type_s _dispatch_source_type_read;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_read;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_SIGNAL
@@ -128,7 +128,7 @@ const struct dispatch_source_type_s _dispatch_source_type_read;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_SIGNAL (&_dispatch_source_type_signal)
-const struct dispatch_source_type_s _dispatch_source_type_signal;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_signal;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_TIMER
@@ -138,7 +138,7 @@ const struct dispatch_source_type_s _dispatch_source_type_signal;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_TIMER (&_dispatch_source_type_timer)
-const struct dispatch_source_type_s _dispatch_source_type_timer;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_timer;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_VNODE
@@ -148,7 +148,7 @@ const struct dispatch_source_type_s _dispatch_source_type_timer;
  * The mask is a mask of desired events from dispatch_source_vnode_flags_t.
  */
 #define DISPATCH_SOURCE_TYPE_VNODE (&_dispatch_source_type_vnode)
-const struct dispatch_source_type_s _dispatch_source_type_vnode;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_vnode;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_WRITE
@@ -158,7 +158,7 @@ const struct dispatch_source_type_s _dispatch_source_type_vnode;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_WRITE (&_dispatch_source_type_write)
-const struct dispatch_source_type_s _dispatch_source_type_write;
+DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_write;
 
 /*!
  * @enum dispatch_source_mach_send_flags_t
@@ -258,7 +258,7 @@ __DISPATCH_BEGIN_DECLS
  * @param queue
  * The dispatch queue to which the event handler block will be submited.
  */
-dispatch_source_t
+DISPATCH_EXPORT dispatch_source_t
 dispatch_source_create(dispatch_source_type_t type,
     uintptr_t handle,
     unsigned long mask,
@@ -277,11 +277,11 @@ dispatch_source_create(dispatch_source_type_t type,
  * @param handler
  * The event handler block to submit to the source's target queue.
  */
-#ifdef XDISPATCH_HAS_BLOCKS
-void
+#ifdef __BLOCKS__
+DISPATCH_EXPORT void
 dispatch_source_set_event_handler(dispatch_source_t source,
     dispatch_block_t handler);
-#endif /* XDISPATCH_HAS_BLOCKS */
+#endif /* __BLOCKS__ */
 
 /*!
  * @function dispatch_source_set_event_handler_f
@@ -299,7 +299,7 @@ dispatch_source_set_event_handler(dispatch_source_t source,
  * context of the dispatch source at the time the handler call is made.
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_source_set_event_handler_f(dispatch_source_t source,
     dispatch_function_t handler);
 
@@ -330,11 +330,11 @@ dispatch_source_set_event_handler_f(dispatch_source_t source,
  * @param handler
  * The cancellation handler block to submit to the source's target queue.
  */
-#ifdef XDISPATCH_HAS_BLOCKS
-void
+#ifdef __BLOCKS__
+DISPATCH_EXPORT void
 dispatch_source_set_cancel_handler(dispatch_source_t source,
     dispatch_block_t cancel_handler);
-#endif /* XDISPATCH_HAS_BLOCKS */
+#endif /* __BLOCKS__ */
 
 /*!
  * @function dispatch_source_set_cancel_handler_f
@@ -354,7 +354,7 @@ dispatch_source_set_cancel_handler(dispatch_source_t source,
  * The context parameter passed to the event handler function is the current
  * context of the dispatch source at the time the handler call is made.
  */
-void
+DISPATCH_EXPORT void
 dispatch_source_set_cancel_handler_f(dispatch_source_t source,
     dispatch_function_t cancel_handler);
 
@@ -380,7 +380,7 @@ dispatch_source_set_cancel_handler_f(dispatch_source_t source,
  * The dispatch source to be canceled.
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_source_cancel(dispatch_source_t source);
 
 /*!
@@ -396,7 +396,7 @@ dispatch_source_cancel(dispatch_source_t source);
  * @result
  * Non-zero if canceled and zero if not canceled.
  */
-long
+DISPATCH_EXPORT long
 dispatch_source_testcancel(dispatch_source_t source);
 
 /*!
@@ -423,7 +423,7 @@ dispatch_source_testcancel(dispatch_source_t source);
  *  DISPATCH_SOURCE_TYPE_VNODE:           file descriptor (int)
  *  DISPATCH_SOURCE_TYPE_WRITE:           file descriptor (int)
  */
-uintptr_t
+DISPATCH_EXPORT uintptr_t
 dispatch_source_get_handle(dispatch_source_t source);
 
 /*!
@@ -450,7 +450,7 @@ dispatch_source_get_handle(dispatch_source_t source);
  *  DISPATCH_SOURCE_TYPE_VNODE:           dispatch_source_vnode_flags_t
  *  DISPATCH_SOURCE_TYPE_WRITE:           n/a
  */
-unsigned long
+DISPATCH_EXPORT unsigned long
 dispatch_source_get_mask(dispatch_source_t source);
 
 /*!
@@ -484,7 +484,7 @@ dispatch_source_get_mask(dispatch_source_t source);
  *  DISPATCH_SOURCE_TYPE_VNODE:           dispatch_source_vnode_flags_t
  *  DISPATCH_SOURCE_TYPE_WRITE:           estimated buffer space available
  */
-unsigned long
+DISPATCH_EXPORT unsigned long
 dispatch_source_get_data(dispatch_source_t source);
 
 /*!
@@ -503,7 +503,7 @@ dispatch_source_get_data(dispatch_source_t source);
  * as specified by the dispatch source type. A value of zero has no effect
  * and will not result in the submission of the event handler block.
  */
-void
+DISPATCH_EXPORT void
 dispatch_source_merge_data(dispatch_source_t source, unsigned long value);
 
 /*!
@@ -537,7 +537,7 @@ dispatch_source_merge_data(dispatch_source_t source, unsigned long value);
  * a leeway of up to 30 seconds.)  Note that some latency is to be expected for
  * all timers even when a leeway value of zero is specified.
  */
-void
+DISPATCH_EXPORT void
 dispatch_source_set_timer(dispatch_source_t source,
     dispatch_time_t start,
     uint64_t interval,

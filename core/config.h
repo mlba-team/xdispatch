@@ -27,6 +27,16 @@
 // various configuration options
 //
 
+// debug level
+#ifndef DEBUG
+# ifndef NDEBUG
+#	define NDEBUG
+# endif
+# define DISPATCH_DEBUG 0
+#else
+# define DISPATCH_DEBUG 0
+#endif
+
 // define as 1 to enable the use of kevent
 #define USE_KEVENTS 1
 

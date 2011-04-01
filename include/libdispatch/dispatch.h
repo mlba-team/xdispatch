@@ -54,9 +54,7 @@
 #include "object.h"
 #include "time.h"
 #include "queue.h"
-/* DISABLED UNTIL CLEAN IMPLEMENTATION IS AVAILABLE
 #include "source.h"
-   */
 #include "group.h"
 #include "semaphore.h"
 #include "once.h"

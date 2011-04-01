@@ -174,27 +174,6 @@ const struct dispatch_source_vtable_s _dispatch_source_kevent_vtable = {
     .do_debug = _dispatch_source_kevent_debug,
 };
 
-/*
- * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
- *
- * @APPLE_APACHE_LICENSE_HEADER_START@
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @APPLE_APACHE_LICENSE_HEADER_END@
- */
-
-
 static struct dispatch_kevent_s _dispatch_kevent_data_or = {
     .dk_kevent = {
         .filter = DISPATCH_EVFILT_CUSTOM_OR,
@@ -723,7 +702,7 @@ static const struct kevent _dispatch_source_type_timer_ke = {
     .filter = DISPATCH_EVFILT_TIMER,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_timer = {
+DISPATCH_EXPORT const struct dispatch_source_type_s _dispatch_source_type_timer = {
     .opaque = (void *)&_dispatch_source_type_timer_ke,
     .mask = DISPATCH_TIMER_INTERVAL|DISPATCH_TIMER_ONESHOT|DISPATCH_TIMER_ABSOLUTE|DISPATCH_TIMER_WALL_CLOCK,
     .init = dispatch_source_type_timer_init,
@@ -734,7 +713,7 @@ static const struct kevent _dispatch_source_type_read_ke = {
     .flags = EV_DISPATCH,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_read = {
+DISPATCH_EXPORT  const struct dispatch_source_type_s _dispatch_source_type_read = {
     .opaque = (void *)&_dispatch_source_type_read_ke,
     .init = dispatch_source_type_kevent_init,
 };
@@ -744,7 +723,7 @@ static const struct kevent _dispatch_source_type_write_ke = {
     .flags = EV_DISPATCH,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_write = {
+DISPATCH_EXPORT  const struct dispatch_source_type_s _dispatch_source_type_write = {
     .opaque = (void *)&_dispatch_source_type_write_ke,
     .init = dispatch_source_type_kevent_init,
 };
@@ -754,7 +733,7 @@ static const struct kevent _dispatch_source_type_proc_ke = {
     .flags = EV_CLEAR,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_proc = {
+DISPATCH_EXPORT const struct dispatch_source_type_s _dispatch_source_type_proc = {
     .opaque = (void *)&_dispatch_source_type_proc_ke,
     .mask = NOTE_EXIT|NOTE_FORK|NOTE_EXEC
 #if HAVE_DECL_NOTE_SIGNAL
@@ -771,7 +750,7 @@ static const struct kevent _dispatch_source_type_signal_ke = {
     .filter = EVFILT_SIGNAL,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_signal = {
+DISPATCH_EXPORT const struct dispatch_source_type_s _dispatch_source_type_signal = {
     .opaque = (void *)&_dispatch_source_type_signal_ke,
     .init = dispatch_source_type_kevent_init,
 };
@@ -781,7 +760,7 @@ static const struct kevent _dispatch_source_type_vnode_ke = {
     .flags = EV_CLEAR,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_vnode = {
+DISPATCH_EXPORT const struct dispatch_source_type_s _dispatch_source_type_vnode = {
     .opaque = (void *)&_dispatch_source_type_vnode_ke,
     .mask = NOTE_DELETE|NOTE_WRITE|NOTE_EXTEND|NOTE_ATTRIB|NOTE_LINK|
         NOTE_RENAME
@@ -800,7 +779,7 @@ static const struct kevent _dispatch_source_type_vfs_ke = {
     .flags = EV_CLEAR,
 };
 
-const struct dispatch_source_type_s _dispatch_source_type_vfs = {
+DISPATCH_EXPORT const struct dispatch_source_type_s _dispatch_source_type_vfs = {
     .opaque = (void *)&_dispatch_source_type_vfs_ke,
     .mask = VQ_NOTRESP|VQ_NEEDAUTH|VQ_LOWDISK|VQ_MOUNT|VQ_UNMOUNT|VQ_DEAD|
         VQ_ASSIST|VQ_NOTRESPLOCK

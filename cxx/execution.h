@@ -37,14 +37,18 @@ public:
         : op(o) {}
 #endif
     ~wrap() {
-        if(op && op->auto_delete())
-            delete op;
+        // std::cout << "OP deleted " << this << "( " << op << " )" << std::endl;
+        if(op) {
+            if(op->auto_delete())
+                delete op;
+        }
 #ifdef XDISPATCH_HAS_BLOCKS
         else
             XDISPATCH_BLOCK_RELEASE(blck);
 #endif
     }
     void run(){
+        // std::cout << "OP starting " << this << "( " << op << " )" << std::endl;
         if(op)
             (*op)();
 #ifdef XDISPATCH_HAS_BLOCKS

@@ -23,9 +23,12 @@
 #ifndef DISPATCH_INTERNAL_H_
 #define DISPATCH_INTERNAL_H_
 
-
-#define __DISPATCH_BEGIN_DECLS
-#define __DISPATCH_END_DECLS
+#ifndef __DISPATCH_BEGIN_DECLS
+# define __DISPATCH_BEGIN_DECLS
+#endif
+#ifndef __DISPATCH_END_DECLS
+# define __DISPATCH_END_DECLS
+#endif
 
 // the configuration file
 #include "config.h"
@@ -39,14 +42,6 @@
 #include <stdarg.h>
 #include <pthread_workqueue.h>
 
-#ifndef DEBUG
-#ifndef NDEBUG
-#	define NDEBUG
-#endif
-# define DISPATCH_DEGUG 0
-#else
-# define DISPATCH_DEBUG 1
-#endif
 #include <assert.h>
 
 /* I wish we had __builtin_expect_range() */
@@ -56,6 +51,10 @@
 #else
 # define fastpath(x) (x)
 # define slowpath(x) (x)
+#endif
+
+#ifdef __cplusplus
+ extern "C" {
 #endif
 
 // debug helpers
@@ -162,5 +161,9 @@ struct timespec _dispatch_timeout_ts(dispatch_time_t when);
 void libdispatch_init(void);
 
 #undef DISPATCH_INTERNAL_H_
+
+#ifdef __cplusplus
+ }
+#endif
 
 #endif /* QUEUE_INTERNAL_H_ */

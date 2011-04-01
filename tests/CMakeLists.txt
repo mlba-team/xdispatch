@@ -4,16 +4,20 @@ mz_add_library(munit munit)
 
 # define file groups
 file(GLOB TESTSRCS *.c *.h *.cpp)
+file(GLOB SHIMS shims/*.c shims/*.h)
 
 # grouping
 source_group(tests FILES ${TESTSRCS})
+source_group(shims FILES ${SHIMS})
 
 if(QT4_FOUND)
 	# test cases for Qt Interface
 	file(GLOB QTESTHEADER Qt_*.cpp)
 	qt4_wrap_cpp(TESTMOC ${QTESTHEADER})
 	
-  set(LIB ${QT_LIBRARIES} QtDispatch)
+    #message("### COOL ${QTESTHEADER}")
+
+    set(LIB ${QT_LIBRARIES} QtDispatch)
 endif()
 
 # includes
@@ -25,7 +29,7 @@ INCLUDE_DIRECTORIES(
 )
 
 # add new exec target
-add_executable(xdispatch_tests ${TESTSRCS})
+add_executable(xdispatch_tests ${TESTSRCS} ${SHIMS})
 
 # link this target with all needed libraries
 target_link_libraries(xdispatch_tests xdispatch ${LIB} munit)

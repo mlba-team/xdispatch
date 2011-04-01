@@ -34,13 +34,11 @@ void _thread_man_cleanup(void){
 }
 
 void _set_thread_queue(dispatch_queue_t q){
-//	pthread_setspecific(_dispatch_buffer_key, q);
+    pthread_setspecific(_dispatch_buffer_key, q);
 }
 
 dispatch_queue_t _get_thread_queue(){
-//	return (dispatch_queue_t)pthread_getspecific(_dispatch_buffer_key);
-    dispatch_queue_t obj;
-    return obj;
+    return (dispatch_queue_t)pthread_getspecific(_dispatch_buffer_key);
 }
 
 void* _timer_thread(void* q){

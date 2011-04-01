@@ -85,9 +85,9 @@ static void dispatch_6(void* context){
 static void dispatch_start(void* context){
 	dispatch_time_t time_a;
 	time_delta_t* delta = (time_delta_t*)malloc(sizeof(time_delta_t));
-	delta->min = dispatch_time(0,  5.5*NSEC_PER_SEC);
-	time_a     = dispatch_time(0,   6*NSEC_PER_SEC);
-	delta->max = dispatch_time(0,  6.5*NSEC_PER_SEC);
+    delta->min = dispatch_time(0,  NSEC_PER_SEC*5.5);
+    time_a     = dispatch_time(0,  NSEC_PER_SEC*6.0);
+    delta->max = dispatch_time(0,  NSEC_PER_SEC*6.5);
 	delta->start = dispatch_time(0,0);
 	dispatch_after_f(time_a, dispatch_get_current_queue(), delta, dispatch_6);
 }

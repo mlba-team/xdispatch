@@ -114,4 +114,4 @@ dispatch_queue_t _dispatch_wakeup(dispatch_object_t dou);
 #define DQUEUE_CAST(x) ((struct dispatch_queue_s *)(x))
 #define DCOND_CAST(x) ((dispatch_continuation_t)(x))
 
-#endif
+#endif /* __DISPATCH_OBJECT_INTERNAL__ */
