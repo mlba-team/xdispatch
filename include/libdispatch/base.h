@@ -25,7 +25,7 @@
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #endif
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(_MSC_VER)
 /*
  * Dispatch objects are NOT C++ objects. Nevertheless, we can at least keep C++
  * aware of type compatibility.
@@ -46,7 +46,7 @@ typedef void* dispatch_object_t;
 
 typedef void (*dispatch_function_t)(void *);
 
-#ifdef __cplusplus
+#if defined(__cplusplus) && !defined(_MSC_VER)
 #define DISPATCH_DECL(name) typedef struct name##_s : public dispatch_object_s {} *name##_t
 #else
 /*! @parseOnly */
@@ -54,7 +54,9 @@ typedef void (*dispatch_function_t)(void *);
 #endif
 
 #ifdef __GNUC__
-# define DISPATCH_NORETURN __attribute__((__noreturn__))
+# ifndef DISPATCH_NORETURN
+#  define DISPATCH_NORETURN __attribute__((__noreturn__))
+# endif
 # define DISPATCH_NOTHROW __attribute__((__nothrow__))
 # define DISPATCH_NONNULL1 __attribute__((__nonnull__(1)))
 # define DISPATCH_NONNULL2 __attribute__((__nonnull__(2)))

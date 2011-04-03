@@ -60,7 +60,7 @@ struct dispatch_queue_vtable_s {
 	struct dispatch_object_s *dq_items_tail; \
 	struct dispatch_object_s *volatile dq_items_head; \
 	unsigned long dq_serialnum; \
-	void *dq_finalizer_ctxt;
+	void *dq_finalizer_ctxt
 #endif
 
 struct dispatch_queue_s {
@@ -88,7 +88,7 @@ _dispatch_queue_push_list(dispatch_queue_t dq, dispatch_object_t _head, dispatch
     struct dispatch_object_s *prev, *head = DO_CAST(_head), *tail = DO_CAST(_tail);
 
 	tail->do_next = NULL;
-	prev = fastpath(dispatch_atomic_xchg(&dq->dq_items_tail, tail));
+	prev = (struct dispatch_object_s*)fastpath(dispatch_atomic_ptr_xchg(&dq->dq_items_tail, tail));
 	if (prev) {
 		// if we crash here with a value less than 0x1000, then we are at a known bug in client code
 		// for example, see _dispatch_queue_dispose or _dispatch_atfork_child
@@ -114,7 +114,7 @@ size_t dispatch_queue_debug_attr(dispatch_queue_t dq, char* buf, size_t bufsiz);
 static inline dispatch_queue_t
 _dispatch_queue_get_current(void)
 {
-	return _dispatch_thread_getspecific(dispatch_queue_key);
+	return (dispatch_queue_t)_dispatch_thread_getspecific(dispatch_queue_key);
 }
 
 #endif

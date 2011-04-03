@@ -19,6 +19,8 @@
  */
 #include "internal.h"
 
+typedef void	(*_dispatch_apply_function_t)(void *, size_t);
+
 // We'd use __attribute__((aligned(x))), but it does not atually increase the
 // alignment of stack variables. All we really need is the stack usage of the
 // local thread to be sufficiently away to avoid cache-line contention with the
@@ -27,7 +29,7 @@
 // NOTE: 'char' arrays cause GCC to insert buffer overflow detection logic 
 struct dispatch_apply_s {
 	long	_da_pad0[DISPATCH_CACHELINE_SIZE / sizeof(long)];
-	void	(*da_func)(void *, size_t);
+	_dispatch_apply_function_t	da_func;
 	void	*da_ctxt;
 	size_t	da_iterations;
 	size_t	da_index;
@@ -39,9 +41,9 @@ struct dispatch_apply_s {
 static void
 _dispatch_apply2(void *_ctxt)
 {
-	struct dispatch_apply_s *da = _ctxt;
+	struct dispatch_apply_s *da = (struct dispatch_apply_s*)_ctxt;
 	size_t const iter = da->da_iterations;
-	typeof(da->da_func) const func = da->da_func;
+	_dispatch_apply_function_t const func = da->da_func;
 	void *const ctxt = da->da_ctxt;
 	size_t idx;
 
@@ -61,7 +63,7 @@ _dispatch_apply2(void *_ctxt)
 static void
 _dispatch_apply_serial(void *context)
 {
-	struct dispatch_apply_s *da = context;
+	struct dispatch_apply_s *da = (struct dispatch_apply_s*)context;
 	size_t idx = 0;
 
 	_dispatch_workitem_dec(); // this unit executes many items
@@ -110,7 +112,8 @@ dispatch_apply_f(size_t iterations, dispatch_queue_t dq, void *ctxt, void (*func
 		da.da_thr_cnt = (uint32_t)iterations;
 	}
 	if (slowpath(dq->dq_width <= 2 || da.da_thr_cnt <= 1)) {
-		return dispatch_sync_f(dq, &da, _dispatch_apply_serial);
+		dispatch_sync_f(dq, &da, _dispatch_apply_serial);
+		return;
 	}
 
 	for (i = 0; i < da.da_thr_cnt; i++) {
@@ -126,7 +129,7 @@ dispatch_apply_f(size_t iterations, dispatch_queue_t dq, void *ctxt, void (*func
 	if (slowpath(dq->do_targetq)) {
 		_dispatch_queue_push_list(dq, (void *)&da_dc[0], (void *)&da_dc[da.da_thr_cnt - 1]);
 	} else {
-		dispatch_queue_t old_dq = _dispatch_thread_getspecific(dispatch_queue_key);
+		dispatch_queue_t old_dq = (dispatch_queue_t)_dispatch_thread_getspecific(dispatch_queue_key);
 		// root queues are always concurrent and safe to borrow
 		_dispatch_queue_push_list(dq, (void *)&da_dc[1], (void *)&da_dc[da.da_thr_cnt - 1]);
 		_dispatch_thread_setspecific(dispatch_queue_key, dq);

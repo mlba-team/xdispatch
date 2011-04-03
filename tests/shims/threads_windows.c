@@ -73,7 +73,7 @@ int sem_init(sem_t * sem, int flag, unsigned int val){
 
 int sem_timedwait(sem_t *restrict sem, const struct timespec * timeout){
 
-    DWORD duration = timeout->tv_nsec / NSEC_PER_MSEC + timeout->tv_set * 1000;
+    DWORD duration = timeout->tv_nsec / NSEC_PER_MSEC + timeout->tv_sec * 1000;
 
     switch(WaitForSingleObject((s),duration) ){
     case WAIT_TIMEOUT:

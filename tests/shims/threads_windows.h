@@ -29,6 +29,8 @@
 #ifndef __DISPATCH_SHIMS_TSD_WINDOWS__
 #define __DISPATCH_SHIMS_TSD_WINDOWS__
 
+#include <assert.h>
+
 /* threads */
 
 typedef HANDLE pthread_t;
@@ -131,8 +133,8 @@ extern pthread_key_t dispatch_bcounter_key;
 static inline void
 _dispatch_thread_setspecific(pthread_key_t k, void *v)
 {
-
-    dispatch_assert(TlsSetValue(k, v));
+	int ret = TlsSetValue(k, v);
+    assert(ret);
 
 }
 
@@ -148,7 +150,7 @@ _dispatch_thread_key_create(pthread_key_t *key, void (*destructor)(void *))
 {
     // TODO: What about the destructor in here?
     *key = TlsAlloc();
-    dispatch_assert( (*key) != TLS_OUT_OF_INDEXES);
+    assert( (*key) != TLS_OUT_OF_INDEXES);
 }
 
 //#define _dispatch_thread_self (uintptr_t)pthread_self

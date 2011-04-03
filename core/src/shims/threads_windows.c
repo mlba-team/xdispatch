@@ -71,11 +71,11 @@ int sem_init(sem_t * sem, int flag, unsigned int val){
     return *sem == 0;
 }
 
-int sem_timedwait(sem_t *restrict sem, const struct timespec * timeout){
+int sem_timedwait(sem_t * sem, const struct timespec * timeout){
 
-    DWORD duration = timeout->tv_nsec / NSEC_PER_MSEC + timeout->tv_set * 1000;
+    DWORD duration = timeout->tv_nsec / NSEC_PER_MSEC + timeout->tv_sec * 1000;
 
-    switch(WaitForSingleObject((s),duration) ){
+    switch(WaitForSingleObject((sem),duration) ){
     case WAIT_TIMEOUT:
         return ETIMEDOUT;
     case WAIT_FAILED:

@@ -33,15 +33,6 @@
 
 uint64_t _dispatch_get_nanoseconds(void);
 
-#if TARGET_OS_WIN32
-static inline unsigned int
-sleep(unsigned int seconds)
-{
-	Sleep(seconds * 1000); // milliseconds
-	return 0;
-}
-#endif
-
 #if (defined(__i386__) || defined(__x86_64__)) && HAVE_MACH_ABSOLUTE_TIME
 // x86 currently implements mach time in nanoseconds; this is NOT likely to change
 #define _dispatch_time_mach2nano(x) (x)
@@ -67,6 +58,7 @@ _dispatch_time_mach2nano(uint64_t machtime)
 static inline int64_t
 _dispatch_time_nano2mach(int64_t nsec)
 {
+	long double big_tmp = 0;
 	_dispatch_host_time_data_s *const data = &_dispatch_host_time_data;
 	dispatch_once_f(&data->pred, NULL, _dispatch_get_host_time_init);
 
@@ -74,7 +66,7 @@ _dispatch_time_nano2mach(int64_t nsec)
 		return nsec;
 	}
 
-	long double big_tmp = (long double)nsec;
+	big_tmp = (long double)nsec;
 
 	// Divide by tbi.numer/tbi.denom to convert nsec to Mach absolute time
 	big_tmp /= data->frac;

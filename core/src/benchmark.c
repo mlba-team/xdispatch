@@ -83,18 +83,17 @@ dispatch_benchmark(size_t count, void (^block)(void))
 uint64_t
 dispatch_benchmark_f(size_t count, register void *ctxt, register void (*func)(void *))
 {
-	static struct __dispatch_benchmark_data_s bdata = {
-		.func = (dispatch_function_t)dummy_function,
-		.count = 10000000ul, // ten million
-	};
+	static struct __dispatch_benchmark_data_s bdata;
 	static dispatch_once_t pred;
 	uint64_t ns, start, delta;
+	size_t i = 0;
 #ifdef __LP64__
 	__uint128_t conversion, big_denom;
 #else
 	long double conversion, big_denom;
 #endif
-	size_t i = 0;
+	bdata.func = (dispatch_function_t)dummy_function;
+	bdata.count = 10000000ul; // ten million
 
 	dispatch_once_f(&pred, &bdata, _dispatch_benchmark_init);
 

@@ -93,4 +93,10 @@
 // detection of system resources
 #cmakedefine HAVE_SYSCONF 1
 
+// memory leak detection on windows
+#cmakedefine HAVE_CRTDBG_H 1
+
+// std headers
+#cmakedefine HAVE_STDINT_H 1
+
 #endif /* CONFIG_H_ */

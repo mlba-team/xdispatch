@@ -45,11 +45,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <pthread_workqueue.h>
-#ifdef HAVE_KQUEUE_H
-# include <sys/event.h>
-#endif
 #ifdef HAVE_LIBKQUEUE_H
 # include <kqueue/sys/event.h>
+#else
+# include <sys/event.h>
 #endif
 
 #include <assert.h>
@@ -65,14 +64,6 @@
 
 // debug helpers
 #include "debug.h"
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
-#endif
 
 // workaround 6368156
 #ifdef NSEC_PER_SEC

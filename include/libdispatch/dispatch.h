@@ -26,12 +26,14 @@
 #include <TargetConditionals.h>
 #endif
 
-#if defined(__cplusplus)
-#define __DISPATCH_BEGIN_DECLS	extern "C" {
-#define __DISPATCH_END_DECLS	}
-#else
-#define __DISPATCH_BEGIN_DECLS
-#define __DISPATCH_END_DECLS
+#ifndef __DISPATCH_BEGIN_DECLS
+#if defined(__cplusplus) && !defined(_MSC_VER)
+#  define __DISPATCH_BEGIN_DECLS	extern "C" {
+#  define __DISPATCH_END_DECLS	}
+# else
+#  define __DISPATCH_BEGIN_DECLS
+#  define __DISPATCH_END_DECLS
+# endif
 #endif
 
 #include <stddef.h>

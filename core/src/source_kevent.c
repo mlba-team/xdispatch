@@ -24,7 +24,6 @@
 #include "protocol.h"
 #include "protocolServer.h"
 #endif
-#include <sys/mount.h>
 
 #define DISPATCH_EVFILT_TIMER	(-EVFILT_SYSCOUNT - 1)
 #define DISPATCH_EVFILT_CUSTOM_ADD	(-EVFILT_SYSCOUNT - 2)

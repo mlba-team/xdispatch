@@ -6,7 +6,11 @@ INCLUDE (CheckSymbolExists)
 
 # start new subproject
 set(NAME dispatch)
-project(${NAME})
+if(MSVC)
+	project(${NAME} CXX)
+else()
+	project(${NAME} C)
+endif()
 
 # do we have kernel support for pthread_workqueues?
 CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
@@ -31,6 +35,8 @@ endif()
 
 # other needed functions
 CHECK_INCLUDE_FILES( mach/mach_time.h HAVE_MACH_ABSOLUTE_TIME)
+CHECK_INCLUDE_FILES( stdint.h HAVE_STDINT_H)
+CHECK_INCLUDE_FILES( crtdbg.h HAVE_CRTDBG_H)
 CHECK_SYMBOL_EXISTS( CLOCK_UPTIME "time.h" HAVE_DECL_CLOCK_UPTIME)
 CHECK_SYMBOL_EXISTS( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 CHECK_FUNCTION_EXISTS( sysconf HAVE_SYSCONF)
@@ -45,6 +51,13 @@ endif()
 
 if(NOT WIN32)
     set(LIBS ${LIBS} pthread)
+endif()
+
+if(MSVC)
+	SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /TP")
+	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /TP")
+	SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /TP")
+	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /TP")
 endif()
 
 # core lib

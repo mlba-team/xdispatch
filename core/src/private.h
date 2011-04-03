@@ -42,7 +42,9 @@
 #if HAVE_SYS_CDEFS_H
 #include <sys/cdefs.h>
 #endif
-#include <pthread.h>
+#ifndef _WIN32
+# include <pthread.h>
+#endif
 
 #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
 /* iPhone OS does not make any legacy definitions visible */

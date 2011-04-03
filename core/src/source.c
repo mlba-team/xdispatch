@@ -23,7 +23,6 @@
 #include "protocol.h"
 #include "protocolServer.h"
 #endif
-#include <sys/mount.h>
 
 #ifndef DISPATCH_NO_LEGACY
 struct dispatch_source_attr_vtable_s {

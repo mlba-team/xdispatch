@@ -32,8 +32,7 @@ long
 dummy_function_r0(void)
 {
 	return 0;
-}
-
+}	
 
 static struct dispatch_semaphore_s _dispatch_thread_mediator[] = {
 	{
@@ -332,16 +331,16 @@ _dispatch_continuation_pop(dispatch_object_t dou)
 struct dispatch_object_s *
 _dispatch_queue_concurrent_drain_one(dispatch_queue_t dq)
 {
-	struct dispatch_object_s *head, *next, *const mediator = (void *)~0ul;
+	struct dispatch_object_s *head, *next, *const mediator = (struct dispatch_object_s *)~0ul;
 
 	// The mediator value acts both as a "lock" and a signal
-	head = dispatch_atomic_xchg(&dq->dq_items_head, mediator);
+	head = (struct dispatch_object_s*)dispatch_atomic_ptr_xchg(&dq->dq_items_head, mediator);
 
 	if (slowpath(head == NULL)) {
 		// The first xchg on the tail will tell the enqueueing thread that it
 		// is safe to blindly write out to the head pointer. A cmpxchg honors
 		// the algorithm.
-		dispatch_atomic_cmpxchg(&dq->dq_items_head, mediator, NULL);
+		dispatch_atomic_ptr_cmpxchg(&dq->dq_items_head, mediator, NULL);
 		_dispatch_debug("no work on global work queue");
 		return NULL;
 	}
@@ -368,7 +367,7 @@ _dispatch_queue_concurrent_drain_one(dispatch_queue_t dq)
 	if (slowpath(!next)) {
 		dq->dq_items_head = NULL;
 		
-		if (dispatch_atomic_cmpxchg(&dq->dq_items_tail, head, NULL)) {
+		if (dispatch_atomic_ptr_cmpxchg(&dq->dq_items_tail, head, NULL)) {
 			// both head and tail are NULL now
 			goto out;
 		}
@@ -437,12 +436,21 @@ _dispatch_queue_set_width_init(void)
 	_dispatch_hw_config.cc_max_active = (int)sysconf(_SC_NPROCESSORS_ONLN);
 	if (_dispatch_hw_config.cc_max_active < 0)
 		_dispatch_hw_config.cc_max_active = 1;
-	_dispatch_hw_config.cc_max_logical =
+		_dispatch_hw_config.cc_max_logical =
+	    _dispatch_hw_config.cc_max_physical =
+	    _dispatch_hw_config.cc_max_active;
+#elif _WIN32
+		SYSTEM_INFO sysinfo;
+        GetSystemInfo(&sysinfo);
+		_dispatch_hw_config.cc_max_active = (int)sysinfo.dwNumberOfProcessors;
+	if (_dispatch_hw_config.cc_max_active < 0)
+		_dispatch_hw_config.cc_max_active = 1;
+		_dispatch_hw_config.cc_max_logical =
 	    _dispatch_hw_config.cc_max_physical =
 	    _dispatch_hw_config.cc_max_active;
 #else
 #warning "_dispatch_queue_set_width_init: no supported way to query CPU count"
-	_dispatch_hw_config.cc_max_logical =
+		_dispatch_hw_config.cc_max_logical =
 	    _dispatch_hw_config.cc_max_physical =
 	    _dispatch_hw_config.cc_max_active = 1;
 #endif
@@ -1113,7 +1121,11 @@ static void
 _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 {
 #if HAVE_PTHREAD_WORKQUEUES
+# if _WIN32
+    bool disable_wq = GetEnvironmentVariable("LIBDISPATCH_DISABLE_KWQ", 0, 0);
+# else
 	bool disable_wq = getenv("LIBDISPATCH_DISABLE_KWQ");
+# endif
 	pthread_workqueue_attr_t pwq_attr;
 	int r;
 #endif
@@ -1438,7 +1450,7 @@ _dispatch_worker_thread(void *context)
 		// we use 65 seconds in case there are any timers that run once a minute
 	} while (dispatch_semaphore_wait(qc->dgq_thread_mediator, dispatch_time(0, 65ull * NSEC_PER_SEC)) == 0);
 
-	dispatch_atomic_inc(&qc->dgq_thread_pool_size);
+	dispatch_atomic_inc(& (qc->dgq_thread_pool_size) );
 	if (dq->dq_items_tail) {
 		_dispatch_queue_wakeup_global(dq);
 	}
@@ -1786,3 +1798,4 @@ dispatch_after_f(dispatch_time_t when, dispatch_queue_t queue, void *ctxt, void 
 	dispatch_source_set_timer(ds, when, 0, 0);
 	dispatch_resume(ds);
 }
+

@@ -40,6 +40,8 @@
 #  define dispatch_atomic_xchg(p, n)	((typeof(*(p)))__sync_lock_test_and_set((p), (n)))
 # endif
 # define dispatch_atomic_cmpxchg(p, o, n)	__sync_bool_compare_and_swap((p), (o), (n))
+# define dispatch_atomic_ptr_xchg(p, n) dispatch_atomic_xchg(p, n)
+# define dispatch_atomic_ptr_cmpxchg(p, o, n) dispatch_atomic_cmpxchg(p, o, n)
 # define dispatch_atomic_inc(p)	__sync_add_and_fetch((p), 1)
 # define dispatch_atomic_dec(p)	__sync_sub_and_fetch((p), 1)
 # define dispatch_atomic_add(p, v)	__sync_add_and_fetch((p), (v))
@@ -65,10 +67,12 @@
 
 # define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
 # define dispatch_atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((p), (n), (o))
+# define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((p),(n))
+# define dispatch_atomic_ptr_cmpxchg(p, o, n) InterlockedCompareExchangePointer((p), (n), (o))
 # define dispatch_atomic_inc(p)	InterlockedIncrement(p)
 # define dispatch_atomic_dec(p)	InterlockedDecrement(p)
 # define dispatch_atomic_add(p, v)	InterlockedExchangeAdd((p), (v))
-# define dispatch_atomic_sub(p, v)	InterlockedExchangeAdd((p), -(v))
+# define dispatch_atomic_sub(p, v)	InterlockedExchangeAdd((p), -(LONG)(v))
 # define dispatch_atomic_or(p, v)	InterlockedOr((p), (v))
 # define dispatch_atomic_and(p, v)	InterlockedAnd((p), (v))
 # define dispatch_atomic_barrier()	 MemoryBarrier()

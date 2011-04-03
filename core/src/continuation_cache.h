@@ -45,7 +45,7 @@ dispatch_continuation_t _dispatch_continuation_alloc_from_heap(void);
 static inline dispatch_continuation_t
 _dispatch_continuation_alloc_cacheonly(void)
 {
-    dispatch_continuation_t dc = fastpath(_dispatch_thread_getspecific(dispatch_cache_key));
+    dispatch_continuation_t dc = (dispatch_continuation_t)fastpath(_dispatch_thread_getspecific(dispatch_cache_key));
     if (dc) {
         _dispatch_thread_setspecific(dispatch_cache_key, dc->do_next);
     }

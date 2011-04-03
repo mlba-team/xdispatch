@@ -40,7 +40,7 @@ _dispatch_continuation_alloc_from_heap(void)
 
 	dispatch_once_f(&pred, NULL, _dispatch_ccache_init);
 
-	while (!(dc = fastpath(malloc_zone_calloc(_dispatch_ccache_zone, 1, ROUND_UP_TO_CACHELINE_SIZE(sizeof(*dc)))))) {
+	while (!(dc = (dispatch_continuation_t)(dispatch_continuation_t)fastpath(malloc_zone_calloc(_dispatch_ccache_zone, 1, ROUND_UP_TO_CACHELINE_SIZE(sizeof(*dc)))))) {
 		sleep(1);
 	}
 
@@ -50,7 +50,7 @@ _dispatch_continuation_alloc_from_heap(void)
 void
 _dispatch_force_cache_cleanup(void)
 {
-	dispatch_continuation_t dc = _dispatch_thread_getspecific(dispatch_cache_key);
+	dispatch_continuation_t dc = (dispatch_continuation_t)_dispatch_thread_getspecific(dispatch_cache_key);
 	if (dc) {
 		_dispatch_thread_setspecific(dispatch_cache_key, NULL);
 		_dispatch_cache_cleanup2(dc);
@@ -61,7 +61,7 @@ DISPATCH_NOINLINE
 void
 _dispatch_cache_cleanup2(void *value)
 {
-	dispatch_continuation_t dc, next_dc = value;
+	dispatch_continuation_t dc, next_dc = (dispatch_continuation_t)value;
 
 	while ((dc = next_dc)) {
 		next_dc = dc->do_next;

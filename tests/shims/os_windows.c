@@ -21,7 +21,7 @@
 #ifdef _WIN32
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "../internal.h"
+#include "platform.h"
 
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64

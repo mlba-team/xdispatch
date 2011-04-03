@@ -25,32 +25,30 @@
 // likelihood of name pollution from dispatch headers.
 
 #ifndef WINVER
-#define WINVER 0x501
+# define WINVER 0x501
 #endif
 
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x502
 #endif
 
-#ifndef _MSC_VER
-#define _MSC_VER 1400
-#pragma warning(disable:4159)
+//#define WIN32_LEAN_AND_MEAN 1
+#ifndef _CRT_SECURE_NO_DEPRECATE
+# define _CRT_SECURE_NO_DEPRECATE 1
+#endif
+#ifndef _CRT_SECURE_NO_WARNINGS
+# define _CRT_SECURE_NO_WARNINGS 1
 #endif
 
-#define WIN32_LEAN_AND_MEAN 1
-#define _CRT_SECURE_NO_DEPRECATE 1
-#define _CRT_SECURE_NO_WARNINGS 1
-
-#define BOOL WINBOOL
 #include <Windows.h>
-#undef BOOL
-#include <Error.h>
-
-#if _MSC_VER < 1600
-# include "stdint.h"
-#else
+#if HAVE_STDINT_H
 # include <stdint.h>
+#else
+# include "stdint.h"
 #endif
+#include <limits.h>
+#include "queue.h"
+
 //typedef signed char int8_t;
 //typedef unsigned char uint8_t;
 //typedef signed int int16_t;
@@ -61,9 +59,10 @@ typedef LONGLONG int64_t;
 typedef UINT64 uint64_t;
 
 #define inline __inline
+#define bool BOOL
 
 // memory leak detection on windows
-#if defined(_WIN32) && defined(DEBUG)
+#if HAVE_CRTDBG_H && DISPATCH_DEBUG
 #	define _CRTDBG_MAP_ALLOC
 #	include <stdlib.h>
 #	include <crtdbg.h>
@@ -73,16 +72,38 @@ typedef UINT64 uint64_t;
 #ifndef strdup
 # define strdup(p)	_strdup(p)
 #endif
+#ifndef snprintf
+# define snprintf _snprintf
+#endif
 #define random()	rand()
 
+#define true 1
+#define false 0
+
+#ifndef FD_COPY
+#define	FD_COPY(f, t)	(void)(*(t) = *(f))
+#endif
+
 // really just a low level abort()
-#define _dispatch_hardware_crash() __debugbreak()
+#if __GNUC__
+# define _dispatch_hardware_crash() __builtin_trap()
+#else
+# define _dispatch_hardware_crash()  __debugbreak()
+#endif
 
 // some compiler hints
-#define DISPATCH_NOINLINE
-#define DISPATCH_INLINE
-#define DISPATCH_UNUSED
-#define DISPATCH_NORETURN
+#ifndef DISPATCH_NOINLINE
+# define DISPATCH_NOINLINE
+#endif
+#ifndef DISPATCH_INLINE
+# define DISPATCH_INLINE
+#endif
+#ifndef DISPATCH_UNUSED
+# define DISPATCH_UNUSED
+#endif
+#ifndef DISPATCH_NORETURN
+# define DISPATCH_NORETURN
+#endif
 
 // some date functions
 struct timezone
@@ -91,11 +112,29 @@ struct timezone
   int  tz_dsttime;     /* type of dst correction */
 };
 
+// quick workaround in case this is included after event.h
+#ifndef _SYS_EVENT_H_
 struct timespec {
     long tv_sec; /* seconds */
     long tv_nsec; /* nanoseconds */
-};
+}; 
+#endif
 
 int gettimeofday(struct timeval *tv, struct timezone *tz);
+
+// some error codes used throughout the code
+#define ENOTSUP 3
+#define EAGAIN 4
+#define EBADF 5
+#define ETIMEDOUT 6
+#define ESRCH 7
+#define EINVAL 8
+
+// fd functions
+#include <io.h>
+// TODO: Implement or workaround us
+#define dup _dup
+#define dup2 _dup2
+#define close _close
 
 #endif /* SHIM_WINDOWS_H_ */

@@ -21,9 +21,10 @@
 #ifndef SHIM_WINDOWS_H_
 #define SHIM_WINDOWS_H_
 
-#define WINVER 0x0501
+#ifndef WINVER
+# define WINVER 0x0501
+#endif
 #include <Windows.h>
-#include <Error.h>
 
 #if _MSC_VER < 1600
 # include "stdint.h"
@@ -69,10 +70,13 @@ struct timezone
   int  tz_dsttime;     /* type of dst correction */
 };
 
+// quick workaround in case this is included after event.h
+#ifndef _SYS_EVENT_H_
 struct timespec {
     long tv_sec; /* seconds */
     long tv_nsec; /* nanoseconds */
-};
+}; 
+#endif
 
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 

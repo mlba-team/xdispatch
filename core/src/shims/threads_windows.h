@@ -36,6 +36,20 @@ typedef DWORD pthread_attr_t;
 
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     void *(*start_routine)(void*), void *arg);
+#define pthread_self() GetCurrentThread()
+#define pthread_exit(u) ExitThread(0)
+// TODO: implement me
+int pthread_detach(pthread_t thread);
+
+#define SIG_BLOCK 1
+#define NSIG 2
+typedef int sigset_t;
+// TODO: implement me
+int sigsuspend(const sigset_t *sigmask);
+// TODO: implement me
+int sigfillset(sigset_t *set);
+// TODO: implement me
+int pthread_sigmask(int how, const sigset_t * set, sigset_t * oset);
 
 /* Emulation of pthreads mutex functionality */
 #define PTHREAD_PROCESS_SHARED 1
@@ -151,6 +165,9 @@ _dispatch_thread_key_create(pthread_key_t *key, void (*destructor)(void *))
     dispatch_assert( (*key) != TLS_OUT_OF_INDEXES);
 }
 
-//#define _dispatch_thread_self (uintptr_t)pthread_self
+#define _dispatch_thread_self (uintptr_t)pthread_self
+
+// TODO: implement me
+int _dispatch_pthread_sigmask(int how, sigset_t *, sigset_t *);
 
 #endif /* __DISPATCH_SHIMS_TSD_WINDOWS__ */

@@ -656,7 +656,7 @@ dispatch_group_notify_f(dispatch_group_t dg, dispatch_queue_t dq, void *ctxt, vo
 	dsn->dsn_func = func;
 	_dispatch_retain(dq);
 
-	prev = (struct dispatch_sema_notify_s *)dispatch_atomic_xchg(&dsema->dsema_notify_tail, dsn);
+	prev = (struct dispatch_sema_notify_s *)dispatch_atomic_ptr_xchg(&dsema->dsema_notify_tail, dsn);
 	if (fastpath(prev)) {
 		prev->dsn_next = dsn;
 	} else {

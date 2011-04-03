@@ -19,11 +19,11 @@
  * @APPLE_APACHE_LICENSE_HEADER_END@
  */
 
-#include <signal.h>
-
 #include "../internal.h"
 
 #ifndef _WIN32
+
+#include <signal.h>
 
 #ifdef __APPLE__
 int sem_timedwait(sem_t * sem, const struct timespec * timeout){

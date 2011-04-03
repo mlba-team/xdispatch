@@ -15,8 +15,8 @@ if(QT4_FOUND)
 	file(GLOB QTESTHEADER Qt_*.cpp)
 
     # we need to manually define mocced files
-    qt4_generate_moc(moc_Qt_dispatch_group.cpp moc_Qt_dispatch_group.moc)
-    set(QTESTHEADER ${QTESTHEADER} moc_Qt_dispatch_group.moc)
+    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group.moc)
+    set(TESTMOC ${TESTMOC} ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group.moc)
 	
     #message("### COOL ${QTESTHEADER}")
 

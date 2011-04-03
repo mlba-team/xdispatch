@@ -19,7 +19,7 @@ if(NOT HAS_MZ_GLOBAL)
 	include(${QT_USE_FILE})
 	
 	# We need to ouput everything into the same directory
-	if(MZ_IS_VS)
+	if(WIN32)
 		set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin CACHE PATH "Library output path")
 		set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin CACHE PATH "Executable output path")
 		message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/Bin")
@@ -35,7 +35,7 @@ endif()
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
 CHECK_INCLUDE_FILES (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL)
-    mz_add_library(libkqueue libkqueue)
+    #mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
     )
