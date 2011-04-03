@@ -52,4 +52,17 @@ _dispatch_continuation_alloc_cacheonly(void)
     return dc;
 }
 
+void
+_dispatch_ccache_init(void *context DISPATCH_UNUSED);
+
+dispatch_continuation_t
+_dispatch_continuation_alloc_from_heap(void);
+
+void
+_dispatch_force_cache_cleanup(void);
+
+DISPATCH_NOINLINE
+void
+_dispatch_cache_cleanup2(void *value);
+
 #endif /* __CONTINUATION_CACHE_H_ */

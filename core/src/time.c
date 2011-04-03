@@ -119,7 +119,7 @@ _dispatch_timeout(dispatch_time_t when)
     return now >= when ? 0 : _dispatch_time_mach2nano(when - now);
 }
 
-
+#if USE_POSIX_SEM
 /*
  * Unlike Mach semaphores, POSIX semaphores take an absolute, real time as an
  * argument to sem_timedwait().  This routine converts from dispatch_time_t
@@ -165,4 +165,4 @@ _dispatch_timeout_ts(dispatch_time_t when)
     ts_realtime.tv_nsec = realtime % NSEC_PER_SEC;
     return (ts_realtime);
 }
-
+#endif
