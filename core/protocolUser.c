@@ -4,6 +4,11 @@
  * with a MiG generated Wed Nov 25 05:11:15 PST 2009 by root@hokies.apple.com
  * OPTIONS:
  */
+
+#include <core/config.h>
+
+#if HAVE_MACH
+
 #define	__MIG_check__Reply__libdispatch_internal_protocol_subsystem__ 1
 #define	__NDR_convert__Reply__libdispatch_internal_protocol_subsystem__ 1
 #define	__NDR_convert__mig_reply_error_subsystem__ 1
@@ -513,3 +518,5 @@ mig_external kern_return_t _dispatch_send_consume_send_once_right
     __AfterSendSimple(79, "consume_send_once_right")
     return msg_result;
 }
+
+#endif /* HAVE_MACH */

@@ -28,7 +28,6 @@
 #define __DISPATCH_KEVENT_INTERNAL__
 
 #include "internal.h"
-#include <sys/event.h>
 
 struct dispatch_kevent_s {
     TAILQ_ENTRY(dispatch_kevent_s) dk_list;
@@ -41,7 +40,7 @@ extern const struct dispatch_source_vtable_s _dispatch_source_kevent_vtable;
 #if DISPATCH_DEBUG
 void dispatch_debug_kevents(struct kevent* kev, size_t count, const char* str);
 #else
-#define dispatch_debug_kevents(x, y, z)
+# define dispatch_debug_kevents(x, y, z)
 #endif
 
 void _dispatch_source_drain_kevent(struct kevent *);

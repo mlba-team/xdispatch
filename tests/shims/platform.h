@@ -24,6 +24,9 @@
 #ifdef _WIN32
 # include "os_windows.h"
 # include "threads_windows.h"
+#elif __APPLE__
+# include "os_darwin.h"
+# include "threads_posix.h"
 #else
 # include "os_posix.h"
 # include "threads_posix.h"

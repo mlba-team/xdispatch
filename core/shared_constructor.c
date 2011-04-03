@@ -53,8 +53,10 @@ BOOL WINAPI DllMain(
     return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
 
-void pthread_workqueue_init_np();
+#endif
 
+#ifdef PTHREAD_WORKQUEUE_USER_IMPLEMENTATION
+    void pthread_workqueue_init_np();
 #endif
 
 void init(){

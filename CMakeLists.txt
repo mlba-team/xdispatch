@@ -1,6 +1,7 @@
 
 cmake_minimum_required(VERSION 2.8)
 INCLUDE (CheckIncludeFiles)
+INCLUDE (CheckSymbolExists)
 
 # start new subproject
 set(NAME xdispatch)
@@ -43,19 +44,52 @@ if(HAVE_PTHREAD_WORKQUEUE_H)
     message("   >> found native pthread_workqueue implementation, using it")
 endif()
 
+# do we have kqueues?
+CHECK_INCLUDE_FILES (sys/event.h HAVE_KQUEUE_H)
+if(HAVE_KQUEUE_H)
+    message("   >> found native kqeue implementation, using it")
+endif()
+CHECK_INCLUDE_FILES (kqueue/sys/event.h HAVE_LIBKQUEUE_H)
+if(HAVE_LIBKQUEUE_H)
+    message("   >> found libkqeue installation, using it")
+endif()
+
 # add user space pthread_workqueue implementation (if needed)
 if(NOT HAVE_PTHREAD_WORKQUEUE_H)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
     INCLUDE_DIRECTORIES(
         libpthread_workqueue/include
     )
-    set(WORKQUEUE_LIB libpthread_workqueue)
+    set(LIBS ${LIBS} libpthread_workqueue)
+endif()
+
+# add user space kqueue implementation (if needed)
+if(NOT HAVE_KQUEUE_H AND NOT HAVE_LIBKQUEUE_H)
+    #mz_add_library(libkqueue libkqueue)
+    INCLUDE_DIRECTORIES(
+        libkqueue/include
+    )
+    #set(LIBS ${LIBS} libkqueue)
+endif()
+
+if(LINUX)
+    set(LIBS ${LIBS} rt)
+    if(HAVE_LIBKQUEUE_H)
+        INCLUDE_DIRECTORIES(
+            /usr/local/kqueue
+        )
+        set(LIBS ${LIBS} kqueue)
+    endif()
+endif()
+
+if(NOT MZ_IS_VS)
+    set(LIBS ${LIBS} pthread)
 endif()
 
 # core lib
 file(GLOB INCL include/libdispatch/*.h)
 file(GLOB CXX_INCL include/xdispatch/*.h)
-file(GLOB CORE core/*.c core/*.h)
+file(GLOB CORE core/*.c core/*.h core/*.in)
 file(GLOB SHIM core/shim/*.c core/shim/*.h)
 file(GLOB CXX cxx/*.cpp cxx/*.h)
 source_group(dispatch FILES ${INCL})
@@ -71,11 +105,8 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
   add_library(${NAME} SHARED ${INCL} ${CORE} ${CXX_INCL} ${CXX} ${SHIM})
   
   # link this target with all needed libraries
-  if(MZ_IS_VS)
-    target_link_libraries(${NAME} ${WORKQUEUE_LIB})
-  else()
-    target_link_libraries(${NAME} pthread ${WORKQUEUE_LIB})
-  endif()
+  message("-- linking xdispatch with: ${LIBS}")
+  target_link_libraries(${NAME} ${LIBS})
   mz_target_props(${NAME})
   
 else()
@@ -124,17 +155,13 @@ if(QT4_FOUND)
 endif()
 
 # custom test framework for xdispatch
-if (CMAKE_COMPILER_IS_GNU_CXX OR UNIX)
-	# detect compiler version
-	_Boost_MZ_COMPILER_DUMPVERSION(GCC_VERSION)
-	set(GCC_VERSION "${GCC_VERSION}")
-	if(GCC_VERSION STREQUAL "45")
-		mz_add_definition(HAVE_BLOCKS_IMPL)
-		message("   >> enabled tests for blocks")
-	endif()
-endif()
 mz_add_executable(tests tests)
 
 # documentation
 include(docs/docgen.cmake)
 
+# finally create the config.h
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/core/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/core/config.h)
+INCLUDE_DIRECTORIES(
+    ${CMAKE_CURRENT_BINARY_DIR}
+)

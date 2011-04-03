@@ -31,7 +31,7 @@
 #endif
 
 // the configuration file
-#include "config.h"
+#include <core/config.h>
 
 // common headers
 #include <stddef.h>
@@ -41,6 +41,12 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <pthread_workqueue.h>
+#ifdef HAVE_KQUEUE_H
+# include <sys/event.h>
+#endif
+#ifdef HAVE_LIBKQUEUE_H
+# include <kqueue/sys/event.h>
+#endif
 
 #include <assert.h>
 
@@ -60,6 +66,32 @@
 // debug helpers
 #include "debug.h"
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+// workaround 6368156
+#ifdef NSEC_PER_SEC
+#undef NSEC_PER_SEC
+#endif
+#ifdef USEC_PER_SEC
+#undef USEC_PER_SEC
+#endif
+#ifdef NSEC_PER_USEC
+#undef NSEC_PER_USEC
+#endif
+#ifdef NSEC_PER_MSEC
+#undef NSEC_PER_MSEC
+#endif
+#define NSEC_PER_SEC (uint64_t)1000000000
+#define NSEC_PER_MSEC (uint64_t)1000000
+#define USEC_PER_SEC (uint64_t)1000000
+#define NSEC_PER_USEC (uint64_t)1000
+
 // the core api is marked as exported
 #ifdef _WIN32
 # define DISPATCH_EXPORT __declspec(dllexport)
@@ -71,9 +103,14 @@
 #ifdef _WIN32
 # include "shim/os_windows.h"
 # include "shim/threads_windows.h"
+# include "shim/malloc_zone.h"
+#elif __APPLE__
+# include "shim/os_darwin.h"
+# include "shim/threads_posix.h"
 #else
 # include "shim/os_posix.h"
 # include "shim/threads_posix.h"
+# include "shim/malloc_zone.h"
 #endif
 #include "shim/atomic.h"
 #include "shim/hardware.h"
@@ -88,14 +125,6 @@
 #ifdef __BLOCKS__
 # include <Block.h>
 # include "shim/Block_private.h"
-#endif
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
 #endif
 
 #define DISPATCH_API_VERSION 20090501
