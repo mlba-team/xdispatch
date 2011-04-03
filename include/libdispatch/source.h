@@ -1,25 +1,22 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011 MLBA. All rights reserved.
-*
-* @MLBA_OPEN_LICENSE_HEADER_START@
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http:www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
-*/
-
-
+ * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+ *
+ * @APPLE_APACHE_LICENSE_HEADER_START@
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @APPLE_APACHE_LICENSE_HEADER_END@
+ */
 
 #ifndef __DISPATCH_SOURCE__
 #define __DISPATCH_SOURCE__
@@ -69,7 +66,9 @@ typedef const struct dispatch_source_type_s *dispatch_source_type_t;
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_DATA_ADD (&_dispatch_source_type_data_add)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_data_add;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_data_add;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_DATA_OR
@@ -80,7 +79,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * dispatch_source_merge_data().
  */
 #define DISPATCH_SOURCE_TYPE_DATA_OR (&_dispatch_source_type_data_or)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_data_or;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_data_or;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_MACH_SEND
@@ -90,7 +91,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is a mask of desired events from dispatch_source_mach_send_flags_t.
  */
 #define DISPATCH_SOURCE_TYPE_MACH_SEND (&_dispatch_source_type_mach_send)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_mach_send;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_mach_send;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_MACH_RECV
@@ -99,7 +102,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_MACH_RECV (&_dispatch_source_type_mach_recv)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_PROC
@@ -109,7 +114,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is a mask of desired events from dispatch_source_proc_flags_t.
  */
 #define DISPATCH_SOURCE_TYPE_PROC (&_dispatch_source_type_proc)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_proc;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_proc;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_READ
@@ -119,7 +126,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_READ (&_dispatch_source_type_read)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_read;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_read;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_SIGNAL
@@ -128,7 +137,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_SIGNAL (&_dispatch_source_type_signal)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_signal;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_signal;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_TIMER
@@ -138,7 +149,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_TIMER (&_dispatch_source_type_timer)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_timer;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_timer;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_VNODE
@@ -148,7 +161,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is a mask of desired events from dispatch_source_vnode_flags_t.
  */
 #define DISPATCH_SOURCE_TYPE_VNODE (&_dispatch_source_type_vnode)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_vnode;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_vnode;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_WRITE
@@ -158,7 +173,9 @@ DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type
  * The mask is unused (pass zero for now).
  */
 #define DISPATCH_SOURCE_TYPE_WRITE (&_dispatch_source_type_write)
-DISPATCH_EXPORT extern const struct dispatch_source_type_s _dispatch_source_type_write;
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT
+extern const struct dispatch_source_type_s _dispatch_source_type_write;
 
 /*!
  * @enum dispatch_source_mach_send_flags_t
@@ -258,11 +275,13 @@ __DISPATCH_BEGIN_DECLS
  * @param queue
  * The dispatch queue to which the event handler block will be submited.
  */
-DISPATCH_EXPORT dispatch_source_t
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_MALLOC DISPATCH_NOTHROW
+dispatch_source_t
 dispatch_source_create(dispatch_source_type_t type,
-    uintptr_t handle,
-    unsigned long mask,
-    dispatch_queue_t queue);
+	uintptr_t handle,
+	unsigned long mask,
+	dispatch_queue_t queue);
 
 /*!
  * @function dispatch_source_set_event_handler
@@ -278,9 +297,11 @@ dispatch_source_create(dispatch_source_type_t type,
  * The event handler block to submit to the source's target queue.
  */
 #ifdef __BLOCKS__
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NOTHROW
+void
 dispatch_source_set_event_handler(dispatch_source_t source,
-    dispatch_block_t handler);
+	dispatch_block_t handler);
 #endif /* __BLOCKS__ */
 
 /*!
@@ -299,9 +320,11 @@ dispatch_source_set_event_handler(dispatch_source_t source,
  * context of the dispatch source at the time the handler call is made.
  * The result of passing NULL in this parameter is undefined.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NOTHROW
+void
 dispatch_source_set_event_handler_f(dispatch_source_t source,
-    dispatch_function_t handler);
+	dispatch_function_t handler);
 
 /*!
  * @function dispatch_source_set_cancel_handler
@@ -331,9 +354,11 @@ dispatch_source_set_event_handler_f(dispatch_source_t source,
  * The cancellation handler block to submit to the source's target queue.
  */
 #ifdef __BLOCKS__
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NOTHROW
+void
 dispatch_source_set_cancel_handler(dispatch_source_t source,
-    dispatch_block_t cancel_handler);
+	dispatch_block_t cancel_handler);
 #endif /* __BLOCKS__ */
 
 /*!
@@ -354,9 +379,11 @@ dispatch_source_set_cancel_handler(dispatch_source_t source,
  * The context parameter passed to the event handler function is the current
  * context of the dispatch source at the time the handler call is made.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NOTHROW
+void
 dispatch_source_set_cancel_handler_f(dispatch_source_t source,
-    dispatch_function_t cancel_handler);
+	dispatch_function_t cancel_handler);
 
 /*!
  * @function dispatch_source_cancel
@@ -380,7 +407,9 @@ dispatch_source_set_cancel_handler_f(dispatch_source_t source,
  * The dispatch source to be canceled.
  * The result of passing NULL in this parameter is undefined.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+void
 dispatch_source_cancel(dispatch_source_t source);
 
 /*!
@@ -396,7 +425,9 @@ dispatch_source_cancel(dispatch_source_t source);
  * @result
  * Non-zero if canceled and zero if not canceled.
  */
-DISPATCH_EXPORT long
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+long
 dispatch_source_testcancel(dispatch_source_t source);
 
 /*!
@@ -423,7 +454,9 @@ dispatch_source_testcancel(dispatch_source_t source);
  *  DISPATCH_SOURCE_TYPE_VNODE:           file descriptor (int)
  *  DISPATCH_SOURCE_TYPE_WRITE:           file descriptor (int)
  */
-DISPATCH_EXPORT uintptr_t
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_WARN_RESULT DISPATCH_PURE DISPATCH_NOTHROW
+uintptr_t
 dispatch_source_get_handle(dispatch_source_t source);
 
 /*!
@@ -450,7 +483,9 @@ dispatch_source_get_handle(dispatch_source_t source);
  *  DISPATCH_SOURCE_TYPE_VNODE:           dispatch_source_vnode_flags_t
  *  DISPATCH_SOURCE_TYPE_WRITE:           n/a
  */
-DISPATCH_EXPORT unsigned long
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_WARN_RESULT DISPATCH_PURE DISPATCH_NOTHROW
+unsigned long
 dispatch_source_get_mask(dispatch_source_t source);
 
 /*!
@@ -484,7 +519,9 @@ dispatch_source_get_mask(dispatch_source_t source);
  *  DISPATCH_SOURCE_TYPE_VNODE:           dispatch_source_vnode_flags_t
  *  DISPATCH_SOURCE_TYPE_WRITE:           estimated buffer space available
  */
-DISPATCH_EXPORT unsigned long
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_WARN_RESULT DISPATCH_PURE DISPATCH_NOTHROW
+unsigned long
 dispatch_source_get_data(dispatch_source_t source);
 
 /*!
@@ -503,7 +540,9 @@ dispatch_source_get_data(dispatch_source_t source);
  * as specified by the dispatch source type. A value of zero has no effect
  * and will not result in the submission of the event handler block.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+void
 dispatch_source_merge_data(dispatch_source_t source, unsigned long value);
 
 /*!
@@ -537,11 +576,13 @@ dispatch_source_merge_data(dispatch_source_t source, unsigned long value);
  * a leeway of up to 30 seconds.)  Note that some latency is to be expected for
  * all timers even when a leeway value of zero is specified.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+void
 dispatch_source_set_timer(dispatch_source_t source,
-    dispatch_time_t start,
-    uint64_t interval,
-    uint64_t leeway);
+	dispatch_time_t start,
+	uint64_t interval,
+	uint64_t leeway);
 
 __DISPATCH_END_DECLS
 

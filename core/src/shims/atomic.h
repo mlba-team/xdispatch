@@ -29,38 +29,6 @@
   Defines atomic operations in a platform independent way
   */
 
-#ifdef __GNUC__
-
-# ifdef WIN32_MINGW
-
-    // on 32bit this is atomic by default
-#	define atomic_inc_get(a) ++(*a)
-#	define atomic_dec_get(a) --(*a)
-#	define atomic_swap_get(a,b) __sync_val_compare_and_swap(a,*a, b)
-
-# else
-
-#	define atomic_inc_get(a) __sync_add_and_fetch(a,1)
-#	define atomic_dec_get(a) __sync_sub_and_fetch(a,1)
-#	define atomic_swap_get(a,b) __sync_val_compare_and_swap(a,*a, b)
-
-# endif
-
-#endif
-
-#ifdef _MSC_VER
-
-# ifndef WINVER
-#  define WINVER 0x0501
-#  include <Windows.h>
-# endif
-
-# define atomic_inc_get(a) InterlockedIncrement(a)
-# define atomic_dec_get(a) InterlockedDecrement(a)
-# define atomic_swap_get(a,b) InterlockedExchange(a,b)
-
-#endif
-
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)
 
 // GCC generates suboptimal register pressure
@@ -89,6 +57,11 @@
 # endif
 
 #elif defined _MSC_VER
+
+# ifndef WINVER
+#  define WINVER 0x0501
+#  include <Windows.h>
+# endif
 
 # define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
 # define dispatch_atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((p), (n), (o))

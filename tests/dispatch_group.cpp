@@ -32,7 +32,7 @@
 #	include <unistd.h>
 #endif
 
-#include "../core/shim/atomic.h"
+#include "../core/src/shims/atomic.h"
 #include "tests.h"
 
 #ifndef NSEC_PER_SEC

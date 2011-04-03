@@ -13,7 +13,10 @@ source_group(shims FILES ${SHIMS})
 if(QT4_FOUND)
 	# test cases for Qt Interface
 	file(GLOB QTESTHEADER Qt_*.cpp)
-	qt4_wrap_cpp(TESTMOC ${QTESTHEADER})
+
+    # we need to manually define mocced files
+    qt4_generate_moc(moc_Qt_dispatch_group.cpp moc_Qt_dispatch_group.moc)
+    set(QTESTHEADER ${QTESTHEADER} moc_Qt_dispatch_group.moc)
 	
     #message("### COOL ${QTESTHEADER}")
 
@@ -29,7 +32,7 @@ INCLUDE_DIRECTORIES(
 )
 
 # add new exec target
-add_executable(xdispatch_tests ${TESTSRCS} ${SHIMS})
+add_executable(xdispatch_tests ${TESTSRCS} ${SHIMS} ${TESTMOC})
 
 # link this target with all needed libraries
 target_link_libraries(xdispatch_tests xdispatch ${LIB} munit)

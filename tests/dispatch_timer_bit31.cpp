@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core/shim/atomic.h"
+#include "../core/src/shims/atomic.h"
 #include "tests.h"
 
 #ifdef TEST_BLOCKS

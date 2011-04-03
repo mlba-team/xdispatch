@@ -1,30 +1,28 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011 MLBA. All rights reserved.
-*
-* @MLBA_OPEN_LICENSE_HEADER_START@
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
-*/
-
+ * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+ *
+ * @APPLE_APACHE_LICENSE_HEADER_START@
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @APPLE_APACHE_LICENSE_HEADER_END@
+ */
 
 #ifndef __DISPATCH_SEMAPHORE__
 #define __DISPATCH_SEMAPHORE__
 
 #ifndef __DISPATCH_INDIRECT__
-#error "Please #include <dispatch/dispatch.h> instead of this file directly."
+#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #include <dispatch/base.h> // for HeaderDoc
 #endif
 
@@ -57,7 +55,9 @@ __DISPATCH_BEGIN_DECLS
  * @result
  * The newly created semaphore, or NULL on failure.
  */
-DISPATCH_EXPORT dispatch_semaphore_t
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_MALLOC DISPATCH_NOTHROW
+dispatch_semaphore_t
 dispatch_semaphore_create(long value);
 
 /*!
@@ -80,7 +80,9 @@ dispatch_semaphore_create(long value);
  * @result
  * Returns zero on success, or non-zero if the timeout occurred.
  */
-DISPATCH_EXPORT long
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+long
 dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
 
 /*!
@@ -100,7 +102,9 @@ dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
  * This function returns non-zero if a thread is woken. Otherwise, zero is
  * returned.
  */
-DISPATCH_EXPORT long
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+long
 dispatch_semaphore_signal(dispatch_semaphore_t dsema);
 
 __DISPATCH_END_DECLS

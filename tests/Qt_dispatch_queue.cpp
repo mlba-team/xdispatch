@@ -23,7 +23,7 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/shim/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #define RUN_TIMES 20
 #ifdef XDISPATCH_HAS_BLOCKS
@@ -47,7 +47,7 @@ extern "C" void Qt_dispatch_queue(){
     MU_ASSERT_NOT_NULL(q.native());
 
     q.apply(new QIterationBlockRunnable($(size_t i){
-			atomic_inc_get(worker);
+			dispatch_atomic_inc(worker);
 	}),RUN_TIMES);
 
     QDispatch::globalQueue(QDispatch::LOW).async(new QBlockRunnable(${

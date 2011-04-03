@@ -85,7 +85,7 @@ DISPATCH_INLINE
 static inline void
 _dispatch_queue_push_list(dispatch_queue_t dq, dispatch_object_t _head, dispatch_object_t _tail)
 {
-	struct dispatch_object_s *prev, *head = _head._do, *tail = _tail._do;
+    struct dispatch_object_s *prev, *head = DO_CAST(_head), *tail = DO_CAST(_tail);
 
 	tail->do_next = NULL;
 	prev = fastpath(dispatch_atomic_xchg(&dq->dq_items_tail, tail));

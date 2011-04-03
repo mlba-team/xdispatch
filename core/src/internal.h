@@ -35,7 +35,7 @@
 #endif
 
 // the configuration file
-#include <core/config.h>
+#include <config/config.h>
 
 // common headers
 #include <stddef.h>
@@ -93,30 +93,54 @@
 #define NSEC_PER_USEC (uint64_t)1000
 
 // the core api is marked as exported
-#ifdef _WIN32
-# define DISPATCH_EXPORT __declspec(dllexport)
-#else
-# define DISPATCH_EXPORT __attribute__((visibility("default")))
+#ifndef DISPATCH_EXPORT
+# if __GNUC__
+#  define DISPATCH_EXPORT __attribute__((visibility("default")))
+# elif _WIN32
+#  define DISPATCH_EXPORT __declspec(dllexport)
+# else
+#  define DISPATCH_EXPORT
+# endif
 #endif
 
 // include all necessary hardware / os workarounds
+// as early as possible to prevent namespace pollution by libdispatch
 #ifdef _WIN32
-# include "shim/os_windows.h"
-# include "shim/threads_windows.h"
-# include "shim/malloc_zone.h"
+# include "shims/os_windows.h"
+# include "shims/threads_windows.h"
+# include "shims/malloc_zone.h"
 #elif __APPLE__
-# include "shim/os_darwin.h"
-# include "shim/threads_posix.h"
+# include "shims/os_darwin.h"
+# include "shims/threads_posix.h"
 #else
-# include "shim/os_posix.h"
-# include "shim/threads_posix.h"
-# include "shim/malloc_zone.h"
+# include "shims/os_posix.h"
+# include "shims/threads_posix.h"
+# include "shims/malloc_zone.h"
 #endif
-#include "shim/atomic.h"
-#include "shim/hardware.h"
-#include "shim/getprogname.h"
-#include "shim/time.h"
-#include "shim/perfmon.h"
+
+// now include the libdispatch headers
+#define DISPATCH_API_VERSION 20090501
+
+#ifndef __DISPATCH_INDIRECT__
+#define __DISPATCH_INDIRECT__
+#endif
+
+#include "../../include/libdispatch/base.h"
+#include "../../include/libdispatch/object.h"
+#include "../../include/libdispatch/time.h"
+#include "../../include/libdispatch/queue.h"
+#include "../../include/libdispatch/source.h"
+#include "../../include/libdispatch/group.h"
+#include "../../include/libdispatch/semaphore.h"
+#include "../../include/libdispatch/source.h"
+#include "../../include/libdispatch/once.h"
+
+// and the last missing shims
+#include "shims/atomic.h"
+#include "shims/hardware.h"
+#include "shims/getprogname.h"
+#include "shims/time.h"
+#include "shims/perfmon.h"
 
 #if USE_KEVENTS
 # include "kevent_internal.h"
@@ -124,26 +148,8 @@
 
 #ifdef __BLOCKS__
 # include <Block.h>
-# include "shim/Block_private.h"
+# include "shims/Block_private.h"
 #endif
-
-#define DISPATCH_API_VERSION 20090501
-
-#ifndef __DISPATCH_INDIRECT__
-#define __DISPATCH_INDIRECT__
-#endif
-
-#include "../include/libdispatch/base.h"
-#include "../include/libdispatch/object.h"
-#include "../include/libdispatch/time.h"
-#include "../include/libdispatch/queue.h"
-/* DISABLED UNTIL CLEAN IMPLEMENTATION IS AVAILABLE
-#include "source.h"
-   */
-#include "../include/libdispatch/group.h"
-#include "../include/libdispatch/semaphore.h"
-#include "../include/libdispatch/source.h"
-#include "../include/libdispatch/once.h"
 
 #include "blocks.h"
 #include "continuation_cache.h"
@@ -208,5 +214,7 @@ struct timespec _dispatch_timeout_ts(dispatch_time_t when);
 uint64_t _dispatch_get_nanoseconds(void);
 bool _dispatch_source_testcancel(dispatch_source_t);
 void libdispatch_init(void);
+long dummy_function_r0();
+void dummy_function();
 
 #endif /* DISPATCH_INTERNAL_H_ */

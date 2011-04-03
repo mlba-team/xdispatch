@@ -29,7 +29,7 @@
 #  include "../include/libdispatch/dispatch.h"
 # endif
 
-#include "../core/shim/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #include <assert.h>
 #include <string>

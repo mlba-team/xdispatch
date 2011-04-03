@@ -93,7 +93,7 @@ public:
     }
 
     bool deref(){
-        return atomic_dec_get(&ref)==0;
+        return dispatch_atomic_dec(&ref)==0;
     }
 
 private:

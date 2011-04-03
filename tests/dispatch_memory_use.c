@@ -34,7 +34,7 @@
 #	include <unistd.h>
 #endif
 
-#include "../core/shim/atomic.h"
+#include "../core/src/shims/atomic.h"
 #include "tests.h"
 
 #if TARGET_OS_EMBEDDED

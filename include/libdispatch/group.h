@@ -1,25 +1,22 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011 MLBA. All rights reserved.
-*
-* @MLBA_OPEN_LICENSE_HEADER_START@
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
-*/
-
-
+ * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+ *
+ * @APPLE_APACHE_LICENSE_HEADER_START@
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @APPLE_APACHE_LICENSE_HEADER_END@
+ */
 
 #ifndef __DISPATCH_GROUP__
 #define __DISPATCH_GROUP__
@@ -52,7 +49,9 @@ __DISPATCH_BEGIN_DECLS
  * @result
  * The newly created group, or NULL on failure.
  */
-DISPATCH_EXPORT dispatch_group_t
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_WARN_RESULT
+dispatch_group_t
 dispatch_group_create(void);
 
 /*!
@@ -79,7 +78,9 @@ dispatch_group_create(void);
  * The block to perform asynchronously.
  */
 #ifdef __BLOCKS__
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL
+void
 dispatch_group_async(dispatch_group_t group,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
@@ -111,7 +112,9 @@ dispatch_group_async(dispatch_group_t group,
  * parameter passed to this function is the context provided to
  * dispatch_group_async_f().
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL2 DISPATCH_NONNULL4
+void
 dispatch_group_async_f(dispatch_group_t group,
 	dispatch_queue_t queue,
 	void *context,
@@ -152,7 +155,9 @@ dispatch_group_async_f(dispatch_group_t group,
  * Returns zero on success (all blocks associated with the group completed
  * within the specified timeout) or non-zero on error (i.e. timed out).
  */
-DISPATCH_EXPORT long
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL
+long
 dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout);
 
 /*!
@@ -186,7 +191,9 @@ dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout);
  * The block to submit when the group completes.
  */
 #ifdef __BLOCKS__
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL
+void
 dispatch_group_notify(dispatch_group_t group,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
@@ -214,7 +221,9 @@ dispatch_group_notify(dispatch_group_t group,
  * parameter passed to this function is the context provided to
  * dispatch_group_notify_f().
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL2 DISPATCH_NONNULL4
+void
 dispatch_group_notify_f(dispatch_group_t group,
 	dispatch_queue_t queue,
 	void *context,
@@ -235,7 +244,9 @@ dispatch_group_notify_f(dispatch_group_t group,
  * The dispatch group to update.
  * The result of passing NULL in this parameter is undefined.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NOTHROW DISPATCH_NONNULL_ALL
+void
 dispatch_group_enter(dispatch_group_t group);
 
 /*!
@@ -252,7 +263,9 @@ dispatch_group_enter(dispatch_group_t group);
  * The dispatch group to update.
  * The result of passing NULL in this parameter is undefined.
  */
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NOTHROW DISPATCH_NONNULL_ALL
+void
 dispatch_group_leave(dispatch_group_t group);
 
 __DISPATCH_END_DECLS

@@ -49,12 +49,17 @@
 # define HAVE_MACH 0
 #endif
 
+// windows?
+#ifdef _WIN32
+# define TARGET_OS_WIN32 1
+#endif
+
 // select the type of semaphore to use
-#ifdef __APPLE__
+#ifdef __MACH__
 # define USE_MACH_SEM 1
-# define USE_POSIX_SEM 0
+#elif _WIN32
+# define USE_WIN32_SEM 1
 #else
-# define USE_MACH_SEM 0
 # define USE_POSIX_SEM 1
 #endif
 
@@ -79,5 +84,13 @@
 // type of kqueue implementation
 #cmakedefine HAVE_KQUEUE_H 1
 #cmakedefine HAVE_LIBKQUEUE_H 1
+
+// needed for time detection
+#cmakedefine HAVE_MACH_ABSOLUTE_TIME 1
+#cmakedefine HAVE_DECL_CLOCK_UPTIME 1
+#cmakedefine HAVE_DECL_CLOCK_MONOTONIC 1
+
+// detection of system resources
+#cmakedefine HAVE_SYSCONF 1
 
 #endif /* CONFIG_H_ */

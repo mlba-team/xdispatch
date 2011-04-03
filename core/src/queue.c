@@ -1,23 +1,22 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011 MLBA. All rights reserved.
-*
-* @MLBA_OPEN_LICENSE_HEADER_START@
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
-*/
+ * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+ *
+ * @APPLE_APACHE_LICENSE_HEADER_START@
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @APPLE_APACHE_LICENSE_HEADER_END@
+ */
 
 #include "internal.h"
 #if HAVE_MACH
@@ -129,8 +128,6 @@ static dispatch_once_t _dispatch_main_q_port_pred;
 static bool main_q_is_draining;
 static mach_port_t main_q_port;
 #endif
-
-static void _dispatch_cache_cleanup2(void *value);
 
 static const struct dispatch_queue_vtable_s _dispatch_queue_vtable = {
 	.do_type = DISPATCH_QUEUE_TYPE,
@@ -296,96 +293,96 @@ malloc_zone_t *_dispatch_ccache_zone;
 static inline void
 _dispatch_continuation_free(dispatch_continuation_t dc)
 {
-    dispatch_continuation_t prev_dc = _dispatch_thread_getspecific(dispatch_cache_key);
-    dc->do_next = prev_dc;
-    _dispatch_thread_setspecific(dispatch_cache_key, dc);
+	dispatch_continuation_t prev_dc = _dispatch_thread_getspecific(dispatch_cache_key);
+	dc->do_next = prev_dc;
+	_dispatch_thread_setspecific(dispatch_cache_key, dc);
 }
 
 static inline void
 _dispatch_continuation_pop(dispatch_object_t dou)
 {
     dispatch_continuation_t dc = DCOND_CAST(dou);
-    dispatch_group_t dg;
+	dispatch_group_t dg;
 
     if (DISPATCH_OBJ_IS_VTABLE(DO_CAST(dou))) {
         return _dispatch_queue_invoke(DQUEUE_CAST(dou));
-    }
+	}
 
-    // Add the item back to the cache before calling the function. This
-    // allows the 'hot' continuation to be used for a quick callback.
-    //
-    // The ccache version is per-thread.
-    // Therefore, the object has not been reused yet.
-    // This generates better assembly.
+	// Add the item back to the cache before calling the function. This
+	// allows the 'hot' continuation to be used for a quick callback.
+	//
+	// The ccache version is per-thread.
+	// Therefore, the object has not been reused yet.
+	// This generates better assembly.
     if ((long)DO_CAST(dou)->do_vtable & DISPATCH_OBJ_ASYNC_BIT) {
-        _dispatch_continuation_free(dc);
-    }
+		_dispatch_continuation_free(dc);
+	}
     if ((long)DO_CAST(dou)->do_vtable & DISPATCH_OBJ_GROUP_BIT) {
-        dg = dc->dc_group;
-    } else {
-        dg = NULL;
-    }
-    dc->dc_func(dc->dc_ctxt);
-    if (dg) {
-        dispatch_group_leave(dg);
+		dg = dc->dc_group;
+	} else {
+		dg = NULL;
+	}
+	dc->dc_func(dc->dc_ctxt);
+	if (dg) {
+		dispatch_group_leave(dg);
         _dispatch_release(DO_CAST(dg));
-    }
+	}
 }
 
 struct dispatch_object_s *
 _dispatch_queue_concurrent_drain_one(dispatch_queue_t dq)
 {
-    struct dispatch_object_s *head, *next, *const mediator = (void *)~0ul;
+	struct dispatch_object_s *head, *next, *const mediator = (void *)~0ul;
 
-    // The mediator value acts both as a "lock" and a signal
-    head = dispatch_atomic_xchg(&dq->dq_items_head, mediator);
+	// The mediator value acts both as a "lock" and a signal
+	head = dispatch_atomic_xchg(&dq->dq_items_head, mediator);
 
-    if (slowpath(head == NULL)) {
-        // The first xchg on the tail will tell the enqueueing thread that it
-        // is safe to blindly write out to the head pointer. A cmpxchg honors
-        // the algorithm.
-        dispatch_atomic_cmpxchg(&dq->dq_items_head, mediator, NULL);
-        _dispatch_debug("no work on global work queue");
-        return NULL;
-    }
+	if (slowpath(head == NULL)) {
+		// The first xchg on the tail will tell the enqueueing thread that it
+		// is safe to blindly write out to the head pointer. A cmpxchg honors
+		// the algorithm.
+		dispatch_atomic_cmpxchg(&dq->dq_items_head, mediator, NULL);
+		_dispatch_debug("no work on global work queue");
+		return NULL;
+	}
 
-    if (slowpath(head == mediator)) {
-        // This thread lost the race for ownership of the queue.
-        //
-        // The ratio of work to libdispatch overhead must be bad. This
-        // scenario implies that there are too many threads in the pool.
-        // Create a new pending thread and then exit this thread.
-        // The kernel will grant a new thread when the load subsides.
-        _dispatch_debug("Contention on queue: %p", dq);
-        _dispatch_queue_wakeup_global(dq);
+	if (slowpath(head == mediator)) {
+		// This thread lost the race for ownership of the queue.
+		//
+		// The ratio of work to libdispatch overhead must be bad. This
+		// scenario implies that there are too many threads in the pool.
+		// Create a new pending thread and then exit this thread.
+		// The kernel will grant a new thread when the load subsides.
+		_dispatch_debug("Contention on queue: %p", dq);
+		_dispatch_queue_wakeup_global(dq);
 #if DISPATCH_PERF_MON
-        dispatch_atomic_inc(&_dispatch_bad_ratio);
+		dispatch_atomic_inc(&_dispatch_bad_ratio);
 #endif
-        return NULL;
-    }
+		return NULL;
+	}
 
-    // Restore the head pointer to a sane value before returning.
-    // If 'next' is NULL, then this item _might_ be the last item.
-    next = fastpath(head->do_next);
+	// Restore the head pointer to a sane value before returning.
+	// If 'next' is NULL, then this item _might_ be the last item.
+	next = fastpath(head->do_next);
 
-    if (slowpath(!next)) {
-        dq->dq_items_head = NULL;
+	if (slowpath(!next)) {
+		dq->dq_items_head = NULL;
+		
+		if (dispatch_atomic_cmpxchg(&dq->dq_items_tail, head, NULL)) {
+			// both head and tail are NULL now
+			goto out;
+		}
 
-        if (dispatch_atomic_cmpxchg(&dq->dq_items_tail, head, NULL)) {
-            // both head and tail are NULL now
-            goto out;
-        }
+		// There must be a next item now. This thread won't wait long.
+		while (!(next = head->do_next)) {
+			_dispatch_hardware_pause();
+		}
+	}
 
-        // There must be a next item now. This thread won't wait long.
-        while (!(next = head->do_next)) {
-            _dispatch_hardware_pause();
-        }
-    }
-
-    dq->dq_items_head = next;
-    _dispatch_queue_wakeup_global(dq);
+	dq->dq_items_head = next;
+	_dispatch_queue_wakeup_global(dq);
 out:
-    return head;
+	return head;
 }
 
 dispatch_queue_t
@@ -407,47 +404,47 @@ static void
 _dispatch_queue_set_width_init(void)
 {
 #ifdef __APPLE__
-    size_t valsz = sizeof(uint32_t);
-    int ret;
+	size_t valsz = sizeof(uint32_t);
+	int ret;
 
-    ret = sysctlbyname("hw.activecpu", &_dispatch_hw_config.cc_max_active,
-        &valsz, NULL, 0);
-    (void)dispatch_assume_zero(ret);
+	ret = sysctlbyname("hw.activecpu", &_dispatch_hw_config.cc_max_active,
+	    &valsz, NULL, 0);
+	(void)dispatch_assume_zero(ret);
     (void)dispatch_assume(valsz == sizeof(uint32_t));
 
-    ret = sysctlbyname("hw.logicalcpu_max",
-        &_dispatch_hw_config.cc_max_logical, &valsz, NULL, 0);
-    (void)dispatch_assume_zero(ret);
+	ret = sysctlbyname("hw.logicalcpu_max",
+	    &_dispatch_hw_config.cc_max_logical, &valsz, NULL, 0);
+	(void)dispatch_assume_zero(ret);
     (void)dispatch_assume(valsz == sizeof(uint32_t));
 
-    ret = sysctlbyname("hw.physicalcpu_max",
-        &_dispatch_hw_config.cc_max_physical, &valsz, NULL, 0);
-    (void)dispatch_assume_zero(ret);
+	ret = sysctlbyname("hw.physicalcpu_max",
+	    &_dispatch_hw_config.cc_max_physical, &valsz, NULL, 0);
+	(void)dispatch_assume_zero(ret);
     (void)dispatch_assume(valsz == sizeof(uint32_t));
 #elif defined(__FreeBSD__)
-    size_t valsz = sizeof(uint32_t);
-    int ret;
+	size_t valsz = sizeof(uint32_t);
+	int ret;
 
-    ret = sysctlbyname("kern.smp.cpus", &_dispatch_hw_config.cc_max_active,
-        &valsz, NULL, 0);
-    (void)dispatch_assume_zero(ret);
-    (void)dispatch_assume(valsz == sizeof(uint32_t));
+	ret = sysctlbyname("kern.smp.cpus", &_dispatch_hw_config.cc_max_active,
+	    &valsz, NULL, 0);
+	(void)dispatch_assume_zero(ret);
+	(void)dispatch_assume(valsz == sizeof(uint32_t));
 
-    _dispatch_hw_config.cc_max_logical =
-        _dispatch_hw_config.cc_max_physical =
-        _dispatch_hw_config.cc_max_active;
-#elif defined(__linux)
-    _dispatch_hw_config.cc_max_active = (int)sysconf(_SC_NPROCESSORS_ONLN);
-    if (_dispatch_hw_config.cc_max_active < 0)
-        _dispatch_hw_config.cc_max_active = 1;
-    _dispatch_hw_config.cc_max_logical =
-        _dispatch_hw_config.cc_max_physical =
-        _dispatch_hw_config.cc_max_active;
+	_dispatch_hw_config.cc_max_logical =
+	    _dispatch_hw_config.cc_max_physical =
+	    _dispatch_hw_config.cc_max_active;
+#elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
+	_dispatch_hw_config.cc_max_active = (int)sysconf(_SC_NPROCESSORS_ONLN);
+	if (_dispatch_hw_config.cc_max_active < 0)
+		_dispatch_hw_config.cc_max_active = 1;
+	_dispatch_hw_config.cc_max_logical =
+	    _dispatch_hw_config.cc_max_physical =
+	    _dispatch_hw_config.cc_max_active;
 #else
 #warning "_dispatch_queue_set_width_init: no supported way to query CPU count"
-        _dispatch_hw_config.cc_max_logical =
-        _dispatch_hw_config.cc_max_physical =
-        _dispatch_hw_config.cc_max_active = 1;
+	_dispatch_hw_config.cc_max_logical =
+	    _dispatch_hw_config.cc_max_physical =
+	    _dispatch_hw_config.cc_max_active = 1;
 #endif
 }
 
@@ -564,38 +561,38 @@ out_bad:
 void
 _dispatch_queue_dispose(dispatch_queue_t dq)
 {
-    if (slowpath(dq == _dispatch_queue_get_current())) {
-        DISPATCH_CRASH("Release of a queue by itself");
-    }
-    if (slowpath(dq->dq_items_tail)) {
-        DISPATCH_CRASH("Release of a queue while items are enqueued");
-    }
+	if (slowpath(dq == _dispatch_queue_get_current())) {
+		DISPATCH_CRASH("Release of a queue by itself");
+	}
+	if (slowpath(dq->dq_items_tail)) {
+		DISPATCH_CRASH("Release of a queue while items are enqueued");
+	}
 
 #ifndef DISPATCH_NO_LEGACY
-    if (dq->dq_finalizer_func) {
-        dq->dq_finalizer_func(dq->dq_finalizer_ctxt, dq);
-    }
+	if (dq->dq_finalizer_func) {
+		dq->dq_finalizer_func(dq->dq_finalizer_ctxt, dq);
+	}
 #endif
 
-    // trash the tail queue so that use after free will crash
-    dq->dq_items_tail = (void *)0x200;
+	// trash the tail queue so that use after free will crash
+	dq->dq_items_tail = (void *)0x200;
 
     _dispatch_dispose(DO_CAST(dq));
 }
 
-DISPATCH_NOINLINE
+DISPATCH_NOINLINE 
 void
 _dispatch_queue_push_list_slow(dispatch_queue_t dq, struct dispatch_object_s *obj)
 {
-    // The queue must be retained before dq_items_head is written in order
-    // to ensure that the reference is still valid when _dispatch_wakeup is
-    // called. Otherwise, if preempted between the assignment to
-    // dq_items_head and _dispatch_wakeup, the blocks submitted to the
-    // queue may release the last reference to the queue when invoked by
-    // _dispatch_queue_drain. <rdar://problem/6932776>
+	// The queue must be retained before dq_items_head is written in order
+	// to ensure that the reference is still valid when _dispatch_wakeup is
+	// called. Otherwise, if preempted between the assignment to
+	// dq_items_head and _dispatch_wakeup, the blocks submitted to the
+	// queue may release the last reference to the queue when invoked by
+	// _dispatch_queue_drain. <rdar://problem/6932776>
     _dispatch_retain(DO_CAST(dq));
-    dq->dq_items_head = obj;
-    _dispatch_wakeup(dq);
+	dq->dq_items_head = obj;
+	_dispatch_wakeup(dq);
     _dispatch_release(DO_CAST(dq));
 }
 
@@ -603,11 +600,11 @@ DISPATCH_NOINLINE
 static void
 _dispatch_barrier_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t func)
 {
-    dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_from_heap());
+	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_from_heap());
 
-    dc->do_vtable = (void *)(DISPATCH_OBJ_ASYNC_BIT | DISPATCH_OBJ_BARRIER_BIT);
-    dc->dc_func = func;
-    dc->dc_ctxt = context;
+	dc->do_vtable = (void *)(DISPATCH_OBJ_ASYNC_BIT | DISPATCH_OBJ_BARRIER_BIT);
+	dc->dc_func = func;
+	dc->dc_ctxt = context;
 
     _dispatch_queue_push(dq, DO_CAST(dc));
 }
@@ -641,11 +638,11 @@ DISPATCH_NOINLINE
 static void
 _dispatch_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t func)
 {
-    dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_from_heap());
+	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_from_heap());
 
-    dc->do_vtable = (void *)DISPATCH_OBJ_ASYNC_BIT;
-    dc->dc_func = func;
-    dc->dc_ctxt = context;
+	dc->do_vtable = (void *)DISPATCH_OBJ_ASYNC_BIT;
+	dc->dc_func = func;
+	dc->dc_ctxt = context;
 
     _dispatch_queue_push(dq, DO_CAST(dc));
 }
@@ -662,18 +659,18 @@ DISPATCH_NOINLINE
 void
 dispatch_async_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 {
-    dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_cacheonly());
+	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_cacheonly());
 
-    // unlike dispatch_sync_f(), we do NOT need to check the queue width,
-    // the "drain" function will do this test
+	// unlike dispatch_sync_f(), we do NOT need to check the queue width,
+	// the "drain" function will do this test
 
-    if (!dc) {
-        return _dispatch_async_f_slow(dq, ctxt, func);
-    }
+	if (!dc) {
+		return _dispatch_async_f_slow(dq, ctxt, func);
+	}
 
-    dc->do_vtable = (void *)DISPATCH_OBJ_ASYNC_BIT;
-    dc->dc_func = func;
-    dc->dc_ctxt = ctxt;
+	dc->do_vtable = (void *)DISPATCH_OBJ_ASYNC_BIT;
+	dc->dc_func = func;
+	dc->dc_ctxt = ctxt;
 
     _dispatch_queue_push(dq, DO_CAST(dc));
 }
@@ -915,13 +912,12 @@ dispatch_main(void)
 static void
 _dispatch_sigsuspend(void *ctxt DISPATCH_UNUSED)
 {
-    static const sigset_t mask;
+	static const sigset_t mask;
 
-    for (;;) {
-        sigsuspend(&mask);
-    }
+	for (;;) {
+		sigsuspend(&mask);
+	}
 }
-
 
 DISPATCH_NOINLINE
 static void
@@ -1042,27 +1038,27 @@ _dispatch_queue_unlock(dispatch_queue_t dq)
 dispatch_queue_t
 _dispatch_wakeup(dispatch_object_t dou)
 {
-    dispatch_queue_t tq;
+	dispatch_queue_t tq;
 
     if (slowpath(DISPATCH_OBJECT_SUSPENDED(DO_CAST(dou)))) {
-        return NULL;
-    }
+		return NULL;
+	}
     if (!dx_probe(DO_CAST(dou)) && !DQUEUE_CAST(dou)->dq_items_tail) {
-        return NULL;
-    }
+		return NULL;
+	}
 
     if (!_dispatch_trylock(DO_CAST(dou))) {
 #if DISPATCH_COCOA_COMPAT
-        if (dou._dq == &_dispatch_main_q) {
-            _dispatch_queue_wakeup_main();
-        }
+        if (DQUEUE_CAST(dou) == &_dispatch_main_q) {
+			_dispatch_queue_wakeup_main();
+		}
 #endif
-        return NULL;
-    }
+		return NULL;
+	}
     _dispatch_retain(DO_CAST(dou));
     tq = DO_CAST(dou)->do_targetq;
     _dispatch_queue_push(tq, DO_CAST(dou));
-    return tq;	// libdispatch doesn't need this, but the Instrument DTrace probe does
+	return tq;	// libdispatch doesn't need this, but the Instrument DTrace probe does
 }
 
 #if DISPATCH_COCOA_COMPAT
@@ -1157,7 +1153,7 @@ _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 			kr = semaphore_create(mach_task_self(), &_dispatch_thread_mediator[i].dsema_port, SYNC_POLICY_LIFO, 0);
 			DISPATCH_VERIFY_MIG(kr);
 			(void)dispatch_assume_zero(kr);
-			dispatch_assume(_dispatch_thread_mediator[i].dsema_port);
+            (void)dispatch_assume(_dispatch_thread_mediator[i].dsema_port);
 #endif
 #if USE_POSIX_SEM
 			/* XXXRW: POSIX semaphores don't support LIFO? */
@@ -1260,29 +1256,29 @@ DISPATCH_NOINLINE
 void
 _dispatch_queue_invoke(dispatch_queue_t dq)
 {
-    dispatch_queue_t tq = dq->do_targetq;
+	dispatch_queue_t tq = dq->do_targetq;
 
-    if (!slowpath(DISPATCH_OBJECT_SUSPENDED(dq)) && fastpath(_dispatch_queue_trylock(dq))) {
-        _dispatch_queue_drain(dq);
-        if (tq == dq->do_targetq) {
-            tq = dx_invoke(dq);
-        } else {
-            tq = dq->do_targetq;
-        }
-        // We do not need to check the result.
-        // When the suspend-count lock is dropped, then the check will happen.
-        dispatch_atomic_dec(&dq->dq_running);
-        if (tq) {
+	if (!slowpath(DISPATCH_OBJECT_SUSPENDED(dq)) && fastpath(_dispatch_queue_trylock(dq))) {
+		_dispatch_queue_drain(dq);
+		if (tq == dq->do_targetq) {
+			tq = dx_invoke(dq);
+		} else {
+			tq = dq->do_targetq;
+		}
+		// We do not need to check the result.
+		// When the suspend-count lock is dropped, then the check will happen.
+		dispatch_atomic_dec(&dq->dq_running);
+		if (tq) {
             return _dispatch_queue_push(tq, DO_CAST(dq));
-        }
-    }
+		}
+	}
 
-    dq->do_next = DISPATCH_OBJECT_LISTLESS;
-    if (dispatch_atomic_sub(&dq->do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_LOCK) == 0) {
-        if (dq->dq_running == 0) {
-            _dispatch_wakeup(dq);	// verify that the queue is idle
-        }
-    }
+	dq->do_next = DISPATCH_OBJECT_LISTLESS;
+	if (dispatch_atomic_sub(&dq->do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_LOCK) == 0) {
+		if (dq->dq_running == 0) {
+			_dispatch_wakeup(dq);	// verify that the queue is idle
+		}
+	}
     _dispatch_release(DO_CAST(dq));	// added when the queue is put on the list
 }
 
@@ -1290,67 +1286,67 @@ _dispatch_queue_invoke(dispatch_queue_t dq)
 static void
 _dispatch_set_target_queue2(void *ctxt)
 {
-    dispatch_queue_t prev_dq, dq = _dispatch_queue_get_current();
-
-    prev_dq = dq->do_targetq;
-    dq->do_targetq = ctxt;
+	dispatch_queue_t prev_dq, dq = _dispatch_queue_get_current();
+		  
+	prev_dq = dq->do_targetq;
+	dq->do_targetq = ctxt;
     _dispatch_release(DO_CAST(prev_dq));
 }
 
 void
 dispatch_set_target_queue(dispatch_object_t dou, dispatch_queue_t dq)
 {
-	if (slowpath(dou._do->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT)) {
+    if (slowpath(DO_CAST(dou)->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT)) {
 		return;
 	}
 	// NOTE: we test for NULL target queues internally to detect root queues
 	// therefore, if the retain crashes due to a bad input, that is OK
 	_dispatch_retain(dq);
-	dispatch_barrier_async_f(dou._dq, dq, _dispatch_set_target_queue2);
+    dispatch_barrier_async_f(DQUEUE_CAST(dou), dq, _dispatch_set_target_queue2);
 }
 
 static void
 _dispatch_async_f_redirect2(void *_ctxt)
 {
-    struct dispatch_continuation_s *dc = _ctxt;
-    struct dispatch_continuation_s *other_dc = dc->dc_data[1];
-    dispatch_queue_t old_dq, dq = dc->dc_data[0];
+	struct dispatch_continuation_s *dc = _ctxt;
+	struct dispatch_continuation_s *other_dc = dc->dc_data[1];
+	dispatch_queue_t old_dq, dq = dc->dc_data[0];
 
-    old_dq = _dispatch_thread_getspecific(dispatch_queue_key);
-    _dispatch_thread_setspecific(dispatch_queue_key, dq);
-    _dispatch_continuation_pop(other_dc);
-    _dispatch_thread_setspecific(dispatch_queue_key, old_dq);
+	old_dq = _dispatch_thread_getspecific(dispatch_queue_key);
+	_dispatch_thread_setspecific(dispatch_queue_key, dq);
+	_dispatch_continuation_pop(other_dc);
+	_dispatch_thread_setspecific(dispatch_queue_key, old_dq);
 
-    if (dispatch_atomic_sub(&dq->dq_running, 2) == 0) {
-        _dispatch_wakeup(dq);
-    }
+	if (dispatch_atomic_sub(&dq->dq_running, 2) == 0) {
+		_dispatch_wakeup(dq);
+	}
     _dispatch_release(DO_CAST(dq));
 }
 
 static void
 _dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_dc)
 {
-    dispatch_continuation_t dc = (void *)other_dc;
-    dispatch_queue_t root_dq = dq;
+	dispatch_continuation_t dc = (void *)other_dc;
+	dispatch_queue_t root_dq = dq;
 
-    if (dc->dc_func == _dispatch_sync_f_slow2) {
-        return dc->dc_func(dc->dc_ctxt);
-    }
+	if (dc->dc_func == _dispatch_sync_f_slow2) {
+		return dc->dc_func(dc->dc_ctxt);
+	}
 
-    dispatch_atomic_add(&dq->dq_running, 2);
+	dispatch_atomic_add(&dq->dq_running, 2);
     _dispatch_retain(DO_CAST(dq));
 
-    dc = _dispatch_continuation_alloc_cacheonly() ?: _dispatch_continuation_alloc_from_heap();
+	dc = _dispatch_continuation_alloc_cacheonly() ?: _dispatch_continuation_alloc_from_heap();
 
-    dc->do_vtable = (void *)DISPATCH_OBJ_ASYNC_BIT;
-    dc->dc_func = _dispatch_async_f_redirect2;
-    dc->dc_ctxt = dc;
-    dc->dc_data[0] = dq;
-    dc->dc_data[1] = other_dc;
+	dc->do_vtable = (void *)DISPATCH_OBJ_ASYNC_BIT;
+	dc->dc_func = _dispatch_async_f_redirect2;
+	dc->dc_ctxt = dc;
+	dc->dc_data[0] = dq;
+	dc->dc_data[1] = other_dc;
 
-    do {
-        root_dq = root_dq->do_targetq;
-    } while (root_dq->do_targetq);
+	do {
+		root_dq = root_dq->do_targetq;
+	} while (root_dq->do_targetq);
 
     _dispatch_queue_push(root_dq, DO_CAST(dc));
 }
@@ -1657,7 +1653,7 @@ dispatch_queue_attr_set_finalizer(dispatch_queue_attr_t attr,
 #endif
 #endif /* DISPATCH_NO_LEGACY */
 
-static char _dispatch_build[16];
+//static char _dispatch_build[16];
 
 bool _dispatch_safe_fork = true;
 

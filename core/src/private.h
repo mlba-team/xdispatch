@@ -50,7 +50,7 @@
 #endif
 
 #ifndef __DISPATCH_BUILDING_DISPATCH__
-#include_next <dispatch/dispatch.h>
+#include "../../include/libdispatch/dispatch.h"
 
 // Workaround <rdar://problem/6597365/>
 #ifndef __DISPATCH_PUBLIC__
@@ -61,12 +61,12 @@
 #define __DISPATCH_INDIRECT__
 #endif
 
-#include <dispatch/benchmark.h>
-#include <dispatch/queue_private.h>
-#include <dispatch/source_private.h>
+#include "../../include/libdispatch/benchmark.h"
+#include "queue_private.h"
+#include "source_private.h"
 
 #ifndef DISPATCH_NO_LEGACY
-#include <dispatch/legacy.h>
+#include "legacy.h"
 #endif
 
 #undef __DISPATCH_INDIRECT__

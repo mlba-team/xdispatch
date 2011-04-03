@@ -25,7 +25,7 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/shim/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS
 

@@ -1,24 +1,22 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011 MLBA. All rights reserved.
-*
-* @MLBA_OPEN_LICENSE_HEADER_START@
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
-*/
-
+ * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+ *
+ * @APPLE_APACHE_LICENSE_HEADER_START@
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @APPLE_APACHE_LICENSE_HEADER_END@
+ */
 
 /*
  * IMPORTANT: This header file describes INTERNAL interfaces to libdispatch
@@ -30,34 +28,34 @@
 #define __DISPATCH_OBJECT_INTERNAL__
 
 enum {
-    _DISPATCH_CONTINUATION_TYPE		=	 0x00000, // meta-type for continuations
-    _DISPATCH_QUEUE_TYPE			=    0x10000, // meta-type for queues
-    _DISPATCH_SOURCE_TYPE			=    0x20000, // meta-type for sources
-    _DISPATCH_SEMAPHORE_TYPE		=    0x30000, // meta-type for semaphores
-    _DISPATCH_ATTR_TYPE				= 0x10000000, // meta-type for attribute structures
+	_DISPATCH_CONTINUATION_TYPE		=	 0x00000, // meta-type for continuations
+	_DISPATCH_QUEUE_TYPE			=    0x10000, // meta-type for queues
+	_DISPATCH_SOURCE_TYPE			=    0x20000, // meta-type for sources
+	_DISPATCH_SEMAPHORE_TYPE		=    0x30000, // meta-type for semaphores
+	_DISPATCH_ATTR_TYPE				= 0x10000000, // meta-type for attribute structures
+	
+	DISPATCH_CONTINUATION_TYPE		= _DISPATCH_CONTINUATION_TYPE,
+	
+	DISPATCH_QUEUE_ATTR_TYPE		= _DISPATCH_QUEUE_TYPE | _DISPATCH_ATTR_TYPE,
 
-    DISPATCH_CONTINUATION_TYPE		= _DISPATCH_CONTINUATION_TYPE,
+	DISPATCH_QUEUE_TYPE				= 1 | _DISPATCH_QUEUE_TYPE,
+	DISPATCH_QUEUE_GLOBAL_TYPE		= 2 | _DISPATCH_QUEUE_TYPE,
+	DISPATCH_QUEUE_MGR_TYPE			= 3 | _DISPATCH_QUEUE_TYPE,
 
-    DISPATCH_QUEUE_ATTR_TYPE		= _DISPATCH_QUEUE_TYPE | _DISPATCH_ATTR_TYPE,
-
-    DISPATCH_QUEUE_TYPE				= 1 | _DISPATCH_QUEUE_TYPE,
-    DISPATCH_QUEUE_GLOBAL_TYPE		= 2 | _DISPATCH_QUEUE_TYPE,
-    DISPATCH_QUEUE_MGR_TYPE			= 3 | _DISPATCH_QUEUE_TYPE,
-
-    DISPATCH_SEMAPHORE_TYPE			= _DISPATCH_SEMAPHORE_TYPE,
-
-    DISPATCH_SOURCE_ATTR_TYPE		= _DISPATCH_SOURCE_TYPE | _DISPATCH_ATTR_TYPE,
-
-    DISPATCH_SOURCE_KEVENT_TYPE		= 1 | _DISPATCH_SOURCE_TYPE,
+	DISPATCH_SEMAPHORE_TYPE			= _DISPATCH_SEMAPHORE_TYPE,
+	
+	DISPATCH_SOURCE_ATTR_TYPE		= _DISPATCH_SOURCE_TYPE | _DISPATCH_ATTR_TYPE,
+	
+	DISPATCH_SOURCE_KEVENT_TYPE		= 1 | _DISPATCH_SOURCE_TYPE,
 };
 
 #define DISPATCH_VTABLE_HEADER(x)	\
-    unsigned long const do_type;	\
-    const char *const do_kind; \
-    size_t (*const do_debug)(struct x *, char *, size_t);	\
-    struct dispatch_queue_s *(*const do_invoke)(struct x *);	\
-    bool (*const do_probe)(struct x *); \
-    void (*const do_dispose)(struct x *)
+	unsigned long const do_type;	\
+	const char *const do_kind; \
+	size_t (*const do_debug)(struct x *, char *, size_t);	\
+	struct dispatch_queue_s *(*const do_invoke)(struct x *);	\
+	bool (*const do_probe)(struct x *); \
+	void (*const do_dispose)(struct x *)
 
 #define dx_type(x) (x)->do_vtable->do_type
 #define dx_kind(x) (x)->do_vtable->do_kind
@@ -67,14 +65,14 @@ enum {
 #define dx_probe(x) (x)->do_vtable->do_probe(x)
 
 #define DISPATCH_STRUCT_HEADER(x, y)	\
-    const struct y *do_vtable;	\
-    struct x *volatile do_next;	\
-    unsigned int do_ref_cnt;	\
-    unsigned int do_xref_cnt;	\
-    unsigned int do_suspend_cnt;	\
-    struct dispatch_queue_s *do_targetq;	\
-    void *do_ctxt; \
-    dispatch_function_t do_finalizer
+	const struct y *do_vtable;	\
+	struct x *volatile do_next;	\
+	unsigned int do_ref_cnt;	\
+	unsigned int do_xref_cnt;	\
+	unsigned int do_suspend_cnt;	\
+	struct dispatch_queue_s *do_targetq;	\
+	void *do_ctxt; \
+	dispatch_function_t do_finalizer
 
 #define DISPATCH_OBJECT_GLOBAL_REFCNT	(~0u)
 #define DISPATCH_OBJECT_SUSPEND_LOCK		1u	// "word and bit" must be a power of two to be safely subtracted
@@ -95,18 +93,18 @@ enum {
 #define _dispatch_trylock(x)	dispatch_atomic_cmpxchg(&(x)->do_suspend_cnt, 0, DISPATCH_OBJECT_SUSPEND_LOCK)
 
 struct dispatch_object_vtable_s {
-    DISPATCH_VTABLE_HEADER(dispatch_object_s);
+	DISPATCH_VTABLE_HEADER(dispatch_object_s);
 };
 
 struct dispatch_object_s {
-    DISPATCH_STRUCT_HEADER(dispatch_object_s, dispatch_object_vtable_s);
+	DISPATCH_STRUCT_HEADER(dispatch_object_s, dispatch_object_vtable_s);
 };
 
-size_t dispatch_object_debug_attr(struct dispatch_object_s* dou, char* buf, size_t bufsiz);
+size_t dispatch_object_debug_attr(dispatch_object_t dou, char* buf, size_t bufsiz);
 
-void _dispatch_retain(struct dispatch_object_s* dou);
-void _dispatch_release(struct dispatch_object_s* dou);
-void _dispatch_dispose(struct dispatch_object_s* dou);
+void _dispatch_retain(dispatch_object_t dou);
+void _dispatch_release(dispatch_object_t dou);
+void _dispatch_dispose(dispatch_object_t dou);
 dispatch_queue_t _dispatch_wakeup(dispatch_object_t dou);
 
 #define DO_CAST(x) ((struct dispatch_object_s *)(x))
