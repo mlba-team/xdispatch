@@ -44,6 +44,14 @@
 
 #   endif
 
+# if defined(__i386__) || defined(__x86_64__)
+/* GCC emits nothing for __sync_synchronize() on i386/x86_64. */
+#  define atomic_barrier()	__asm__ __volatile__("mfence")
+# else
+#  define atomic_barrier()	__sync_synchronize()
+# endif
+# define atomic_cmpxchg(p, o, n)	__sync_bool_compare_and_swap((p), (o), (n))
+
 #   define ATOMIC_INT unsigned int
 
 #endif
@@ -55,6 +63,8 @@
 #		define atomic_inc_get(a) InterlockedIncrementAcquire(a)
 #		define atomic_dec_get(a) InterlockedDecrementAcquire(a)
 #		define atomic_swap_get(a,b) InterlockedExchange(a,b)
+#		define atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((p), (n), (o))
+#		define atomic_barrier()	 MemoryBarrier()
 
 #if _MSC_VER >= 1600
 #	define ATOMIC_INT unsigned int

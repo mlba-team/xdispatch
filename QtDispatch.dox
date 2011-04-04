@@ -19,8 +19,8 @@ QBlockRunnable, a simple QRunnable created by passing an individual block.
 @section qt_use Usage
 
 You can use QtDispach (in case you have Qt > 4.6 available on your system) by including QtDispatch or
-one of the individual modules (all found within include/QtDispatch). This will automatically include 
-all other needed headers as well. Below you find a list of the available classes:
+one of the individual modules (all found within include/QtDispatch, link with the QtDispatch lib). 
+This will automatically include  all other needed headers as well. Below you find a list of the available classes:
 
  - QDispatch
  - QDispatchQueue

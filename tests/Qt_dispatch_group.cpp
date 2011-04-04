@@ -97,6 +97,6 @@ extern "C" void Qt_dispatch_group(){
 
 #endif
 
-#include <moc_Qt_dispatch_group.cxx>
+#include <moc_Qt_dispatch_group.moc>
 
 #endif

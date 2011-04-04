@@ -42,7 +42,7 @@ __XDISPATCH_BEGIN_NAMESPACE
   the operator to create specific operations
   that can be executed on a queue.
   */
-class operation
+class XDISPATCH_EXPORT operation
 {
     public:
     operation() : auto_del(false){}
@@ -71,7 +71,7 @@ class operation
   index will be passed whenever this
   functor is executed on a queue.
   */
-class iteration_operation
+class XDISPATCH_EXPORT iteration_operation
 {
 public:
     iteration_operation() : auto_del(false){}
@@ -97,7 +97,7 @@ private:
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as operation
   */
-template <class T> class ptr_operation : public operation
+template <class T>  class ptr_operation : public operation
 {
 public:
     ptr_operation(T* object, void(T::*function)())
@@ -115,7 +115,7 @@ private:
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as iteration_operation
   */
-template <class T> class ptr_iteration_operation : public iteration_operation
+template <class T> class  ptr_iteration_operation : public iteration_operation
 {
 public:
     ptr_iteration_operation(T* object, void(T::*function)(size_t))
@@ -144,7 +144,7 @@ enum queue_priority { HIGH =2, DEFAULT =1, LOW =0 };
     @remarks Never delete the returned queue!
     @return NULL if something went wrong
     */
-queue main_queue();
+XDISPATCH_EXPORT queue main_queue();
 /**
     Returns the global queue associated to the given
     Priority p.
@@ -155,27 +155,27 @@ queue main_queue();
     @remarks Never delete the returned queue!
     @return NULL if something went wrong
     */
-queue global_queue(queue_priority p = DEFAULT);
+XDISPATCH_EXPORT queue global_queue(queue_priority p = DEFAULT);
 /**
     @return The queue the current operation
         is executed on.
     */
-queue current_queue();
+XDISPATCH_EXPORT queue current_queue();
 /**
     @return The given QTime converted to a dispatch_time_t
     */
-dispatch_time_t as_dispatch_time(const time_t&);
+XDISPATCH_EXPORT dispatch_time_t as_dispatch_time(const time_t&);
 /**
     @return The given dispatch_time_t as time_t
     */
-time_t as_time_t(dispatch_time_t t);
+XDISPATCH_EXPORT time_t as_time_t(dispatch_time_t t);
 /**
     Enters the dispatching loop for the main thread.
     Call this somewhere within the main thread to enable
     dispatching operations to the main queue. Will never
     return.
     */
-void exec();
+XDISPATCH_EXPORT void exec();
 
 __XDISPATCH_END_NAMESPACE
 

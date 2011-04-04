@@ -45,27 +45,16 @@
 #endif
 #include <assert.h>
 
-#ifdef WIN32
-#	define inline __inline
-#endif
 
 #ifdef WIN32
-#	include <windows.h>
-#	include "../pthreads-w32/pthread.h"
-#	include "../pthreads-w32/semaphore.h"
+#	include "os_windows.h"
+#	include "threads_windows.h"
 #else
 #	include <sys/time.h>
 #	include <unistd.h>
 #	include <pthread.h>
 #   include <semaphore.h>
 #	include <stdbool.h>
-#endif
-
-// memory leak detection on windows
-#if defined(WIN32) && defined(DEBUG)
-#	define _CRTDBG_MAP_ALLOC
-#	include <stdlib.h>
-#	include <crtdbg.h>
 #endif
 
 #ifndef TRUE

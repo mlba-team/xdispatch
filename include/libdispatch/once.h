@@ -58,11 +58,11 @@ typedef long dispatch_once_t;
  * initialized by the block.
  */
 #ifdef XDISPATCH_HAS_BLOCKS
-void
+DISPATCH_EXPORT void
 dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
 #endif
 
-void
+DISPATCH_EXPORT void
 dispatch_once_f(dispatch_once_t *predicate, void *context, void (*function)(void *));
 
 __DISPATCH_END_DECLS

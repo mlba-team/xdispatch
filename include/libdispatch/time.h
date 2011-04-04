@@ -86,7 +86,7 @@ typedef uint64_t dispatch_time_t;
  * @result
  * A new dispatch_time_t.
  */
-dispatch_time_t
+DISPATCH_EXPORT dispatch_time_t
 dispatch_time(dispatch_time_t when, int64_t delta);
 
 /*!
@@ -108,7 +108,7 @@ dispatch_time(dispatch_time_t when, int64_t delta);
  * @result
  * A new dispatch_time_t.
  */
-dispatch_time_t
+DISPATCH_EXPORT dispatch_time_t
 dispatch_walltime(const struct timespec *when, int64_t delta);
 
 __DISPATCH_END_DECLS

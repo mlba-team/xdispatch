@@ -57,8 +57,8 @@ mutex. Please see the documentation generated from xdispatch/synchronized.h for 
 
 @section xd_use Usage
 
-All header files needed for using libXDispatch can be found at include/xdispatch. Below you
-can find a list of all provided classes and functions
+All header files needed for using libXDispatch can be found at include/xdispatch (symbols are included within
+the xdispatch binary). Below you can find a list of all provided classes and functions:
 
  - xdispatch::queue
  - xdispatch::group

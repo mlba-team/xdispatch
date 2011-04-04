@@ -52,7 +52,7 @@ __DISPATCH_BEGIN_DECLS
  * @result
  * The newly created group, or NULL on failure.
  */
-dispatch_group_t
+DISPATCH_EXPORT dispatch_group_t
 dispatch_group_create(void);
 
 /*!
@@ -79,7 +79,7 @@ dispatch_group_create(void);
  * The block to perform asynchronously.
  */
 #ifdef XDISPATCH_HAS_BLOCKS
-void
+DISPATCH_EXPORT void
 dispatch_group_async(dispatch_group_t group,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
@@ -111,7 +111,7 @@ dispatch_group_async(dispatch_group_t group,
  * parameter passed to this function is the context provided to
  * dispatch_group_async_f().
  */
-void
+DISPATCH_EXPORT void
 dispatch_group_async_f(dispatch_group_t group,
 	dispatch_queue_t queue,
 	void *context,
@@ -152,7 +152,7 @@ dispatch_group_async_f(dispatch_group_t group,
  * Returns zero on success (all blocks associated with the group completed
  * within the specified timeout) or non-zero on error (i.e. timed out).
  */
-long
+DISPATCH_EXPORT long
 dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout);
 
 /*!
@@ -186,7 +186,7 @@ dispatch_group_wait(dispatch_group_t group, dispatch_time_t timeout);
  * The block to submit when the group completes.
  */
 #ifdef XDISPATCH_HAS_BLOCKS
-void
+DISPATCH_EXPORT void
 dispatch_group_notify(dispatch_group_t group,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
@@ -214,7 +214,7 @@ dispatch_group_notify(dispatch_group_t group,
  * parameter passed to this function is the context provided to
  * dispatch_group_notify_f().
  */
-void
+DISPATCH_EXPORT void
 dispatch_group_notify_f(dispatch_group_t group,
 	dispatch_queue_t queue,
 	void *context,
@@ -235,7 +235,7 @@ dispatch_group_notify_f(dispatch_group_t group,
  * The dispatch group to update.
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_group_enter(dispatch_group_t group);
 
 /*!
@@ -252,7 +252,7 @@ dispatch_group_enter(dispatch_group_t group);
  * The dispatch group to update.
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_group_leave(dispatch_group_t group);
 
 __DISPATCH_END_DECLS

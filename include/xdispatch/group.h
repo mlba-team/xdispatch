@@ -41,7 +41,7 @@ executing.
 See also Apple's Documentation of Dispatch Groups
 */
 
-class group {
+class XDISPATCH_EXPORT group {
 
 public:
     /**
@@ -122,8 +122,8 @@ private:
     data* d;
 };
 
-std::ostream& operator<<(std::ostream& stream, const group* );
-std::ostream& operator<<(std::ostream& stream, const group& );
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const group* );
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const group& );
 
 __XDISPATCH_END_NAMESPACE
 

@@ -29,8 +29,10 @@ if(NOT HAS_MZ_GLOBAL)
 	endif()
 endif()
 
-# add pthreads on windows as well
-mz_add_library(pthreads-w32 pthreads-w32)
+# we hide all unneeded symbols
+if(NOT WIN32)
+	mz_add_flag(-fvisibility=hidden)
+endif()
 
 # do we have native dispatch support on this platform?
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
@@ -64,12 +66,10 @@ source_group(cxx FILES ${CXX})
 if(NOT HAVE_NATIVE_DISPATCH_H)
   
   # add new target
-  add_library(${NAME} STATIC ${INCL} ${CORE} ${CXX_INCL} ${CXX})
+  add_library(${NAME} SHARED ${INCL} ${CORE} ${CXX_INCL} ${CXX})
   
   # link this target with all needed libraries
-  if(MZ_IS_VS)
-    target_link_libraries(${NAME} pthreads-w32)
-  else()
+  if(NOT WIN32)
     target_link_libraries(${NAME} pthread)
   endif()
   mz_target_props(${NAME})
@@ -87,12 +87,10 @@ else()
 	endif()
 	
 	  # add new target
-  add_library(${NAME} STATIC ${INCL} ${CXX} ${CXX_INCL})
+  add_library(${NAME} SHARED ${INCL} ${CXX} ${CXX_INCL})
   
   # link this target with all needed libraries
-  if(MZ_IS_VS)
-    target_link_libraries(${NAME} pthreads-w32)
-  else()
+  if(NOT WIN32)
     target_link_libraries(${NAME} pthread)
   endif()
   mz_target_props(${NAME})
@@ -120,15 +118,6 @@ if(QT4_FOUND)
 endif()
 
 # custom test framework for xdispatch
-if (CMAKE_COMPILER_IS_GNU_CXX OR UNIX)
-	# detect compiler version
-	_Boost_MZ_COMPILER_DUMPVERSION(GCC_VERSION)
-	set(GCC_VERSION "${GCC_VERSION}")
-	if(GCC_VERSION STREQUAL "45")
-		mz_add_definition(HAVE_BLOCKS_IMPL)
-		message("   >> enabled tests for blocks")
-	endif()
-endif()
 mz_add_executable(tests tests)
 
 # documentation

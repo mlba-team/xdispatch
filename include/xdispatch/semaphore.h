@@ -40,7 +40,7 @@ __XDISPATCH_BEGIN_NAMESPACE
   when the calling thread needs to be blocked. If the calling semaphore
   does not need to block, no kernel call is made."
   */
-class semaphore {
+class XDISPATCH_EXPORT semaphore {
 
 public:
     /**
@@ -114,8 +114,8 @@ private:
 
 };
 
-std::ostream& operator<<(std::ostream& stream, const semaphore*);
-std::ostream& operator<<(std::ostream& stream, const semaphore&);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const semaphore*);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const semaphore&);
 
 __XDISPATCH_END_NAMESPACE
 

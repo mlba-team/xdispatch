@@ -63,27 +63,27 @@ typedef struct _taskqueue_s {
 //
 //	Returns a new tasksqueue
 //	
-struct _taskqueue_s* _tq_create();
+DISPATCH_EXPORT struct _taskqueue_s* _tq_create();
 //
 //	Sets a name for the queue
 //	
-void _tq_name(_taskqueue_t, const char* name);
+DISPATCH_EXPORT void _tq_name(_taskqueue_t, const char* name);
 //
 //	Initializes the given queue
 //	
-void _tq_init(struct _taskqueue_s* t);
+DISPATCH_EXPORT void _tq_init(struct _taskqueue_s* t);
 //
 //	Removes all items from the given queue
 //	
-void _tq_clear(struct _taskqueue_s* t);
+DISPATCH_EXPORT void _tq_clear(struct _taskqueue_s* t);
 //
 //	Destroys the given queue
 //	
-void _tq_destroy(struct _taskqueue_s* t);
+DISPATCH_EXPORT void _tq_destroy(struct _taskqueue_s* t);
 //
 //	Removes the given item from the given queue
 //	
-void _tq_remove(struct _taskqueue_s* t,_taskitem_t i);
+DISPATCH_EXPORT void _tq_remove(struct _taskqueue_s* t,_taskitem_t i);
 
 //
 //	Tests if the given queue is empty

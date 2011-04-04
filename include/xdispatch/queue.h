@@ -43,7 +43,7 @@ queues.
 
 @see xdispatch::dispatch for creation of queues
 */
-class queue {
+class XDISPATCH_EXPORT queue {
 
 public:
     /**
@@ -186,8 +186,8 @@ private:
 
 };
 
-std::ostream& operator<<(std::ostream& stream, const queue* q);
-std::ostream& operator<<(std::ostream& stream, const queue& q);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const queue* q);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const queue& q);
 
 bool operator ==(const queue& a, const queue& b);
 bool operator ==(const queue& a, const dispatch_queue_t& b);

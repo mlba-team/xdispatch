@@ -29,12 +29,12 @@
 #include "queue_internal.h"
 
 /* Once-only initialisation of the key */
-static pthread_once_t _dispatch_buffer_key_once = PTHREAD_ONCE_INIT;
+static dispatch_once_t _dispatch_buffer_key_once = 0;
 /* Key for the thread-specific buffer */
 static pthread_key_t _dispatch_buffer_key;
 
 // run once to allocate the thread keys
-static void _buffer_key_alloc(void){
+static void _buffer_key_alloc(void* unused){
 	pthread_key_create(&_dispatch_buffer_key, NULL);
 }
 
@@ -49,14 +49,10 @@ dispatch_queue_t _get_thread_queue(){
 void* _thread(void* q){
 	_thread_t me = (_thread_t)q;
 
-	pthread_once(&_dispatch_buffer_key_once, _buffer_key_alloc);
+	dispatch_once_f(&_dispatch_buffer_key_once, NULL, _buffer_key_alloc);
 
         while(!me->loop){
-#ifdef WIN32
-            Sleep(1);
-#else
-            usleep(10);
-#endif
+			sleep(1);
         }
 
 	_evt_run(me->loop, 0);
@@ -141,65 +137,3 @@ unsigned int _ideal_thread_count(){
 	return ct;
 
 }
-
-#ifdef WIN32
-
-#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
-#define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
-#else
-#define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
-#endif
-
-// Definition of a gettimeofday function
-
-int gettimeofday(struct timeval *tv, struct timezone *tz)
-{
-	// Define a structure to receive the current Windows filetime
-	FILETIME ft;
-
-	// Initialize the present time to 0 and the timezone to UTC
-	unsigned __int64 tmpres = 0;
-	static int tzflag = 0;
-
-	if (NULL != tv)
-	{
-		GetSystemTimeAsFileTime(&ft);
-
-		// The GetSystemTimeAsFileTime returns the number of 100 nanosecond 
-		// intervals since Jan 1, 1601 in a structure. Copy the high bits to 
-		// the 64 bit tmpres, shift it left by 32 then or in the low 32 bits.
-		tmpres |= ft.dwHighDateTime;
-		tmpres <<= 32;
-		tmpres |= ft.dwLowDateTime;
-
-		// Convert to microseconds by dividing by 10
-		tmpres /= 10;
-
-		// The Unix epoch starts on Jan 1 1970.  Need to subtract the difference 
-		// in seconds from Jan 1 1601.
-		tmpres -= DELTA_EPOCH_IN_MICROSECS;
-
-		// Finally change microseconds to seconds and place in the seconds value. 
-		// The modulus picks up the microseconds.
-		tv->tv_sec = (long)(tmpres / 1000000UL);
-		tv->tv_usec = (long)(tmpres % 1000000UL);
-	}
-
-	if (NULL != tz)
-	{
-		if (!tzflag)
-		{
-			_tzset();
-			tzflag++;
-		}
-
-		// Adjust for the timezone west of Greenwich
-		tz->tz_minuteswest = _timezone / 60;
-		tz->tz_dsttime = _daylight;
-	}
-
-	return 0;
-}
-
-#endif
-
