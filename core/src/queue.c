@@ -439,7 +439,7 @@ _dispatch_queue_set_width_init(void)
 		_dispatch_hw_config.cc_max_logical =
 	    _dispatch_hw_config.cc_max_physical =
 	    _dispatch_hw_config.cc_max_active;
-#elif _WIN32
+#elif TARGET_OS_WIN32
 		SYSTEM_INFO sysinfo;
         GetSystemInfo(&sysinfo);
 		_dispatch_hw_config.cc_max_active = (int)sysinfo.dwNumberOfProcessors;
@@ -1121,7 +1121,7 @@ static void
 _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 {
 #if HAVE_PTHREAD_WORKQUEUES
-# if _WIN32
+# if TARGET_OS_WIN32
     bool disable_wq = GetEnvironmentVariable("LIBDISPATCH_DISABLE_KWQ", 0, 0);
 # else
 	bool disable_wq = getenv("LIBDISPATCH_DISABLE_KWQ");

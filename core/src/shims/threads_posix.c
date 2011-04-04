@@ -21,7 +21,7 @@
 
 #include "../internal.h"
 
-#ifndef _WIN32
+#if !TARGET_OS_WIN32
 
 #include <signal.h>
 

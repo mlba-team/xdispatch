@@ -21,7 +21,7 @@
 
 #include "../internal.h"
 
-#ifdef _WIN32
+#if TARGET_OS_WIN32
 
 pthread_key_t dispatch_queue_key;
 pthread_key_t dispatch_sema4_key;

@@ -120,7 +120,7 @@ void _dispatch_logv(const char *msg, va_list);
         _dispatch_log("libdispatch: %u\t%p\t" x, __LINE__, (void *)_dispatch_thread_self(), ##args);	\
     }
 
-#elif defined(_WIN32)
+#elif defined(TARGET_OS_WIN32)
 
 /* MSVC can be really annoying as it does not allow us to specify
    a new variable within this block... */

@@ -18,7 +18,7 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef _WIN32
+#ifdef TARGET_OS_WIN32
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "../internal.h"

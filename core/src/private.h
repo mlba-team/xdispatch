@@ -42,7 +42,7 @@
 #if HAVE_SYS_CDEFS_H
 #include <sys/cdefs.h>
 #endif
-#ifndef _WIN32
+#ifndef TARGET_OS_WIN32
 # include <pthread.h>
 #endif
 

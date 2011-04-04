@@ -21,7 +21,7 @@
 
 #include "internal.h"
 
-#ifdef _WIN32
+#if TARGET_OS_WIN32
  void * _ReturnAddress(void);
 #endif
 
@@ -29,7 +29,7 @@ void
 _dispatch_bug(size_t line, long val)
 {
     static void *last_seen;
-#ifdef _WIN32
+#if TARGET_OS_WIN32
     void *ra = _ReturnAddress();
 #else
     void *ra = __builtin_return_address(0);
@@ -62,27 +62,30 @@ _dispatch_log(const char *msg, ...)
 
 void _dispatch_logv(const char *msg, va_list params){
 #if DISPATCH_DEBUG
-//    static FILE *logfile, *tmp;
-//    char newbuf[strlen(msg) + 2];
-//    char path[PATH_MAX];
+# if !TARGET_OS_WIN32
+    static FILE *logfile, *tmp;
+    char newbuf[strlen(msg) + 2];
+    char path[PATH_MAX];
 
-//    sprintf(newbuf, "%s\n", msg);
+    sprintf(newbuf, "%s\n", msg);
 
-////    if (!logfile) {
-////        snprintf(path, sizeof(path), "/var/tmp/libdispatch.%d.log", getpid());
-////        tmp = fopen(path, "a");
-////        assert(tmp);
-////        if (!dispatch_atomic_cmpxchg(&logfile, NULL, tmp)) {
-////            fclose(tmp);
-////        } else {
-////            struct timeval tv;
-////            gettimeofday(&tv, NULL);
-////            fprintf(logfile, "=== log file opened for %s[%u] at %ld.%06u ===\n",
-////                    getprogname() ?: "", getpid(), tv.tv_sec, tv.tv_usec);
-////        }
-////    }
-//    vfprintf(logfile, newbuf, ap);
-//    fflush(logfile);
+    if (!logfile) {
+        snprintf(path, sizeof(path), "/var/tmp/libdispatch.%d.log", getpid());
+        tmp = fopen(path, "a");
+        assert(tmp);
+        if (!dispatch_atomic_cmpxchg(&logfile, NULL, tmp)) {
+            fclose(tmp);
+        } else {
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            fprintf(logfile, "=== log file opened for %s[%u] at %ld.%06u ===\n",
+                    getprogname() ?: "", getpid(), tv.tv_sec, tv.tv_usec);
+        }
+    }
+    vfprintf(logfile, newbuf, ap);
+    fflush(logfile);
+# else
       printf(msg, params);
+# endif
 #endif
 }
