@@ -5,23 +5,23 @@
 @section intro_sec Introduction
 
 libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on mac os 10.6+ 
-but on lower (Intel) Mac OS versions, Windows and Linux. On each platform libDispatch is built on, the build 
+but on Windows and Linux. On each platform libDispatch is built on, the build 
 system (in our case CMake) will automatically search for existing dispatch implementations  (possibly integrated
-depper than this implementation can do). If found, this "native"
+deeper than this user space implementation can do). If found, this "native"
 implementation will automatically be used. If no implementation is available, our own will be used. 
 
 Currently a native libdispatch is available on Mac OS X 10.6+ only and therefore will only be used when built on that 
-platform. 
+platform.
 
 Please see Apple's documentation on http://developer.apple.com and the libdispatch project at http://libdispatch.macosforge.org
 as well.
 
-See the \ref change_list to get to know the recent development.
+See the \ref change_list or the <a href="http://opensource.mlba-team.de/xdispatch/news.htm">NEWS PAGE</a> to get to know the recent development.
 
 @subsection x1 Original (plain C) Interface
 
 Except the source functions, the entire libdispatch interface is available and can be found in the following files
-(all located at include/libdispatch):
+(all headers located at include/libdispatch, symbols included in xdispatch binary):
 
  - libdispatch/queue.h
  - libdispatch/group.h
@@ -92,7 +92,7 @@ svn co http://opensource.mlba-team.de/svn/xdispatch/trunk
 Please be aware that this is a project still in progress. As such we might introduce interface
 changes and new functionality until reaching version 1.0 - have a look at the CHANGELIST.dox
 for details and the current progress. When using this library within a project we recommend to use
-one of the tagged versions found at http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch&path=%2Ftags%2F&#a2752a4ad0822c5acbda0ff9fd26a5c26
+one of the tagged versions or the stable branch found at http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch&path=%2Ftags%2F&#a2752a4ad0822c5acbda0ff9fd26a5c26
 or alternatively (using svn):
 
 @code

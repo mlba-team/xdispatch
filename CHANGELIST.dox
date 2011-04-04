@@ -3,7 +3,19 @@
 @author Marius Zwicker / MLBA
 @date 27.03.2011
 
+@section changes-3 Version 0.3 
+
+released 04/04/2011
+
+ - Omitting pthreads-w32 - results in pure Apache Licensed Code
+ - xdispatch and QtDispatch becoming shared libraries
+ - all private symbols hidden by default
+
 @section changes-2 Version 0.2
+
+released 19/03/2011
+
+Attention: New header layout, incompatible to Version 0.1
 
  - Complete overhaul concerning code layout
  - Introduction of an additional "plain c++" interface
@@ -14,7 +26,9 @@
  - Simplification of the entire QtDispatch API
  
 
-@section changes-1 Version 0.1
+@section changes-1 Version 0.1 
+
+released 11/02/2011
 
  - First release of libXDispatch
  - Fully functional, but less performant - however completely
