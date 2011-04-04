@@ -140,7 +140,7 @@ __DISPATCH_BEGIN_DECLS
  * dispatch_async_f().
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_async_f(dispatch_queue_t queue,
 	void *context,
 	dispatch_function_t work);
@@ -168,7 +168,7 @@ dispatch_async_f(dispatch_queue_t queue,
  * dispatch_sync_f().
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_sync_f(dispatch_queue_t queue,
 	void *context,
 	dispatch_function_t work);
@@ -199,7 +199,7 @@ dispatch_sync_f(dispatch_queue_t queue,
  * current index of iteration.
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_apply_f(size_t iterations, dispatch_queue_t queue,
 	void *context,
 	void (*work)(void *, size_t));
@@ -219,7 +219,7 @@ dispatch_apply_f(size_t iterations, dispatch_queue_t queue,
  * @result
  * Returns the current queue.
  */
-dispatch_queue_t
+DISPATCH_EXPORT dispatch_queue_t
 dispatch_get_current_queue(void);
 
 /*!
@@ -237,7 +237,7 @@ dispatch_get_current_queue(void);
  * Returns the main queue. This queue is created automatically on behalf of
  * the main thread before main() is called.
  */
-dispatch_queue_t dispatch_get_main_queue();
+DISPATCH_EXPORT dispatch_queue_t dispatch_get_main_queue();
 
 /*!
  * @enum dispatch_queue_priority_t
@@ -286,7 +286,7 @@ enum {
  * @result
  * Returns the requested global queue.
  */
-dispatch_queue_t
+DISPATCH_EXPORT dispatch_queue_t
 dispatch_get_global_queue(long priority, unsigned long flags);
 
 /*!
@@ -313,7 +313,7 @@ dispatch_get_global_queue(long priority, unsigned long flags);
  * @result
  * The newly created dispatch queue.
  */
-dispatch_queue_t
+DISPATCH_EXPORT dispatch_queue_t
 dispatch_queue_create(const char *label, dispatch_queue_attr_t attr);
 
 /*!
@@ -329,7 +329,7 @@ dispatch_queue_create(const char *label, dispatch_queue_attr_t attr);
  * @result
  * The label of the queue. The result may be NULL.
  */
-const char *
+DISPATCH_EXPORT const char *
 dispatch_queue_get_label(dispatch_queue_t queue);
 
 /*!
@@ -360,7 +360,7 @@ dispatch_queue_get_label(dispatch_queue_t queue);
  * previous one, if any, is released.
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
 
 /*!
@@ -377,7 +377,7 @@ dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
  * main thread do not need to call dispatch_main().
  * TODO: extend this to other operating systems
  */
-void
+DISPATCH_EXPORT void
 dispatch_main(void);
 
 /*!
@@ -405,7 +405,7 @@ dispatch_main(void);
  * dispatch_after_f().
  * The result of passing NULL in this parameter is undefined.
  */
-void
+DISPATCH_EXPORT void
 dispatch_after_f(dispatch_time_t when,
 	dispatch_queue_t queue,
 	void *context,
@@ -444,7 +444,7 @@ __DISPATCH_END_DECLS
  * The result of passing NULL in this parameter is undefined.
  */
 
-void
+DISPATCH_EXPORT void
 dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
 
 
@@ -471,7 +471,7 @@ dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
  * The result of passing NULL in this parameter is undefined.
  */
 
-void
+DISPATCH_EXPORT void
 dispatch_after(dispatch_time_t when,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
@@ -508,7 +508,7 @@ dispatch_after(dispatch_time_t when,
  * The result of passing NULL in this parameter is undefined.
  */
 
-void
+DISPATCH_EXPORT void
 dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);
 
 /*!
@@ -537,7 +537,7 @@ dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);
  * The result of passing NULL in this parameter is undefined.
  */
 
-void
+DISPATCH_EXPORT void
 dispatch_apply(size_t iterations, dispatch_queue_t queue, dispatch_iteration_block_t block);
 
 #endif

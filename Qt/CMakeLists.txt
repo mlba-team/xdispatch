@@ -15,7 +15,7 @@ qt4_wrap_cpp(MOC ${QHEADER} ${QINCLUDE_H})
 source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
 
-add_library(QtDispatch STATIC ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H})
+add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H})
 target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY})
 
 mz_target_props(QtDispatch)

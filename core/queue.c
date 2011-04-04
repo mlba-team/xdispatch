@@ -22,15 +22,39 @@
 
 #include "queue_internal.h"
 
-static struct _threadpool_s _dispatch_pool = TP_EMPTY_POOL;
-
 static dispatch_queue_t _dispatch_main_q = NULL;
-
 static _taskqueue_t _dispatch_event_q = NULL;
-
 static const char* _dispatch_global_queues[] = { "com.apple.root.low-priority", "com.apple.root.default-priority", "com.apple.root.high-priority" };
-
 dispatch_queue_t _dispatch_global_q[] = { NULL, NULL, NULL };
+
+#ifdef _WIN32
+static struct _threadpool_s _dispatch_pool;
+
+// DllMain - see http://msdn.microsoft.com/en-us/library/ms682596%28v=vs.85%29.aspx
+BOOL WINAPI DllMain(
+    HINSTANCE hinstDLL,  // handle to DLL module
+    DWORD fdwReason,     // reason for calling function
+    LPVOID lpReserved )  // reserved
+{
+    // Perform actions based on the reason for calling.
+    switch( fdwReason )
+    {
+        case DLL_PROCESS_ATTACH:
+         // Initialize once for each new process.
+         // Return FALSE to fail DLL load.
+            _dispatch_pool = *(_tp_create());
+            break;
+
+        case DLL_PROCESS_DETACH:
+         // Perform any necessary cleanup.
+            break;
+    }
+    return TRUE;  // Successful DLL_PROCESS_ATTACH.
+}
+
+#else
+static struct _threadpool_s _dispatch_pool = TP_EMPTY_POOL;
+#endif
 
 dispatch_queue_t dispatch_get_main_queue(){
 	// test for existing main queue

@@ -43,6 +43,16 @@ typedef void (*dispatch_function_t)(void *);
 
 #endif
 
+#ifndef DISPATCH_EXPORT
+# if __GNUC__
+#   define DISPATCH_EXPORT __attribute__((visibility("default")))
+# elif _WIN32
+#   define DISPATCH_EXPORT __declspec(dllexport)
+# else
+#   define DISPATCH_EXPORT
+# endif
+#endif
+
 #ifdef __cplusplus
 /*
  * Dispatch objects are NOT C++ objects. Nevertheless, we can at least keep C++

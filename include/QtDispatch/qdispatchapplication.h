@@ -35,7 +35,7 @@ QT_MODULE(Dispatch)
 
 class QDispatchApplicationPrivate;
 
-class QDispatchApplication : public QCoreApplication {
+class Q_DECL_EXPORT QDispatchApplication : public QCoreApplication {
 
     Q_OBJECT
 

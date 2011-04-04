@@ -48,7 +48,7 @@ queues.
 
 @see QDispatch for creating QDispatchQueues
 */
-class QDispatchQueue : public xdispatch::queue {
+class Q_DECL_EXPORT QDispatchQueue : public xdispatch::queue {
 
 public:
     QDispatchQueue(const QString& label);
@@ -114,16 +114,8 @@ public:
     using xdispatch::queue::set_finalizer;
 };
 
-static QDebug operator<<(QDebug dbg, const QDispatchQueue* q)
-{
-    dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
-	return dbg.space();
-}
-static QDebug operator<<(QDebug dbg, const QDispatchQueue& q)
-{
-    dbg.nospace() << "QDispatchQueue (" << q.label().c_str() << ")";
-	return dbg.space();
-}
+Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue* q);
+Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue& q);
 
 QT_END_NAMESPACE
 QT_END_HEADER
