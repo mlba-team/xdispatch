@@ -31,6 +31,10 @@
 
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)
 
+# if defined(__STDC__) && !defined(asm)
+#  define asm __asm__
+# endif
+
 // GCC generates suboptimal register pressure
 // LLVM does better, but doesn't support tail calls
 // 6248590 __sync_*() intrinsics force a gratuitous "lea" instruction, with resulting register pressure

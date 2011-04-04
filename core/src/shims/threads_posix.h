@@ -32,6 +32,10 @@
 int sem_timedwait(sem_t *, const struct timespec *);
 #endif
 
+#if defined(__STDC__) && !defined(inline)
+# define inline __inline__
+#endif
+
 #if HAVE_PTHREAD_KEY_INIT_NP
 static const unsigned long dispatch_queue_key = __PTK_LIBDISPATCH_KEY0;
 static const unsigned long dispatch_sema4_key = __PTK_LIBDISPATCH_KEY1;

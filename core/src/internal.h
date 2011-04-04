@@ -34,10 +34,10 @@
 # define __DISPATCH_END_DECLS
 #endif
 
-// the configuration file
+/* the configuration file */
 #include <config/config.h>
 
-// common headers
+/* common headers */
 #include <stddef.h>
 #include <stdio.h>
 #include <time.h>
@@ -54,7 +54,7 @@
 #include <assert.h>
 
 /* I wish we had __builtin_expect_range() */
-#if __GNUC__
+#if __GNUC__ && !defined(__STDC__)
 # define fastpath(x)	((typeof(x))__builtin_expect((long)(x), ~0l))
 # define slowpath(x)	((typeof(x))__builtin_expect((long)(x), 0l))
 #else
@@ -62,10 +62,10 @@
 # define slowpath(x) (x)
 #endif
 
-// debug helpers
+/* debug helpers */
 #include "debug.h"
 
-// workaround 6368156
+/* workaround 6368156 */
 #ifdef NSEC_PER_SEC
 #undef NSEC_PER_SEC
 #endif
@@ -83,7 +83,7 @@
 #define USEC_PER_SEC (uint64_t)1000000
 #define NSEC_PER_USEC (uint64_t)1000
 
-// the core api is marked as exported
+/* the core api is marked as exported */
 #ifndef DISPATCH_EXPORT
 # if __GNUC__
 #  define DISPATCH_EXPORT __attribute__((visibility("default")))
@@ -94,8 +94,9 @@
 # endif
 #endif
 
-// include all necessary hardware / os workarounds
-// as early as possible to prevent namespace pollution by libdispatch
+/* include all necessary hardware / os workarounds
+ * as early as possible to prevent namespace pollution by libdispatch
+ */
 #ifdef _WIN32
 # include "shims/os_windows.h"
 # include "shims/threads_windows.h"
@@ -109,7 +110,7 @@
 # include "shims/malloc_zone.h"
 #endif
 
-// now include the libdispatch headers
+/* now include the libdispatch headers */
 #define DISPATCH_API_VERSION 20090501
 
 #ifndef __DISPATCH_INDIRECT__
@@ -126,7 +127,7 @@
 #include "../../include/libdispatch/source.h"
 #include "../../include/libdispatch/once.h"
 
-// and the last missing shims
+/* and the last missing shims */
 #include "shims/atomic.h"
 #include "shims/hardware.h"
 #include "shims/getprogname.h"

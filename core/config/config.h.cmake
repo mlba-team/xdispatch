@@ -1,7 +1,7 @@
 /*
 * Copyright (c) 2011 MLBA. All rights reserved.
 *
-* @MLBA_OPEN_LICENSE_HEADER_START@
+*
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 *
-* @MLBA_OPEN_LICENSE_HEADER_END@
+*
 */
 
 
@@ -23,13 +23,13 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-//
+/*
 // various configuration options
 //
 // WARNING! All changes made in config.h will be lost! Please edit config.h.in instead
-//
+*/
 
-// debug level
+/* debug level */
 #ifndef DEBUG
 # ifndef NDEBUG
 #	define NDEBUG
@@ -39,22 +39,22 @@
 # define DISPATCH_DEBUG 0
 #endif
 
-// define as 1 to enable the use of kevent
+/* define as 1 to enable the use of kevent */
 #define USE_KEVENTS 1
 
-// mach kernel?
+/* mach kernel? */
 #ifdef __APPLE__
 # define HAVE_MACH 1
 #else
 # define HAVE_MACH 0
 #endif
 
-// windows?
+/* windows? */
 #ifdef _WIN32
 # define TARGET_OS_WIN32 1
 #endif
 
-// select the type of semaphore to use
+/* select the type of semaphore to use */
 #ifdef __MACH__
 # define USE_MACH_SEM 1
 #elif _WIN32
@@ -63,10 +63,10 @@
 # define USE_POSIX_SEM 1
 #endif
 
-// we only implement the most current interface
+/* we only implement the most current interface */
 #define DISPATCH_NO_LEGACY
 
-// we always have pthreads_workqueue
+/* we always have pthreads_workqueue */
 #define HAVE_PTHREAD_WORKQUEUES 1
 
 #ifdef __APPLE__
@@ -75,28 +75,28 @@
 # define HAVE_PTHREAD_MAIN_NP 0
 #endif
 
-// no progname ?
+/* no progname ? */
 #define HAVE_GETPROGNAME
 
-// no performance monitor
+/* no performance monitor */
 #define DISPATCH_PERF_MON 0
 
-// type of kqueue implementation
+/* type of kqueue implementation */
 #cmakedefine HAVE_KQUEUE_H 1
 #cmakedefine HAVE_LIBKQUEUE_H 1
 
-// needed for time detection
+/* needed for time detection */
 #cmakedefine HAVE_MACH_ABSOLUTE_TIME 1
 #cmakedefine HAVE_DECL_CLOCK_UPTIME 1
 #cmakedefine HAVE_DECL_CLOCK_MONOTONIC 1
 
-// detection of system resources
+/* detection of system resources */
 #cmakedefine HAVE_SYSCONF 1
 
-// memory leak detection on windows
+/* memory leak detection on windows */
 #cmakedefine HAVE_CRTDBG_H 1
 
-// std headers
+/* std headers */
 #cmakedefine HAVE_STDINT_H 1
 
 #endif /* CONFIG_H_ */

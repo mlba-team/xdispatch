@@ -49,10 +49,10 @@
 # include <mach/host_info.h>
 # include <mach/notify.h>
 
-// really just a low level abort()
+/* really just a low level abort() */
 #define _dispatch_hardware_crash() __builtin_trap()
 
-// some compiler hints
+/* some compiler hints */
 #define DISPATCH_NOINLINE	__attribute__((noinline))
 #define DISPATCH_INLINE __attribute__((always_inline))
 #define DISPATCH_UNUSED __attribute__((unused))

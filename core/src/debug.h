@@ -40,6 +40,10 @@ void _dispatch_logv(const char *msg, va_list);
 #endif
 
 #if __GNUC__
+
+# if defined(__STDC__) && !defined(typeof)
+#  define typeof __typeof__
+# endif
 /*
  * For reporting bugs within libdispatch when using the "_debug" version of the library.
  */
