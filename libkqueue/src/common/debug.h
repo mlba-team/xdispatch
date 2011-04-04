@@ -14,12 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef  _DEBUG_H
-#define  _DEBUG_H
+#ifndef  _DEBUG_LEVEL_H
+#define  _DEBUG_LEVEL_H
 
 #include <assert.h>
 
-extern int DEBUG;
+extern int DEBUG_LEVEL;
 extern char *DEBUG_IDENT;
 
 #if defined(__linux__)
@@ -35,19 +35,19 @@ extern char *DEBUG_IDENT;
 
 #ifndef NDEBUG
 #define dbg_puts(str)           do {                                \
-    if (DEBUG)                                                      \
+    if (DEBUG_LEVEL)                                                      \
       fprintf(stderr, "%s [%d]: %s(): %s\n",                        \
               DEBUG_IDENT, THREAD_ID, __func__, str);               \
 } while (0)
 
 #define dbg_printf(fmt,...)     do {                                \
-    if (DEBUG)                                                      \
+    if (DEBUG_LEVEL)                                                      \
       fprintf(stderr, "%s [%d]: %s(): "fmt"\n",                     \
               DEBUG_IDENT, THREAD_ID, __func__, __VA_ARGS__);       \
 } while (0)
 
 #define dbg_perror(str)         do {                                \
-    if (DEBUG)                                                      \
+    if (DEBUG_LEVEL)                                                      \
       fprintf(stderr, "%s [%d]: %s(): %s: %s (errno=%d)\n",         \
               DEBUG_IDENT, THREAD_ID, __func__, str,                \
               strerror(errno), errno);                              \
@@ -57,7 +57,7 @@ extern char *DEBUG_IDENT;
 
 # if defined(_WIN32)
 #  define dbg_lasterror(str)     do {                                \
-    if (DEBUG)                                                      \
+    if (DEBUG_LEVEL)                                                      \
       fprintf(stderr, "%s: [%d] %s(): %s: (LastError=%d)\n",        \
               THREAD_ID, __func__, str, GetLastError());            \
 } while (0)
@@ -65,7 +65,7 @@ extern char *DEBUG_IDENT;
 #  define dbg_lasterror(str)     ;
 # endif
 
-#else /* NDEBUG */
+#else /* NDEBUG_LEVEL */
 # define dbg_puts(str)           ;
 # define dbg_printf(fmt,...)     ;
 # define dbg_perror(str)         ;
@@ -73,4 +73,4 @@ extern char *DEBUG_IDENT;
 # define reset_errno()           ;
 #endif 
 
-#endif  /* ! _DEBUG_H */
+#endif  /* ! _DEBUG_LEVEL_H */

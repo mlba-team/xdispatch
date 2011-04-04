@@ -24,7 +24,7 @@
 
 #include "private.h"
 
-int DEBUG = 0;
+int DEBUG_LEVEL = 0;
 char *DEBUG_IDENT = "KQ";
 
 static unsigned int
@@ -46,12 +46,12 @@ int CONSTRUCTOR
 _libkqueue_init(void)
 {
 #ifdef NDEBUG
-    DEBUG = 0;
+    DEBUG_LEVEL = 0;
 #elif _WIN32
 	/* Experimental port, always debug */
-	DEBUG = 1;
+	DEBUG_LEVEL = 1;
 #else
-    DEBUG = (getenv("KQUEUE_DEBUG") == NULL) ? 0 : 1;
+    DEBUG_LEVEL = (getenv("KQUEUE_DEBUG") == NULL) ? 0 : 1;
 #endif
 
    kqmap = map_new(get_fd_limit()); // INT_MAX

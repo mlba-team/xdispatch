@@ -40,18 +40,19 @@
 #include <stdint.h>
 
 #ifndef _WIN32
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/event.h>
-#include <arpa/inet.h>
-#include <poll.h>
-#include "config.h"
+# include <sys/socket.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/select.h>
+# include <unistd.h>
+# include <sys/event.h>
+# include <arpa/inet.h>
+# include <poll.h>
+# include "config.h"
 #else
-#include "../include/sys/event.h"
-#include "../src/windows/platform.h"
-#pragma comment(lib, "../Debug/libkqueue.lib")
+# include "../include/sys/event.h"
+# include "../src/windows/platform.h"
+# pragma comment(lib, "../Debug/libkqueue.lib")
 #endif
 
 

@@ -35,7 +35,7 @@ endif()
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
 CHECK_INCLUDE_FILES (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL)
-    #mz_add_library(libkqueue libkqueue)
+    mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
     )
