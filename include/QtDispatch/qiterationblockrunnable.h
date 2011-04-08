@@ -23,7 +23,7 @@
 #ifndef QITERATIONBLOCKRUNNABLE_H_
 #define QITERATIONBLOCKRUNNABLE_H_
 
-#include "QIterationRunnable.h"
+#include "qiterationrunnable.h"
 #include "../xdispatch/dispatch.h"
 #include "qdispatchglobal.h"
 
