@@ -1,7 +1,6 @@
 /**
 @mainpage libXDispatch - Overview
 @author Marius Zwicker / MLBA
-@date 09.02.2011
 @section intro_sec Introduction
 
 libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on mac os 10.6+ 
@@ -16,7 +15,7 @@ platform.
 Please see Apple's documentation on http://developer.apple.com and the libdispatch project at http://libdispatch.macosforge.org
 as well.
 
-See the \ref change_list or the <a href="http://opensource.mlba-team.de/xdispatch/news.htm">NEWS PAGE</a> to get to know the recent development.
+See the \ref change_log or the <a href="http://opensource.mlba-team.de/xdispatch/news.htm">NEWS PAGE</a> to get to know the recent development.
 
 @subsection x1 Original (plain C) Interface
 
@@ -32,7 +31,7 @@ Except the source functions, the entire libdispatch interface is available and c
 @subsection x11 C++ Interface
 
 As a first level of abstraction we created a plain C++ interface providing a more OO way of programming. Detailed
-information can be found at the related page \ref libXDispatch.
+information can be found at the related page \ref XDispatch.
 
 @subsection x2 Qt Interface
 
@@ -51,38 +50,14 @@ extended details.
  
 @section x4 Requirements
 
-libXDispatch was tested on Linux and Windows using Visual Studio 2008 / 2010 and GCC 4.3 as well as GCC 4.5.1, 
-thus it should work on all those platforms. Additionally you need CMake 2.8+ installed and reachable in your 
-path. If all this is satisfied, enter the root directory (where you find the README.dox) and run (depending 
-on you platform):
-
-@subsection x41 On Windows (Visual Studio)
-@code
-cmake
-@endcode
-Afterwards you should find a solution file in your xdispatch folder. Build it and the binaries can be 
-found within the 'Bin' directory.
-
-@subsection x42 On Linux (Makefiles)
-@code
-cmake -G "Unix Makefiles"
-make all
-@endcode
-When finished, all binaries can be found within the 'Bin' directory.
-
-@subsection x43 On Mac OS (XCode)
-@code
-cmake -G "XCode"
-@endcode
-You should find an xcodeproject in your xdispatch folder. Upon build completion, all binaries 
-can be found in the 'Bin' directory as well.
-
-Other generators are available as well, please consult the CMake documentation at 
-http://www.cmake.org for more detailed information.
+Requirements differ depending on your goals. Please see the \ref requirements page for details.
 
 @section m1 Get a copy
 
-The current xdispatch version can both be browsed at http://opensource.mlba-team.de/websvn 
+Since version 0.3 libXDispatch is provided as ready-to-use binary package within the downloads
+section at http://opensource.mlba-team.de/xdispatch/files.
+
+The current xdispatch sources can both be browsed at http://opensource.mlba-team.de/websvn 
 and is accessable using subversion as well. To get your own copy, run:
 
 @code
@@ -90,13 +65,13 @@ svn co http://opensource.mlba-team.de/svn/xdispatch/trunk
 @endcode
 
 Please be aware that this is a project still in progress. As such we might introduce interface
-changes and new functionality until reaching version 1.0 - have a look at the CHANGELIST.dox
+changes and new functionality until reaching version 1.0 - have a look at the CHANGELOG.dox
 for details and the current progress. When using this library within a project we recommend to use
-one of the tagged versions or the stable branch found at http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch&path=%2Ftags%2F&#a2752a4ad0822c5acbda0ff9fd26a5c26
-or alternatively (using svn):
+one of the tagged versions or the stable branch available by using subversion:
 
 @code
 svn co http://opensource.mlba-team.de/svn/xdispatch/tags/<version number here>
+svn co http://opensource.mlba-team.de/svn/xdispatch/branches/stable
 @endcode
 
 Those versions were tested on all supported platforms and should be stable to use.

@@ -99,7 +99,7 @@ private:
 /**
   @def synchronize( lock )
 
-  This macro is used to implement Qt's synchronize keyword. The lock
+  This macro is used to implement XDispatch's synchronize keyword. The lock
   parameter is an object is a variable of type synclock.
 
   If you're worried about namespace pollution, you can disable this macro by defining
@@ -172,7 +172,7 @@ private:
 /**
   @def synchronized
 
-  This macro is used to implement Qt's synchronized keyword.
+  This macro is used to implement XDispatch's synchronized keyword.
 
   If you're worried about namespace pollution, you can disable this macro by defining
   the following macro before including xdispatch/dispatch.h:
