@@ -35,7 +35,7 @@
 # define QT_END_HEADER
 #endif
 
-#ifdef QT_MAKEDLL
+#if defined(QT_MAKEDLL) || !defined(_WIN32)
 # define Q_DISPATCH_EXPORT Q_DECL_EXPORT
 #else
 # define Q_DISPATCH_EXPORT Q_DECL_IMPORT

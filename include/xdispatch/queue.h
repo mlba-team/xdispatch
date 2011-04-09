@@ -109,7 +109,7 @@ public:
     @param time The time to wait until the operation is applied to
     the queue.
     */
-    virtual void after(operation*, time_t time);
+    virtual void after(operation*, struct tm* time);
     virtual void after(operation*, dispatch_time_t time);
 #ifdef XDISPATCH_HAS_BLOCKS
     /**
@@ -117,7 +117,7 @@ public:
     Will wrap the given block in an operation and put it on the
     queue.
     */
-    virtual void after(dispatch_block_t, time_t time);
+    virtual void after(dispatch_block_t, struct tm* time);
     virtual void after(dispatch_block_t, dispatch_time_t time);
 #endif
     /**

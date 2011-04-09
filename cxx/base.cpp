@@ -1,3 +1,4 @@
+#include <iostream>
 
 #include "xdispatch_internal.h"
 
@@ -26,12 +27,38 @@ queue xdispatch::current_queue(){
     return queue(dispatch_get_current_queue());
 }
 
-dispatch_time_t xdispatch::as_dispatch_time(const time_t& t){
-    return dispatch_time(t * NSEC_PER_SEC,0);
+dispatch_time_t xdispatch::as_delayed_time(uint64_t delay, dispatch_time_t base){
+    return dispatch_time(base,delay);
 }
 
-time_t xdispatch::as_time_t(dispatch_time_t t){
-    return t / NSEC_PER_SEC;
+dispatch_time_t xdispatch::as_dispatch_time(struct tm* t){
+    time_t now = time(NULL);
+    time_t target = mktime(t);
+
+    double diff = difftime(target, now);
+    if(diff < 0) {
+#ifdef DEBUG
+        std::cerr << "as_dispatch_time: Passed time" << ctime(&target) << "is in the past, this not supported!" << std::endl;
+#endif
+        return as_delayed_time(0);
+    }
+
+    return as_delayed_time(diff*NSEC_PER_SEC );
+}
+
+struct tm xdispatch::as_struct_tm(dispatch_time_t t){
+    time_t rawtime = time(NULL);
+    struct tm res;
+
+    res = *(localtime( &rawtime));
+
+    res.tm_hour += t / (3600*NSEC_PER_SEC);
+    t %= (3600*NSEC_PER_SEC);
+    res.tm_min += t / (60*NSEC_PER_SEC);
+    t %= (60*NSEC_PER_SEC);
+    res.tm_sec += t / (NSEC_PER_SEC);
+
+    return res;
 }
 
 void xdispatch::exec() {

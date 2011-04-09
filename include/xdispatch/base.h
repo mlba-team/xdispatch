@@ -164,11 +164,17 @@ XDISPATCH_EXPORT queue current_queue();
 /**
     @return The given QTime converted to a dispatch_time_t
     */
-XDISPATCH_EXPORT dispatch_time_t as_dispatch_time(const time_t&);
+XDISPATCH_EXPORT dispatch_time_t as_dispatch_time(struct tm*);
 /**
     @return The given dispatch_time_t as time_t
     */
-XDISPATCH_EXPORT time_t as_time_t(dispatch_time_t t);
+XDISPATCH_EXPORT struct tm as_struct_tm(dispatch_time_t t);
+/**
+    @return A dispatch_time_t representing the given delay
+    @param delay The delay in nanoseconds
+    @param base The base to add the delay to, defaults to the current time
+    */
+XDISPATCH_EXPORT dispatch_time_t as_delayed_time(uint64_t delay, dispatch_time_t base = DISPATCH_TIME_NOW);
 /**
     Enters the dispatching loop for the main thread.
     Call this somewhere within the main thread to enable
