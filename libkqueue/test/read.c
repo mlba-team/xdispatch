@@ -318,6 +318,48 @@ test_kevent_socket_eof(void)
     kevent_add(kqfd, &kev, sockfd[0], EVFILT_READ, EV_DELETE, 0, 0, &sockfd[0]);
 }
 
+/* Test if EVFILT_READ works with regular files */
+void
+test_kevent_regular_file(void)
+{
+    struct kevent kev;
+    struct kevent *kev2;
+    off_t curpos;
+    int fd;
+
+    fd = open("/etc/hosts", O_RDONLY);
+    if (fd < 0)
+        abort();
+
+    EV_SET(&kev, fd, EVFILT_READ, EV_ADD, 0, 0, &fd);
+    if (kevent(kqfd, &kev, 1, NULL, 0, NULL) < 0)
+        die("kevent");
+
+    kev2 = kevent_get(kqfd);
+
+    /* Set file position to EOF-1 */
+    kev2->data--;
+    if ((curpos = lseek(fd, kev2->data, SEEK_SET)) != kev2->data) {
+        printf("seek to %zu failed with rv=%zu\n", kev2->data, curpos);
+        abort();
+    }
+
+    /* Set file position to EOF */
+    (void) kevent_get(kqfd);
+    kev2->data = curpos + 1;
+    if ((curpos = lseek(fd, kev2->data, SEEK_SET)) != kev2->data) {
+        printf("seek to %zu failed with rv=%zu\n", kev2->data, curpos);
+        abort();
+    }
+
+    test_no_kevents(kqfd);
+
+    kev.flags = EV_DELETE;
+    if (kevent(kqfd, &kev, 1, NULL, 0, NULL) < 0)
+        die("kevent");
+    close(fd);
+}
+
 void
 test_evfilt_read(int _kqfd)
 {
@@ -342,6 +384,7 @@ test_evfilt_read(int _kqfd)
 #endif
     test(kevent_socket_listen_backlog);
     test(kevent_socket_eof);
+    test(kevent_regular_file);
     close(sockfd[0]);
     close(sockfd[1]);
 }

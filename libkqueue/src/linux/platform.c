@@ -93,7 +93,8 @@ linux_kevent_wait_hires(
     fd_set fds;
     int n;
 
-    dbg_puts("waiting for events");
+    dbg_printf("waiting for events (timeout=%ld sec %ld nsec)",
+            timeout->tv_sec, timeout->tv_nsec);
     FD_ZERO(&fds);
     FD_SET(kqueue_epfd(kq), &fds);
     n = pselect(1, &fds, NULL , NULL, timeout, NULL);
@@ -118,10 +119,8 @@ linux_kevent_wait(
     int timeout, nret;
 
     /* Use pselect() if the timeout value is less than one millisecond.  */
-    if (ts != NULL && ts->tv_sec == 0 && ts->tv_nsec > 1000000) {
+    if (ts != NULL && ts->tv_sec == 0 && ts->tv_nsec < 1000000) {
         nret = linux_kevent_wait_hires(kq, ts);
-        if (nret < 1)
-            return (nret);
 
     /* Otherwise, use epoll_wait() directly */
     } else {
@@ -150,8 +149,9 @@ linux_kevent_copyout(struct kqueue *kq, int nready,
     struct epoll_event *ev;
     struct filter *filt;
     struct knote *kn;
-    int i, rv;
+    int i, nret, rv;
 
+    nret = nready;
     for (i = 0; i < nready; i++) {
         ev = &epevt[i];
         kn = (struct knote *) ev->data.ptr;
@@ -174,10 +174,17 @@ linux_kevent_copyout(struct kqueue *kq, int nready,
         if (eventlist->flags & EV_ONESHOT) 
             knote_release(filt, kn); //TODO: Error checking
 
-        eventlist++;
+        /* If an empty kevent structure is returned, the event is discarded. */
+        /* TODO: add these semantics to windows + solaris platform.c */
+        if (fastpath(eventlist->filter != 0)) {
+            eventlist++;
+        } else {
+            dbg_puts("spurious wakeup, discarding event");
+            nret--;
+        }
     }
 
-    return (i);
+    return (nret);
 }
 
 int
@@ -264,3 +271,101 @@ linux_eventfd_descriptor(struct eventfd *e)
 {
     return (e->ef_id);
 }
+
+int
+linux_get_descriptor_type(struct knote *kn)
+{
+    socklen_t slen;
+    struct stat sb;
+    int i, lsock;
+
+    /*
+     * Test if the descriptor is a socket.
+     */
+    if (fstat(kn->kev.ident, &sb) < 0) {
+        dbg_perror("fstat(2)");
+        return (-1);
+    }
+    if (! S_ISSOCK(sb.st_mode)) {
+        //FIXME: could be a pipe, device file, or other non-regular file
+        kn->flags |= KNFL_REGULAR_FILE;
+        dbg_printf("fd %d is a regular file\n", (int)kn->kev.ident);
+        return (0);
+    }
+
+    /*
+     * Test if the socket is active or passive.
+     */
+    slen = sizeof(lsock);
+    lsock = 0;
+    i = getsockopt(kn->kev.ident, SOL_SOCKET, SO_ACCEPTCONN, (char *) &lsock, &slen);
+    if (i < 0) {
+        switch (errno) {
+            case ENOTSOCK:   /* same as lsock = 0 */
+                return (0);
+                break;
+            default:
+                dbg_perror("getsockopt(3)");
+                return (-1);
+        }
+    } else {
+        if (lsock) 
+            kn->flags |= KNFL_PASSIVE_SOCKET;
+        return (0);
+    }
+}
+
+char *
+epoll_event_dump(struct epoll_event *evt)
+{
+    static char __thread buf[128];
+
+    if (evt == NULL)
+        return "(null)";
+
+#define EPEVT_DUMP(attrib) \
+    if (evt->events & attrib) \
+       strcat(&buf[0], #attrib" ");
+
+    snprintf(&buf[0], 128, " { data = %p, events = ", evt->data.ptr);
+    EPEVT_DUMP(EPOLLIN);
+    EPEVT_DUMP(EPOLLOUT);
+#if defined(HAVE_EPOLLRDHUP)
+    EPEVT_DUMP(EPOLLRDHUP);
+#endif
+    EPEVT_DUMP(EPOLLONESHOT);
+    EPEVT_DUMP(EPOLLET);
+    strcat(&buf[0], "}\n");
+
+    return (&buf[0]);
+#undef EPEVT_DUMP
+}
+
+int
+epoll_update(int op, struct filter *filt, struct knote *kn, struct epoll_event *ev)
+{
+    dbg_printf("op=%d fd=%d events=%s", op, (int)kn->kev.ident, 
+            epoll_event_dump(ev));
+    if (epoll_ctl(filter_epfd(filt), op, kn->kev.ident, ev) < 0) {
+        dbg_printf("epoll_ctl(2): %s", strerror(errno));
+        return (-1);
+    }
+
+    return (0);
+}
+
+/*
+ * Given a file descriptor, return the path to the file it refers to.
+ */
+int
+linux_fd_to_path(char *buf, size_t bufsz, int fd)
+{
+    char path[1024];    //TODO: Maxpathlen, etc.
+
+    if (snprintf(&path[0], sizeof(path), "/proc/%d/fd/%d", getpid(), fd) < 0)
+        return (-1);
+
+    memset(buf, 0, bufsz);
+    return (readlink(path, buf, bufsz));
+}
+
