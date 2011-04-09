@@ -41,7 +41,7 @@ blocks on clang or lambda functions in C++0x
 Please see the documentation for QRunnable for the
 functionality of the autoDelete flags as well.
 */
-class Q_DECL_EXPORT QIterationBlockRunnable : public QIterationRunnable {
+class Q_DISPATCH_EXPORT QIterationBlockRunnable : public QIterationRunnable {
 
 public:
 	/**

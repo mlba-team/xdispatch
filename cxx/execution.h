@@ -27,21 +27,23 @@ class wrap {
 public:
 #ifdef XDISPATCH_HAS_BLOCKS
     wrap(operation* o)
-        : op(o), block(NULL) {}
+        : op(o), block(NULL) { assert(o); }
     wrap(const dispatch_block_t& b)
         : op(NULL), block(b) {}
 #else
     wrap(iteration_operation* o)
-        : op(o) {}
+        : op(o) { assert(o); }
 #endif
     ~wrap() {
-        if(op && op->auto_delete())
-            delete op;
+        if(op) {
+			if(op->auto_delete())
+				delete op;
+		}
 #ifdef XDISPATCH_HAS_BLOCKS
-        if(block)
+		else
             XDISPATCH_BLOCK_RELEASE(block);
 #endif
-    }
+	}
     void run(){
         if(op)
             (*op)();
@@ -62,18 +64,20 @@ class iteration_wrap {
 public:
 #ifdef XDISPATCH_HAS_BLOCKS
     iteration_wrap(iteration_operation* o, size_t ct)
-        : op(o), ref(ct), block(NULL) {}
+        : op(o), ref(ct), block(NULL) { assert(o); }
     iteration_wrap(const dispatch_iteration_block_t& b, size_t ct)
         : op(NULL), ref(ct), block(b) {}
 #else
     iteration_wrap(iteration_operation* o, size_t ct)
-        : op(o), ref(ct) {}
+        : op(o), ref(ct) { assert(o); }
 #endif
     ~iteration_wrap() {
-        if(op && op->auto_delete())
-            delete op;
+        if(op) {
+			if(op->auto_delete())
+				delete op;
+		}
 #ifdef XDISPATCH_HAS_BLOCKS
-        if(block)
+		else
             XDISPATCH_BLOCK_RELEASE(block);
 #endif
     }

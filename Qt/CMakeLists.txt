@@ -9,6 +9,9 @@ INCLUDE_DIRECTORIES(
 	${QT_QTCORE_INCLUDE_DIR}
 )
 
+# tell qt we're building a dll
+mz_add_definition(QT_MAKEDLL)
+
 # moc qt files
 qt4_wrap_cpp(MOC ${QHEADER} ${QINCLUDE_H})
 
@@ -20,3 +23,7 @@ target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY})
 
 mz_target_props(QtDispatch)
 
+install(TARGETS QtDispatch 
+	LIBRARY DESTINATION lib
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION lib)

@@ -41,7 +41,7 @@ QT_MODULE(Dispatch)
   Please see the documentation for QRunnable for the
   functionality of the autoDelete flags as well.
   */
-class Q_DECL_EXPORT QBlockRunnable : public QRunnable {
+class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
 
 public:
 	/**

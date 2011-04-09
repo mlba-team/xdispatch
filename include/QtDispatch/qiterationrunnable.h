@@ -40,7 +40,7 @@ of a loop a new QRunnable will be created and you want to know
 during the execution of each runnable at which iteration it
 was created.
 */
-class Q_DECL_EXPORT QIterationRunnable : public QRunnable {
+class Q_DISPATCH_EXPORT QIterationRunnable : public QRunnable {
 
 public:
 	/**

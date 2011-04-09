@@ -20,6 +20,7 @@
 
 
 #include <QTime>
+#include <QDebug>
 
 #include "../include/QtDispatch/qdispatch.h"
 #include "../include/QtDispatch/qdispatchsemaphore.h"

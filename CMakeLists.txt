@@ -33,6 +33,7 @@ endif()
 if(NOT WIN32)
 	mz_add_flag(-fvisibility=hidden)
 endif()
+mz_add_definition(XDISPATCH_MAKEDLL)
 
 # do we have native dispatch support on this platform?
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
@@ -122,3 +123,23 @@ mz_add_executable(tests tests)
 
 # documentation
 include(docs/docgen.cmake)
+
+# install target
+install(TARGETS xdispatch 
+	LIBRARY DESTINATION lib
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION lib)
+install(DIRECTORY include DESTINATION . PATTERN "*.svn" EXCLUDE)
+install(FILES README.dox CHANGELOG.dox LICENSE NOTICE TODO.txt DESTINATION .)
+
+# package target
+include(InstallRequiredSystemLibraries)
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "My funky project")
+SET(CPACK_PACKAGE_VENDOR "MLBA Opensource")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+SET(CPACK_PACKAGE_VERSION_MAJOR "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "3")
+SET(CPACK_PACKAGE_VERSION_PATCH "1")
+SET(CPACK_PACKAGE_FILE_NAME "xdispatch_${CPACK_PACKAGE_VERSION_MAJOR}_${CPACK_PACKAGE_VERSION_MINOR}_${CPACK_PACKAGE_VERSION_PATCH}__${CMAKE_SYSTEM_NAME}_${CMAKE_GENERATOR}")
+include(CPack)

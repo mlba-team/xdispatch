@@ -24,7 +24,6 @@
 #define QDISPATCH_APPLICATION_H_
 
 #include <QApplication>
-#include <QDebug>
 #include "qdispatchglobal.h"
 #include "../xdispatch/dispatch.h"
 
@@ -35,7 +34,7 @@ QT_MODULE(Dispatch)
 
 class QDispatchApplicationPrivate;
 
-class Q_DECL_EXPORT QDispatchApplication : public QCoreApplication {
+class Q_DISPATCH_EXPORT QDispatchApplication : public QCoreApplication {
 
     Q_OBJECT
 

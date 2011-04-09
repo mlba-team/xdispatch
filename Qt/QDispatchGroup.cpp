@@ -23,6 +23,7 @@
 #include <QRunnable>
 #include <QPointer>
 #include <QTime>
+#include <QDebug>
 
 #include "../include/QtDispatch/qdispatchqueue.h"
 #include "../include/QtDispatch/qdispatchgroup.h"

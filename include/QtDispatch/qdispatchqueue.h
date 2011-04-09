@@ -26,8 +26,6 @@
 #include "../xdispatch/dispatch.h"
 
 #include "qdispatchglobal.h"
-#include <QString>
-#include <QDebug>
 class QTime;
 class QRunnable;
 class QIterationRunnable;
@@ -48,7 +46,7 @@ queues.
 
 @see QDispatch for creating QDispatchQueues
 */
-class Q_DECL_EXPORT QDispatchQueue : public xdispatch::queue {
+class Q_DISPATCH_EXPORT QDispatchQueue : public xdispatch::queue {
 
 public:
     QDispatchQueue(const QString& label);

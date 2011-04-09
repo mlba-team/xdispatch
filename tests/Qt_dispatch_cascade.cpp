@@ -48,16 +48,16 @@ extern "C" void Qt_dispatch_cascade(){
     q.async(new QBlockRunnable(${
 		int no2 = no+100;
         QDispatchQueue c = QDispatch::currentQueue();
-        c.async(${
+        c.async(new QBlockRunnable(${
 			int no3 = no2+20;
-            QDispatch::currentQueue().async(${
+            QDispatch::currentQueue().async(new QBlockRunnable(${
 				int no4 = no3+3 ;
                 QDispatch::currentQueue().async(new QBlockRunnable(${
 					MU_ASSERT_EQUAL(no4,123);
 					MU_PASS("And Out");
 				}));
-			});
-		});
+			}));
+		}));
 	}));
 	
 	app.exec();

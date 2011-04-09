@@ -35,6 +35,12 @@
 # define QT_END_HEADER
 #endif
 
+#ifdef QT_MAKEDLL
+# define Q_DISPATCH_EXPORT Q_DECL_EXPORT
+#else
+# define Q_DISPATCH_EXPORT Q_DECL_IMPORT
+#endif
+
 QT_LICENSED_MODULE(Dispatch)
 
 QT_BEGIN_HEADER

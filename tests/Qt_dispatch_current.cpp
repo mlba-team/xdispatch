@@ -45,13 +45,13 @@ extern "C" void Qt_dispatch_current(){
         QTest::qSleep(10);
         MU_MESSAGE("Queue should be global default queue");
         qDebug() << QDispatch::currentQueue();
-        QDispatch::mainQueue().async(${
+        QDispatch::mainQueue().async(new QBlockRunnable(${
             QTest::qSleep(10);
             MU_MESSAGE("Queue should be main queue");
             qDebug() << QDispatch::currentQueue();
             
             MU_PASS("");
-        });
+        }));
     });
 		
 	app.exec();
