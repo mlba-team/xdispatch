@@ -1,4 +1,11 @@
+
+#ifdef _WIN32
+# define _CRT_SECURE_NO_WARNINGS 1
+# pragma warning (disable : 4996)
+#endif
+
 #include <iostream>
+#include <time.h>
 
 #include "xdispatch_internal.h"
 
@@ -43,7 +50,7 @@ dispatch_time_t xdispatch::as_dispatch_time(struct tm* t){
         return as_delayed_time(0);
     }
 
-    return as_delayed_time(diff*NSEC_PER_SEC );
+    return as_delayed_time( (uint64_t)(diff*NSEC_PER_SEC) );
 }
 
 struct tm xdispatch::as_struct_tm(dispatch_time_t t){
@@ -52,11 +59,11 @@ struct tm xdispatch::as_struct_tm(dispatch_time_t t){
 
     res = *(localtime( &rawtime));
 
-    res.tm_hour += t / (3600*NSEC_PER_SEC);
+    res.tm_hour += (int)(t / (3600*NSEC_PER_SEC));
     t %= (3600*NSEC_PER_SEC);
-    res.tm_min += t / (60*NSEC_PER_SEC);
+    res.tm_min += (int)(t / (60*NSEC_PER_SEC));
     t %= (60*NSEC_PER_SEC);
-    res.tm_sec += t / (NSEC_PER_SEC);
+    res.tm_sec += (int)(t / (NSEC_PER_SEC));
 
     return res;
 }
