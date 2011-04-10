@@ -7,6 +7,7 @@ INCLUDE (CheckSymbolExists)
 # start new subproject
 set(NAME xdispatch)
 project(${NAME})
+
 # core lib
 file(GLOB CXX_INCL ../include/xdispatch/*.h)
 file(GLOB CXX *.cpp *.h)

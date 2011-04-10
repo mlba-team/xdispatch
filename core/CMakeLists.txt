@@ -30,7 +30,7 @@ if(HAVE_LIBKQUEUE_H)
     message("   >> found libkqeue installation, using it")
 endif()
 if(NOT HAVE_KQUEUE_H AND NOT HAVE_LIBKQUEUE_H)
-    set(LIBS ${LIBS} libkqueue)
+  #  set(LIBS ${LIBS} libkqueue)
 endif()
 
 # other needed functions
@@ -42,7 +42,7 @@ CHECK_SYMBOL_EXISTS( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 CHECK_FUNCTION_EXISTS( sysconf HAVE_SYSCONF)
 
 if(HAVE_LIBKQUEUE_H)
-    set(LIBS ${LIBS} kqueue)
+   # set(LIBS ${LIBS} kqueue)
 endif()
 
 if(LINUX)
@@ -51,6 +51,10 @@ endif()
 
 if(NOT WIN32)
     set(LIBS ${LIBS} pthread)
+endif()
+
+if(MINGW)
+    set(LIBS ${LIBS} ws2_32)
 endif()
 
 if(MSVC)
@@ -70,6 +74,7 @@ source_group(core/shims FILES ${SHIM})
 
   
 # add new target
+add_definitions(-DDISPATCH_MAKEDLL)
 add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM})
   
 # link this target with all needed libraries

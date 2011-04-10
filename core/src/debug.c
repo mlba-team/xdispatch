@@ -29,10 +29,12 @@ void
 _dispatch_bug(size_t line, long val)
 {
     static void *last_seen;
-#if TARGET_OS_WIN32
+#ifdef __GNUC__
+    void *ra = __builtin_return_address(0);
+#elif _WIN32
     void *ra = _ReturnAddress();
 #else
-    void *ra = __builtin_return_address(0);
+# error "Need return address"
 #endif
 
     if (last_seen != ra) {

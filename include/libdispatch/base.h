@@ -110,12 +110,14 @@ typedef void (*dispatch_function_t)(void *);
 #endif
 
 #ifndef DISPATCH_EXPORT
-# if __GNUC__
-#   define DISPATCH_EXPORT __attribute__((visibility("default")))
-# elif _WIN32
+# ifdef _WIN32
+#  ifdef DISPATCH_MAKEDLL
 #   define DISPATCH_EXPORT __declspec(dllexport)
+#  else
+#   define DISPATCH_EXPORT __declspec(dllimport)
+#  endif
 # else
-#   define DISPATCH_EXPORT
+#  define DISPATCH_EXPORT __attribute__((visibility("default")))
 # endif
 #endif
 

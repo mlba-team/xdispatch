@@ -37,11 +37,23 @@ CHECK_INCLUDE_FILES ("pthread_workqueue.h" FOUND_PTHREAD_WORKQUEUE_IMPL)
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    mz_add_library(libkqueue libkqueue)
+    #mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
-    )
+	)
 endif()
+
+# currently there's a bug in mingw causing the
+# builtin atomic opts not to work without this
+if(MINGW)
+	mz_add_flag( -march=i486)
+endif()
+
+# we hide all unneeded symbols
+if(NOT WIN32)
+	mz_add_flag(-fvisibility=hidden)
+endif()
+
 if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
     include_directories(
