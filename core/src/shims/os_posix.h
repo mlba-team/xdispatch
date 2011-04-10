@@ -22,7 +22,6 @@
 #define SHIM_POSIX_H_
 
 #include <unistd.h>
-#include <pthread.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <errno.h>

@@ -208,5 +208,6 @@ bool _dispatch_source_testcancel(dispatch_source_t);
 void libdispatch_init(void);
 long dummy_function_r0();
 void dummy_function();
+void _dispatch_queue_cleanup(void *ctxt);
 
 #endif /* DISPATCH_INTERNAL_H_ */

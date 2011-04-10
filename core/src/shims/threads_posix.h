@@ -28,6 +28,8 @@
 #ifndef __DISPATCH_SHIMS_TSD__
 #define __DISPATCH_SHIMS_TSD__
 
+#include <pthread.h>
+
 #ifdef __APPLE__
 int sem_timedwait(sem_t *, const struct timespec *);
 #endif

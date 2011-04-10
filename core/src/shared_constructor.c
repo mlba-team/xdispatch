@@ -25,8 +25,8 @@ void cleanup();
 
 #ifndef _WIN32
 
-    void __attribute((constructor)) init(void);
-    void __attribute((destructor)) cleanup(void);
+void __attribute((constructor)) init(void);
+void __attribute((destructor)) cleanup(void);
 
 #else
 
@@ -39,16 +39,29 @@ BOOL WINAPI DllMain(
     // Perform actions based on the reason for calling.
     switch( fdwReason )
     {
-        case DLL_PROCESS_ATTACH:
-         // Initialize once for each new process.
-         // Return FALSE to fail DLL load.
-            init();
-            break;
+    case DLL_PROCESS_ATTACH:
+        // Initialize once for each new process.
+        // Return FALSE to fail DLL load.
+        init();
+        break;
 
-        case DLL_PROCESS_DETACH:
-         // Perform any necessary cleanup.
-            cleanup();
-            break;
+    case DLL_PROCESS_DETACH:
+        // Perform any necessary cleanup.
+        cleanup();
+        break;
+
+    case DLL_THREAD_DETACH:
+        // Perform cleanup on a per thread base
+    {
+        // workaround for TLS destructors on windows
+        void* val = _dispatch_thread_getspecific(dispatch_queue_key);
+        if(val) _dispatch_queue_cleanup(val);
+        val = _dispatch_thread_getspecific(dispatch_sema4_key);
+        if(val) dispatch_release(val);
+        val = _dispatch_thread_getspecific(dispatch_cache_key);
+        if(val) _dispatch_cache_cleanup2(val);
+    }
+        break;
     }
     return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
@@ -56,7 +69,7 @@ BOOL WINAPI DllMain(
 #endif
 
 #ifdef PTHREAD_WORKQUEUE_USER_IMPLEMENTATION
-    void pthread_workqueue_init_np();
+void pthread_workqueue_init_np();
 #endif
 
 void init(){
@@ -66,26 +79,8 @@ void init(){
 
     libdispatch_init();
 
-//    // init thread manager
-//    _thread_man_init();
-
-//    // init the root queues
-//    _dispatch_root_queues_init();
 }
 
 void cleanup(){
-//    //int i = 0;
 
-//    _thread_man_cleanup();
-
-//   /* for(i = 0; i < 3; i++) {
-//#ifdef DEBUG
-//        dispatch_debug(_dispatch_global_q[i], "release during cleanup");
-//#endif
-//        dispatch_release(_dispatch_global_q[i]);
-//    }
-//#ifdef DEBUG
-//        dispatch_debug(_dispatch_main_q, "release during cleanup");
-//#endif
-//    dispatch_release(_dispatch_main_q); */
 }

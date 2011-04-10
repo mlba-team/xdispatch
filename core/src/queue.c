@@ -920,11 +920,17 @@ dispatch_main(void)
 static void
 _dispatch_sigsuspend(void *ctxt DISPATCH_UNUSED)
 {
-	static const sigset_t mask;
+#if TARGET_OS_WIN32
+    for (;;) {
+        Sleep(0);
+    }
+#else
+    static const sigset_t mask;
 
-	for (;;) {
+    for (;;) {
 		sigsuspend(&mask);
-	}
+    }
+#endif
 }
 
 DISPATCH_NOINLINE
@@ -977,7 +983,7 @@ dispatch_get_concurrent_queue(long pri)
 }
 #endif
 
-static void
+ void
 _dispatch_queue_cleanup(void *ctxt)
 {
 	if (ctxt == &_dispatch_main_q) {
@@ -1016,6 +1022,10 @@ libdispatch_init(void)
 	_dispatch_thread_key_init_np(dispatch_bcounter_key, NULL);
 #endif
 #else /* !HAVE_PTHREAD_KEY_INIT_NP */
+    /* Note: On windows there is no destructor
+             for TLS, thus we call the destructor
+             with dllMain, see shared_constructor.c
+             */
 	_dispatch_thread_key_create(&dispatch_queue_key,
 	    _dispatch_queue_cleanup);
 	_dispatch_thread_key_create(&dispatch_sema4_key,
@@ -1436,14 +1446,23 @@ _dispatch_worker_thread(void *context)
 {
 	dispatch_queue_t dq = context;
 	struct dispatch_root_queue_context_s *qc = dq->do_ctxt;
-	sigset_t mask;
-	int r;
+
+    /* Marius Zwicker <marius @ mlba-team.de> :
+        As far as I understand this, we do not need
+        this on windows as they do not have any signals
+        and thus nothing needs to be blocked. Additionally
+        we have no kernel support at all ;)
+        */
+#if !TARGET_OS_WIN32
+    sigset_t mask;
+    int r;
 
 	// workaround tweaks the kernel workqueue does for us
 	r = sigfillset(&mask);
 	(void)dispatch_assume_zero(r);
 	r = _dispatch_pthread_sigmask(SIG_BLOCK, &mask, NULL);
 	(void)dispatch_assume_zero(r);
+#endif
 
 	do {
 		_dispatch_worker_thread2(context);

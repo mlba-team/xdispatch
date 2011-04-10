@@ -33,7 +33,11 @@ struct thread_param {
 	void* arg;
 };
 
+#ifdef _MSC_VER
 static DWORD WINAPI thread_starter( LPVOID lpParam ) {
+#else // mingw
+static unsigned int WINAPI thread_starter( LPVOID lpParam ) {
+#endif
 
 	struct thread_param* param = (struct thread_param*)(lpParam);
 	assert(lpParam);
@@ -54,13 +58,21 @@ HANDLE WINAPI CreateThread(
   __in       DWORD dwCreationFlags,
   __out_opt  LPDWORD lpThreadId
 );
+uintptr_t _beginthreadex( // NATIVE CODE
+   void *security,
+   unsigned stack_size,
+   unsigned ( __stdcall *start_address )( void * ),
+   void *arglist,
+   unsigned initflag,
+   unsigned *thrdaddr
+);
 */
 	struct thread_param* param = (struct thread_param*) malloc(sizeof(struct thread_param));
 	assert(param);
 	param->arg = arg;
 	param->start_routine = start_routine;
 
-    *thread = CreateThread(0, 0, thread_starter, param, 0, 0 );
+    *thread = (HANDLE)_beginthreadex(0, 0, thread_starter, param, 0, 0 );
     // TODO: Proper error handling
     return *thread == 0;
 }
