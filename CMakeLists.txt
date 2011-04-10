@@ -29,6 +29,12 @@ if(NOT HAS_MZ_GLOBAL)
 	endif()
 endif()
 
+# currently there's a bug in mingw causing the
+# builtin atomic opts not to work without this
+if(MINGW)
+	mz_add_flag( -march=i486)
+endif()
+
 # we hide all unneeded symbols
 if(NOT WIN32)
 	mz_add_flag(-fvisibility=hidden)

@@ -23,7 +23,7 @@
 #include <string.h>
 
 // memory leak detection on windows
-#if defined(WIN32) && defined(DEBUG)
+#if defined(_WIN32) && defined(DEBUG) && !defined(__GNUC__)
 #	define _CRTDBG_MAP_ALLOC
 #	include <stdlib.h>
 #	include <crtdbg.h>

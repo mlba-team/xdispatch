@@ -35,11 +35,13 @@ static pthread_key_t _dispatch_buffer_key;
 
 // run once to allocate the thread keys
 static void _buffer_key_alloc(void* unused){
-	pthread_key_create(&_dispatch_buffer_key, NULL);
+    int r = pthread_key_create(&_dispatch_buffer_key, NULL);
+    assert(r==0);
 }
 
 void _set_thread_queue(dispatch_queue_t q){
-	pthread_setspecific(_dispatch_buffer_key, q);
+    int r = pthread_setspecific(_dispatch_buffer_key, q);
+    assert(r==0);
 }
 
 dispatch_queue_t _get_thread_queue(){
@@ -73,7 +75,7 @@ void _spawn_thread(_thread_t t){
 	int rc = pthread_create(&t->id, NULL, _thread, t);
 #ifdef DEBUG
 	if(rc){
-#		ifdef WIN32
+#		ifdef _MSC_VER
 		char error[100];
 		strerror_s(error,99,rc);
 		printf("ERROR: Could not spawn needed thread: %s\n",error);
@@ -91,7 +93,7 @@ void _spawn_timer_thread(void* q){
 	int rc = pthread_create(&newThread, NULL, _timer_thread, q);
 #ifdef DEBUG
 	if(rc){
-#		ifdef WIN32
+#		ifdef _MSC_VER
 		char error[100];
 		strerror_s(error,99,rc);
 		printf("ERROR: Could not spawn needed thread: %s\n",error);

@@ -35,7 +35,11 @@ struct thread_param {
 	void* arg;
 };
 
+#ifdef _MSC_VER
 static DWORD WINAPI thread_starter( LPVOID lpParam ) {
+#else // mingw
+static unsigned int WINAPI thread_starter( LPVOID lpParam ) {
+#endif
 
 	struct thread_param* param = (struct thread_param*)(lpParam);
 	assert(lpParam);

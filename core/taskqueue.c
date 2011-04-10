@@ -18,7 +18,7 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-
+#include <string.h>
 #include "queue_internal.h"
 
 struct _taskqueue_s* _tq_create(){
@@ -36,7 +36,7 @@ void _tq_name(_taskqueue_t q, const char* label){
                     return;
                 size = strlen(label)+1;
                 name = (char*)malloc(size*sizeof(char));
-#ifdef WIN32
+#ifdef _MSC_VER
 		strcpy_s(name,size,label);
 #else
 		strcpy(name,label);
