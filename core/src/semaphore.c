@@ -705,7 +705,7 @@ _dispatch_semaphore_dispose(dispatch_semaphore_t dsema)
 	}
 #endif
 
-    _dispatch_dispose(DO_CAST(dsema));
+    _dispatch_dispose( (dsema));
 }
 
 size_t
@@ -713,7 +713,7 @@ _dispatch_semaphore_debug(dispatch_semaphore_t dsema, char *buf, size_t bufsiz)
 {
 	size_t offset = 0;
 	offset += snprintf(&buf[offset], bufsiz - offset, "%s[%p] = { ", dx_kind(dsema), dsema);
-    offset += dispatch_object_debug_attr(DO_CAST(dsema), &buf[offset], bufsiz - offset);
+    offset += dispatch_object_debug_attr( (dsema), &buf[offset], bufsiz - offset);
 #if USE_MACH_SEM
 	offset += snprintf(&buf[offset], bufsiz - offset, "port = 0x%u, ",
 	    dsema->dsema_port);

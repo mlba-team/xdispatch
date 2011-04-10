@@ -38,10 +38,23 @@ private:
 	void operator=(const dispatch_object_s &);
 } *dispatch_object_t;
 #else
+# ifdef __GNUC__
+typedef union {
+    struct dispatch_object_s *_do;
+    struct dispatch_continuation_s *_dc;
+    struct dispatch_queue_s *_dq;
+    struct dispatch_queue_attr_s *_dqa;
+    struct dispatch_group_s *_dg;
+    struct dispatch_source_s *_ds;
+    struct dispatch_source_attr_s *_dsa;
+    struct dispatch_semaphore_s *_dsema;
+} dispatch_object_t __attribute__((transparent_union));
+# else /* __GNUC__ */
 // this is really really ugly but
 // there is no transparent union in MSVC
 struct dispatch_object_s;
 typedef void* dispatch_object_t;
+#endif /* __GNUC__ */
 #endif
 
 typedef void (*dispatch_function_t)(void *);

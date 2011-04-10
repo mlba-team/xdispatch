@@ -45,7 +45,7 @@ static size_t dispatch_source_debug_attr(dispatch_source_t ds, char* buf, size_t
 void
 dispatch_source_cancel(dispatch_source_t obj)
 {
-    struct dispatch_source_s* ds = DSOURCE_CAST(obj);
+    struct dispatch_source_s* ds = obj;
 #if DISPATCH_DEBUG
     dispatch_debug(obj, __FUNCTION__);
 #endif
@@ -54,10 +54,10 @@ dispatch_source_cancel(dispatch_source_t obj)
 	// unregister the source, and deallocate it. We would
 	// need to therefore retain/release before setting the bit
 
-    _dispatch_retain(DO_CAST(obj));
+    _dispatch_retain( (obj));
 	dispatch_atomic_or(&ds->ds_atomic_flags, DSF_CANCELED);
-    _dispatch_wakeup(DQUEUE_CAST(obj));
-    _dispatch_release(DO_CAST(obj));
+    _dispatch_wakeup(obj);
+    _dispatch_release( (obj));
 }
 
 DISPATCH_NOINLINE
@@ -424,7 +424,7 @@ dispatch_source_create(dispatch_source_type_t type,
 	dispatch_debug(ds, __FUNCTION__);
 #endif
 
-    _dispatch_retain(DO_CAST(ds->do_targetq));
+    _dispatch_retain((ds->do_targetq));
 	return ds;
 	
 out_bad:

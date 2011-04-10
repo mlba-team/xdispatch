@@ -324,7 +324,7 @@ _dispatch_continuation_pop(dispatch_object_t dou)
 	dc->dc_func(dc->dc_ctxt);
 	if (dg) {
 		dispatch_group_leave(dg);
-        _dispatch_release(DO_CAST(dg));
+        _dispatch_release( (dg));
 	}
 }
 
@@ -585,7 +585,7 @@ _dispatch_queue_dispose(dispatch_queue_t dq)
 	// trash the tail queue so that use after free will crash
 	dq->dq_items_tail = (void *)0x200;
 
-    _dispatch_dispose(DO_CAST(dq));
+    _dispatch_dispose( (dq));
 }
 
 DISPATCH_NOINLINE 
@@ -598,10 +598,10 @@ _dispatch_queue_push_list_slow(dispatch_queue_t dq, struct dispatch_object_s *ob
 	// dq_items_head and _dispatch_wakeup, the blocks submitted to the
 	// queue may release the last reference to the queue when invoked by
 	// _dispatch_queue_drain. <rdar://problem/6932776>
-    _dispatch_retain(DO_CAST(dq));
+    _dispatch_retain( (dq));
 	dq->dq_items_head = obj;
 	_dispatch_wakeup(dq);
-    _dispatch_release(DO_CAST(dq));
+    _dispatch_release( (dq));
 }
 
 DISPATCH_NOINLINE
@@ -614,7 +614,7 @@ _dispatch_barrier_async_f_slow(dispatch_queue_t dq, void *context, dispatch_func
 	dc->dc_func = func;
 	dc->dc_ctxt = context;
 
-    _dispatch_queue_push(dq, DO_CAST(dc));
+    _dispatch_queue_push(dq,  (dc));
 }
 
 #ifdef __BLOCKS__
@@ -652,7 +652,7 @@ _dispatch_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t f
 	dc->dc_func = func;
 	dc->dc_ctxt = context;
 
-    _dispatch_queue_push(dq, DO_CAST(dc));
+    _dispatch_queue_push(dq,  (dc));
 }
 
 #ifdef __BLOCKS__
@@ -680,7 +680,7 @@ dispatch_async_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 	dc->dc_func = func;
 	dc->dc_ctxt = ctxt;
 
-    _dispatch_queue_push(dq, DO_CAST(dc));
+    _dispatch_queue_push(dq,  (dc));
 }
 
 struct dispatch_barrier_sync_slow2_s {
@@ -1281,7 +1281,7 @@ _dispatch_queue_invoke(dispatch_queue_t dq)
 		// When the suspend-count lock is dropped, then the check will happen.
 		dispatch_atomic_dec(&dq->dq_running);
 		if (tq) {
-            return _dispatch_queue_push(tq, DO_CAST(dq));
+            return _dispatch_queue_push(tq,  (dq));
 		}
 	}
 
@@ -1291,7 +1291,7 @@ _dispatch_queue_invoke(dispatch_queue_t dq)
 			_dispatch_wakeup(dq);	// verify that the queue is idle
 		}
 	}
-    _dispatch_release(DO_CAST(dq));	// added when the queue is put on the list
+    _dispatch_release( (dq));	// added when the queue is put on the list
 }
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
@@ -1302,7 +1302,7 @@ _dispatch_set_target_queue2(void *ctxt)
 		  
 	prev_dq = dq->do_targetq;
 	dq->do_targetq = ctxt;
-    _dispatch_release(DO_CAST(prev_dq));
+    _dispatch_release( (prev_dq));
 }
 
 void
@@ -1332,7 +1332,7 @@ _dispatch_async_f_redirect2(void *_ctxt)
 	if (dispatch_atomic_sub(&dq->dq_running, 2) == 0) {
 		_dispatch_wakeup(dq);
 	}
-    _dispatch_release(DO_CAST(dq));
+    _dispatch_release( (dq));
 }
 
 static void
@@ -1346,7 +1346,7 @@ _dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_
 	}
 
 	dispatch_atomic_add(&dq->dq_running, 2);
-    _dispatch_retain(DO_CAST(dq));
+    _dispatch_retain( (dq));
 
 	dc = _dispatch_continuation_alloc_cacheonly() ?: _dispatch_continuation_alloc_from_heap();
 
@@ -1360,7 +1360,7 @@ _dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_
 		root_dq = root_dq->do_targetq;
 	} while (root_dq->do_targetq);
 
-    _dispatch_queue_push(root_dq, DO_CAST(dc));
+    _dispatch_queue_push(root_dq,  (dc));
 }
 
 

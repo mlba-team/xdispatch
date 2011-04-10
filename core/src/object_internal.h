@@ -107,9 +107,17 @@ void _dispatch_release(dispatch_object_t dou);
 void _dispatch_dispose(dispatch_object_t dou);
 dispatch_queue_t _dispatch_wakeup(dispatch_object_t dou);
 
-#define DO_CAST(x) ((struct dispatch_object_s *)(x))
-#define DSOURCE_CAST(x) ((struct dispatch_source_s *)(x))
-#define DQUEUE_CAST(x) ((struct dispatch_queue_s *)(x))
-#define DCOND_CAST(x) ((dispatch_continuation_t)(x))
+/* Please see base.h for reasons why this is needed */
+#ifdef __GNUC__
+# define DO_CAST(x) ((struct dispatch_object_s *)(x)._do)
+# define DSOURCE_CAST(x) (x)._ds
+# define DQUEUE_CAST(x) (x)._dq
+# define DCOND_CAST(x) (x)._dc
+#else /* __GNUC__ */
+# define DO_CAST(x) ((struct dispatch_object_s *)(x))
+# define DSOURCE_CAST(x) ((struct dispatch_source_s *)(x))
+# define DQUEUE_CAST(x) ((struct dispatch_queue_s *)(x))
+# define DCOND_CAST(x) ((dispatch_continuation_t)(x))
+#endif /* __GNUC__ */
 
 #endif /* __DISPATCH_OBJECT_INTERNAL__ */

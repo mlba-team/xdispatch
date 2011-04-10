@@ -124,7 +124,7 @@ _dispatch_dispose(dispatch_object_t dou)
 	if (func && ctxt) {
 		dispatch_async_f(tq, ctxt, func);
 	}
-    _dispatch_release(DO_CAST(tq));
+    _dispatch_release( (tq));
 }
 
 void
