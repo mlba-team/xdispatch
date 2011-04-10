@@ -22,7 +22,6 @@
 #ifndef QDISPATCH_SEMAPHORE_H_
 #define QDISPATCH_SEMAPHORE_H_
 
-#include <QDebug>
 #include "qdispatchglobal.h"
 #include "../xdispatch/dispatch.h"
 
@@ -41,8 +40,7 @@ QT_MODULE(Dispatch)
   when the calling thread needs to be blocked. If the calling semaphore
   does not need to block, no kernel call is made."
   */
-class Q_DECL_EXPORT QDispatchSemaphore : public xdispatch::semaphore {
-	friend QDebug operator<<(QDebug, const QDispatchSemaphore&);
+class Q_DISPATCH_EXPORT QDispatchSemaphore : public xdispatch::semaphore {
 
 public:
 	/**

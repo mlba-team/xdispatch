@@ -46,7 +46,7 @@ queue you can also use it to get the queue you're running in.
 For information about the Dispatch mechanism, please
 also see Apple's documentation on libDispatch.
 */
-class Q_DECL_EXPORT QDispatch {
+class Q_DISPATCH_EXPORT QDispatch {
 
 public:
     

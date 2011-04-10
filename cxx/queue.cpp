@@ -55,7 +55,7 @@ void queue::apply(iteration_operation* op, size_t times){
     dispatch_apply_f(times, d->native, new iteration_wrap(op, times), run_iter_wrap);
 }
 
-void queue::after(operation* op, time_t time){
+void queue::after(operation* op, struct tm* time){
     after(op, as_dispatch_time(time) );
 }
 
@@ -99,8 +99,8 @@ void queue::apply(dispatch_iteration_block_t b, size_t times){
     dispatch_apply(times, d->native, b);
 }
 
-void queue::after(dispatch_block_t b, time_t time){
-    dispatch_after(time, d->native, b);
+void queue::after(dispatch_block_t b, struct tm* time){
+    dispatch_after(as_dispatch_time(time), d->native, b);
 }
 
 void queue::after(dispatch_block_t b, dispatch_time_t time){

@@ -31,10 +31,16 @@
 
 #if defined(__cplusplus)
 
-#ifdef _WIN32
-# define XDISPATCH_EXPORT __declspec(dllexport)
-#else
-# define XDISPATCH_EXPORT __attribute__((visibility("default")))
+#ifndef XDISPATCH_EXPORT
+# ifdef _WIN32
+#  ifdef XDISPATCH_MAKEDLL
+#   define XDISPATCH_EXPORT __declspec(dllexport)
+#  else
+#   define XDISPATCH_EXPORT __declspec(dllimport)
+#  endif
+# else
+#  define XDISPATCH_EXPORT __attribute__((visibility("default")))
+# endif
 #endif
 
 # define __XDISPATCH_BEGIN_NAMESPACE	namespace xdispatch {
@@ -51,6 +57,6 @@
 
 #undef XDISPATCH_EXPORT
 
-#endif
+#endif /* defined(__cplusplus) */
 
 #endif /* XDISPATCH_H_ */

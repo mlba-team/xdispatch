@@ -80,7 +80,7 @@ public:
     @param timeout give a timeout here
     @return false if the timeout occured or true if all operations were executed
     */
-    bool wait(const time_t& t);
+    bool wait(struct tm* t);
     /**
     This function schedules a notification operation to be submitted to the specified
     queue once all operations associated with the dispatch group have completed.

@@ -24,7 +24,6 @@
 #define QDISPATCH_GROUP_H_
 
 #include <QObject>
-#include <QDebug>
 #include "qdispatchglobal.h"
 #include "../xdispatch/dispatch.h"
 
@@ -47,7 +46,7 @@ executing.
 See also Apple's Documentation of Dispatch Groups
 */
 
-class Q_DECL_EXPORT QDispatchGroup : public QObject, public xdispatch::group {
+class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group {
 
 	Q_OBJECT
 
@@ -115,7 +114,7 @@ signals:
 
 private:
 
-	friend QDebug operator<<(QDebug, const QDispatchGroup&);
+	friend Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);
     
 	class Private;
 	Private* d;

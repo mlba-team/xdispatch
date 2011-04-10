@@ -99,7 +99,7 @@ public:
 
         @return true if acquiring the semaphore succeeded.
     */
-    bool try_acquire(const time_t&);
+    bool try_acquire(struct tm*);
     /**
     @returns The dispatch_semaphore_t object associated with this
     C++ object. Use this, if you need to use the plain C Interface

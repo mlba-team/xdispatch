@@ -23,7 +23,7 @@
 #ifndef QITERATIONBLOCKRUNNABLE_H_
 #define QITERATIONBLOCKRUNNABLE_H_
 
-#include "QIterationRunnable.h"
+#include "qiterationrunnable.h"
 #include "../xdispatch/dispatch.h"
 #include "qdispatchglobal.h"
 
@@ -41,7 +41,7 @@ blocks on clang or lambda functions in C++0x
 Please see the documentation for QRunnable for the
 functionality of the autoDelete flags as well.
 */
-class Q_DECL_EXPORT QIterationBlockRunnable : public QIterationRunnable {
+class Q_DISPATCH_EXPORT QIterationBlockRunnable : public QIterationRunnable {
 
 public:
 	/**

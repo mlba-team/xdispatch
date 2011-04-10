@@ -43,7 +43,7 @@ bool group::wait(dispatch_time_t time){
     return dispatch_group_wait(d->native, time) == 0;
 }
 
-bool group::wait(const time_t& t){
+bool group::wait(struct tm* t){
     return wait(as_dispatch_time(t));
 }
 

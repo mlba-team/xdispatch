@@ -1,0 +1,1 @@
+* dispatching nested lambdas is currently broken in QtDispatch on MS Visual Studio 2010 SP1. See test Qt_dispatch_cascade for workaround (using runnables)

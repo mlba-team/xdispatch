@@ -45,7 +45,7 @@ bool semaphore::try_acquire(dispatch_time_t time) {
     return dispatch_semaphore_wait(d->native, time) == 0;
 }
 
-bool semaphore::try_acquire(const time_t& time){
+bool semaphore::try_acquire(struct tm* time){
     return try_acquire( as_dispatch_time(time) );
 }
 

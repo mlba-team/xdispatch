@@ -146,6 +146,18 @@
 
 #if defined(XDISPATCH_HAS_BLOCKS) && !defined(__BLOCKS__)
 
+#ifndef XDISPATCH_EXPORT
+# ifdef _WIN32
+#  ifdef XDISPATCH_MAKEDLL
+#   define XDISPATCH_EXPORT __declspec(dllexport)
+#  else
+#   define XDISPATCH_EXPORT __declspec(dllimport)
+#  endif
+# else
+#  define XDISPATCH_EXPORT __attribute__((visibility("default")))
+# endif
+#endif
+
 XDISPATCH_EXPORT void dispatch_async(dispatch_queue_t queue, dispatch_block_t function);
 
 XDISPATCH_EXPORT void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t function);

@@ -21,6 +21,7 @@
 
 #include <QRunnable>
 #include <QString>
+#include <QDebug>
 #include "../include/QtDispatch/qdispatch.h"
 #include "../include/QtDispatch/qblockrunnable.h"
 #include "../include/QtDispatch/qiterationblockrunnable.h"

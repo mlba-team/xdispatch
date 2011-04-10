@@ -28,20 +28,21 @@ if(NOT HAS_MZ_GLOBAL)
 		set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE} CACHE PATH "Executable output path")
 		message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE}")
         mz_add_flag(-fvisibility=hidden)
-        mz_add_flag(-fvisibility=hidden)
 	endif()
 endif()
 
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
 CHECK_INCLUDE_FILES (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
-if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL)
+CHECK_INCLUDE_FILES ("pthread_workqueue.h" FOUND_PTHREAD_WORKQUEUE_IMPL)
+CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
+
+if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
     mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
     )
 endif()
-CHECK_INCLUDE_FILES ("pthread_workqueue.h" FOUND_PTHREAD_WORKQUEUE_IMPL)
-if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL)
+if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
     include_directories(
     	libpthread_workqueue/include
@@ -49,7 +50,6 @@ if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL)
 endif()
 
 # do we have native dispatch support on this platform?
-CHECK_INCLUDE_FILES (off_dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 if(HAVE_NATIVE_DISPATCH_H)
 	message("   >> found native libDispatch implementation, using it")
 else()
@@ -57,19 +57,8 @@ else()
 	set(LIBS ${LIBS} dispatch)
 endif()
 
-# core lib
-file(GLOB CXX_INCL include/xdispatch/*.h)
-file(GLOB CXX cxx/*.cpp cxx/*.h)
-source_group(xdispatch FILES ${CXX_INCL})
-source_group(cxx FILES ${CXX})
-  
-# add new target
-add_library(${NAME} SHARED ${CXX_INCL} ${CXX})
-  
-# link this target with all needed libraries
-message("-- linking xdispatch with: ${LIBS}")
-target_link_libraries(${NAME} ${LIBS})
-mz_target_props(${NAME})
+# the xdispatch target
+mz_add_library(xdispatch cxx)
 
 # tell everybody we have libdispatch support here, perhaps even native by the OS
 if(HAVE_NATIVE_DISPATCH_H)
@@ -96,3 +85,19 @@ mz_add_executable(tests tests)
 
 # documentation
 include(docs/docgen.cmake)
+
+# install target
+install(DIRECTORY include DESTINATION . PATTERN "*.svn" EXCLUDE)
+install(FILES README.dox CHANGELOG.dox LICENSE NOTICE TODO.txt DESTINATION .)
+
+# package target
+include(InstallRequiredSystemLibraries)
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "My funky project")
+SET(CPACK_PACKAGE_VENDOR "MLBA Opensource")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+SET(CPACK_PACKAGE_VERSION_MAJOR "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "3")
+SET(CPACK_PACKAGE_VERSION_PATCH "1")
+SET(CPACK_PACKAGE_FILE_NAME "xdispatch_${CPACK_PACKAGE_VERSION_MAJOR}_${CPACK_PACKAGE_VERSION_MINOR}_${CPACK_PACKAGE_VERSION_PATCH}__${CMAKE_SYSTEM_NAME}_${CMAKE_GENERATOR}")
+include(CPack)

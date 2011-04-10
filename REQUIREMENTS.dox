@@ -1,0 +1,70 @@
+/**
+@page requirements REQUIREMENTS
+@author Marius Zwicker / MLBA
+
+@section supp Supported Environments
+
+libXDispatch was tested on and currently run's on the following operating systems:
+
+ - Mac OS 10.6
+ - Windows XP SP3 and Windows 7
+ - Debian 6.0
+ - openSUSE 11.4
+ - Ubuntu 10.10
+ 
+We expect it to run on various other flavors of Linux as well, however we had no chance
+to test it yet. The officially supported development environments and/or toolchains include:
+
+ - Clang 2.0
+ - XCode 4 (using the clang backend)
+ - GCC 4.2+ – to use lambdas we recommend GCC 4.5.1+
+ - MSVC as shipped with Visual Studio 2010
+ - MinGW (shipping gcc 4.5.x)
+ 
+We welcome any news on sucessful builds on other operating systems / toolchains as well. Please
+contact us to report any success stories.
+
+@section dev Developing with libXDispatch
+
+When intending to develop with libXDispatch please ensure you are using one of the supported
+environments. Afterwards go to the <a href="http://opensource.mlba-team.de/xdispatch/files">downloads page</a> and select the appropriate binary package. Included
+are the necessary headers and library files you have to link with. Normally linking with xdispatch should
+be sufficient. When using the Qt interface, you have to link with QtDispatch as well. Please note that you 
+have to link with the Qt additionally in case you want to use the QtDispatch library.
+
+@section build Building libXDispatch
+
+Building libXDispatch means you either intend to build your own copy or want to directly integrate the
+libXDispatch sources with your project (easily done when using CMake) 
+
+Additionally to a supported toolchain / operating system you need CMake 2.8+ installed and reachable in your 
+path. If you want to build QtDispatch, please ensure that you have a SDK for Qt 4.7.0+ installed and
+qmake is reachable in your path as well.
+If all this is satisfied, get your copy of the current sources (see \ref m1), enter the root directory (where
+you find the README.dox) and run (depending on you platform):
+
+@subsection x41 On Windows (Visual Studio)
+@code
+cmake
+@endcode
+Afterwards you should find a solution file in your xdispatch folder. Build it and the binaries can be 
+found within the 'Bin' directory.
+
+@subsection x42 On Linux (Makefiles)
+@code
+cmake -G "Unix Makefiles"
+make all
+@endcode
+When finished, all binaries can be found within the 'Bin' directory.
+
+@subsection x43 On Mac OS (XCode)
+@code
+cmake -G "XCode"
+@endcode
+You should find an xcodeproject in your xdispatch folder. Upon build completion, all binaries 
+can be found in the 'Bin' directory as well.
+
+Other generators are available as well, please consult the CMake documentation at 
+http://www.cmake.org for more detailed information.
+   
+*/

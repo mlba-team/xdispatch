@@ -1,4 +1,12 @@
 
+#ifdef _WIN32
+# define _CRT_SECURE_NO_WARNINGS 1
+# pragma warning (disable : 4996)
+#endif
+
+#include <iostream>
+#include <time.h>
+
 #include "xdispatch_internal.h"
 
 __XDISPATCH_USE_NAMESPACE
@@ -26,12 +34,38 @@ queue xdispatch::current_queue(){
     return queue(dispatch_get_current_queue());
 }
 
-dispatch_time_t xdispatch::as_dispatch_time(const time_t& t){
-    return dispatch_time(DISPATCH_TIME_NOW, t * NSEC_PER_SEC);
+dispatch_time_t xdispatch::as_delayed_time(uint64_t delay, dispatch_time_t base){
+    return dispatch_time(base,delay);
 }
 
-time_t xdispatch::as_time_t(dispatch_time_t t){
-    return t / NSEC_PER_SEC;
+dispatch_time_t xdispatch::as_dispatch_time(struct tm* t){
+    time_t now = time(NULL);
+    time_t target = mktime(t);
+
+    double diff = difftime(target, now);
+    if(diff < 0) {
+#ifdef DEBUG
+        std::cerr << "as_dispatch_time: Passed time" << ctime(&target) << "is in the past, this not supported!" << std::endl;
+#endif
+        return as_delayed_time(0);
+    }
+
+    return as_delayed_time( (uint64_t)(diff*NSEC_PER_SEC) );
+}
+
+struct tm xdispatch::as_struct_tm(dispatch_time_t t){
+    time_t rawtime = time(NULL);
+    struct tm res;
+
+    res = *(localtime( &rawtime));
+
+    res.tm_hour += (int)(t / (3600*NSEC_PER_SEC));
+    t %= (3600*NSEC_PER_SEC);
+    res.tm_min += (int)(t / (60*NSEC_PER_SEC));
+    t %= (60*NSEC_PER_SEC);
+    res.tm_sec += (int)(t / (NSEC_PER_SEC));
+
+    return res;
 }
 
 void xdispatch::exec() {
