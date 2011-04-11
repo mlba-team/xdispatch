@@ -72,6 +72,7 @@
     <ClCompile Include="src\common\kevent.c" />
     <ClCompile Include="src\common\knote.c" />
     <ClCompile Include="src\common\kqueue.c" />
+    <ClCompile Include="src\common\map.c" />
     <ClCompile Include="src\windows\platform.c" />
     <ClCompile Include="src\windows\timer.c" />
   </ItemGroup>

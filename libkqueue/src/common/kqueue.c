@@ -30,6 +30,14 @@ char *DEBUG_IDENT = "KQ";
 static unsigned int
 get_fd_limit(void)
 {
+#ifdef _WIN32
+    /* actually windows should be able to hold
+       way more, as they use HANDLEs for everything
+       this number should still be sufficient for
+       treating file descriptors
+       */
+    return 65536;
+#else
     struct rlimit rlim;
     
     if (getrlimit(RLIMIT_NOFILE, &rlim) < 0) {
@@ -38,6 +46,7 @@ get_fd_limit(void)
     } else {
         return (rlim.rlim_max);
     }
+#endif
 }
 
 static struct map *kqmap;

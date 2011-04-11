@@ -51,7 +51,9 @@ BOOL WINAPI DllMain(
             break;
 
         case DLL_PROCESS_DETACH:
+#if XXX
             WSACleanup();
+#endif
             break;
     }
 
@@ -78,7 +80,7 @@ windows_kqueue_free(struct kqueue *kq)
 }
 
 int
-windows_kevent_wait(struct kqueue *kq, const struct timespec *timeout)
+windows_kevent_wait(struct kqueue *kq, int no, const struct timespec *timeout)
 {
 	int retval;
     DWORD rv, timeout_ms;

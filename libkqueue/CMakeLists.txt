@@ -34,8 +34,13 @@ if(WIN32)
 	file(GLOB SRC 
 		src/windows/*.h
 		src/windows/*.c
-		src/*.h
+        src/common/*.h
 		src/*.c
+        src/common/map.c
+        src/common/filter.c
+        src/common/knote.c
+        src/common/kevent.c
+        src/common/kqueue.c
 	)
 	add_definitions(
 		-DLIBKQUEUE_EXPORTS

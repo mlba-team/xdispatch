@@ -27,7 +27,7 @@ extern char *DEBUG_IDENT;
 #elif defined(__sun)
 # define THREAD_ID (pthread_self())
 #elif defined(_WIN32)
-# define THREAD_ID (GetCurrentThreadId())
+# define THREAD_ID (int)(GetCurrentThreadId())
 #else 
 # error Unsupported platform
 #endif
