@@ -67,7 +67,7 @@ private:
 
     synclock& operator= (synclock);
 
-    friend synclock get_lock_for_key(unsigned int);
+    friend XDISPATCH_EXPORT synclock get_lock_for_key(unsigned int);
     synclock(dispatch_semaphore_t);
 };
 

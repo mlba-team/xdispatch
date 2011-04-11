@@ -75,6 +75,7 @@
  * Some datatype forward declarations
  */
 struct filter;
+struct kqueue;
 
 /*
  * Hooks and prototypes
@@ -124,7 +125,9 @@ typedef int pthread_t;
 typedef int sigset_t;
 typedef int pid_t;
 
-#define __thread    __declspec(thread)
+#ifndef __GNUC__
+# define __thread    __declspec(thread)
+#endif
 
 /* Emulation of pthreads mutex functionality */
 #define PTHREAD_PROCESS_SHARED 1
@@ -142,6 +145,7 @@ typedef CRITICAL_SECTION pthread_rwlock_t;
 #define pthread_spin_unlock _cs_unlock
 #define pthread_spin_init(x,y) _cs_init((x))
 #define pthread_mutex_init(x,y) _cs_init((x))
+#define pthread_mutex_destroy(x)
 #define pthread_rwlock_rdlock _cs_lock
 #define pthread_rwlock_wrlock _cs_lock
 #define pthread_rwlock_unlock _cs_unlock

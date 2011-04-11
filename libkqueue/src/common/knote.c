@@ -19,6 +19,7 @@
 #include <sys/types.h>
 
 #include "private.h"
+
 #include "alloc.h"
 
 static void knote_free(struct filter *, struct knote *);
@@ -93,6 +94,7 @@ knote_free(struct filter *filt, struct knote *kn)
 {
     RB_REMOVE(knt, &filt->kf_knote, kn);
     filt->kn_delete(filt, kn);
+    pthread_mutex_destroy(&kn);
     free(kn);
 //    mem_free(kn);
 }

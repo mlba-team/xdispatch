@@ -47,6 +47,7 @@
 # include "stdint.h"
 #endif
 #include <limits.h>
+#include <errno.h>
 #include "queue.h"
 
 //typedef signed char int8_t;
@@ -123,12 +124,8 @@ struct timespec {
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 
 // some error codes used throughout the code
-#define ENOTSUP 3
-#define EAGAIN 4
-#define EBADF 5
-#define ETIMEDOUT 6
-#define ESRCH 7
-#define EINVAL 8
+#define ENOTSUP 300
+#define ETIMEDOUT WSAETIMEDOUT
 
 // fd functions
 #include <io.h>

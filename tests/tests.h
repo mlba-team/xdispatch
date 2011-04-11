@@ -84,7 +84,7 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
 #ifdef TEST_BLOCKS
-	MU_REGISTER_TEST(cross_blocks);
+    MU_REGISTER_TEST(cross_blocks);
 	MU_REGISTER_TEST(dispatch_plusplus);
 	MU_REGISTER_TEST(dispatch_apply_blocks);
 	MU_REGISTER_TEST(dispatch_group_blocks);

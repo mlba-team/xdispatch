@@ -66,6 +66,7 @@ add_library(libpthread_workqueue STATIC ${SRC} ${INCL})
 if(NOT WIN32)
 	target_link_libraries(libpthread_workqueue pthread)
 endif()
+set_target_properties(libpthread_workqueue PROPERTIES DEBUG_POSTFIX "D")
 
 #tests
 option(WORKQUEUE_TESTS "Enable to build tests for libpthread_workqueue" OFF)

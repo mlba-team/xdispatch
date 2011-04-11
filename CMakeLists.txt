@@ -37,7 +37,7 @@ CHECK_INCLUDE_FILES ("pthread_workqueue.h" FOUND_PTHREAD_WORKQUEUE_IMPL)
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    #mz_add_library(libkqueue libkqueue)
+    mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
 	)
@@ -63,10 +63,10 @@ endif()
 
 # do we have native dispatch support on this platform?
 if(HAVE_NATIVE_DISPATCH_H)
-	message("   >> found native libDispatch implementation, using it")
+    message("   >> found native libDispatch implementation, using it")
 else()
-	mz_add_library(libdispatch core)
-	set(LIBS ${LIBS} dispatch)
+    mz_add_library(libdispatch core)
+    set(LIBS ${LIBS} dispatch)
 endif()
 
 # the xdispatch target
@@ -89,7 +89,7 @@ endif()
 
 # Qt Extension if Qt is available
 if(QT4_FOUND)
-	mz_add_library(QtDispatch Qt)
+    mz_add_library(QtDispatch Qt)
 endif()
 
 # custom test framework for xdispatch

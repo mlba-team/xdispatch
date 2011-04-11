@@ -30,7 +30,7 @@ if(HAVE_LIBKQUEUE_H)
     message("   >> found libkqeue installation, using it")
 endif()
 if(NOT HAVE_KQUEUE_H AND NOT HAVE_LIBKQUEUE_H)
-  #  set(LIBS ${LIBS} libkqueue)
+    set(LIBS ${LIBS} libkqueue)
 endif()
 
 # other needed functions

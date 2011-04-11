@@ -47,6 +47,10 @@ if(WIN32)
 		-D_USRDLL
 		-D_WINDLL
 	)
+    if(MINGW)
+        SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  -march=i486")
+        SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=i486")
+    endif()
 else()
 	file(GLOB SRC 
 		src/posix/*.h
@@ -88,4 +92,11 @@ add_library(libkqueue SHARED ${SRC} ${INCL})
 if(NOT WIN32)
 	target_link_libraries(libkqueue pthread)
 endif()
+set_target_properties(libkqueue PROPERTIES DEBUG_POSTFIX "D")
 
+#tests
+option(KQUEUE_TESTS "Enable to build tests for libkqueue" OFF)
+if(KQUEUE_TESTS)
+    message("-- Adding tests for libkqueue")
+    add_subdirectory(test)
+endif()

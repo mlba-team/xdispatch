@@ -52,7 +52,6 @@
 #else
 # include "../include/sys/event.h"
 # include "../src/windows/platform.h"
-# pragma comment(lib, "../Debug/libkqueue.lib")
 #endif
 
 

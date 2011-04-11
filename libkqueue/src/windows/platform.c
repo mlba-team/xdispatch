@@ -103,7 +103,7 @@ windows_kevent_wait(struct kqueue *kq, int no, const struct timespec *timeout)
 	}
 
 	/* Wait for an event */
-    dbg_printf("waiting for %u events (timeout=%u ms)", kq->kq_filt_count, timeout_ms);
+    dbg_printf("waiting for %u events (timeout=%u ms)", kq->kq_filt_count, (unsigned int)timeout_ms);
     rv = WaitForMultipleObjectsEx(kq->kq_filt_count, kq->kq_filt_handle, FALSE, timeout_ms, TRUE);
 	switch (rv) {
 	case WAIT_TIMEOUT:

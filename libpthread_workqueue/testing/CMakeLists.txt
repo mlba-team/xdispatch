@@ -32,7 +32,8 @@ if(UNIX)
 endif()
 
 add_executable(test_api_pthreads_workqueue ${API})
-target_link_libraries(test_api_pthreads_workqueue libpthreads_workqueue)
+target_link_libraries(test_api_pthreads_workqueue libpthread_workqueue)
+set_target_properties(test_api_pthreads_workqueue PROPERTIES DEBUG_POSTFIX "D")
 
 if(NOT WIN32)
 

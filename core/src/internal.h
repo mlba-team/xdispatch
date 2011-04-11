@@ -85,12 +85,14 @@
 
 /* the core api is marked as exported */
 #ifndef DISPATCH_EXPORT
-# if __GNUC__
-#  define DISPATCH_EXPORT __attribute__((visibility("default")))
-# elif TARGET_OS_WIN32
-#  define DISPATCH_EXPORT __declspec(dllexport)
+# ifdef _WIN32
+#  ifdef DISPATCH_MAKEDLL
+#   define DISPATCH_EXPORT __declspec(dllexport)
+#  else
+#   define DISPATCH_EXPORT __declspec(dllimport)
+#  endif
 # else
-#  define DISPATCH_EXPORT
+#  define DISPATCH_EXPORT __attribute__((visibility("default")))
 # endif
 #endif
 

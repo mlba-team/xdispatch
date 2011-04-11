@@ -83,6 +83,11 @@
   <ItemGroup>
     <None Include="config.inc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libkqueue.vcxproj">
+      <Project>{4816d918-3874-af6d-ca92-3d7c523a7b1e}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

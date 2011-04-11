@@ -59,7 +59,7 @@ extern char *DEBUG_IDENT;
 #  define dbg_lasterror(str)     do {                                \
     if (DEBUG_LEVEL)                                                      \
       fprintf(stderr, "%s: [%d] %s(): %s: (LastError=%d)\n",        \
-              DEBUG_IDENT, THREAD_ID, __func__, str, GetLastError());            \
+              DEBUG_IDENT, THREAD_ID, __func__, str, (int)GetLastError());            \
 } while (0)
 # else
 #  define dbg_lasterror(str)     ;

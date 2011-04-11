@@ -18,6 +18,7 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
+#include "munit/MUnit.h"
 #include "tests.h"
 #include "cxx_tests.h"
 #include "Qt_tests.h"
@@ -34,7 +35,7 @@
 int main(int argc, char* argv[]) {
 	int ret = 0;
 	MU_initFramework();
-	register_tests();
+    register_tests();
     register_cxx_tests();
     register_qt_tests();
 

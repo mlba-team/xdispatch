@@ -7,10 +7,8 @@
 # if !defined(NO_CONFIG_H)
 #  include "config.h"
 # endif
-#else
-# define sleep(t) Sleep(1000*t)
 #endif
-#include "src/private.h"
+#include "../src/private.h"
 
 #if HAVE_ERR_H
 # include <err.h>

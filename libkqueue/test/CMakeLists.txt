@@ -15,17 +15,30 @@
 #
 
 #files
-set(SRC
-	main.c
-	kevent.c
-	test.c
-	proc.c
-	read.c
-	signal.c
-	timer.c
-	vnode.c
-	user.c
-)
+if(UNIX)
+    set(SRC
+        main.c
+        kevent.c
+        test.c
+        proc.c
+        read.c
+        signal.c
+        timer.c
+        vnode.c
+        user.c
+    )
+else()
+    set(SRC
+        common.h
+        kevent.c
+        main.c
+        read.c
+        test.c
+        timer.c
+        user.c
+        vnode.c
+    )
+endif()
 
 
 #includes
@@ -38,7 +51,10 @@ if(UNIX)
         -rdynamic
     )
     set(LIBS pthread rt)
+else()
+    set(LIBS wsock32)
 endif()
 
 add_executable(libkqueue-test ${SRC})
 target_link_libraries(libkqueue-test libkqueue ${LIBS})
+set_target_properties(libkqueue-test PROPERTIES DEBUG_POSTFIX "D")
