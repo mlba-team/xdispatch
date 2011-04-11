@@ -59,6 +59,12 @@ _libkqueue_init(void)
 #elif _WIN32
 	/* Experimental port, always debug */
 	DEBUG_LEVEL = 1;
+	/* Enable heap surveillance */
+	{
+		int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+		tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
+		_CrtSetDbgFlag(tmpFlag);
+	}
 #else
     char *s = getenv("KQUEUE_DEBUG");
     if (s != NULL && strlen(s) > 0)

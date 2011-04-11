@@ -35,6 +35,9 @@ struct evfilt_data;
 #if defined(_WIN32)
 # include "../windows/platform.h"
 # include "../common/queue.h"
+# ifndef NDEBUG
+#  include <crtdbg.h>
+# endif
 #elif defined(__linux__)
 # include "../posix/platform.h"
 # include "../linux/platform.h"
@@ -139,11 +142,25 @@ struct kqueue {
 };
 
 struct kqueue_vtable {
+    // init the given kqueue
     int  (*kqueue_init)(struct kqueue *);
+    // release the given kqueue
     void (*kqueue_free)(struct kqueue *);
+    // wait for new events
+    // @param timespec can be given as timeout
+    // @param int the number of events to wait for
+    // @param kqueue the queue to wait on
 	int  (*kevent_wait)(struct kqueue *, int, const struct timespec *);
+    // copy the given number of events from the kqueue into kevent
+    // @param kqueue the queue to look at
+    // @param int The number of events that should be ready
+    // @param kevent the structure to copy the events into
+    // @param int The number of events to copy
+    // @return the actual number of events copied
     int  (*kevent_copyout)(struct kqueue *, int, struct kevent *, int);
+    // initialize the given filter
     int  (*filter_init)(struct kqueue *, struct filter *);
+    // release the given filter
     void (*filter_free)(struct kqueue *, struct filter *);
     int  (*eventfd_init)(struct eventfd *);
     void (*eventfd_close)(struct eventfd *);
@@ -181,6 +198,9 @@ const char *kevent_dump(const struct kevent *);
 struct kqueue * kqueue_lookup(int);
 int         kqueue_validate(struct kqueue *);
 
+/*
+ * Provides a memory map for storing pointers
+ */
 struct map *map_new(size_t);
 int         map_insert(struct map *, int, void *);
 int         map_remove(struct map *, int, void *);
