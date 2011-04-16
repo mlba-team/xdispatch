@@ -20,15 +20,15 @@
 
 #include "internal.h"
 
-void init();
-void cleanup();
-
 #ifndef _WIN32
 
-void __attribute((constructor)) init(void);
+int __attribute((constructor)) init(void);
 void __attribute((destructor)) cleanup(void);
 
 #else
+
+int init();
+void cleanup();
 
 // DllMain - see http://msdn.microsoft.com/en-us/library/ms682596%28v=vs.85%29.aspx
 BOOL WINAPI DllMain(
@@ -42,7 +42,8 @@ BOOL WINAPI DllMain(
     case DLL_PROCESS_ATTACH:
         // Initialize once for each new process.
         // Return FALSE to fail DLL load.
-        init();
+        if(init() < 0)
+            return FALSE;
         break;
 
     case DLL_PROCESS_DETACH:
@@ -68,17 +69,19 @@ BOOL WINAPI DllMain(
 
 #endif
 
-#ifdef PTHREAD_WORKQUEUE_USER_IMPLEMENTATION
-void pthread_workqueue_init_np();
+int init(){
+#if STATIC_WORKQUEUE
+    if (pthread_workqueue_init_np() < 0)
+        return (-1);
 #endif
-
-void init(){
-#ifdef PTHREAD_WORKQUEUE_USER_IMPLEMENTATION
-    pthread_workqueue_init_np();
+#if STATIC_KQUEUE
+    if (libkqueue_init() < 0)
+        return (-1);
 #endif
 
     libdispatch_init();
 
+    return 0;
 }
 
 void cleanup(){

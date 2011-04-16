@@ -69,6 +69,12 @@
 /* we always have pthreads_workqueue */
 #define HAVE_PTHREAD_WORKQUEUES 1
 
+/* Is pthread_workqueue a static build? */
+#define STATIC_WORKQUEUE 1
+
+/* Is kqueue a static build? */
+#define STATIC_KQUEUE 1
+
 #ifdef __APPLE__
 # define HAVE_PTHREAD_MAIN_NP 1
 #else

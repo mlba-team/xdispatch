@@ -540,7 +540,7 @@ _dispatch_source_merge_kevent(dispatch_source_t ds, const struct kevent *ke)
 		ds->ds_is_armed = false;
 	}
 
-	_dispatch_wakeup(ds);
+	_dispatch_wakeup(DOPTR_CAST(ds));
 }
 
 const struct dispatch_source_vtable_s _dispatch_source_kevent_vtable = {

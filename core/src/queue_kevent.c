@@ -48,8 +48,7 @@ _dispatch_get_kq_init(void *context DISPATCH_UNUSED)
 		dispatch_assert_zero(errno);
 	}
 
-	(void)dispatch_assume_zero(kevent(_dispatch_kq, &kev, 1, NULL, 0,
-	    NULL)); 
+	(void)dispatch_assume_zero(kevent(_dispatch_kq, &kev, 1, NULL, 0, NULL)); 
 
     _dispatch_queue_push(_dispatch_mgr_q.do_targetq, (struct dispatch_object_s*)&_dispatch_mgr_q);
 }
@@ -163,18 +162,20 @@ _dispatch_mgr_invoke(dispatch_queue_t dq)
 		k_err = errno;
 
 		switch (k_cnt) {
-		case -1:
-			if (k_err == EBADF) {
-				DISPATCH_CLIENT_CRASH("Do not close random Unix descriptors");
+		case -1: 
+			{
+				if (k_err == EBADF) {
+					DISPATCH_CLIENT_CRASH("Do not close random Unix descriptors");
+				}
+				(void)dispatch_assume_zero(k_err);
 			}
-			(void)dispatch_assume_zero(k_err);
-			continue;
-		default:
-			_dispatch_mgr_thread2(kev, (size_t)k_cnt);
-			// fall through
+			break;
 		case 0:
 			_dispatch_force_cache_cleanup();
-			continue;
+			break;
+		default:
+			_dispatch_mgr_thread2(kev, (size_t)k_cnt);
+			_dispatch_force_cache_cleanup();
 		}
 	}
 

@@ -109,11 +109,13 @@ dispatch_queue_t _dispatch_wakeup(dispatch_object_t dou);
 
 /* Please see base.h for reasons why this is needed */
 #ifdef __GNUC__
+# define DOPTR_CAST(x) (x)
 # define DO_CAST(x) ((struct dispatch_object_s *)(x)._do)
 # define DSOURCE_CAST(x) (x)._ds
 # define DQUEUE_CAST(x) (x)._dq
 # define DCOND_CAST(x) (x)._dc
 #else /* __GNUC__ */
+# define DOPTR_CAST(x) ((dispatch_object_t)(x))
 # define DO_CAST(x) ((struct dispatch_object_s *)(x))
 # define DSOURCE_CAST(x) ((struct dispatch_source_s *)(x))
 # define DQUEUE_CAST(x) ((struct dispatch_queue_s *)(x))
