@@ -45,10 +45,12 @@ static size_t _dispatch_semaphore_debug(dispatch_semaphore_t dsema, char *buf, s
 static long _dispatch_group_wake(dispatch_semaphore_t dsema);
 
 const struct dispatch_semaphore_vtable_s _dispatch_semaphore_vtable = {
-	.do_type = DISPATCH_SEMAPHORE_TYPE,
-	.do_kind = "semaphore",
-	.do_dispose = _dispatch_semaphore_dispose,
-	.do_debug = _dispatch_semaphore_debug,
+	DISPATCH_SEMAPHORE_TYPE,               /* .do_type */
+	"semaphore",                           /* .do_kind */
+	_dispatch_semaphore_debug,             /* .do_debug */
+	0,                                     /* .do_invoke */
+	0,                                     /* .do_probe */
+	_dispatch_semaphore_dispose,           /* .do_dispose */
 };
 
 dispatch_semaphore_t
@@ -159,10 +161,17 @@ _dispatch_semaphore_create_handle(HANDLE *s4)
 	}
 
 	// lazily allocate the semaphore port
-
+#if defined(__GNUC__)
 	while (dispatch_assume(tmp = CreateSemaphore(NULL, 0, LONG_MAX, NULL)) == NULL) {
 		sleep(1);
 	}
+#else
+   dispatch_assume(tmp = CreateSemaphore(NULL, 0, LONG_MAX, NULL));
+   while (tmp == NULL) {
+		sleep(1);
+      dispatch_assume(tmp = CreateSemaphore(NULL, 0, LONG_MAX, NULL));
+	}
+#endif
 
 	if (!dispatch_atomic_cmpxchg(s4, 0, tmp)) {
 		CloseHandle(tmp);

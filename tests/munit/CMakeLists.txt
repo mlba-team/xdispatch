@@ -10,10 +10,5 @@ source_group(munit FILES ${MUNIT})
 add_library(munit STATIC ${MUNIT})
 
 # link this target with all needed libraries
-if(MZ_IS_VS)
- set(LIB pthreads-w32)
-endif()
-
-# link this target with all needed libraries
-target_link_libraries(munit ${LIB})
+target_link_libraries(munit)
 mz_target_props(munit)

@@ -154,6 +154,11 @@ void _dispatch_logv(const char *msg, va_list);
         }	\
     } while (0)
 
+#define _dispatch_debug(x, ...)	\
+    if (DISPATCH_DEBUG) {	\
+        _dispatch_log("libdispatch: %u\t%p\t" x, __LINE__, (void *)_dispatch_thread_self(), __VA_ARGS__);	\
+    }
+
 #else
 
 # define dispatch_assert(e)	do {	\

@@ -31,8 +31,12 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
+if(MINGW)
+	set(RES_FILES tests.rc)
+endif()
+
 # add new exec target
-add_executable(xdispatch_tests ${TESTSRCS} ${SHIMS} ${TESTMOC} ${QTESTHEADER} tests.rc)
+add_executable(xdispatch_tests ${TESTSRCS} ${SHIMS} ${TESTMOC} ${QTESTHEADER} ${RES_FILES})
 
 # manifest (somehow we need one when using mingw - but only for this binary !?
 if(MINGW)
@@ -45,8 +49,9 @@ if(MINGW)
                         COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
+	set(RES_OBJECT ${CMAKE_CURRENT_BINARY_DIR}/tests.res)
 endif()
 
 # link this target with all needed libraries
-target_link_libraries(xdispatch_tests xdispatch ${LIB} munit ${CMAKE_CURRENT_BINARY_DIR}/tests.res)
+target_link_libraries(xdispatch_tests xdispatch ${LIB} munit ${RES_OBJECT})
 mz_target_props(xdispatch_tests)

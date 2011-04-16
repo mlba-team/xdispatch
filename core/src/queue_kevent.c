@@ -21,6 +21,9 @@
 #include "internal.h"
 #include "kevent_internal.h"
 
+#if defined(_MSC_VER)
+#pragma comment(lib, "ws2_32.lib")
+#endif
 
 static bool _dispatch_select_workaround;
 static fd_set _dispatch_rfds;
@@ -34,9 +37,9 @@ static void
 _dispatch_get_kq_init(void *context DISPATCH_UNUSED)
 {
 	static const struct kevent kev = {
-		.ident = 1,
-		.filter = EVFILT_USER,
-		.flags = EV_ADD|EV_CLEAR,
+		1,                /* .ident */
+		EVFILT_USER,      /* .filter */
+		EV_ADD|EV_CLEAR,  /* .flags */
 	};
 
 	_dispatch_kq = kqueue();
@@ -48,8 +51,10 @@ _dispatch_get_kq_init(void *context DISPATCH_UNUSED)
 		dispatch_assert_zero(errno);
 	}
 
-	(void)dispatch_assume_zero(kevent(_dispatch_kq, &kev, 1, NULL, 0, NULL)); 
-
+#if defined(__GNUC__)
+	(void)
+#endif
+    dispatch_assume_zero(kevent(_dispatch_kq, &kev, 1, NULL, 0, NULL));
     _dispatch_queue_push(_dispatch_mgr_q.do_targetq, (struct dispatch_object_s*)&_dispatch_mgr_q);
 }
 
@@ -103,7 +108,12 @@ _dispatch_mgr_invoke(dispatch_queue_t dq)
 			FD_COPY(&_dispatch_wfds, &tmp_wfds);
 			if (timeoutp) {
 				sel_timeout.tv_sec = timeoutp->tv_sec;
+#if defined(__GNUC__)
 				sel_timeout.tv_usec = (typeof(sel_timeout.tv_usec))(timeoutp->tv_nsec / 1000u);
+#else
+            /* Fragile! */
+				sel_timeout.tv_usec = (long)(timeoutp->tv_nsec / 1000u);
+#endif
 				sel_timeoutp = &sel_timeout;
 			} else {
 				sel_timeoutp = NULL;
@@ -112,7 +122,10 @@ _dispatch_mgr_invoke(dispatch_queue_t dq)
 			r = select(FD_SETSIZE, &tmp_rfds, &tmp_wfds, NULL, sel_timeoutp);
 			if (r == -1) {
 				if (errno != EBADF) {
-					(void)dispatch_assume_zero(errno);
+#if defined(__GNUC__)
+					(void)
+#endif
+					dispatch_assume_zero(errno);
 					continue;
 				}
 				for (i = 0; i < FD_SETSIZE; i++) {
@@ -167,13 +180,21 @@ _dispatch_mgr_invoke(dispatch_queue_t dq)
 				if (k_err == EBADF) {
 					DISPATCH_CLIENT_CRASH("Do not close random Unix descriptors");
 				}
-				(void)dispatch_assume_zero(k_err);
+#if defined(__GNUC__)
+				(void)
+#endif
+				dispatch_assume_zero(k_err);
 			}
-			break;
+            break;
 		case 0:
 			_dispatch_force_cache_cleanup();
 			break;
-		default:
+#if defined(__GNUC__)
+			(void)
+#endif
+			dispatch_assume_zero(k_err);
+			continue;
+        default:
 			_dispatch_mgr_thread2(kev, (size_t)k_cnt);
 			_dispatch_force_cache_cleanup();
 		}
@@ -186,9 +207,10 @@ static bool
 _dispatch_mgr_wakeup(dispatch_queue_t dq)
 {
 	static const struct kevent kev = {
-		.ident = 1,
-		.filter = EVFILT_USER,
-		.fflags = NOTE_TRIGGER,
+		1,                /* .ident */
+		EVFILT_USER,      /* .filter */
+		0,                /* .flags */
+		NOTE_TRIGGER,     /* .fflags */
 	};
 
 	_dispatch_debug("waking up the _dispatch_mgr_q: %p", dq);
@@ -202,6 +224,8 @@ void
 _dispatch_update_kq(const struct kevent *kev)
 {
 	struct kevent kev_copy = *kev;
+	int rval = 0;
+	
 	kev_copy.flags |= EV_RECEIPT;
 
 	if (kev_copy.flags & EV_DELETE) {
@@ -223,11 +247,15 @@ _dispatch_update_kq(const struct kevent *kev)
 		}
 	}
 	
-	int rval = kevent(_dispatch_get_kq(), &kev_copy, 1, &kev_copy, 1, NULL);
+	rval = kevent(_dispatch_get_kq(), &kev_copy, 1, &kev_copy, 1, NULL);
+
 	if (rval == -1) { 
 		// If we fail to register with kevents, for other reasons aside from
 		// changelist elements.
-		(void)dispatch_assume_zero(errno);
+#if defined(__GNUC__)
+		(void)
+#endif
+		dispatch_assume_zero(errno);
 		//kev_copy.flags |= EV_ERROR;
 		//kev_copy.data = error;
 		return;
@@ -268,23 +296,31 @@ _dispatch_update_kq(const struct kevent *kev)
 }
 
 static const struct dispatch_queue_vtable_s _dispatch_queue_mgr_vtable = {
-	.do_type = DISPATCH_QUEUE_MGR_TYPE,
-	.do_kind = "mgr-queue",
-	.do_invoke = _dispatch_mgr_invoke,
-	.do_debug = dispatch_queue_debug,
-	.do_probe = _dispatch_mgr_wakeup,
+	DISPATCH_QUEUE_MGR_TYPE,                                 /* .do_type */
+	"mgr-queue",                                             /* .do_kind */
+	dispatch_queue_debug,                                    /* .do_debug */
+	_dispatch_mgr_invoke,                                    /* .do_invoke */
+	_dispatch_mgr_wakeup,                                    /* .do_probe */
 };
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 struct dispatch_queue_s _dispatch_mgr_q = {
-	.do_vtable = &_dispatch_queue_mgr_vtable,
-	.do_ref_cnt = DISPATCH_OBJECT_GLOBAL_REFCNT,
-	.do_xref_cnt = DISPATCH_OBJECT_GLOBAL_REFCNT,
-	.do_suspend_cnt = DISPATCH_OBJECT_SUSPEND_LOCK,
-	.do_targetq = &_dispatch_root_queues[DISPATCH_ROOT_QUEUE_COUNT - 1],
+	&_dispatch_queue_mgr_vtable,                             /* .do_vtable */
+	0,                                                       /* .do_next */
+	DISPATCH_OBJECT_GLOBAL_REFCNT,                           /* .do_ref_cnt */
+	DISPATCH_OBJECT_GLOBAL_REFCNT,                           /* .do_xref_cnt */
+	DISPATCH_OBJECT_SUSPEND_LOCK,                            /* .do_suspend_cnt */
+	&_dispatch_root_queues[DISPATCH_ROOT_QUEUE_COUNT - 1],   /* .do_targetq */
+	0,                                                       /* .do_ctxt */
 
-	.dq_label = "com.apple.libdispatch-manager",
-	.dq_width = 1,
-	.dq_serialnum = 2,
+	0,                                                       /* .do_finalizer */
+
+	0,                                                       /* .dq_running */
+	1,                                                       /* .dq_width */
+	0,                                                       /* .dq_items_tail */
+	0,                                                       /* .dq_items_head */
+	2,                                                       /* .dq_serialnum */
+	0,                                                       /* .dq_finalizer_ctxt */
+	"com.apple.libdispatch-manager",                         /* .dq_label */
 };
 

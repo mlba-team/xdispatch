@@ -124,8 +124,12 @@ struct timespec {
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 
 // some error codes used throughout the code
-#define ENOTSUP 300
-#define ETIMEDOUT WSAETIMEDOUT
+#ifndef ENOTSUP
+# define ENOTSUP 300
+#endif
+#ifndef ETIMEDOUT
+# define ETIMEDOUT WSAETIMEDOUT
+#endif
 
 // fd functions
 #include <io.h>

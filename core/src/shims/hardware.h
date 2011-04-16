@@ -35,6 +35,9 @@
 #if defined(__i386__) || defined(__x86_64__)
 #define _dispatch_hardware_pause() asm("pause")
 #define _dispatch_debugger() asm("int3")
+#elif defined(_M_IX86) || defined(_M_X64)
+#define _dispatch_hardware_pause() __asm { pause }
+#define _dispatch_debugger() __asm { int3 }
 #else
 #define _dispatch_hardware_pause() asm("")
 #define _dispatch_debugger() asm("trap")

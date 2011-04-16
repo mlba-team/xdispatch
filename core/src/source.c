@@ -210,7 +210,12 @@ _dispatch_source_latch_and_call(dispatch_source_t ds)
 	} else {
 		ds->ds_data = prev;
 	}
+#if defined(__GNUC__)
 	if (dispatch_assume(prev)) {
+#else
+   dispatch_assume(prev);
+	if (prev) {
+#endif
 		if (ds->ds_handler_func) {
 #ifndef DISPATCH_NO_LEGACY
 			((dispatch_source_handler_function_t)ds->ds_handler_func)(ds->ds_handler_ctxt, ds);

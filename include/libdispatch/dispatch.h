@@ -27,7 +27,7 @@
 #endif
 
 #ifndef __DISPATCH_BEGIN_DECLS
-#if defined(__cplusplus) && !defined(_MSC_VER)
+#if defined(__cplusplus)
 #  define __DISPATCH_BEGIN_DECLS	extern "C" {
 #  define __DISPATCH_END_DECLS	}
 # else

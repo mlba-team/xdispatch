@@ -59,7 +59,9 @@ typedef UINT64 uint64_t;
 
 
 // missing error codes
-#define ETIMEDOUT WSAETIMEDOUT
+#ifndef ETIMEDOUT
+# define ETIMEDOUT WSAETIMEDOUT
+#endif
 
 // some date functions
 struct timezone
@@ -115,6 +117,9 @@ static int gettimeofday(struct timeval *tv, struct timezone *tz)
 
     if (NULL != tz)
     {
+        long timezone = 0;
+        int daylight = 0;
+
         if (!tzflag)
         {
             _tzset();
@@ -122,8 +127,13 @@ static int gettimeofday(struct timeval *tv, struct timezone *tz)
         }
 
         // Adjust for the timezone west of Greenwich
-        tz->tz_minuteswest = _timezone / 60;
-        tz->tz_dsttime = _daylight;
+#ifndef __GNUC__
+        /* TODO: Currently this is not available on mingw, we should find a workaround for this */
+        _get_timezone(&timezone);
+        _get_daylight(&daylight);
+#endif
+        tz->tz_minuteswest = timezone / 60;        
+        tz->tz_dsttime = daylight;
     }
 
     return 0;
