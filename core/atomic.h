@@ -63,7 +63,7 @@
 #		define atomic_inc_get(a) InterlockedIncrementAcquire(a)
 #		define atomic_dec_get(a) InterlockedDecrementAcquire(a)
 #		define atomic_swap_get(a,b) InterlockedExchange(a,b)
-#		define atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((p), (n), (o))
+#		define atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((LONG*)(p), (LONG)(n), (LONG)(o)) == (LONG)(o) )
 #		define atomic_barrier()	 MemoryBarrier()
 
 #if _MSC_VER >= 1600
