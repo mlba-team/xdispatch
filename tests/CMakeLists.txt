@@ -20,7 +20,7 @@ if(QT4_FOUND)
 	
     #message("### COOL ${QTESTHEADER}")
 
-    set(LIB ${QT_LIBRARIES} QtDispatch)
+    set(TEST_LIB ${TEST_LIB} ${QT_LIBRARIES} QtDispatch)
 endif()
 
 # includes
@@ -33,6 +33,10 @@ INCLUDE_DIRECTORIES(
 
 if(MINGW)
 	set(RES_FILES tests.rc)
+endif()
+
+if(NOT HAVE_NATIVE_DISPATCH_H)
+	set(TEST_LIB ${TEST_LIB} dispatch)
 endif()
 
 # add new exec target
@@ -53,5 +57,5 @@ if(MINGW)
 endif()
 
 # link this target with all needed libraries
-target_link_libraries(xdispatch_tests xdispatch ${LIB} munit ${RES_OBJECT})
+target_link_libraries(xdispatch_tests xdispatch ${TEST_LIB} munit ${RES_OBJECT})
 mz_target_props(xdispatch_tests)

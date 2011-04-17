@@ -67,8 +67,8 @@ typedef const struct dispatch_source_type_s *dispatch_source_type_t;
  */
 #define DISPATCH_SOURCE_TYPE_DATA_ADD (&_dispatch_source_type_data_add)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_data_add;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_data_add;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_DATA_OR
@@ -80,8 +80,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_data_add;
  */
 #define DISPATCH_SOURCE_TYPE_DATA_OR (&_dispatch_source_type_data_or)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_data_or;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_data_or;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_MACH_SEND
@@ -92,8 +92,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_data_or;
  */
 #define DISPATCH_SOURCE_TYPE_MACH_SEND (&_dispatch_source_type_mach_send)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_mach_send;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_mach_send;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_MACH_RECV
@@ -103,8 +103,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_mach_send;
  */
 #define DISPATCH_SOURCE_TYPE_MACH_RECV (&_dispatch_source_type_mach_recv)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_PROC
@@ -115,8 +115,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
  */
 #define DISPATCH_SOURCE_TYPE_PROC (&_dispatch_source_type_proc)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_proc;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_proc;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_READ
@@ -127,8 +127,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_proc;
  */
 #define DISPATCH_SOURCE_TYPE_READ (&_dispatch_source_type_read)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_read;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_read;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_SIGNAL
@@ -138,8 +138,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_read;
  */
 #define DISPATCH_SOURCE_TYPE_SIGNAL (&_dispatch_source_type_signal)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_signal;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_signal;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_TIMER
@@ -150,8 +150,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_signal;
  */
 #define DISPATCH_SOURCE_TYPE_TIMER (&_dispatch_source_type_timer)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_timer;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_timer;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_VNODE
@@ -162,8 +162,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_timer;
  */
 #define DISPATCH_SOURCE_TYPE_VNODE (&_dispatch_source_type_vnode)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_vnode;
+extern DISPATCH_EXPORT
+const struct dispatch_source_type_s _dispatch_source_type_vnode;
 
 /*!
  * @const DISPATCH_SOURCE_TYPE_WRITE
@@ -174,8 +174,8 @@ extern const struct dispatch_source_type_s _dispatch_source_type_vnode;
  */
 #define DISPATCH_SOURCE_TYPE_WRITE (&_dispatch_source_type_write)
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT
-extern const struct dispatch_source_type_s _dispatch_source_type_write;
+extern DISPATCH_EXPORT 
+const struct dispatch_source_type_s _dispatch_source_type_write;
 
 /*!
  * @enum dispatch_source_mach_send_flags_t

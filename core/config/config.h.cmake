@@ -36,7 +36,7 @@
 # endif
 # define DISPATCH_DEBUG 0
 #else
-# define DISPATCH_DEBUG 0
+# define DISPATCH_DEBUG 1
 #endif
 
 /* define as 1 to enable the use of kevent */

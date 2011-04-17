@@ -70,9 +70,9 @@
 # endif
 
 # define dispatch_atomic_xchg(p, n)	InterlockedExchange((LONG*)(p),(LONG)(n))
-# define dispatch_atomic_cmpxchg(p, o, n)	InterlockedCompareExchange((LONG*)(p), (LONG)(n), (LONG)(o))
-# define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((LONG*)(p),(n))
-# define dispatch_atomic_ptr_cmpxchg(p, o, n) InterlockedCompareExchangePointer((LONG*)(p), (n), (o))
+# define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((LONG*)(p), (LONG)(n), (LONG)(o)) == (LONG)(o) )
+# define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((PVOID*)(p),(n))
+# define dispatch_atomic_ptr_cmpxchg(p, o, n) ( InterlockedCompareExchangePointer((PVOID*)(p), (n), (o)) == (PVOID)(o) )
 # define dispatch_atomic_inc(p)	InterlockedIncrement((LONG*)(p))
 # define dispatch_atomic_dec(p)	InterlockedDecrement((LONG*)(p))
 # define dispatch_atomic_add(p, v)	InterlockedExchangeAdd((LONG*)(p), (v))

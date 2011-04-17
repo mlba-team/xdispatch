@@ -134,6 +134,22 @@ typedef void (*dispatch_function_t)(void *);
 # endif
 #endif
 
+#ifndef DISPATCH_EXTERN
+# ifdef _WIN32
+#  define DISPATCH_EXTERN
+# else
+#  define DISPATCH_EXTERN extern
+# endif
+#endif
+
+#ifndef DISPATCH_PTR
+# ifdef _WIN32
+#  define DISPATCH_PTR *
+# else
+#  define DISPATCH_PTR
+# endif
+#endif
+
 #ifndef __OSX_AVAILABLE_STARTING
 # define __OSX_AVAILABLE_STARTING(...)
 #endif

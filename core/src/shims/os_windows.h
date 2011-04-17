@@ -39,6 +39,10 @@
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS 1
 #endif
+/* The #define doesn't seem to work, but the #pragma does.. */
+#ifdef _MSC_VER
+# pragma warning( disable : 4996 )
+#endif
 
 #include <Windows.h>
 #if HAVE_STDINT_H
@@ -77,6 +81,9 @@ typedef UINT64 uint64_t;
 # define snprintf _snprintf
 #endif
 #define random()	rand()
+#if !defined(__func__) && !defined(__GNUC__)
+#define __func__ __FUNCDNAME__
+#endif
 
 #define true 1
 #define false 0

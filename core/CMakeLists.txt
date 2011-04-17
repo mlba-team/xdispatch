@@ -57,13 +57,6 @@ if(MINGW)
     set(LIBS ${LIBS} ws2_32)
 endif()
 
-if(MSVC)
-	SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /TP")
-	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /TP")
-	SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /TP")
-	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /TP")
-endif()
-
 # core lib
 file(GLOB INCL ../include/libdispatch/*.h)
 file(GLOB CORE src/*.c src/*.h config/*.in)

@@ -163,12 +163,6 @@
 #endif
 /* More #includes at EOF (dependent on the contents of internal.h) ... */
 
-/* The "_debug" library build */
-#ifndef DISPATCH_DEBUG
-#define DISPATCH_DEBUG 0
-#endif
-
-
 uint64_t _dispatch_get_nanoseconds(void);
 
 #ifndef DISPATCH_NO_LEGACY

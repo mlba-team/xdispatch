@@ -126,13 +126,13 @@ void _dispatch_logv(const char *msg, va_list);
    a new variable within this block... */
 
 # define dispatch_assert(e)	do {	\
-        if (DISPATCH_DEBUG && !(e)) {	\
+        if (!(e) && DISPATCH_DEBUG) {	\
                 _dispatch_abort(__LINE__, (long)0);	\
             }	\
     } while (0)
 
 # define dispatch_assert_zero(e)	do {	\
-        if (DISPATCH_DEBUG && (e)!=0) {	\
+        if ((e)!=0 && DISPATCH_DEBUG) {	\
                 _dispatch_abort(__LINE__, (long)0);	\
             }	\
     } while (0)
@@ -148,7 +148,7 @@ void _dispatch_logv(const char *msg, va_list);
 		}
 
 # define dispatch_debug_assert(e, msg, ...)	do {	\
-        if (DISPATCH_DEBUG && !(e)) {	\
+        if (!(e) && DISPATCH_DEBUG) {	\
                 _dispatch_log("%s() 0x%lx: " msg, __func__, (long)0, ##args);	\
                 abort();	\
         }	\
