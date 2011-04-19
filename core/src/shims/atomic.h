@@ -69,21 +69,23 @@
 #  include <Windows.h>
 # endif
 
-# define dispatch_atomic_xchg(p, n)	InterlockedExchange((LONG*)(p),(LONG)(n))
-# define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((LONG*)(p), (LONG)(n), (LONG)(o)) == (LONG)(o) )
-# define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((PVOID*)(p),(n))
-# define dispatch_atomic_ptr_cmpxchg(p, o, n) ( InterlockedCompareExchangePointer((PVOID*)(p), (n), (o)) == (PVOID)(o) )
-# define dispatch_atomic_inc(p)	InterlockedIncrement((LONG*)(p))
-# define dispatch_atomic_dec(p)	InterlockedDecrement((LONG*)(p))
-# define dispatch_atomic_add(p, v)	InterlockedExchangeAdd((LONG*)(p), (v))
-# define dispatch_atomic_sub(p, v)	InterlockedExchangeAdd((LONG*)(p), -(LONG)(v))
+# define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
+# define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((p), (n), (o)) == (o) )
+# define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((p),(n))
+# define dispatch_atomic_ptr_cmpxchg(p, o, n) ( InterlockedCompareExchangePointer((p), (n), (o)) == (o) )
+# define dispatch_atomic_inc(p)	InterlockedIncrement((p))
+# define dispatch_atomic_dec(p)	InterlockedDecrement((p))
 #if defined (__x86_64__)
-# define dispatch_atomic_or(p, v)	InterlockedOr((LONG*)(p), (v))
+# define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd64((p), (v)) + (v))
+# define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd64((p), ((LONG)(v)*(-1))) - (v))
+# define dispatch_atomic_or(p, v)	InterlockedOr((p), (v))
 #else
-# define dispatch_atomic_or(p, v)	_InterlockedOr((LONG*)(p), (v))
+# define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd((p), (v)) + (v))
+# define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd((p), ((LONG)(v)*(-1))) - (v))
+# define dispatch_atomic_or(p, v)	_InterlockedOr((p), (v))
 #endif
-# define dispatch_atomic_and(p, v)	InterlockedAnd((LONG*)(p), (v))
-# define dispatch_atomic_barrier()	 MemoryBarrier()
+# define dispatch_atomic_and(p, v)	InterlockedAnd((p), (v))
+# define dispatch_atomic_barrier()	MemoryBarrier()
 
 # ifndef ATOMIC_INT
 #  if _MSC_VER >= 1600

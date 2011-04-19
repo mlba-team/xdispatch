@@ -18,10 +18,11 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef TARGET_OS_WIN32
 
 #define _CRT_SECURE_NO_WARNINGS
 #include "../internal.h"
+
+#ifdef TARGET_OS_WIN32
 
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64

@@ -37,7 +37,7 @@ _dispatch_get_host_time_init(void *context DISPATCH_UNUSED)
 	LARGE_INTEGER freq;
 	dispatch_assume(QueryPerformanceFrequency(&freq));
 	_dispatch_host_time_data.frac = (long double)NSEC_PER_SEC / (long double)freq.QuadPart;
-	_dispatch_host_time_data.ratio_1_to_1 = (freq.QuadPart == 1);
+	_dispatch_host_time_data.ratio_1_to_1 = (freq.QuadPart == NSEC_PER_SEC);
 #else // TARGET_OS_WIN32 
 	_dispatch_host_time_data.frac = 1.0;
 	_dispatch_host_time_data.ratio_1_to_1 = 1;

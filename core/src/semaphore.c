@@ -173,7 +173,7 @@ _dispatch_semaphore_create_handle(HANDLE *s4)
 	}
 #endif
 
-	if (!dispatch_atomic_cmpxchg(s4, 0, tmp)) {
+	if (!dispatch_atomic_ptr_cmpxchg(s4, 0, tmp)) {
 		CloseHandle(tmp);
 	}
 }
@@ -452,7 +452,7 @@ long
 _dispatch_group_wake(dispatch_semaphore_t dsema)
 {
 	struct dispatch_sema_notify_s *tmp;
-	struct dispatch_sema_notify_s *head = (struct dispatch_sema_notify_s *)dispatch_atomic_xchg(&dsema->dsema_notify_head, NULL);
+	struct dispatch_sema_notify_s *head = (struct dispatch_sema_notify_s *)dispatch_atomic_ptr_xchg(&dsema->dsema_notify_head, NULL);
 	long rval = (long)dispatch_atomic_xchg(&dsema->dsema_group_waiters, 0);
 	bool do_rel = (head != NULL);
 #if USE_MACH_SEM
@@ -489,7 +489,7 @@ _dispatch_group_wake(dispatch_semaphore_t dsema)
 		_dispatch_release(head->dsn_queue);
 		do {
 			tmp = head->dsn_next;
-		} while (!tmp && !dispatch_atomic_cmpxchg(&dsema->dsema_notify_tail, head, NULL));
+		} while (!tmp && !dispatch_atomic_ptr_cmpxchg(&dsema->dsema_notify_tail, head, NULL));
 		free(head);
 		head = tmp;
 	}

@@ -207,12 +207,12 @@ void _dispatch_logv(const char *msg, va_list);
 
 #define DISPATCH_CRASH(x)	do {	\
         _dispatch_log("BUG IN LIBDISPATCH: %S ", x);	\
-        _dispatch_hardware_crash();	\
+        abort();	\
     } while (0)
 
 #define DISPATCH_CLIENT_CRASH(x)	do {	\
         _dispatch_log("BUG IN CLIENT OF LIBDISPATCH: %S ", x);	\
-        _dispatch_hardware_crash();	\
+        abort();	\
     } while (0)
 
 #endif /* DEBUG_H_ */

@@ -82,7 +82,7 @@
 #endif
 
 /* no progname ? */
-#define HAVE_GETPROGNAME
+#define HAVE_GETPROGNAME 0
 
 /* no performance monitor */
 #define DISPATCH_PERF_MON 0

@@ -63,7 +63,7 @@ file(GLOB CORE src/*.c src/*.h config/*.in)
 file(GLOB SHIM src/shims/*.c src/shims/*.h)
 source_group(dispatch FILES ${INCL})
 source_group(core FILES ${CORE})
-source_group(core/shims FILES ${SHIM})
+source_group(core\\shims FILES ${SHIM})
 
   
 # add new target

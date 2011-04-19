@@ -22,7 +22,7 @@
 #ifndef __DISPATCH_SHIMS_GETPROGNAME__
 #define __DISPATCH_SHIMS_GETPROGNAME__
 
-#ifndef HAVE_GETPROGNAME
+#if !HAVE_GETPROGNAME
 
 static inline const char *
 getprogname(void)
@@ -31,6 +31,8 @@ getprogname(void)
     return program_invocation_short_name;
 #elif HAVE_GETEXECNAME
     return getexecname();
+# elif TARGET_OS_WIN32
+	return 0;
 # else
 #   error getprogname(3) is not available on this platform
 # endif

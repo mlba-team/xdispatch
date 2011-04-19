@@ -52,6 +52,7 @@
 #endif
 #include <limits.h>
 #include <errno.h>
+#include <process.h>
 #include "queue.h"
 
 //typedef signed char int8_t;
@@ -84,6 +85,7 @@ typedef UINT64 uint64_t;
 #if !defined(__func__) && !defined(__GNUC__)
 #define __func__ __FUNCDNAME__
 #endif
+#define getpid _getpid
 
 #define true 1
 #define false 0
@@ -130,12 +132,15 @@ struct timespec {
 
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 
-// some error codes used throughout the code
+// some constants used throughout the code
 #ifndef ENOTSUP
 # define ENOTSUP 300
 #endif
 #ifndef ETIMEDOUT
 # define ETIMEDOUT WSAETIMEDOUT
+#endif
+#ifndef PATH_MAX
+# define PATH_MAX 512
 #endif
 
 // fd functions

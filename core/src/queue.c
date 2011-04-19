@@ -472,7 +472,8 @@ out:
 dispatch_queue_t
 dispatch_get_current_queue(void)
 {
-	return _dispatch_queue_get_current() ? 0 : _dispatch_get_root_queue(0, true);
+	dispatch_queue_t q = _dispatch_queue_get_current();
+	return q ? q : _dispatch_get_root_queue(0, true);
 }
 
 
@@ -1013,7 +1014,15 @@ dispatch_main(void)
 	if (pthread_main_np()) {
 #endif
 		_dispatch_program_is_probably_callback_driven = true;
+#if TARGET_OS_WIN32
+		// The TSD has no de-allocator on windows
+		_dispatch_queue_cleanup(_dispatch_thread_getspecific(dispatch_queue_key));
+        _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
+		// And pthread_exit would immediately return
+		while(1) Sleep(0);
+#else
 		pthread_exit(NULL);
+#endif
 		DISPATCH_CRASH("pthread_exit() returned");
 #if HAVE_PTHREAD_MAIN_NP
 	}
@@ -1041,6 +1050,7 @@ DISPATCH_NOINLINE
 static void
 _dispatch_queue_cleanup2(void)
 {
+	int res = -1;
 	dispatch_atomic_dec(&_dispatch_main_q.dq_running);
 
 	if (dispatch_atomic_sub(&_dispatch_main_q.do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_LOCK) == 0) {
@@ -1530,7 +1540,7 @@ _dispatch_queue_drain(dispatch_queue_t dq)
 			// Enqueue is TIGHTLY controlled, we won't wait long.
 			do {
 				next_dc = fastpath(dc->do_next);
-			} while (!next_dc && !dispatch_atomic_cmpxchg(&dq->dq_items_tail, dc, NULL));
+			} while (!next_dc && !dispatch_atomic_ptr_cmpxchg(&dq->dq_items_tail, dc, NULL));
 			if (DISPATCH_OBJECT_SUSPENDED(dq)) {
 				goto out;
 			}
@@ -1560,7 +1570,7 @@ out:
 	if (slowpath(dc)) {
 		// 'dc' must NOT be "popped"
 		// 'dc' might be the last item
-		if (next_dc || dispatch_atomic_cmpxchg(&dq->dq_items_tail, NULL, dc)) {
+		if (next_dc || dispatch_atomic_ptr_cmpxchg(&dq->dq_items_tail, NULL, dc)) {
 			dq->dq_items_head = dc;
 		} else {
 			while (!(next_dc = dq->dq_items_head)) {

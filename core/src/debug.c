@@ -64,30 +64,35 @@ _dispatch_log(const char *msg, ...)
 
 void _dispatch_logv(const char *msg, va_list params){
 #if DISPATCH_DEBUG
-# if !TARGET_OS_WIN32
     static FILE *logfile, *tmp;
-    char newbuf[strlen(msg) + 2];
+# if TARGET_OS_WIN32
+    char newbuf[300], temp[PATH_MAX];
+# else
+	char newbuf[strlen(msg) + 2];
+# endif
     char path[PATH_MAX];
 
     sprintf(newbuf, "%s\n", msg);
 
     if (!logfile) {
+# if TARGET_OS_WIN32
+		ExpandEnvironmentStrings("%temp%\\libdispatch.%d.log", temp, PATH_MAX-2);
+		snprintf(path, PATH_MAX, temp, getpid());
+# else
         snprintf(path, sizeof(path), "/var/tmp/libdispatch.%d.log", getpid());
+# endif
         tmp = fopen(path, "a");
         assert(tmp);
-        if (!dispatch_atomic_cmpxchg(&logfile, NULL, tmp)) {
+        if (!dispatch_atomic_ptr_cmpxchg(&logfile, NULL, tmp)) {
             fclose(tmp);
         } else {
             struct timeval tv;
             gettimeofday(&tv, NULL);
             fprintf(logfile, "=== log file opened for %s[%u] at %ld.%06u ===\n",
-                    getprogname() ?: "", getpid(), tv.tv_sec, tv.tv_usec);
+                    getprogname() ?  getprogname() : "", getpid(), tv.tv_sec, tv.tv_usec);
         }
     }
-    vfprintf(logfile, newbuf, ap);
+    vfprintf(logfile, newbuf, params);
     fflush(logfile);
-# else
-      printf(msg, params);
-# endif
 #endif
 }
