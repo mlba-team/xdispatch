@@ -37,7 +37,7 @@ extern "C" void Qt_dispatch_after(){
 	QTime watch;
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-    QDispatchCoreApplication app(argc,&argv);
+    QDispatchApplication app(argc,&argv);
 
         MU_BEGIN_TEST(Qt_dispatch_after);
 

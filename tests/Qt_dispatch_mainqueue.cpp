@@ -46,7 +46,7 @@ public:
             MU_MESSAGE("System usage should be zero");
             QDispatch::mainQueue().after(${
                 MU_PASS("");
-            }, QTime::currentTime().addSecs(20));
+            }, QTime::currentTime().addSecs(5));
         }
     }
 
@@ -62,7 +62,7 @@ private:
 extern "C" void Qt_dispatch_mainqueue(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-    QDispatchCoreApplication app(argc,&argv);
+    QDispatchApplication app(argc,&argv);
 
 	MU_BEGIN_TEST(Qt_dispatch_mainqueue);
 

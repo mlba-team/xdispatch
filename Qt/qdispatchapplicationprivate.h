@@ -21,7 +21,7 @@
 #ifndef QDISPATCH_APPLICATIONPRIVATE_H_
 #define QDISPATCH_APPLICATIONPRIVATE_H_
 
-#include "../include/QtDispatch/qdispatchcoreapplication.h"
+#include "../include/QtDispatch/qdispatchapplication.h"
 #include "../include/xdispatch/dispatch.h"
 #include <QDebug>
 

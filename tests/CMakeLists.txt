@@ -1,5 +1,4 @@
 # tests for xdispatch
-
 mz_add_library(munit munit)
 
 # define file groups

@@ -2,22 +2,23 @@
 #include <QThread>
 
 #include "../include/QtDispatch/qdispatchapplication.h"
-#include "qdispatchapplicationprivate.h"
 
-#ifndef Q_OS_MAC
+#ifdef Q_OS_MAC
+
+#ifndef QT_MAC_USE_COCOA
+# error "QtDispatch is supporting Qt built on Cocoa only"
+#endif
 
 QT_BEGIN_NAMESPACE
 
 QDispatchApplication* QDispatchApplication::self = NULL;
 
-QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv), d(new QDispatchApplicationPrivate) {
-    Q_CHECK_PTR(d);
+QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv), d(NULL) {
     self = this;
-    d->self = this;
 }
 
 QDispatchApplication::~QDispatchApplication() {
-    delete d;
+
 }
 
 int QDispatchApplication::exec() {
@@ -27,7 +28,7 @@ int QDispatchApplication::exec() {
         return -1;
     }
 
-    return self->d->exec();
+    return QApplication::exec();
 
 }
 
