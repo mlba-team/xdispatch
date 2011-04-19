@@ -23,12 +23,16 @@
 
 #include <xdispatch/dispatch.h>
 
+static pthread_t main_thread;
+
 /*
  A simple test for ensuring that getting the global
  queues is actually working
  */
 
 void pass(void* dt){
+    pthread_t now = pthread_self();
+    MU_ASSERT_EQUAL(pthread_equal(now, main_thread), 1);
     MU_PASS("Core API is working");
 }
 
@@ -37,6 +41,7 @@ void dispatch_api() {
 
 	MU_BEGIN_TEST(dispatch_api);
 
+    main_thread = pthread_self();
     q = dispatch_get_main_queue();
 	MU_ASSERT_NOT_NULL(q);
     dispatch_async_f(q, NULL, pass);
