@@ -170,6 +170,8 @@ XDISPATCH_EXPORT void dispatch_group_async(dispatch_group_t group, dispatch_queu
 
 XDISPATCH_EXPORT void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);
 
+XDISPATCH_EXPORT void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
+
 #endif
 
 #endif /* XDISPATCH_BLOCKS_H_ */
