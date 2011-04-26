@@ -44,6 +44,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <math.h>
 #include <pthread_workqueue.h>
 #ifdef HAVE_LIBKQUEUE_H
 # include <kqueue/sys/event.h>

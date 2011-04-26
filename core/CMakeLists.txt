@@ -17,7 +17,7 @@ CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
 if(HAVE_PTHREAD_WORKQUEUE_H)
     message("   >> found native pthread_workqueue implementation, using it")
 else()
-	set(LIBS ${LIBS} libpthread_workqueue)
+	set(LIBS ${LIBS} pthread_workqueue)
 endif()
 
 # do we have kqueues?
@@ -29,21 +29,20 @@ CHECK_INCLUDE_FILES (kqueue/sys/event.h HAVE_LIBKQUEUE_H)
 if(HAVE_LIBKQUEUE_H)
     message("   >> found libkqeue installation, using it")
 endif()
-if(NOT HAVE_KQUEUE_H AND NOT HAVE_LIBKQUEUE_H)
-    set(LIBS ${LIBS} libkqueue)
+if(NOT HAVE_KQUEUE_H)
+    set(LIBS ${LIBS} kqueue)
 endif()
 
 # other needed functions
 CHECK_INCLUDE_FILES( mach/mach_time.h HAVE_MACH_ABSOLUTE_TIME)
 CHECK_INCLUDE_FILES( stdint.h HAVE_STDINT_H)
 CHECK_INCLUDE_FILES( crtdbg.h HAVE_CRTDBG_H)
+CHECK_FUNCTION_EXISTS( getprogname HAVE_GETPROGNAME)
+CHECK_FUNCTION_EXISTS( getexecname HAVE_GETEXECNAME)
+CHECK_FUNCTION_EXISTS( program_invocation_short_name HAVE_DECL_PROGRAM_INVOCATION_SHORT_NAME)
 CHECK_SYMBOL_EXISTS( CLOCK_UPTIME "time.h" HAVE_DECL_CLOCK_UPTIME)
 CHECK_SYMBOL_EXISTS( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 CHECK_FUNCTION_EXISTS( sysconf HAVE_SYSCONF)
-
-if(HAVE_LIBKQUEUE_H)
-   # set(LIBS ${LIBS} kqueue)
-endif()
 
 if(LINUX)
     set(LIBS ${LIBS} rt)
@@ -68,6 +67,7 @@ source_group(core\\shims FILES ${SHIM})
   
 # add new target
 add_definitions(-DDISPATCH_MAKEDLL)
+add_definitions(-D_GNU_SOURCE)
 add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM})
   
 # link this target with all needed libraries

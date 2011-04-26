@@ -1050,7 +1050,7 @@ DISPATCH_NOINLINE
 static void
 _dispatch_queue_cleanup2(void)
 {
-	int res = -1;
+        // int res = -1;
 	dispatch_atomic_dec(&_dispatch_main_q.dq_running);
 
 	if (dispatch_atomic_sub(&_dispatch_main_q.do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_LOCK) == 0) {

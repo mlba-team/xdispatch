@@ -82,7 +82,9 @@
 #endif
 
 /* no progname ? */
-#define HAVE_GETPROGNAME 0
+#cmakedefine HAVE_GETPROGNAME 1
+#cmakedefine HAVE_GETEXECNAME 1
+#cmakedefine HAVE_DECL_PROGRAM_INVOCATION_SHORT_NAME 1
 
 /* no performance monitor */
 #define DISPATCH_PERF_MON 0

@@ -89,7 +89,7 @@ void _dispatch_logv(const char *msg, va_list params){
             struct timeval tv;
             gettimeofday(&tv, NULL);
             fprintf(logfile, "=== log file opened for %s[%u] at %ld.%06u ===\n",
-                    getprogname() ?  getprogname() : "", getpid(), tv.tv_sec, tv.tv_usec);
+                    getprogname() ?  getprogname() : "", getpid(), tv.tv_sec, (unsigned int)tv.tv_usec);
         }
     }
     vfprintf(logfile, newbuf, params);

@@ -42,7 +42,7 @@ if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPAT
     mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
-	)
+    )
 endif()
 
 # currently there's a bug in mingw causing the
@@ -78,11 +78,11 @@ mz_add_library(xdispatch cxx)
 
 # tell everybody we have libdispatch support here, perhaps even native by the OS
 if(HAVE_NATIVE_DISPATCH_H)
-	if(PARENT_SCOPE)
+    if(PARENT_SCOPE)
         mz_add_definition("HAVE_NATIVE_DISPATCH_H" PARENT_SCOPE)
-	else()
+    else()
         mz_add_definition("HAVE_NATIVE_DISPATCH_H")
-	endif()
+    endif()
 endif()
 
 # Use HAS_LIBDISPATCH to query it in other projects
