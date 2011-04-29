@@ -174,6 +174,8 @@ XDISPATCH_EXPORT void dispatch_source_set_event_handler(dispatch_source_t source
 
 XDISPATCH_EXPORT void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler);
 
+XDISPATCH_EXPORT void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
+
 #endif
 
 #endif /* XDISPATCH_BLOCKS_H_ */
