@@ -39,15 +39,13 @@
 extern "C" void dispatch_timer_bit63() {
     MU_BEGIN_TEST(dispatch_timer_bit63);
 
-	MU_PASS("");
-	/*
     //uint64_t interval = 0xffffffffffffffffull;
     uint64_t interval = 0x8000000000000001ull;
 
     dispatch_queue_t mainq = dispatch_get_main_queue();
 
     int* i = new int;
-    assert(i);
+    MU_ASSERT_NOT_NULL(i);
     *i = 0;
     struct timeval start_time;
 
@@ -57,19 +55,19 @@ extern "C" void dispatch_timer_bit63() {
     ds = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainq);
     assert(ds);
     dispatch_source_set_event_handler(ds, ${
-        assert(*i < 1);
-        printf("%d\n", (*i)++);
+        MU_ASSERT_LESS_THAN(*i, 1);
+        MU_MESSAGE("%d", (*i)++);
     });
     dispatch_source_set_timer(ds, DISPATCH_TIME_NOW, interval, 0);
     dispatch_resume(ds);
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1*NSEC_PER_SEC),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10*NSEC_PER_SEC),
         dispatch_get_main_queue(), ${
         delete i;
         MU_PASS("");
     });
 
-    dispatch_main();*/
+    dispatch_main();
 
     MU_END_TEST
 }

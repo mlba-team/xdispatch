@@ -89,11 +89,11 @@ void dispatch_group_blocks() {
 	MU_ASSERT_NOT_NULL(group);
 
 	res = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC));
-	MU_ASSERT_EQUAL_LONG(!res, 0);
+    MU_ASSERT_EQUAL(!res, 0);
 
 	// retry after timeout (this time succeed)
 	res = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC));
-	MU_ASSERT_EQUAL_LONG(res, 0);
+    MU_ASSERT_EQUAL(res, 0);
 
 	dispatch_release(group);
 	group = NULL;

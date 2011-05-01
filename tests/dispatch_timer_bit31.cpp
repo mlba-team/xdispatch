@@ -42,9 +42,7 @@ extern "C" void dispatch_timer_bit31() {
 
 	MU_PASS("");
 
-	/*
-
-	dispatch_queue_t main_q = dispatch_get_main_queue();
+    dispatch_queue_t main_q = dispatch_get_main_queue();
     MU_ASSERT_EQUAL(main_q, dispatch_get_current_queue());
 
 	dispatch_source_t timer;
@@ -65,14 +63,14 @@ extern "C" void dispatch_timer_bit31() {
 		struct timeval end_time;
 		gettimeofday(&end_time, NULL);
 
-        MU_ASSERT_TRUE(end_time.tv_sec - start_time.tv_sec < 4);
-        MU_ASSERT_TRUE(1 < end_time.tv_sec - start_time.tv_sec);
+        MU_ASSERT_LESS_THAN(end_time.tv_sec - start_time.tv_sec, 4);
+        MU_ASSERT_LESS_THAN(1, end_time.tv_sec - start_time.tv_sec);
         MU_PASS("");
 	});
 	
 	dispatch_resume(timer);
 	
-	dispatch_main(); */
+    dispatch_main();
 
     MU_END_TEST
 }
