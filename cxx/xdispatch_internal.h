@@ -29,8 +29,6 @@
 #  include "../include/libdispatch/dispatch.h"
 # endif
 
-#include "../core/src/shims/atomic.h"
-
 #include <assert.h>
 #include <string>
 
@@ -54,7 +52,9 @@
 #include "../include/xdispatch/queue.h"
 #include "../include/xdispatch/group.h"
 #include "../include/xdispatch/semaphore.h"
+#include "../include/xdispatch/timer.h"
 
+#include "shims.h"
 #include "execution.h"
 
 #undef __XDISPATCH_INDIRECT__

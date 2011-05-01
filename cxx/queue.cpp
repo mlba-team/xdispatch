@@ -43,7 +43,8 @@ queue::queue(const char* label) : d(new data){
 }
 
 queue::~queue(){
-    dispatch_release(d->native);
+    if(d->native)
+        dispatch_release(d->native);
     delete d;
 }
 

@@ -51,6 +51,7 @@ void cxx_dispatch_queue();
 void cxx_dispatch_serialqueue();
 void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
+void cxx_dispatch_timer();
 
 static void register_cxx_tests(){
 #ifdef TEST_BLOCKS
@@ -62,6 +63,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_serialqueue);
     MU_REGISTER_TEST(cxx_dispatch_semaphore);
     MU_REGISTER_TEST(cxx_dispatch_current);
+    MU_REGISTER_TEST(cxx_dispatch_timer);
 #endif
 }
 

@@ -103,7 +103,11 @@ public:
 #endif
     /**
     Applies the given operation for async execution
-    in this queue after the given time and returns immediately
+    in this queue after the given time and returns immediately.
+    The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
 
     @param time The time to wait until the operation is applied to
     the queue.
@@ -122,7 +126,10 @@ public:
     /**
     Applies the given operation for execution
     in this queue and blocks until the operation
-    was executed
+    was executed. The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
     */
     virtual void sync(operation*);
 #ifdef XDISPATCH_HAS_BLOCKS
@@ -138,7 +145,10 @@ public:
     queue. A finalizer is called before destroying
     a queue, i.e. if all queue objects
     representing the queue were deleted and all
-    pending work on a queue was dispatched.
+    pending work on a queue was dispatched. The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
 
     When not passing a queue, the finalizer operation
     will be executed on the queue itself.
