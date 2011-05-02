@@ -58,6 +58,8 @@ DISPATCH_DECL(dispatch_source);
  */
 typedef const struct dispatch_source_type_s *dispatch_source_type_t;
 
+__DISPATCH_BEGIN_DECLS
+
 /*!
  * @const DISPATCH_SOURCE_TYPE_DATA_ADD
  * @discussion A dispatch source that coalesces data obtained via calls to
@@ -176,6 +178,8 @@ const struct dispatch_source_type_s _dispatch_source_type_vnode;
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
 extern DISPATCH_EXPORT 
 const struct dispatch_source_type_s _dispatch_source_type_write;
+
+__DISPATCH_END_DECLS
 
 /*!
  * @enum dispatch_source_mach_send_flags_t

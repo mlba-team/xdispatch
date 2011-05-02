@@ -119,7 +119,7 @@ void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block
 void dispatch_once(dispatch_once_t *val, dispatch_block_t block){
 	volatile long *vval = val;
 
-	if (atomic_cmpxchg(val, 0l, 1l)) {
+	if (dispatch_atomic_cmpxchg(val, 0l, 1l)) {
 		block();
 
 		// The next barrier must be long and strong.
@@ -172,14 +172,14 @@ void dispatch_once(dispatch_once_t *val, dispatch_block_t block){
 		// On some CPUs, the most fully synchronizing instruction might
 		// need to be issued.
 	
-		atomic_barrier();
+		dispatch_atomic_barrier();
 		*val = ~0l;
 	} else {
 		do {
 			_dispatch_hardware_pause();
 		} while (*vval != ~0l);
 
-		atomic_barrier();
+		dispatch_atomic_barrier();
 	}
 }
 

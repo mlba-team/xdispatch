@@ -45,11 +45,7 @@
 #endif
 
 #include <Windows.h>
-#if HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include "stdint.h"
-#endif
+#include <stdint.h>
 #include <limits.h>
 #include <errno.h>
 #include <process.h>

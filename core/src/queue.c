@@ -1246,11 +1246,7 @@ static void
 _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 {
 #if HAVE_PTHREAD_WORKQUEUES
-# if TARGET_OS_WIN32
-    bool disable_wq = GetEnvironmentVariable("LIBDISPATCH_DISABLE_KWQ", 0, 0);
-# else
-	bool disable_wq = getenv("LIBDISPATCH_DISABLE_KWQ");
-# endif
+	bool disable_wq = getenv("LIBDISPATCH_DISABLE_KWQ") ? 1 : 0;
 	pthread_workqueue_attr_t pwq_attr;
 	int r;
 #endif
