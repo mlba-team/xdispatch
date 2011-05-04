@@ -190,7 +190,7 @@ _dispatch_semaphore_create_handle(HANDLE *s4)
 		CloseHandle(tmp);
 	}
 }
-#endif /* USE_WIN32_SEM */
+#endif USE_WIN32_SEM */
 
 DISPATCH_NOINLINE
 static long
