@@ -36,12 +36,20 @@ static pthread_key_t _dispatch_buffer_key;
 // run once to allocate the thread keys
 static void _buffer_key_alloc(void* unused){
     int r = pthread_key_create(&_dispatch_buffer_key, NULL);
+#ifdef DEBUG
     assert(r==0);
+#else
+    r = 0;
+#endif
 }
 
 void _set_thread_queue(dispatch_queue_t q){
     int r = pthread_setspecific(_dispatch_buffer_key, q);
+#ifdef DEBUG
     assert(r==0);
+#else
+    r = 0;
+#endif
 }
 
 dispatch_queue_t _get_thread_queue(){
