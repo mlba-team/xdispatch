@@ -40,13 +40,7 @@ class Q_DISPATCH_EXPORT QDispatchApplication : public QApplication {
 
 public:
     QDispatchApplication(int& argc, char** argv);
-    ~QDispatchApplication();
-
-    static int exec();
-
-private:
-    QDispatchApplicationPrivate* d;
-    static QDispatchApplication* self;
+	~QDispatchApplication();
 
 };
 

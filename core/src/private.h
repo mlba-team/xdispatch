@@ -121,6 +121,22 @@ void (*_dispatch_end_NSAutoReleasePool)(void *);
 #endif
 #endif /* HAVE_MACH */
 
+#ifdef QT_CORE_LIB
+# define DISPATCH_QT_COMPAT 1
+# if DISPATCH_QT_COMPAT
+
+/* Note: Adapt the QDispatchApplication implementation when changing those symbols */
+
+typedef void (_dispatch_main_q_handler_4QT)(void);
+
+DISPATCH_EXPORT
+void _dispatch_main_queue_callback_4QT();
+
+DISPATCH_EXPORT
+void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT);
+# endif
+#endif /* QT_CORE_LIB */
+
 /* pthreads magic */
 
 DISPATCH_NOTHROW void dispatch_atfork_prepare(void);

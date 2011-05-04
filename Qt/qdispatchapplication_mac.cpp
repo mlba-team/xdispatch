@@ -31,24 +31,7 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatchApplication* QDispatchApplication::self = NULL;
-
 QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv), d(NULL) {
-    self = this;
-}
-
-QDispatchApplication::~QDispatchApplication() {
-
-}
-
-int QDispatchApplication::exec() {
-
-    if(QThread::currentThread() != self->thread()) {
-        qWarning("%s::exec: Must be called from the main thread", self->metaObject()->className());
-        return -1;
-    }
-
-    return QApplication::exec();
 
 }
 

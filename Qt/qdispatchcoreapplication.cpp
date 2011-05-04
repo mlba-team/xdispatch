@@ -23,19 +23,27 @@
 #include <QDebug>
 
 #include "../include/QtDispatch/qdispatchcoreapplication.h"
+#include "qdispatchapplicationprivate.h"
 
 QT_BEGIN_NAMESPACE
 
+	QEvent::Type QDispatchEvent::TYPECONSTANT;
+	QDispatchLibBridge* QDispatchLibBridge::instance;
 
-QDispatchCoreApplication::QDispatchCoreApplication(int& argc, char** argv) : QDispatchApplication(argc, argv) {
-    qCritical("QDispatchCoreApplication is deprecated. Please use QDispatchApplication instead");
+QT_END_NAMESPACE
+
+#ifndef Q_OS_MAC
+
+QT_BEGIN_NAMESPACE
+
+QDispatchCoreApplication::QDispatchCoreApplication(int& argc, char** argv) : QCoreApplication(argc, argv) {
+	QDispatchLibBridge::registerCallback();
 }
 
-
-int QDispatchCoreApplication::exec() {
-
-    return QDispatchApplication::exec();
-
+QDispatchCoreApplication::~QDispatchCoreApplication(){
+	QDispatchLibBridge::removeCallback();
 }
 
 QT_END_NAMESPACE
+
+#endif /* Q_OS_MAC */

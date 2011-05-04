@@ -21,54 +21,57 @@
 #ifndef QDISPATCH_APPLICATIONPRIVATE_H_
 #define QDISPATCH_APPLICATIONPRIVATE_H_
 
-#include "../include/QtDispatch/qdispatchapplication.h"
 #include "../include/xdispatch/dispatch.h"
 #include <QDebug>
+#include <QEvent>
+
+extern "C" {
+	/* copied from libdispatch/private.h */
+	typedef void (_dispatch_main_q_handler_4QT)(void);
+	DISPATCH_EXPORT void _dispatch_main_queue_callback_4QT();
+	DISPATCH_EXPORT void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT);
+}
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Dispatch)
-
-class QProcessEventsOperation : public xdispatch::operation {
+class QDispatchEvent : public QEvent {
 public:
-    QProcessEventsOperation(QCoreApplication* app) : app(app) {
-        Q_ASSERT(app);
-    }
+	QDispatchEvent() : QEvent(TYPECONSTANT) {}
 
-    void operator ()(){
-        app->processEvents(QEventLoop::WaitForMoreEvents | QEventLoop::EventLoopExec);
-        //qDebug() << "Processed events";
-        xdispatch::current_queue().async(new QProcessEventsOperation(app));
-    }
-
-private:
-    QCoreApplication* app;
+	static QEvent::Type TYPECONSTANT;
 };
 
-class QDispatchApplicationPrivate {
+class QDispatchLibBridge : public QObject {
 
 public:
-    QDispatchApplicationPrivate() : main(xdispatch::main_queue()), self(NULL) {
-        Q_ASSERT(main.native());
-    }
+	QDispatchLibBridge() : QObject(NULL) {}
 
-    xdispatch::queue main;
-    QCoreApplication* self;
+	bool event(QEvent* e){
+		if(e->type() != QDispatchEvent::TYPECONSTANT)
+			return false;
 
-    int exec() {
-        Q_ASSERT(self);
-        Q_ASSERT(main.native());
+		_dispatch_main_queue_callback_4QT();
+		return true;
+	}
 
-        // add the first listen for events here
-        main.async(new QProcessEventsOperation(self));
+	static void handleNewItem(){
+		qApp->postEvent(QDispatchLibBridge::instance, new QDispatchEvent());
+	}
 
-        // enter the dispatching loop
-        xdispatch::exec();
+	static void registerCallback(){
+		QDispatchEvent::TYPECONSTANT = QEvent::Type(QEvent::registerEventType(QEvent::User+1));
+		instance = new QDispatchLibBridge();
+		_dispatch_register_signal_handler_4QT(handleNewItem);
+	}
 
-        return 0;
-    }
+	static void removeCallback(){
+		delete instance;
+	}
 
+	static QDispatchLibBridge* instance;
+
+private:
 };
 
 QT_END_NAMESPACE

@@ -138,6 +138,13 @@ static bool main_q_is_draining;
 static mach_port_t main_q_port;
 #endif
 
+#if DISPATCH_QT_COMPAT
+static void _dispatch_queue_wakeup_main(void);
+
+static bool main_q_is_draining = false;
+static void (*main_q_handler)(void) = NULL;
+#endif
+
 static const struct dispatch_queue_vtable_s _dispatch_queue_vtable = {
 	DISPATCH_QUEUE_TYPE,          /* .do_type */
 	"queue",                      /* .do_kind */
@@ -983,7 +990,9 @@ _dispatch_main_q_port_init(void *ctxt __attribute__((unused)))
 	_dispatch_program_is_probably_callback_driven = true;
 	_dispatch_safe_fork = false;
 }
+#endif
 
+#if DISPATCH_COCOA_COMPAT || DISPATCH_QT_COMPAT
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 DISPATCH_NOINLINE
 static void
@@ -1182,7 +1191,7 @@ _dispatch_wakeup(dispatch_object_t dou)
 	}
 
     if (!_dispatch_trylock(DO_CAST(dou))) {
-#if DISPATCH_COCOA_COMPAT
+#if DISPATCH_COCOA_COMPAT || DISPATCH_QT_COMPAT
         if (DQUEUE_CAST(dou) == &_dispatch_main_q) {
 			_dispatch_queue_wakeup_main();
 		}
@@ -1215,6 +1224,16 @@ _dispatch_queue_wakeup_main(void)
 		(void)dispatch_assume_zero(kr);
 		break;
 	}
+
+	_dispatch_safe_fork = false;
+}
+#endif
+#if DISPATCH_QT_COMPAT
+void _dispatch_queue_wakeup_main(void){
+	if(!main_q_handler)
+		return;
+
+	main_q_handler();
 
 	_dispatch_safe_fork = false;
 }
@@ -1732,6 +1751,25 @@ _dispatch_get_main_queue_port_4CF(void)
 {
 	dispatch_once_f(&_dispatch_main_q_port_pred, NULL, _dispatch_main_q_port_init);
 	return main_q_port;
+}
+#endif
+
+#if DISPATCH_QT_COMPAT
+void _dispatch_main_queue_callback_4QT(){
+	if (main_q_is_draining) {
+		return;
+	}
+
+	_dispatch_queue_set_mainq_drain_state(true);
+	_dispatch_queue_serial_drain_till_empty(&_dispatch_main_q);
+	_dispatch_queue_set_mainq_drain_state(false);
+}
+
+void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT handler){
+	if(main_q_handler)
+		return; // we assure that only one handler can be registered
+
+	main_q_handler = handler;
 }
 #endif
 

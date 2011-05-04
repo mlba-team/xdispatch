@@ -28,27 +28,12 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatchApplication* QDispatchApplication::self = NULL;
-
-QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv), d(new QDispatchApplicationPrivate) {
-    Q_CHECK_PTR(d);
-    self = this;
-    d->self = this;
+QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv) {
+		QDispatchLibBridge::registerCallback();
 }
 
-QDispatchApplication::~QDispatchApplication() {
-    delete d;
-}
-
-int QDispatchApplication::exec() {
-
-    if(QThread::currentThread() != self->thread()) {
-        qWarning("%s::exec: Must be called from the main thread", self->metaObject()->className());
-        return -1;
-    }
-
-    return self->d->exec();
-
+QDispatchApplication::~QDispatchApplication(){
+	QDispatchLibBridge::removeCallback();
 }
 
 QT_END_NAMESPACE
