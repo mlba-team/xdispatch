@@ -2,6 +2,14 @@
 @page change_log CHANGELOG
 @author Marius Zwicker / MLBA
 
+@section changes-32 Version 0.3.2
+
+release 04/05/2011
+
+ - Fixed some differences regarding the atomic operations on different platforms
+ - Exported a missing symbol regarding xdispatch::sync_locks
+ - Lambdas for the dispatch_once API
+
 @section changes-31 Version 0.3.1
 
 released 09/04/2011
