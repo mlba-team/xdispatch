@@ -265,7 +265,7 @@ int repeat_test(const char* bin, int no, bool keep_running, int times){
     for(iteration = 0; iteration < times; iteration++){
         int res;
 
-        printf("\nTest iteration %i of %i\n", iteration, times);
+        printf("\nTest iteration %i of %i\n", iteration+1, times);
         printf("----------------------------------\n");
 
         res = run(no, bin);

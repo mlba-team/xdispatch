@@ -35,6 +35,13 @@
 		}							\
 	} while (0)
 #endif
+#if USE_WIN32_SEM
+#define	DISPATCH_SEMAPHORE_VERIFY_RET(x) do {				\
+		if ((x) == 0) {					\
+			DISPATCH_CRASH("flawed group/semaphore logic");	\
+		}							\
+	} while (0)
+#endif
 
 struct dispatch_semaphore_vtable_s {
 	DISPATCH_VTABLE_HEADER(dispatch_semaphore_s);
@@ -113,6 +120,10 @@ dispatch_semaphore_create(long value)
 		ret = sem_init(&dsema->dsema_sem, 0, 0);
 		(void)dispatch_assume_zero(ret);
 #endif
+#if USE_WIN32_SEM
+		dsema->dsema_handle = CreateSemaphore(NULL, 0, LONG_MAX, NULL);
+		dispatch_assume(dsema->dsema_handle);
+#endif
 	}
 	
 	return dsema;
@@ -149,6 +160,8 @@ _dispatch_semaphore_create_port(semaphore_t *s4)
 	_dispatch_safe_fork = false;
 }
 #endif
+
+/*
 
 #if USE_WIN32_SEM
 static void
@@ -207,9 +220,6 @@ again:
 
 #if USE_MACH_SEM
 	_dispatch_semaphore_create_port(&dsema->dsema_port);
-#endif
-#if USE_WIN32_SEM
-	_dispatch_semaphore_create_handle(&dsema->dsema_handle);
 #endif
 
 	// From xnu/osfmk/kern/sync_sema.c:
@@ -372,9 +382,6 @@ _dispatch_semaphore_signal_slow(dispatch_semaphore_t dsema)
 	
 	_dispatch_semaphore_create_port(&dsema->dsema_port);
 #endif
-#if USE_WIN32_SEM
-	_dispatch_semaphore_create_handle(&dsema->dsema_handle);
-#endif
 
 	// Before dsema_sent_ksignals is incremented we can rely on the reference
 	// held by the waiter. However, once this value is incremented the waiter
@@ -396,6 +403,7 @@ _dispatch_semaphore_signal_slow(dispatch_semaphore_t dsema)
 #if USE_WIN32_SEM
 	// Signal the semaphore.
 	ret = ReleaseSemaphore(dsema->dsema_handle, 1, NULL);
+	DISPATCH_SEMAPHORE_VERIFY_RET(ret);
 #endif
 
 	_dispatch_release(dsema);
@@ -479,9 +487,10 @@ _dispatch_group_wake(dispatch_semaphore_t dsema)
 		} while (--rval);
 #endif
 #if USE_WIN32_SEM
-		// Signal the semaphore.
-		ret = ReleaseSemaphore(dsema->dsema_waiter_handle, 1, NULL);
-		dispatch_assume(ret);
+		do {
+			ret = ReleaseSemaphore(dsema->dsema_handle, 1, NULL);
+			DISPATCH_SEMAPHORE_VERIFY_RET(ret);
+		} while (--rval);
 #endif
 	}
 	while (head) {
@@ -574,9 +583,9 @@ again:
 			DWORD msec;
 			nsec = _dispatch_timeout(timeout);
 			msec = (DWORD)(nsec / (uint64_t)1000000);
-			ret = WaitForSingleObject(dsema->dsema_waiter_handle, msec);
+			ret = WaitForSingleObject(dsema->dsema_handle, msec);
 		} while (ret != WAIT_OBJECT_0 && ret != WAIT_TIMEOUT);
-		if (ret == WAIT_TIMEOUT) {
+		if (!(ret == WAIT_TIMEOUT)) {
 			break;
 		}
 #endif /* USE_WIN32_SEM */
@@ -610,7 +619,7 @@ again:
 #endif
 #if USE_WIN32_SEM
 		do {
-			ret = WaitForSingleObject(dsema->dsema_waiter_handle, INFINITE);
+			ret = WaitForSingleObject(dsema->dsema_handle, INFINITE);
 		} while (ret != WAIT_OBJECT_0);
 #endif
 
@@ -708,9 +717,6 @@ _dispatch_semaphore_dispose(dispatch_semaphore_t dsema)
 #if USE_WIN32_SEM
 	if (dsema->dsema_handle) {
 		CloseHandle(dsema->dsema_handle);
-	}
-	if (dsema->dsema_waiter_handle) {
-		CloseHandle(dsema->dsema_waiter_handle);
 	}
 #endif
 

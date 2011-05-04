@@ -48,7 +48,7 @@ struct dispatch_semaphore_s {
 	sem_t dsema_sem;
 #elif USE_WIN32_SEM
 	HANDLE dsema_handle;
-	HANDLE dsema_waiter_handle;
+	//HANDLE dsema_waiter_handle;
 #else
 #error "No supported semaphore type"
 #endif
