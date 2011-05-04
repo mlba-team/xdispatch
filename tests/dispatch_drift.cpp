@@ -105,7 +105,11 @@ void dispatch_drift() {
     now_ts.tv_sec = now_tv.tv_sec;
     now_ts.tv_nsec = now_tv.tv_usec * NSEC_PER_USEC;
 
+#ifdef _WIN32
+	dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, interval), interval, 0);
+#else // this is not really very precise on windows as we do not have the timespec there originally
     dispatch_source_set_timer(timer, dispatch_walltime(&now_ts, interval), interval, 0);
+#endif
 
     dispatch_resume(timer);
 

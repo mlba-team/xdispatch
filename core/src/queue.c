@@ -1019,7 +1019,8 @@ dispatch_main(void)
 		_dispatch_queue_cleanup(_dispatch_thread_getspecific(dispatch_queue_key));
         _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
 		// And pthread_exit would immediately return
-		while(1) Sleep(0);
+		while(1) 
+			Sleep(INFINITE);
 #else
 		pthread_exit(NULL);
 #endif
@@ -1035,7 +1036,7 @@ _dispatch_sigsuspend(void *ctxt DISPATCH_UNUSED)
 {
 #if TARGET_OS_WIN32
     for (;;) {
-        Sleep(0);
+        Sleep(INFINITE);
     }
 #else
     static const sigset_t mask;
