@@ -63,6 +63,7 @@ include_directories(
 #library (static or shared)
 option(STATIC_WORKQUEUE "Enable to build libpthread_workqueue as static lib" OFF)
 if(STATIC_WORKQUEUE)
+	message("-- building libpthread_workqueue as static lib")
     add_definitions(-DMAKE_STATIC)
     add_library(pthread_workqueue STATIC ${SRC} ${INCL})
 else()

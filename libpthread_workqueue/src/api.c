@@ -29,8 +29,8 @@
 
 #include "private.h"
 
-int DEBUG_ACTIVE = 0;
-char *DEBUG_IDENT = "WQ";
+int DEBUG_WORKQUEUE = 0;
+char *WORKQUEUE_DEBUG_IDENT = "WQ";
 
 static int
 valid_workq(pthread_workqueue_t workq) 
@@ -45,9 +45,9 @@ int VISIBLE CONSTRUCTOR
 pthread_workqueue_init_np(void)
 {
 #ifdef NDEBUG
-    DEBUG_ACTIVE = 0;
+    DEBUG_WORKQUEUE = 0;
 #else
-    DEBUG_ACTIVE = (getenv("PWQ_DEBUG") == NULL) ? 0 : 1;
+    DEBUG_WORKQUEUE = (getenv("PWQ_DEBUG") == NULL) ? 0 : 1;
 # ifndef _WIN32
     USE_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
 # endif
