@@ -33,6 +33,13 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 
+/**
+ @class QDispatchCoreApplication
+ Provides a QCoreApplication implementation internally executing
+ the dispatch main queue. When used you can dispatch work onto the
+ main thread by dispatching to the main_queue obtained by calling
+ QDispatch::mainQueue().
+ */
 #ifdef Q_OS_MAC
 class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QDispatchApplication {
 

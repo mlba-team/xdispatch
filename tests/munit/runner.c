@@ -277,7 +277,9 @@ int repeat_test(const char* bin, int no, bool keep_running, int times){
             }
         }
     }
-    print_result(times, failed_iterations);
+
+	if(times > 1)
+		print_result(times, failed_iterations);
     return failed_iterations == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
@@ -333,7 +335,9 @@ int repeat_suite(const char* bin, bool keep_running, int times){
             failed_iterations++;
         printf("----------------------------------\nPassed: %u\tFailed: %u\n\n",passed,failed);
     }
-    print_result(times, failed_iterations);
+
+	if(times > 1)
+		print_result(times, failed_iterations);
     return failed_iterations == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 

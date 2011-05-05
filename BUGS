@@ -1,1 +1,9 @@
-* dispatching nested lambdas is currently broken in QtDispatch on MS Visual Studio 2010 SP1. See test Qt_dispatch_cascade for workaround (using runnables)
+* dispatching nested lambdas is currently broken in QtDispatch 
+  on MS Visual Studio 2010 SP1. See test Qt_dispatch_cascade 
+  for a workaround (using runnables)
+* when dispatching a lot of work items at once, the number of 
+  threads on windows and linux will explode but decrease quite
+  fast again
+* periodic timers have an increasing delay the longer they run
+ (see dispatch_drift test). This might be due to an implementation
+  error of EVT_FILT_TIMER on windows.

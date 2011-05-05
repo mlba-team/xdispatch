@@ -2,9 +2,22 @@
 @page change_log CHANGELOG
 @author Marius Zwicker / MLBA
 
+@section changes-4 Version 0.4.0
+
+released 05/05/2011
+
+ - Introducing the original libdispatch implementation on windows and linux
+   resulting in tremendous performance increases.
+ - Integrating libkqueue by Mark Heily
+ - Integrating libpthread_workqueue by Mark Heily
+ - Sources interface working on windows, DISPATCH_SOURCE_TYPE_TIMER implemented.
+ - xdispatch::timer for using timers in C++ easily
+ - Proper implementation of QDispatchApplication
+ - Dropping support for VS 2008 for this version
+
 @section changes-32 Version 0.3.2
 
-release 04/05/2011
+released 04/05/2011
 
  - Fixed some differences regarding the atomic operations on different platforms
  - Exported a missing symbol regarding xdispatch::sync_locks
