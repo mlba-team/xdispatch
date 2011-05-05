@@ -171,12 +171,12 @@ int run_suite(const char* bin, bool keep_going){
     } else if (pid == 0) { // child process
         // launch process
         if(keep_going) {
-            if (execlp(bin, bin, STR_KEEP_RUNNING, NULL) < 0) {
+            if (execlp(bin, bin, STR_KEEP_RUNNING, NULL) != 0) {
                 printf("Error running suite: %s\n", strerror(errno));
                 return EXIT_FAILURE;
             }
         }else {
-            if (execlp(bin, bin, NULL) < 0) {
+            if (execlp(bin, bin, NULL) != 0) {
                 printf("Error running suite: %s\n", strerror(errno));
                 return EXIT_FAILURE;
             }
@@ -222,7 +222,7 @@ int run(int no, const char* bin){
 		exit(1);
 	} else if (pid == 0) { // child process
 		// launch process
-        if (execlp(bin, bin, STR_RUN_TEST, test, NULL) < 0) {
+        if (execlp(bin, bin, STR_RUN_TEST, test, NULL) != 0) {
 			printf("Error running test: %s\n", strerror(errno));
 			return EXIT_FAILURE;
 		}
