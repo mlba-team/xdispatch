@@ -8,8 +8,8 @@ released 05/05/2011
 
  - Introducing the original libdispatch implementation on windows and linux
    resulting in tremendous performance increases.
- - Integrating libkqueue by Mark Heily
- - Integrating libpthread_workqueue by Mark Heily
+ - Integrating libkqueue by Mark Heily - r500
+ - Integrating libpthread_workqueue by Mark Heily - r119
  - Sources interface working on windows, DISPATCH_SOURCE_TYPE_TIMER implemented.
  - xdispatch::timer for using timers in C++ easily
  - Proper implementation of QDispatchApplication

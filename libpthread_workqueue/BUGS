@@ -1,0 +1,3 @@
+ * need to uninitialize library after fork() using pthread_atfork()
+
+ * need to implement pthread_main_np()

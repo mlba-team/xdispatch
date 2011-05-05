@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpthread_workqueue", "libpthread_workqueue.vcxproj", "{801C4A0C-BF9D-DE0A-39F2-C105F1998E54}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_api", "testing\api\test_api.vcxproj", "{6D7A0EA0-AE20-4584-AEE6-25B49823073A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8953032-A7FD-B3B1-6606-8DD078518B9A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C8953032-A7FD-B3B1-6606-8DD078518B9A}.Release|Win32.ActiveCfg = Release|Win32
+		{6D7A0EA0-AE20-4584-AEE6-25B49823073A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6D7A0EA0-AE20-4584-AEE6-25B49823073A}.Debug|Win32.Build.0 = Debug|Win32
+		{6D7A0EA0-AE20-4584-AEE6-25B49823073A}.Release|Win32.ActiveCfg = Release|Win32
+		{6D7A0EA0-AE20-4584-AEE6-25B49823073A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
