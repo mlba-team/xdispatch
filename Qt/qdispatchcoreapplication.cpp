@@ -23,18 +23,15 @@
 #include <QDebug>
 
 #include "../include/QtDispatch/qdispatchcoreapplication.h"
+
+#ifndef Q_OS_MAC
+
 #include "qdispatchapplicationprivate.h"
 
 QT_BEGIN_NAMESPACE
 
-	QEvent::Type QDispatchEvent::TYPECONSTANT;
-	QDispatchLibBridge* QDispatchLibBridge::instance;
-
-QT_END_NAMESPACE
-
-#ifndef Q_OS_MAC
-
-QT_BEGIN_NAMESPACE
+QEvent::Type QDispatchEvent::TYPECONSTANT;
+QDispatchLibBridge* QDispatchLibBridge::instance;
 
 QDispatchCoreApplication::QDispatchCoreApplication(int& argc, char** argv) : QCoreApplication(argc, argv) {
 	QDispatchLibBridge::registerCallback();

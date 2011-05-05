@@ -31,9 +31,11 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv), d(NULL) {
+QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv) {
 
 }
+
+QDispatchApplication::~QDispatchApplication(){}
 
 QT_END_NAMESPACE
 

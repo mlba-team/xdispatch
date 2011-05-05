@@ -22,9 +22,10 @@
 #include <QThread>
 
 #include "../include/QtDispatch/qdispatchapplication.h"
-#include "qdispatchapplicationprivate.h"
 
 #ifndef Q_OS_MAC
+
+#include "qdispatchapplicationprivate.h"
 
 QT_BEGIN_NAMESPACE
 
