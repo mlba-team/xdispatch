@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 #include "tests.h"
 
 int done = 0;
@@ -90,7 +90,7 @@ cascade(void* context) {
 		dispatch_async_f(queues[idx], context, cascade);
 	}
 
-	if (atomic_dec_get(&iterations) == 0) {
+	if (dispatch_atomic_dec(&iterations) == 0) {
 		done = 1;
 		histogram();
 		MU_PASS("Please check histogram to be sure");

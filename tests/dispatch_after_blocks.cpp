@@ -41,7 +41,7 @@ extern "C" void
 
 	dispatch_async(dispatch_get_main_queue(), ${
 		dispatch_time_t time_a_min = dispatch_time(0,  5.5*NSEC_PER_SEC);
-		dispatch_time_t time_a     = dispatch_time(0,   6*NSEC_PER_SEC);
+        dispatch_time_t time_a     = dispatch_time(0,  6.0*NSEC_PER_SEC);
 		dispatch_time_t time_a_max = dispatch_time(0,  6.5*NSEC_PER_SEC);
 		dispatch_time_t time_a_start = dispatch_time(0,0);
 		dispatch_after(time_a, dispatch_get_current_queue(), ${

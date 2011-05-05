@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "../core/atomic.h"
 #include "tests.h"
 
 #define LAPS 10000

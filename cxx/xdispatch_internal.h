@@ -29,8 +29,6 @@
 #  include "../include/libdispatch/dispatch.h"
 # endif
 
-#include "../core/atomic.h"
-
 #include <assert.h>
 #include <string>
 
@@ -42,13 +40,21 @@
 #define __XDISPATCH_INDIRECT__
 #endif
 
+#ifdef _WIN32
+# define XDISPATCH_EXPORT __declspec(dllexport)
+#else
+# define XDISPATCH_EXPORT __attribute__((visibility("default")))
+#endif
+
 #include "../include/xdispatch/lambda_blocks.h"
 #include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/base.h"
 #include "../include/xdispatch/queue.h"
 #include "../include/xdispatch/group.h"
 #include "../include/xdispatch/semaphore.h"
+#include "../include/xdispatch/timer.h"
 
+#include "shims.h"
 #include "execution.h"
 
 #undef __XDISPATCH_INDIRECT__

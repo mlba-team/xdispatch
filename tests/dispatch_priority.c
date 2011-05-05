@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 #include "tests.h"
 
 /*
@@ -93,13 +93,13 @@ cpubusy(void* context)
 		if (done) return;
 	}
 	
-	iterdone = atomic_dec_get(&iterations);
+	iterdone = dispatch_atomic_dec(&iterations);
 	if (iterdone==0) {
-		atomic_inc_get(&done);
-		atomic_inc_get(count);
+		dispatch_atomic_inc(&done);
+		dispatch_atomic_inc(count);
 		histogram();
 	} else if (iterdone > 0) {
-		atomic_inc_get(count);
+		dispatch_atomic_inc(count);
 	}
 }
 

@@ -27,36 +27,40 @@ class wrap {
 public:
 #ifdef XDISPATCH_HAS_BLOCKS
     wrap(operation* o)
-        : op(o), block(NULL) { assert(o); }
-    wrap(const dispatch_block_t& b)
-        : op(NULL), block(b) {}
+        : op(o) { assert(o); }
+    wrap(dispatch_block_t b)
+        : op(NULL) {
+        blck = XDISPATCH_BLOCK_COPY(b);
+    }
 #else
-    wrap(iteration_operation* o)
+    wrap(operation* o)
         : op(o) { assert(o); }
 #endif
     ~wrap() {
+        // std::cout << "OP deleted " << this << "( " << op << " )" << std::endl;
         if(op) {
-			if(op->auto_delete())
-				delete op;
-		}
+            if(op->auto_delete())
+                delete op;
+        }
 #ifdef XDISPATCH_HAS_BLOCKS
-		else
-            XDISPATCH_BLOCK_RELEASE(block);
+        else
+            XDISPATCH_BLOCK_RELEASE(blck);
 #endif
 	}
     void run(){
+        // std::cout << "OP starting " << this << "( " << op << " )" << std::endl;
         if(op)
             (*op)();
 #ifdef XDISPATCH_HAS_BLOCKS
         else
-            block();
+            blck();
 #endif
     }
 
 private:
     operation* op;
 #ifdef XDISPATCH_HAS_BLOCKS
-    dispatch_block_t block;
+    dispatch_block_t blck;
 #endif
 };
 
@@ -91,7 +95,7 @@ public:
     }
 
     bool deref(){
-        return atomic_dec_get(&ref)==0;
+        return dispatch_atomic_dec(&ref)==0;
     }
 
 private:

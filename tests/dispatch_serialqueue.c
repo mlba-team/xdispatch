@@ -23,7 +23,7 @@
 #include <xdispatch/dispatch.h>
 
 #include "tests.h"
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #define JOBS_NO 20
 

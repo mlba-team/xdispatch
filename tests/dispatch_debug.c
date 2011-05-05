@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core/atomic.h"
 #include "tests.h"
 
 
@@ -35,12 +34,15 @@ void dispatch_testDebug() {
 	MU_MESSAGE("Printing object debugging information:");
 
 	main_q = dispatch_get_main_queue();
+    MU_ASSERT_NOT_NULL(main_q);
 	dispatch_debug(main_q, "dispatch_queue_t");
 	
 	default_q = dispatch_get_global_queue(0, 0);
+    MU_ASSERT_NOT_NULL(default_q);
 	dispatch_debug(default_q, "dispatch_queue_t");
 
 	g = dispatch_group_create();
+    MU_ASSERT_NOT_NULL(g);
 	dispatch_debug(g, "dispatch_group_t");
 
 	MU_MESSAGE("Printing done.");

@@ -24,11 +24,12 @@
 
 #include "munit/MUnit.h"
 #include <xdispatch/dispatch.h>
+#include "shims/platform.h"
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
 #ifndef XDISPATCH_HAS_BLOCKS
-#	if (defined __GXX_EXPERIMENTAL_CXX0X__ || defined __BLOCKS__ || _MSC_VER >= 1600)
+#	if ( defined(MZ_HAS_CXX0X) || defined(__BLOCKS__) || (_MSC_VER >= 1600) )
 #		define TEST_BLOCKS
 #	endif
 #else
@@ -63,15 +64,12 @@ void dispatch_after_blocks();
 void dispatch_group_blocks();
 void dispatch_pingpong_blocks();
 void dispatch_semaphore();
-#endif
-#ifndef HAVE_NATIVE_DISPATCH_H
-void core_taskqueue();
+void dispatch_timer_bit31();
+void dispatch_timer_bit63();
+void dispatch_drift();
 #endif
 
 static void register_tests(){
-#ifndef HAVE_NATIVE_DISPATCH_H
-	MU_REGISTER_TEST(core_taskqueue);
-#endif
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);
 	MU_REGISTER_TEST(dispatch_test_sync);
@@ -87,13 +85,16 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
 #ifdef TEST_BLOCKS
-	MU_REGISTER_TEST(cross_blocks);
+    MU_REGISTER_TEST(cross_blocks);
 	MU_REGISTER_TEST(dispatch_plusplus);
 	MU_REGISTER_TEST(dispatch_apply_blocks);
 	MU_REGISTER_TEST(dispatch_group_blocks);
 	MU_REGISTER_TEST(dispatch_after_blocks);
 	MU_REGISTER_TEST(dispatch_pingpong_blocks);
 	MU_REGISTER_TEST(dispatch_semaphore);
+    MU_REGISTER_TEST(dispatch_timer_bit31);
+    MU_REGISTER_TEST(dispatch_timer_bit63);
+    MU_REGISTER_TEST(dispatch_drift);
 #endif
 }
 

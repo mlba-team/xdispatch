@@ -33,7 +33,7 @@
 #include "MUnit_assert.h"
 
 void _pass(const char *msg, const char *file, int line){
-	printf(" Passed\n");
+    printf(" Passed\n");
 //#if defined(WIN32) && defined(DEBUG)
 //	Sleep(2000);
 //	_CrtDumpMemoryLeaks();
@@ -42,7 +42,7 @@ void _pass(const char *msg, const char *file, int line){
 }
 
 void _pass_after_delay(void* d){
-	printf(" Passed\n");
+    printf(" Passed\n");
 //#if defined(WIN32) && defined(DEBUG)
 //	Sleep(2000);
 //	_CrtDumpMemoryLeaks();
@@ -51,7 +51,7 @@ void _pass_after_delay(void* d){
 }
 
 void _fail(const char *msg, const char *file, int line){
-	printf("Failed\n\t%s, at: %s:%u\n",msg,file,line);
+    printf("Failed\n\t%s, at: %s:%u\n",msg,file,line);
 //#if defined(WIN32) && defined(DEBUG)
 //	Sleep(2000);
 //	_CrtDumpMemoryLeaks();
@@ -59,26 +59,50 @@ void _fail(const char *msg, const char *file, int line){
 	exit(EXIT_FAILURE);
 }
 
-void _assert_true(bool cond, const char *cond_desc, const char *file, int line){
-	char msg[100];
+void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const char* file, int line){
+    char msg[512];
 	if(!cond) {
-#ifndef WIN32_VS
-		sprintf(msg,"Test %s failed",cond_desc);
+#ifndef _WIN32
+        sprintf(msg,"Test %s failed (was %li,%li)",cond_desc, a, b);
 #else
-		sprintf_s(msg, 100,"Test %s failed",cond_desc);
+        sprintf_s(msg, 100,"Test %s failed (was %li,%li)",cond_desc, a, b);
 #endif
 		_fail(msg,file,line);
 	}
 }
 
-void _assert_not_true(bool cond, const char *cond_desc, const char *file, int line){
-	char msg[100];
-	if(cond) {
-#ifndef WIN32_VS
-		sprintf(msg,"Test not %s failed",cond_desc);
+void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line){
+    char msg[512];
+    if(!cond) {
+#ifndef _WIN32
+        sprintf(msg,"Test %s failed (was %f,%f)", cond_desc, a, b);
 #else
-		sprintf_s(msg, 100,"Test not %s failed",cond_desc);
+        sprintf_s(msg, 100,"Test %s failed (was %f,%f)", cond_desc, a, b);
+#endif
+        _fail(msg,file,line);
+    }
+}
+
+void _assert_not_true_long(long a, long b, bool cond,  const char* cond_desc, const char* file, int line){
+    char msg[512];
+	if(cond) {
+#ifndef _WIN32
+        sprintf(msg,"Test not %s failed (was %li,%li)",cond_desc, a, b);
+#else
+        sprintf_s(msg, 100,"Test not %s failed (was %li,%li)",cond_desc, a, b);
 #endif
 		_fail(msg,file,line);
 	}
+}
+
+void _assert_not_true_double(double a, double b, bool cond,  const char* cond_desc, const char* file, int line){
+    char msg[512];
+    if(cond) {
+#ifndef _WIN32
+        sprintf(msg,"Test not %s failed (was %f,%f)",cond_desc, a, b);
+#else
+        sprintf_s(msg, 100,"Test not %s failed (was %f,%f)",cond_desc, a, b);
+#endif
+        _fail(msg,file,line);
+    }
 }

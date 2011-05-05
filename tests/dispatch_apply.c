@@ -23,14 +23,14 @@
 #include <xdispatch/dispatch.h>
 
 #include "tests.h"
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 /*
 	A test for dispatching a function using dispatch_apply_f
 	*/
 
 static void argumentFunction(void* data, size_t index){
-	atomic_inc_get((int*)data);
+	dispatch_atomic_inc((int*)data);
 }
 
 void dispatch_apply_function() {
@@ -43,7 +43,7 @@ void dispatch_apply_function() {
 	queue = dispatch_get_global_queue(0, 0);
 	MU_ASSERT_NOT_NULL(queue);
 
-	dispatch_apply_f(final,queue,count,argumentFunction);
+    dispatch_apply_f(final, queue, count, argumentFunction);
 
 	MU_ASSERT_EQUAL(*count, final);
 	free(count);

@@ -53,8 +53,11 @@
 # include "queue.h"
 # include "group.h"
 # include "semaphore.h"
+# include "timer.h"
 # undef __XDISPATCH_INDIRECT__
 
-#endif
+#undef XDISPATCH_EXPORT
+
+#endif /* defined(__cplusplus) */
 
 #endif /* XDISPATCH_H_ */

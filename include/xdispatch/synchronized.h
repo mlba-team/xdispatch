@@ -27,8 +27,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include "dispatch.h"
-
 __XDISPATCH_BEGIN_NAMESPACE
 
 /**

@@ -1,25 +1,22 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011 MLBA. All rights reserved.
-*
-* @MLBA_OPEN_LICENSE_HEADER_START@
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
-*/
-
-
+ * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+ *
+ * @APPLE_APACHE_LICENSE_HEADER_START@
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @APPLE_APACHE_LICENSE_HEADER_END@
+ */
 
 #ifndef __DISPATCH_ONCE__
 #define __DISPATCH_ONCE__
@@ -57,13 +54,23 @@ typedef long dispatch_once_t;
  * Always call dispatch_once() before using or testing any variables that are
  * initialized by the block.
  */
-#ifdef XDISPATCH_HAS_BLOCKS
-DISPATCH_EXPORT void
+#ifdef __BLOCKS__
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+void
 dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
+#ifdef __GNUC__
+#define dispatch_once(x, ...) do { if (__builtin_expect(*(x), ~0l) != ~0l) dispatch_once((x), (__VA_ARGS__)); } while (0)
+#endif
 #endif
 
-DISPATCH_EXPORT void
+__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL3 DISPATCH_NOTHROW
+void
 dispatch_once_f(dispatch_once_t *predicate, void *context, void (*function)(void *));
+#ifdef __GNUC__
+#define dispatch_once_f(x, y, z) do { if (__builtin_expect(*(x), ~0l) != ~0l) dispatch_once_f((x), (y), (z)); } while (0)
+#endif
 
 __DISPATCH_END_DECLS
 

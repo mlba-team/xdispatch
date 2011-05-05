@@ -21,8 +21,6 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QCoreApplication>
-
 #include "../include/QtDispatch/QtDispatch"
 #include "Qt_tests.h"
 
@@ -36,7 +34,7 @@
 extern "C" void Qt_dispatch_cascade(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-	QCoreApplication app(argc,&argv);
+    QApplication app(argc,&argv);
 	
 	MU_BEGIN_TEST(Qt_dispatch_cascade);
 

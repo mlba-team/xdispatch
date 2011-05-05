@@ -25,7 +25,7 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
@@ -45,7 +45,7 @@
 extern "C" void Qt_dispatch_serialqueue(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-	QCoreApplication app(argc,&argv);
+    QDispatchApplication app(argc,&argv);
 
         MU_BEGIN_TEST(Qt_dispatch_serialqueue);
 

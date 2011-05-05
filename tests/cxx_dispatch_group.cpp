@@ -71,7 +71,7 @@ public:
     void operator()() {
         xdispatch::queue m = xdispatch::main_queue();
         xdispatch::queue c = xdispatch::current_queue();
-        MU_ASSERT_EQUAL(m.label(), c.label());
+        MU_ASSERT_TRUE(m.label() == c.label());
         MU_PASS("Great!");
     }
 };

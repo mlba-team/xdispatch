@@ -23,17 +23,16 @@
 #define CXX_TESTS_H_
 
 #include "munit/MUnit.h"
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #ifdef __cplusplus
 # include <xdispatch/dispatch>
 #endif
 
-
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
 #ifndef XDISPATCH_HAS_BLOCKS
-#	if (defined __GXX_EXPERIMENTAL_CXX0X__ || defined __BLOCKS__ || _MSC_VER >= 1600)
+#	if ( defined(MZ_HAS_CXX0X) || defined(__BLOCKS__) || (_MSC_VER >= 1600) )
 #		define TEST_BLOCKS
 #	endif
 #else
@@ -52,6 +51,7 @@ void cxx_dispatch_queue();
 void cxx_dispatch_serialqueue();
 void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
+void cxx_dispatch_timer();
 
 static void register_cxx_tests(){
 #ifdef TEST_BLOCKS
@@ -63,6 +63,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_serialqueue);
     MU_REGISTER_TEST(cxx_dispatch_semaphore);
     MU_REGISTER_TEST(cxx_dispatch_current);
+    MU_REGISTER_TEST(cxx_dispatch_timer);
 #endif
 }
 

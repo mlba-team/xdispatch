@@ -13,13 +13,13 @@ INCLUDE_DIRECTORIES(
 mz_add_definition(QT_MAKEDLL)
 
 # moc qt files
-qt4_wrap_cpp(MOC ${QHEADER} ${QINCLUDE_H})
+mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
 
 source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
 
 add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H})
-target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY})
+target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 mz_target_props(QtDispatch)
 

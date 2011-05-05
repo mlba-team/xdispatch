@@ -43,7 +43,7 @@ extern "C" void cxx_dispatch_queue(){
     MU_ASSERT_NOT_NULL(q.native());
 
     q.apply($(size_t i){
-			atomic_inc_get(worker);
+			dispatch_atomic_inc(worker);
     }, RUN_TIMES);
 
     xdispatch::global_queue(xdispatch::LOW).async(${

@@ -36,23 +36,56 @@ void _pass_after_delay(void*);
 #define MU_FAIL(MSG) _fail(MSG, __FILE__, __LINE__)
 void _fail(const char* msg, const char* file, int line);
 
-#define MU_ASSERT_TRUE(C) _assert_true(C,#C,__FILE__,__LINE__)
-void _assert_true(bool cond, const char* cond_desc, const char* file, int line);
+/* Assertions including a description */
 
-#define MU_ASSERT_NOT_TRUE(C) _assert_not_true(C,#C,__FILE__,__LINE__)
-void _assert_not_true(bool cond,  const char* cond_desc, const char* file, int line);
+#define MU_DESC_ASSERT_TRUE(D,C) _assert_true_long((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_TRUE_DOUBLE(D,C) _assert_true_double((C), 0, (C), D": "#C,__FILE__,__LINE__)
+void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const char* file, int line);
+void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line);
 
-#define MU_ASSERT_NULL(A) _assert_true(A==0,#A" == 0",__FILE__,__LINE__)
-#define MU_ASSERT_NOT_NULL(A) _assert_true(A!=0,#A" != 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_TRUE(D,C) _assert_not_true_long((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_TRUE_DOUBLE(D,C) _assert_not_true_double((C), 0, (C), D": "#C,__FILE__,__LINE__)
+void _assert_not_true_long(long a, long b, bool cond,  const char* cond_desc, const char* file, int line);
+void _assert_not_true_double(double a, double b, bool cond,  const char* cond_desc, const char* file, int line);
 
-#define MU_ASSERT_EQUAL(A,B) _assert_true(A==B,#A" == "#B,__FILE__,__LINE__)
-#define MU_ASSERT_EQUAL_LONG(A,B) _assert_true(A==B,#A" == "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NULL(D,A) _assert_true_long((long)(A), 0, (A)==0,D": "#A" == 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_NULL(D,A) _assert_true_long((long)(A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NULL_DOUBLE(D,A) _assert_true_double((A), 0, (A)==0,D": "#A" == 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_NULL_DOUBLE(D,A) _assert_true_double((A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
 
-#define MU_ASSERT_NOT_EQUAL(A,B) _assert_true(A!=B,#A" != "#B,__FILE__,__LINE__)
-#define MU_ASSERT_NOT_EQUAL_LONG(A,B) _assert_true(A!=B,#A" != "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_EQUAL(D,A,B) _assert_true_long((long)(A),(long)(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_EQUAL_DOUBLE(D,A,B) _assert_true_double((A),(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
 
-#define MU_ASSERT_EQUAL_DOUBLE(A,B) _assert_true(A==B,#A" == "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_EQUAL(D,A,B) _assert_true_long((long)(A),(long)(B),(A)!=(B),D": "#A" != "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_EQUAL_DOULBE(D,A,B) _assert_true_double((A),(B),(A)!=(B),D": "#A" != "#B,__FILE__,__LINE__)
 
-#define MU_ASSERT_NOT_EQUAL_double(A,B) _assert_true(A!=B,#A" != "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_LESS_THAN(D,A,B) _assert_true_long((long)(A),(long)(B),(A)<(B),D": "#A" < "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_GREATER_THAN(D,A,B) _assert_true_long((long)(A),(long)(B),(A)>(B),D": "#A" > "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_LESS_THAN_DOUBLE(D,A,B) _assert_true_double((A),(B),(A)<(B),D": "#A" < "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_GREATER_THAN_DOUBLE(D,A,B) _assert_true_double((A),(B),(A)>(B),D": "#A" > "#B,__FILE__,__LINE__)
+
+/* Assertions with no description */
+
+#define MU_ASSERT_TRUE(C) _assert_true_long((long)(C), 0, (C), #C,__FILE__,__LINE__)
+#define MU_ASSERT_TRUE_DOUBLE(C) _assert_true_double((C), 0, (C), #C,__FILE__,__LINE__)
+
+#define MU_ASSERT_NOT_TRUE(C) _assert_not_true_long((long)(C), 0, (C), #C,__FILE__,__LINE__)
+#define MU_ASSERT_NOT_TRUE_DOUBLE(C) _assert_not_true_double((C), 0, (C), #C,__FILE__,__LINE__)
+
+#define MU_ASSERT_NULL(A) _assert_true_long((long)(A), 0, (A)==0,#A" == 0",__FILE__,__LINE__)
+#define MU_ASSERT_NOT_NULL(A) _assert_true_long((long)(A), 0, (A)!=0,#A" != 0",__FILE__,__LINE__)
+#define MU_ASSERT_NULL_DOUBLE(A) _assert_true_double((A), 0, (A)==0,#A" == 0",__FILE__,__LINE__)
+#define MU_ASSERT_NOT_NULL_DOUBLE(A) _assert_true_double((A), 0, (A)!=0,#A" != 0",__FILE__,__LINE__)
+
+#define MU_ASSERT_EQUAL(A,B) _assert_true_long((long)(A),(long)(B),(A)==(B),#A" == "#B,__FILE__,__LINE__)
+#define MU_ASSERT_EQUAL_DOUBLE(A,B) _assert_true_double((A),(B),(A)==(B),#A" == "#B,__FILE__,__LINE__)
+
+#define MU_ASSERT_NOT_EQUAL(A,B) _assert_true_long((long)(A),(long)(B),(A)!=(B),#A" != "#B,__FILE__,__LINE__)
+#define MU_ASSERT_NOT_EQUAL_DOULBE(A,B) _assert_true_double((A),(B),(A)!=(B),#A" != "#B,__FILE__,__LINE__)
+
+#define MU_ASSERT_LESS_THAN(A,B) _assert_true_long((long)(A),(long)(B),(A)<(B),#A" < "#B,__FILE__,__LINE__)
+#define MU_ASSERT_GREATER_THAN(A,B) _assert_true_long((long)(A),(long)(B),(A)>(B),#A" > "#B,__FILE__,__LINE__)
+#define MU_ASSERT_LESS_THAN_DOUBLE(A,B) _assert_true_double((A),(B),(A)<(B),#A" < "#B,__FILE__,__LINE__)
+#define MU_ASSERT_GREATER_THAN_DOUBLE(A,B) _assert_true_double((A),(B),(A)>(B),#A" > "#B,__FILE__,__LINE__)
 
 #endif /* MUNIT_ASSERT_H_ */

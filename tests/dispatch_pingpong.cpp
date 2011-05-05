@@ -33,7 +33,7 @@
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 #include "tests.h"
 
 

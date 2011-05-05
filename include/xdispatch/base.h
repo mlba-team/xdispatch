@@ -27,8 +27,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include "dispatch.h"
-
 #include <string>
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -128,6 +126,26 @@ private:
     T* obj;
     void (T::*func)(size_t);
 };
+
+#ifdef XDISPATCH_HAS_BLOCKS
+/**
+  A simple operation for wrapping the given
+  block as an xdispatch::operation
+  */
+class block_operation : public operation {
+public:
+    block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_COPY(b)) {}
+    block_operation(const block_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
+    ~block_operation() { XDISPATCH_BLOCK_RELEASE(block); }
+
+    void operator ()(){
+        block();
+    };
+
+private:
+    dispatch_block_t block;
+};
+#endif
 
 
 class queue;

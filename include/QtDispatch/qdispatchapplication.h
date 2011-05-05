@@ -32,21 +32,19 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 
-class QDispatchApplicationPrivate;
-
-class Q_DISPATCH_EXPORT QDispatchApplication : public QCoreApplication {
+/**
+ Provides a QApplication implementation internally executing
+ the dispatch main queue. When used you can dispatch work onto the
+ main thread by dispatching to the main_queue obtained by calling
+ QDispatch::mainQueue().
+ */
+class Q_DISPATCH_EXPORT QDispatchApplication : public QApplication {
 
     Q_OBJECT
 
 public:
     QDispatchApplication(int& argc, char** argv);
-    ~QDispatchApplication();
-
-    static int exec();
-
-private:
-    QDispatchApplicationPrivate* d;
-    static QDispatchApplication* self;
+	~QDispatchApplication();
 
 };
 

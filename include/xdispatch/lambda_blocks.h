@@ -116,7 +116,7 @@
 # endif
 # define XDISPATCH_BLOCK_COPY(A) A
 # define Block_copy(A) XDISPATCH_BLOCK_COPY(A)
-  # define XDISPATCH_BLOCK_RELEASE(A) {}
+# define XDISPATCH_BLOCK_RELEASE(A) {}
 # define Block_release(A) XDISPATCH_BLOCK_RELEASE(A)
  typedef std::tr1::function< void (void) > dispatch_block_t;
  typedef std::tr1::function< void (size_t) > dispatch_iteration_block_t;
@@ -132,7 +132,7 @@
 # endif
 # define XDISPATCH_BLOCK_COPY(A) A
 # define Block_copy(A) XDISPATCH_BLOCK_COPY(A)
- # define XDISPATCH_BLOCK_RELEASE(A) {}
+# define XDISPATCH_BLOCK_RELEASE(A) {}
 # define Block_release(A) XDISPATCH_BLOCK_RELEASE(A)
  typedef std::tr1::function< void (void) > dispatch_block_t;
  typedef std::tr1::function< void (size_t) > dispatch_iteration_block_t;
@@ -169,6 +169,10 @@ XDISPATCH_EXPORT void dispatch_apply(size_t iterations, dispatch_queue_t queue, 
 XDISPATCH_EXPORT void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t function);
 
 XDISPATCH_EXPORT void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);
+
+XDISPATCH_EXPORT void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler);
+
+XDISPATCH_EXPORT void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler);
 
 XDISPATCH_EXPORT void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
 

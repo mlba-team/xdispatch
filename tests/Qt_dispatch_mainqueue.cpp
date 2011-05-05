@@ -25,7 +25,9 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
+
+#ifdef XDISPATCH_HAS_BLOCKS
 
 #define RUN_TIMES 2000
 
@@ -44,7 +46,7 @@ public:
             MU_MESSAGE("System usage should be zero");
             QDispatch::mainQueue().after(${
                 MU_PASS("");
-            }, QTime::currentTime().addSecs(20));
+            }, QTime::currentTime().addSecs(5));
         }
     }
 
@@ -60,7 +62,7 @@ private:
 extern "C" void Qt_dispatch_mainqueue(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-    QDispatchCoreApplication app(argc,&argv);
+    QDispatchApplication app(argc,&argv);
 
 	MU_BEGIN_TEST(Qt_dispatch_mainqueue);
 
@@ -75,4 +77,5 @@ extern "C" void Qt_dispatch_mainqueue(){
 	MU_END_TEST;
 }
 
+#endif
 #endif

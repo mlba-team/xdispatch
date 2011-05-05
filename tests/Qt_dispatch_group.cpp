@@ -27,7 +27,7 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 static unsigned int* worker = 0;
 
@@ -73,22 +73,22 @@ extern "C" void Qt_dispatch_group(){
 
     group.async(${
 		QTest::qSleep(400);
-		atomic_inc_get(worker);
+		dispatch_atomic_inc(worker);
 	});
 
     group.async(${
 		QTest::qSleep(300);
-		atomic_inc_get(worker);
+		dispatch_atomic_inc(worker);
 	});
 
     group.async(${
 		QTest::qSleep(300);
-		atomic_inc_get(worker);
+		dispatch_atomic_inc(worker);
 	});
 
     group.async(${
 		QTest::qSleep(200);
-		atomic_inc_get(worker);
+		dispatch_atomic_inc(worker);
 	});
 
 	app.exec();

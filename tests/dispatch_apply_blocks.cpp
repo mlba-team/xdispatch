@@ -22,7 +22,7 @@
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
-#include "../core/atomic.h"
+#include "../core/src/shims/atomic.h"
 
 #include "tests.h"
 
@@ -40,7 +40,7 @@ extern "C" void dispatch_apply_blocks() {
 	MU_ASSERT_NOT_NULL(queue);
 
 	dispatch_apply(final, queue, $(size_t i) {
-		atomic_inc_get(count);
+		dispatch_atomic_inc(count);
 	});
 
 	MU_ASSERT_EQUAL(*count, final);
