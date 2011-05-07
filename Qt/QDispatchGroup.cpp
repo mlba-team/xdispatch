@@ -49,7 +49,7 @@ public:
             queue->async(notify);
 
         if(obj)
-            emit obj->all_finished();
+            emit obj->allFinished();
 	}
 
     static void notifier(void* dt){

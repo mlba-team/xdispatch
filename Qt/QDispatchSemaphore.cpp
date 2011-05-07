@@ -47,7 +47,15 @@ QDispatchSemaphore::~QDispatchSemaphore(){
 
 }
 
-bool QDispatchSemaphore::try_acquire(const QTime& t){
+bool QDispatchSemaphore::tryAcquire(dispatch_time_t t){
+    return try_acquire(t);
+}
+
+bool QDispatchSemaphore::tryAcquire(struct tm* t){
+    return try_acquire(t);
+}
+
+bool QDispatchSemaphore::tryAcquire(const QTime& t){
     return try_acquire(QDispatch::asDispatchTime(t));
 }
 

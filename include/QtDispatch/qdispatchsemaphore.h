@@ -69,8 +69,9 @@ public:
 
 		@return true if acquiring the semaphore succeeded.
 	*/
-    bool try_acquire(const QTime&);
-    using xdispatch::semaphore::try_acquire;
+    bool tryAcquire(const QTime&);
+    bool tryAcquire(dispatch_time_t);
+    bool tryAcquire(struct tm*);
 
 };
 

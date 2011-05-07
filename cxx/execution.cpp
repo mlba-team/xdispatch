@@ -24,6 +24,7 @@
 
 __XDISPATCH_USE_NAMESPACE
 
+extern "C"
 void xdispatch::run_wrap(void* dt){
     assert(dt);
     wrap* w = static_cast<wrap*>(dt);
@@ -31,6 +32,7 @@ void xdispatch::run_wrap(void* dt){
     delete w;
 }
 
+extern "C"
 void xdispatch::run_iter_wrap(void* dt, size_t index){
     assert(dt);
     iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);

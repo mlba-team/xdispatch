@@ -110,6 +110,10 @@ const dispatch_queue_t queue::native() const {
     return d->native;
 }
 
+void queue::set_target(const queue& q) {
+    dispatch_set_target_queue(d->native, q.native());
+}
+
 #ifdef XDISPATCH_HAS_BLOCKS
 
 void queue::async(dispatch_block_t b){

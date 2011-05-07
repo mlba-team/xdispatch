@@ -188,7 +188,14 @@ public:
     of libdispatch.
     */
     virtual const dispatch_queue_t native() const;
-
+    /**
+     Sets the target queue of this queue, i.e. the queue
+     all items of this queue will be dispatched on in turn.
+     
+     @remarks This has no effect on the global queues and the main queue.
+    */
+    virtual void set_target(const queue&);
+    
 private:
     class data;
     data* d;

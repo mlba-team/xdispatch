@@ -61,7 +61,7 @@ extern "C" void dispatch_timer_bit63() {
     dispatch_source_set_timer(ds, DISPATCH_TIME_NOW, interval, 0);
     dispatch_resume(ds);
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5*NSEC_PER_SEC),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5.0*NSEC_PER_SEC),
         dispatch_get_main_queue(), ${
         delete i;
         MU_PASS("");

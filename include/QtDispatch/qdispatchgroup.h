@@ -110,7 +110,7 @@ signals:
 	Every time the all work dispatched to the group (i.e.
 	the group is empty) this signal will be emitted.
 	*/
-    void all_finished();
+    void allFinished();
 
 private:
 
