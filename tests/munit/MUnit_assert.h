@@ -39,17 +39,23 @@ void _fail(const char* msg, const char* file, int line);
 /* Assertions including a description */
 
 #define MU_DESC_ASSERT_TRUE(D,C) _assert_true_long((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_TRUE_HEX(D,C) _assert_true_hex((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
 #define MU_DESC_ASSERT_TRUE_DOUBLE(D,C) _assert_true_double((C), 0, (C), D": "#C,__FILE__,__LINE__)
 void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const char* file, int line);
+void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const char* file, int line);
 void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line);
 
 #define MU_DESC_ASSERT_NOT_TRUE(D,C) _assert_not_true_long((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_TRUE_HEX(D,C) _assert_not_true_long_hex((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
 #define MU_DESC_ASSERT_NOT_TRUE_DOUBLE(D,C) _assert_not_true_double((C), 0, (C), D": "#C,__FILE__,__LINE__)
 void _assert_not_true_long(long a, long b, bool cond,  const char* cond_desc, const char* file, int line);
+void _assert_not_true_hex(long a, long b, bool cond,  const char* cond_desc, const char* file, int line);
 void _assert_not_true_double(double a, double b, bool cond,  const char* cond_desc, const char* file, int line);
 
 #define MU_DESC_ASSERT_NULL(D,A) _assert_true_long((long)(A), 0, (A)==0,D": "#A" == 0",__FILE__,__LINE__)
 #define MU_DESC_ASSERT_NOT_NULL(D,A) _assert_true_long((long)(A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NULL_HEX(D,A) _assert_true_hex((long)(A), 0, (A)==0,D": "#A" == 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_NULL_HEX(D,A) _assert_true_hex((long)(A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
 #define MU_DESC_ASSERT_NULL_DOUBLE(D,A) _assert_true_double((A), 0, (A)==0,D": "#A" == 0",__FILE__,__LINE__)
 #define MU_DESC_ASSERT_NOT_NULL_DOUBLE(D,A) _assert_true_double((A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
 
@@ -67,13 +73,17 @@ void _assert_not_true_double(double a, double b, bool cond,  const char* cond_de
 /* Assertions with no description */
 
 #define MU_ASSERT_TRUE(C) _assert_true_long((long)(C), 0, (C), #C,__FILE__,__LINE__)
+#define MU_ASSERT_TRUE_HEX(C) _assert_true_hex((long)(C), 0, (C), #C,__FILE__,__LINE__)
 #define MU_ASSERT_TRUE_DOUBLE(C) _assert_true_double((C), 0, (C), #C,__FILE__,__LINE__)
 
 #define MU_ASSERT_NOT_TRUE(C) _assert_not_true_long((long)(C), 0, (C), #C,__FILE__,__LINE__)
+#define MU_ASSERT_NOT_TRUE_HEX(C) _assert_not_true_hex((long)(C), 0, (C), #C,__FILE__,__LINE__)
 #define MU_ASSERT_NOT_TRUE_DOUBLE(C) _assert_not_true_double((C), 0, (C), #C,__FILE__,__LINE__)
 
 #define MU_ASSERT_NULL(A) _assert_true_long((long)(A), 0, (A)==0,#A" == 0",__FILE__,__LINE__)
 #define MU_ASSERT_NOT_NULL(A) _assert_true_long((long)(A), 0, (A)!=0,#A" != 0",__FILE__,__LINE__)
+#define MU_ASSERT_NULL_HEX(A) _assert_true_hex((long)(A), 0, (A)==0,#A" == 0",__FILE__,__LINE__)
+#define MU_ASSERT_NOT_NULL_HEX(A) _assert_true_hex((long)(A), 0, (A)!=0,#A" != 0",__FILE__,__LINE__)
 #define MU_ASSERT_NULL_DOUBLE(A) _assert_true_double((A), 0, (A)==0,#A" == 0",__FILE__,__LINE__)
 #define MU_ASSERT_NOT_NULL_DOUBLE(A) _assert_true_double((A), 0, (A)!=0,#A" != 0",__FILE__,__LINE__)
 

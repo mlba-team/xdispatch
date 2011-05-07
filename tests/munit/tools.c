@@ -23,13 +23,22 @@
 #include <string.h>
 
 #include "MUnit_tools.h"
-#include "private.h"
 #include "typedefs.h"
+#include "private.h"
 
 item_t* suite;
 
 void _begin_test(const char *name){
-	printf("Running test '%s'...",name);
+#ifndef _WIN32
+    pid_t pid = getpid();
+#else
+    int pid = GetCurrentProcessId();
+#endif
+
+    if(verbose)
+        printf("[%i] Running test '%s'...\n",pid, name);
+    else
+        printf("Running test '%s'...",name);
 	fflush(stdout);
 }
 

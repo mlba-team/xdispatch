@@ -40,12 +40,14 @@
 #include "private.h"
 
 #ifdef WIN32
+const char* STR_VERBOSE = "/v";
 const char* STR_LIST_TESTS = "/l";
 const char* STR_SHOW_HELP = "/?";
 const char* STR_RUN_TEST = "/t";
 const char* STR_KEEP_RUNNING = "/k";
 const char* STR_REPEAT_TEST = "/r";
 #else
+const char* STR_VERBOSE = "-v";
 const char* STR_LIST_TESTS = "-l";
 const char* STR_SHOW_HELP = "-h";
 const char* STR_RUN_TEST = "-t";
@@ -75,12 +77,14 @@ void MU_printHelp(){
     printf("%s\tList all available tests\n",STR_LIST_TESTS);
     printf("%s [no]\tRepeat the testrun [no] times\n",STR_REPEAT_TEST);
     printf("%s [no]\tRun only the test with the given [no]\n",STR_RUN_TEST);
+    printf("%s\tVerbose output of all assertions\n", STR_VERBOSE);
 	printf("\n");
 }
 
 static int test_runs = 1;
 static int test_selection = -1;
 static bool keep_running = false;
+bool verbose = false;
 
 enum modes {
     DISPLAY_HELP,
@@ -111,6 +115,8 @@ void parse_arguments(int argc, char* argv[]){
             mode = DISPLAY_TESTS;
         } else if(strcmp(argv[i],STR_SHOW_HELP) == 0) {
             mode = DISPLAY_HELP;
+        } else if(strcmp(argv[i],STR_VERBOSE) == 0) {
+            verbose = true;
         } else {
             printf("Unknown parameter: %s\n", argv[i]);
             exit(1);
@@ -150,10 +156,15 @@ int MU_main(int argc, char *argv[]){
     return 1;
 }
 
+/*
 int run_suite(const char* bin, bool keep_going){
 #ifdef _WIN32
     intptr_t ret;
-    if(keep_going)
+    if(verbose && keep_going)
+        ret = _spawnl(_P_WAIT, bin, bin, STR_KEEP_RUNNING, STR_VERBOSE, NULL);
+    else if(verbose)
+        ret = _spawnl(_P_WAIT, bin, bin, STR_VERBOSE, NULL);
+    else if(keep_runnig)
         ret = _spawnl(_P_WAIT, bin, bin, STR_KEEP_RUNNING, NULL);
     else
         ret = _spawnl(_P_WAIT, bin, bin, NULL);
@@ -170,12 +181,22 @@ int run_suite(const char* bin, bool keep_going){
         exit(1);
     } else if (pid == 0) { // child process
         // launch process
-        if(keep_going) {
+        if(verbose && keep_going) {
+            if (execlp(bin, bin, STR_VERBOSE, STR_KEEP_RUNNING, NULL) < 0) {
+                printf("Error running suite: %s\n", strerror(errno));
+                return EXIT_FAILURE;
+            }
+        } else if(verbose) {
+            if (execlp(bin, bin, STR_VERBOSE, NULL) < 0) {
+                printf("Error running suite: %s\n", strerror(errno));
+                return EXIT_FAILURE;
+            }
+        } else if(keep_going) {
             if (execlp(bin, bin, STR_KEEP_RUNNING, NULL) < 0) {
                 printf("Error running suite: %s\n", strerror(errno));
                 return EXIT_FAILURE;
             }
-        }else {
+        } else {
             if (execlp(bin, bin, NULL) < 0) {
                 printf("Error running suite: %s\n", strerror(errno));
                 return EXIT_FAILURE;
@@ -192,7 +213,7 @@ int run_suite(const char* bin, bool keep_going){
     }
     return 0;
 #endif
-}
+} */
 
 int run(int no, const char* bin){
 #ifdef _WIN32
@@ -204,7 +225,14 @@ int run(int no, const char* bin){
     sprintf(test,"%u",no);
 # endif
     printf("(%u) ",no);
-    ret = _spawnl(_P_WAIT,bin,bin, STR_RUN_TEST, test, NULL);
+    if(verbose && keep_running)
+        ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, STR_KEEP_RUNNING, STR_VERBOSE, NULL);
+    else if(verbose)
+        ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, STR_VERBOSE, NULL);
+    else if(keep_runnig)
+        ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, STR_KEEP_RUNNING, NULL);
+    else
+        ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, NULL);
 	if(ret==EXIT_SUCCESS)
 		return 0;
 	else
@@ -221,11 +249,28 @@ int run(int no, const char* bin){
 		printf("Error forking test: %s\n", strerror(errno));
 		exit(1);
 	} else if (pid == 0) { // child process
-		// launch process
-        if (execlp(bin, bin, STR_RUN_TEST, test, NULL) < 0) {
-			printf("Error running test: %s\n", strerror(errno));
-			return EXIT_FAILURE;
-		}
+        // launch process
+        if(verbose && keep_running) {
+            if (execlp(bin, bin, STR_RUN_TEST, test, STR_VERBOSE, STR_KEEP_RUNNING, NULL) < 0) {
+                printf("Error running test: %s\n", strerror(errno));
+                return EXIT_FAILURE;
+            }
+        } else if(verbose) {
+            if (execlp(bin, bin, STR_RUN_TEST, test, STR_VERBOSE, NULL) < 0) {
+                printf("Error running test: %s\n", strerror(errno));
+                return EXIT_FAILURE;
+            }
+        } else if(keep_running) {
+            if (execlp(bin, bin, STR_RUN_TEST, test, STR_KEEP_RUNNING, NULL) < 0) {
+                printf("Error running test: %s\n", strerror(errno));
+                return EXIT_FAILURE;
+            }
+        } else {
+            if (execlp(bin, bin, STR_RUN_TEST, test, NULL) < 0) {
+                printf("Error running test: %s\n", strerror(errno));
+                return EXIT_FAILURE;
+            }
+        }
 		exit(0);
 	} else {
 		if(wait(&res)==pid){
