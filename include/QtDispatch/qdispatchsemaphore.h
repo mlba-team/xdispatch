@@ -25,10 +25,10 @@
 #include "qdispatchglobal.h"
 #include "../xdispatch/dispatch.h"
 
-class QTime;
-
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
+
+class QTime;
 
 QT_MODULE(Dispatch)
 

@@ -26,12 +26,13 @@
 #include "../xdispatch/dispatch.h"
 
 #include "qdispatchglobal.h"
-class QTime;
-class QRunnable;
-class QIterationRunnable;
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
+
+class QTime;
+class QRunnable;
+class QIterationRunnable;
 
 QT_MODULE(Dispatch)
 

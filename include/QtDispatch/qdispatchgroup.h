@@ -27,12 +27,12 @@
 #include "qdispatchglobal.h"
 #include "../xdispatch/dispatch.h"
 
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
 class QRunnable;
 class QDispatchQueue;
 class QTime;
-
-QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 
