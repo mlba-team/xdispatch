@@ -27,8 +27,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include <memory>
-
 __XDISPATCH_BEGIN_NAMESPACE
 
 /**
@@ -136,9 +134,6 @@ private:
     data* d;
 
 };
-
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const timer*);
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const timer&);
 
 __XDISPATCH_END_NAMESPACE
 
