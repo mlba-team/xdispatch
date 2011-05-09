@@ -45,6 +45,8 @@ QT_MODULE(Dispatch)
   */
 class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::timer {
 
+	Q_OBJECT
+
 public:
     /**
         Constructs a new timer firing every msec milliseconds.
@@ -111,7 +113,7 @@ public:
 #endif
     static QDispatchTimer* current();
 
-    Q_DISPATCH_EXPORT bool operator ==(const QDispatchTimer&);
+    bool operator ==(const QDispatchTimer&);
 
 public slots:
     /**

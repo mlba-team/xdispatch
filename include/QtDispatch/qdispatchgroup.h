@@ -102,6 +102,10 @@ public:
     void notify(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
 #endif
 
+public slots:
+	void resume();
+	void suspend();
+
 signals:
 	/**
 	This will be emitted additionally to any function
