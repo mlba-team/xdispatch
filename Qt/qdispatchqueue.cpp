@@ -79,10 +79,24 @@ void QDispatchQueue::sync(QRunnable * runnable){
     sync(new RunnableOperation(runnable));
 }
 
-void QDispatchQueue::set_finalizer(QRunnable* r, const xdispatch::queue& dq){
+void QDispatchQueue::setFinalizer(xdispatch::operation* op, const xdispatch::queue& q){
+    set_finalizer(op, q);
+}
+
+#ifdef XDISPATCH_HAS_BLOCKS
+void QDispatchQueue::setFinalizer(dispatch_block_t b, const xdispatch::queue& q){
+    set_finalizer(b, q);
+}
+#endif
+
+void QDispatchQueue::setFinalizer(QRunnable* r, const xdispatch::queue& dq){
     Q_ASSERT(r);
 
     set_finalizer(new RunnableOperation(r), dq);
+}
+
+void QDispatchQueue::setTarget(const xdispatch::queue& q){
+    set_target(q);
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS

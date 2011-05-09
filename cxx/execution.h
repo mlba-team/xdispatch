@@ -106,8 +106,10 @@ private:
 #endif
 };
 
-void run_iter_wrap(void*, size_t);
-void run_wrap(void*);
+extern "C" {
+    void run_iter_wrap(void*, size_t);
+    void run_wrap(void*);
+}
 
 __XDISPATCH_END_NAMESPACE
 

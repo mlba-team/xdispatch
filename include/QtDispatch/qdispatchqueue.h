@@ -109,8 +109,25 @@ public:
 	@remarks Finalizers will never be called on the
 	global queues or the main queue.
 	*/
-    virtual void set_finalizer(QRunnable*, const xdispatch::queue& = xdispatch::global_queue());
-    using xdispatch::queue::set_finalizer;
+    virtual void setFinalizer(QRunnable*, const xdispatch::queue& = xdispatch::global_queue());
+    virtual void setFinalizer(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
+#ifdef XDISPATCH_HAS_BLOCKS
+    virtual void setFinalizer(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
+#endif
+    /**
+     Sets the target queue of this queue, i.e. the queue
+     all items of this queue will be dispatched on in turn.
+     
+     @remarks This has no effect on the global queues and the main queue.
+     */
+    virtual void setTarget(const xdispatch::queue&);
+    
+private:
+    /* virtual void set_finalizer(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
+#ifdef XDISPATCH_HAS_BLOCKS
+    virtual void set_finalizer(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
+#endif
+    virtual void set_target(const xdispatch::queue&); */
 };
 
 Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue* q);

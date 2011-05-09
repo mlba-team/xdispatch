@@ -37,7 +37,7 @@ class GroupTest : public QObject {
 
 public slots:
     void notify(){
-        MU_MESSAGE("signal 'all_finished' emitted");
+        MU_MESSAGE("signal 'allFinished' emitted");
 
         if(*worker == 0)
             return;
@@ -69,7 +69,7 @@ extern "C" void Qt_dispatch_group(){
 
 	QDispatchGroup group;
     GroupTest* gt = new GroupTest;
-    QObject::connect(&group, SIGNAL(all_finished()), gt, SLOT(notify()) );
+    QObject::connect(&group, SIGNAL(allFinished()), gt, SLOT(notify()) );
 
     group.async(${
 		QTest::qSleep(400);

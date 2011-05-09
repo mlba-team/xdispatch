@@ -1026,11 +1026,22 @@ dispatch_main(void)
 #if TARGET_OS_WIN32
 		// The TSD has no de-allocator on windows
 		_dispatch_queue_cleanup(_dispatch_thread_getspecific(dispatch_queue_key));
-        _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
+                _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
 		// And pthread_exit would immediately return
 		while(1) 
 			Sleep(INFINITE);
 #else
+# ifdef __x86_64__
+                /* TODO: Fix me (should not be needed here)
+                         this is only used on suse 64bit, weird - but without it we will
+                         get the error message "terminate called without an active exception"
+                         while using lambdas in c++
+                         */
+                _dispatch_queue_cleanup(_dispatch_thread_getspecific(dispatch_queue_key));
+                _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
+                while(1)
+                        sleep(1000);
+# endif
 		pthread_exit(NULL);
 #endif
 		DISPATCH_CRASH("pthread_exit() returned");
