@@ -77,6 +77,14 @@ const dispatch_group_t group::native() const {
     return d->native;
 }
 
+void group::suspend() {
+	dispatch_suspend(d->native);
+}
+
+void group::resume() {
+	dispatch_resume(d->native);
+}
+
 #ifdef XDISPATCH_HAS_BLOCKS
 
 void group::async(dispatch_block_t b, const queue& q){

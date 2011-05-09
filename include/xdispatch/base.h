@@ -147,6 +147,29 @@ private:
 };
 #endif
 
+/**
+ The base class of all xdispatch classes
+ */
+class XDISPATCH_EXPORT object {
+
+public:
+	/**
+	 Resumes the invocation of operations
+	 or blocks assigned to the object
+	 */
+	virtual void resume() = 0;
+	/**
+	 Suspends the invocation of operations or blocks
+	 assigned to the object. The object will be suspended
+	 as soon as the currently executed operation or block
+	 finished.
+
+	 @remarks Calls to suspend() should be balanced with calls
+	  to resume() to continue an object
+	  */
+	virtual void suspend() = 0;
+
+};
 
 class queue;
 
