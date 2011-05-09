@@ -41,6 +41,7 @@ queue::queue(dispatch_queue_t q) : d(new data){
 
 queue::queue(const queue& other) : d(new data){
     assert(d);
+    assert(other.d);
     d->native = other.d->native;
     d->label = other.d->label;
     assert(d->native);

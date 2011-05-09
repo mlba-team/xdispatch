@@ -195,3 +195,7 @@ void timer::single_shot(struct tm* t, const xdispatch::queue & q, dispatch_block
     xdispatch::queue(q).after(b, t);
 }
 #endif
+
+bool timer::operator ==(const timer& b){
+    return d->native == b.d->native;
+}
