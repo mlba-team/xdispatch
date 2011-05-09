@@ -229,7 +229,7 @@ int run(int no, const char* bin){
         ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, STR_KEEP_RUNNING, STR_VERBOSE, NULL);
     else if(verbose)
         ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, STR_VERBOSE, NULL);
-    else if(keep_runnig)
+    else if(keep_running)
         ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, STR_KEEP_RUNNING, NULL);
     else
         ret = _spawnl(_P_WAIT, bin, bin, STR_RUN_TEST, test, NULL);

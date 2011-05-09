@@ -62,6 +62,10 @@ void _fail(const char *msg, const char *file, int line){
 	exit(EXIT_FAILURE);
 }
 
+#ifdef _WIN32
+# define inline _inline
+#endif
+
 static inline void _assert_eval(const char* msg, bool cond, const char* file, int line){
     if(!cond) {
         _fail(msg,file,line);
