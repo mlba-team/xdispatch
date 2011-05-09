@@ -60,9 +60,11 @@ void _assert_not_true_double(double a, double b, bool cond,  const char* cond_de
 #define MU_DESC_ASSERT_NOT_NULL_DOUBLE(D,A) _assert_true_double((A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
 
 #define MU_DESC_ASSERT_EQUAL(D,A,B) _assert_true_long((long)(A),(long)(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_EQUAL_HEX(D,A,B) _assert_true_long_hex((long)(A),(long)(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
 #define MU_DESC_ASSERT_EQUAL_DOUBLE(D,A,B) _assert_true_double((A),(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
 
 #define MU_DESC_ASSERT_NOT_EQUAL(D,A,B) _assert_true_long((long)(A),(long)(B),(A)!=(B),D": "#A" != "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_EQUAL_HEX(D,A,B) _assert_true_long_hex((long)(A),(long)(B),(A)!=(B),D": "#A" != "#B,__FILE__,__LINE__)
 #define MU_DESC_ASSERT_NOT_EQUAL_DOULBE(D,A,B) _assert_true_double((A),(B),(A)!=(B),D": "#A" != "#B,__FILE__,__LINE__)
 
 #define MU_DESC_ASSERT_LESS_THAN(D,A,B) _assert_true_long((long)(A),(long)(B),(A)<(B),D": "#A" < "#B,__FILE__,__LINE__)
@@ -88,9 +90,11 @@ void _assert_not_true_double(double a, double b, bool cond,  const char* cond_de
 #define MU_ASSERT_NOT_NULL_DOUBLE(A) _assert_true_double((A), 0, (A)!=0,#A" != 0",__FILE__,__LINE__)
 
 #define MU_ASSERT_EQUAL(A,B) _assert_true_long((long)(A),(long)(B),(A)==(B),#A" == "#B,__FILE__,__LINE__)
+#define MU_ASSERT_EQUAL_HEX(A,B) _assert_true_hex((long)(A),(long)(B),(A)==(B),#A" == "#B,__FILE__,__LINE__)
 #define MU_ASSERT_EQUAL_DOUBLE(A,B) _assert_true_double((A),(B),(A)==(B),#A" == "#B,__FILE__,__LINE__)
 
 #define MU_ASSERT_NOT_EQUAL(A,B) _assert_true_long((long)(A),(long)(B),(A)!=(B),#A" != "#B,__FILE__,__LINE__)
+#define MU_ASSERT_NOT_EQUAL_HEX(A,B) _assert_true_hex((long)(A),(long)(B),(A)!=(B),#A" != "#B,__FILE__,__LINE__)
 #define MU_ASSERT_NOT_EQUAL_DOULBE(A,B) _assert_true_double((A),(B),(A)!=(B),#A" != "#B,__FILE__,__LINE__)
 
 #define MU_ASSERT_LESS_THAN(A,B) _assert_true_long((long)(A),(long)(B),(A)<(B),#A" < "#B,__FILE__,__LINE__)

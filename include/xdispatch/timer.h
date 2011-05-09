@@ -129,6 +129,8 @@ public:
     static void single_shot(struct tm*, const xdispatch::queue&, dispatch_block_t);
 #endif
 
+    bool operator ==(const timer&);
+
 private:
     class data;
     data* d;
