@@ -76,9 +76,6 @@ public:
         // we should be executed on the global default queue
         MU_ASSERT_EQUAL(xdispatch::current_queue().native(), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
 
-        // assert that we can really get the timer
-        MU_ASSERT_EQUAL(xdispatch::timer::current(), tested_timer);
-
         // assert the requested timeout interval
         struct timeval end_time;
         gettimeofday(&end_time, NULL);

@@ -38,15 +38,15 @@ void dispatch_api() {
 	MU_BEGIN_TEST(dispatch_api);
 
     q = dispatch_get_main_queue();
-	MU_ASSERT_NOT_NULL(q);
+    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_main_queue",q);
     dispatch_async_f(q, NULL, pass);
 
 	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
-	MU_ASSERT_NOT_NULL(q);
+    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_global_queue", q);
 	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0);
-	MU_ASSERT_NOT_NULL(q);
+    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_global_queue", q);
 	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
-	MU_ASSERT_NOT_NULL(q);
+    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_global_queue", q);
 
     dispatch_main();
 

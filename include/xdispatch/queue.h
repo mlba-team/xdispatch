@@ -42,7 +42,7 @@ queues.
 
 @see xdispatch::dispatch for creation of queues
 */
-class XDISPATCH_EXPORT queue {
+class XDISPATCH_EXPORT queue : public object {
 
 public:
     /**

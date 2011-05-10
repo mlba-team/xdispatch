@@ -9,5 +9,6 @@
 #include "qdispatchsemaphore.h"
 #include "qdispatchcoreapplication.h"
 #include "qdispatchapplication.h"
+#include "qdispatchtimer.h"
 
 #endif /* QT_DISPATCH_H_ */

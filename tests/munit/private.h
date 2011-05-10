@@ -23,7 +23,9 @@
 
 typedef struct {
 	mu_test_func function;
-	const char* name;
+    const char* name;
 } mu_test_t;
+
+extern bool verbose;
 
 #endif /* PRIVATE_H_ */

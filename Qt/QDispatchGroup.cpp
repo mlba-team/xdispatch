@@ -120,6 +120,14 @@ void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q)
     dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
+void QDispatchGroup::suspend(){
+	xdispatch::group::suspend();
+}
+
+void QDispatchGroup::resume(){
+	xdispatch::group::resume();
+}
+
 #ifdef XDISPATCH_HAS_BLOCKS
 
 void QDispatchGroup::async(dispatch_block_t b, const xdispatch::queue & q){

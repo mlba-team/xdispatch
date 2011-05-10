@@ -26,12 +26,12 @@
 #include "qdispatchglobal.h"
 #include "qdispatchqueue.h"
 
+QT_BEGIN_HEADER
+QT_BEGIN_NAMESPACE
+
 class QDispatchQueue;
 class QTime;
 class QString;
-
-QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 

@@ -99,6 +99,14 @@ void QDispatchQueue::setTarget(const xdispatch::queue& q){
     set_target(q);
 }
 
+void QDispatchQueue::suspend(){
+	xdispatch::queue::suspend();
+}
+
+void QDispatchQueue::resume(){
+	xdispatch::queue::resume();
+}
+
 #ifdef XDISPATCH_HAS_BLOCKS
 void QDispatchQueue::after(dispatch_block_t block, const QTime& t){
     after(block, QDispatch::asDispatchTime(t));

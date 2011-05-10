@@ -40,7 +40,7 @@ executing.
 See also Apple's Documentation of Dispatch Groups
 */
 
-class XDISPATCH_EXPORT group {
+class XDISPATCH_EXPORT group : public object {
 
 public:
     /**
@@ -109,6 +109,22 @@ public:
     */
     void notify(dispatch_block_t b, const queue& q = global_queue());
 #endif
+    /**
+    Suspends the invocation of work items belonging to this group.
+
+    A suspended group will not invoke any blocks associated with it. The
+    suspension of a group will occur after any running work item associated with
+    the group completes.
+
+    Calls to suspend() must be balanced with calls to resume().
+    */
+    virtual void suspend();
+    /**
+    Resumes the invocation of work items belonging to this group.
+
+    Calls to suspend() must be balanced with calls to resume().
+    */
+    virtual void resume();
     /**
     @returns The dispatch_group_t object associated with this
     C++ object. Use this, if you need to use the plain C Interface

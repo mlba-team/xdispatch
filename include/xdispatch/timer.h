@@ -27,8 +27,6 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include <memory>
-
 __XDISPATCH_BEGIN_NAMESPACE
 
 /**
@@ -131,14 +129,13 @@ public:
     static void single_shot(struct tm*, const xdispatch::queue&, dispatch_block_t);
 #endif
 
+    bool operator ==(const timer&);
+
 private:
     class data;
     data* d;
 
 };
-
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const timer*);
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const timer&);
 
 __XDISPATCH_END_NAMESPACE
 

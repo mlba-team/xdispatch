@@ -31,78 +31,106 @@
 #endif
 
 #include "MUnit_assert.h"
+#include "MUnit_tools.h"
+#include "typedefs.h"
+#include "private.h"
 
 void _pass(const char *msg, const char *file, int line){
-    printf(" Passed\n");
-//#if defined(WIN32) && defined(DEBUG)
-//	Sleep(2000);
-//	_CrtDumpMemoryLeaks();
-//#endif
+    printf("    PASS\n");
+    //#if defined(WIN32) && defined(DEBUG)
+    //	Sleep(2000);
+    //	_CrtDumpMemoryLeaks();
+    //#endif
 	exit(EXIT_SUCCESS);
 }
 
 void _pass_after_delay(void* d){
-    printf(" Passed\n");
-//#if defined(WIN32) && defined(DEBUG)
-//	Sleep(2000);
-//	_CrtDumpMemoryLeaks();
-//#endif
+    printf("    PASS\n");
+    //#if defined(WIN32) && defined(DEBUG)
+    //	Sleep(2000);
+    //	_CrtDumpMemoryLeaks();
+    //#endif
 	exit(EXIT_SUCCESS);
 }
 
 void _fail(const char *msg, const char *file, int line){
-    printf("Failed\n\t%s, at: %s:%u\n",msg,file,line);
-//#if defined(WIN32) && defined(DEBUG)
-//	Sleep(2000);
-//	_CrtDumpMemoryLeaks();
-//#endif
+    printf(" FAIL:\n\t%s\n\t- at %s:%u\n",msg,file,line);
+    //#if defined(WIN32) && defined(DEBUG)
+    //	Sleep(2000);
+    //	_CrtDumpMemoryLeaks();
+    //#endif
 	exit(EXIT_FAILURE);
+}
+
+#ifdef _WIN32
+# define inline _inline
+#endif
+
+static inline void _assert_eval(const char* msg, bool cond, const char* file, int line){
+    if(!cond) {
+        _fail(msg,file,line);
+    } else if(verbose) {
+        printf("\t%s\n\tOK\n", msg);
+        fflush(stdout);
+    }
 }
 
 void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const char* file, int line){
     char msg[512];
-	if(!cond) {
 #ifndef _WIN32
-        sprintf(msg,"Test %s failed (was %li,%li)",cond_desc, a, b);
+    sprintf(msg,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
 #else
-        sprintf_s(msg, 100,"Test %s failed (was %li,%li)",cond_desc, a, b);
+    sprintf_s(msg, 100,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
 #endif
-		_fail(msg,file,line);
-	}
+    _assert_eval(msg, cond, file, line);
+}
+
+void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const char* file, int line){
+    char msg[512];
+#ifndef _WIN32
+    sprintf(msg,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
+#else
+    sprintf_s(msg, 100,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
+#endif
+    _assert_eval(msg, cond, file, line);
 }
 
 void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line){
     char msg[512];
-    if(!cond) {
 #ifndef _WIN32
-        sprintf(msg,"Test %s failed (was %f,%f)", cond_desc, a, b);
+    sprintf(msg,"Assert %s \n\t- is %f, %f", cond_desc, a, b);
 #else
-        sprintf_s(msg, 100,"Test %s failed (was %f,%f)", cond_desc, a, b);
+    sprintf_s(msg, 100,"Assert %s \n\t- is %f, %f", cond_desc, a, b);
 #endif
-        _fail(msg,file,line);
-    }
+    _assert_eval(msg, cond, file, line);
 }
 
 void _assert_not_true_long(long a, long b, bool cond,  const char* cond_desc, const char* file, int line){
     char msg[512];
-	if(cond) {
 #ifndef _WIN32
-        sprintf(msg,"Test not %s failed (was %li,%li)",cond_desc, a, b);
+    sprintf(msg,"Assert not %s \n\t- is %li, %li",cond_desc, a, b);
 #else
-        sprintf_s(msg, 100,"Test not %s failed (was %li,%li)",cond_desc, a, b);
+    sprintf_s(msg, 100,"Assert not %s \n\t- is %li, %li",cond_desc, a, b);
 #endif
-		_fail(msg,file,line);
-	}
+    _assert_eval(msg, cond, file, line);
+}
+
+void _assert_not_true_hex(long a, long b, bool cond,  const char* cond_desc, const char* file, int line){
+    char msg[512];
+#ifndef _WIN32
+    sprintf(msg,"Assert not %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
+#else
+    sprintf_s(msg, 100,"Assert not %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
+#endif
+    _assert_eval(msg, cond, file, line);
 }
 
 void _assert_not_true_double(double a, double b, bool cond,  const char* cond_desc, const char* file, int line){
     char msg[512];
-    if(cond) {
 #ifndef _WIN32
-        sprintf(msg,"Test not %s failed (was %f,%f)",cond_desc, a, b);
+    sprintf(msg,"Assert not %s \n\t- is %f, %f",cond_desc, a, b);
 #else
-        sprintf_s(msg, 100,"Test not %s failed (was %f,%f)",cond_desc, a, b);
+    sprintf_s(msg, 100,"Assert not %s \n\t- is %f, %f",cond_desc, a, b);
 #endif
-        _fail(msg,file,line);
-    }
+    _assert_eval(msg, cond, file, line);
 }

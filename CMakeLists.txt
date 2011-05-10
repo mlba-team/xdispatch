@@ -100,7 +100,10 @@ endif()
 mz_add_executable(tests tests)
 
 # documentation
-include(docs/docgen.cmake)
+option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
+if(XDISPATCH_DOCS)
+	include(docs/docgen.cmake)
+endif()
 
 # install target
 install(DIRECTORY include DESTINATION . PATTERN "*.svn" EXCLUDE)
