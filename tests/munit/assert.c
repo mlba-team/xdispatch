@@ -80,7 +80,7 @@ void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const c
 #ifndef _WIN32
     sprintf(msg,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
 #else
-    sprintf_s(msg, 100,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
+    sprintf_s(msg, 500,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
 #endif
     _assert_eval(msg, cond, file, line);
 }
@@ -90,7 +90,7 @@ void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const ch
 #ifndef _WIN32
     sprintf(msg,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
 #else
-    sprintf_s(msg, 100,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
+    sprintf_s(msg, 500,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
 #endif
     _assert_eval(msg, cond, file, line);
 }
@@ -100,7 +100,7 @@ void _assert_true_double(double a, double b, bool cond, const char* cond_desc, c
 #ifndef _WIN32
     sprintf(msg,"Assert %s \n\t- is %f, %f", cond_desc, a, b);
 #else
-    sprintf_s(msg, 100,"Assert %s \n\t- is %f, %f", cond_desc, a, b);
+    sprintf_s(msg, 500,"Assert %s \n\t- is %f, %f", cond_desc, a, b);
 #endif
     _assert_eval(msg, cond, file, line);
 }
@@ -110,7 +110,7 @@ void _assert_not_true_long(long a, long b, bool cond,  const char* cond_desc, co
 #ifndef _WIN32
     sprintf(msg,"Assert not %s \n\t- is %li, %li",cond_desc, a, b);
 #else
-    sprintf_s(msg, 100,"Assert not %s \n\t- is %li, %li",cond_desc, a, b);
+    sprintf_s(msg, 500,"Assert not %s \n\t- is %li, %li",cond_desc, a, b);
 #endif
     _assert_eval(msg, cond, file, line);
 }
@@ -120,7 +120,7 @@ void _assert_not_true_hex(long a, long b, bool cond,  const char* cond_desc, con
 #ifndef _WIN32
     sprintf(msg,"Assert not %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
 #else
-    sprintf_s(msg, 100,"Assert not %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
+    sprintf_s(msg, 500,"Assert not %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
 #endif
     _assert_eval(msg, cond, file, line);
 }
@@ -130,7 +130,7 @@ void _assert_not_true_double(double a, double b, bool cond,  const char* cond_de
 #ifndef _WIN32
     sprintf(msg,"Assert not %s \n\t- is %f, %f",cond_desc, a, b);
 #else
-    sprintf_s(msg, 100,"Assert not %s \n\t- is %f, %f",cond_desc, a, b);
+    sprintf_s(msg, 500,"Assert not %s \n\t- is %f, %f",cond_desc, a, b);
 #endif
     _assert_eval(msg, cond, file, line);
 }
