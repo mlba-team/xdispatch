@@ -27,6 +27,17 @@ __XDISPATCH_USE_NAMESPACE
 
 class queue::data {
 public:
+	data(){}
+	data(const data& other)
+		: native(other.native), label(other.label){
+			assert(native);
+			dispatch_retain(native);
+	}
+	~data(){
+	    if(native)
+			dispatch_release(native);
+	}
+
     dispatch_queue_t native;
     std::string label;
 };
@@ -39,13 +50,8 @@ queue::queue(dispatch_queue_t q) : d(new data){
     d->label = std::string(dispatch_queue_get_label(q));
 }
 
-queue::queue(const queue& other) : d(new data){
+queue::queue(const queue& other) : d(new data(*other.d)){
     assert(d);
-    assert(other.d);
-    d->native = other.d->native;
-    d->label = other.d->label;
-    assert(d->native);
-    dispatch_retain(d->native);
 }
 
 queue::queue(const std::string & label) : d(new data){
@@ -64,8 +70,6 @@ queue::queue(const char* label) : d(new data){
 }
 
 queue::~queue(){
-    if(d->native)
-        dispatch_release(d->native);
     delete d;
 }
 
@@ -92,7 +96,7 @@ void queue::sync(operation* op){
 void queue::set_finalizer(operation* op, const queue& q){
     dispatch_set_finalizer_f(d->native, run_wrap);
     dispatch_set_context(d->native, new wrap(op));
-    dispatch_set_target_queue(d->native, q.native());
+    dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
 const std::string queue::label() const {
@@ -107,12 +111,12 @@ void queue::resume(){
     dispatch_resume(d->native);
 }
 
-const dispatch_queue_t queue::native() const {
+dispatch_object_t queue::native() const {
     return d->native;
 }
 
 void queue::set_target(const queue& q) {
-    dispatch_set_target_queue(d->native, q.native());
+    dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS
@@ -140,10 +144,20 @@ void queue::sync(dispatch_block_t b){
 void queue::set_finalizer(dispatch_block_t b, const queue& q){
     dispatch_set_finalizer_f(d->native, run_wrap);
     dispatch_set_context(d->native, new wrap(b));
-    dispatch_set_target_queue(d->native, q.native());
+    dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
 #endif
+
+xdispatch::queue& queue::operator=(const queue& other){
+	if(*this != other){
+		if(d)
+			delete d;
+		d = new data(*other.d);
+		assert(d);
+	}
+	return *this;
+}
 
 std::ostream& xdispatch::operator<<(std::ostream& stream, const queue* q)
 {
@@ -154,17 +168,4 @@ std::ostream& xdispatch::operator<<(std::ostream& stream, const queue& q)
 {
     stream << "xdispatch::queue (" << q.label() << ")";
     return stream;
-}
-
-
-bool xdispatch::operator ==(const queue& a, const queue& b){
-    return a.native() == b.native();
-}
-
-bool xdispatch::operator ==(const dispatch_queue_t& a, const queue& b){
-    return a == b.native();
-}
-
-bool xdispatch::operator ==(const queue& a, const dispatch_queue_t& b){
-    return a.native() == b;
 }

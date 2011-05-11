@@ -38,7 +38,7 @@ __XDISPATCH_BEGIN_NAMESPACE
            you do any changes to this source not by using the timer object
            it is not garanteed, that the timer object will still work as expected.
   */
-class XDISPATCH_EXPORT timer {
+class XDISPATCH_EXPORT timer : public object {
 
 public:
     /**
@@ -68,14 +68,24 @@ public:
       Will start the timer.
       @remarks A new created timer will be stopped and needs to me started first.
                Once started, ensure balanced calls between start() and stop().
+	  @see resume();
     */
     void start();
+	/** 
+	  @see start();
+	  */
+	void resume();
     /**
       Will stop the timer.
       @remarks A new created timer will be stopped and needs to me started first.
                Once started, ensure balanced calls between start() and stop().
+	  @see suspend()
     */
     void stop();
+	/**
+	  @see stop();
+	  */
+	void suspend();
     /**
       Sets the operation that will be executed every time the timer fires.
       As in queues, the timer takes possesion of the operation and will handle deletion.
@@ -100,7 +110,7 @@ public:
     /**
       @returns The native dispatch_source_t associated with the timer
       */
-    virtual const dispatch_source_t native() const;
+    dispatch_object_t native() const;
     /**
       @returns The timer responsible for the handler to be executed or
                NULL if the handler was not executed because of a timer firing
@@ -129,7 +139,7 @@ public:
     static void single_shot(struct tm*, const xdispatch::queue&, dispatch_block_t);
 #endif
 
-    bool operator ==(const timer&);
+    timer& operator =(const timer&);
 
 private:
     class data;

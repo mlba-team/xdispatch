@@ -168,8 +168,20 @@ public:
 	  to resume() to continue an object
 	  */
 	virtual void suspend() = 0;
+	/**
+	 Returns the native dispatch object associated to
+	 the xdispatch object
+	 */
+	virtual dispatch_object_t native() const = 0;
 
+	bool operator ==(const object&);
+	bool operator !=(const object&);
+    bool operator ==(const dispatch_object_t&);
+    bool operator !=(const dispatch_object_t&);
 };
+
+XDISPATCH_EXPORT bool operator ==(const dispatch_object_t&, const object&);
+XDISPATCH_EXPORT bool operator !=(const dispatch_object_t&, const object&);
 
 class queue;
 

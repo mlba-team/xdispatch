@@ -130,15 +130,17 @@ public:
     C++ object. Use this, if you need to use the plain C Interface
     of libdispatch.
     */
-    const dispatch_group_t native() const;
+    dispatch_object_t native() const;
+
+	group& operator=(const group&);
 
 private:
     class data;
     data* d;
 };
 
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const group* );
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const group& );
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const group* );
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const group& );
 
 __XDISPATCH_END_NAMESPACE
 
