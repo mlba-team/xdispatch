@@ -54,6 +54,7 @@
 # include "group.h"
 # include "semaphore.h"
 # include "timer.h"
+# include "source.h"
 # undef __XDISPATCH_INDIRECT__
 
 #undef XDISPATCH_EXPORT
