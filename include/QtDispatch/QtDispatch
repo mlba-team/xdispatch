@@ -10,5 +10,6 @@
 #include "qdispatchcoreapplication.h"
 #include "qdispatchapplication.h"
 #include "qdispatchtimer.h"
+#include "qdispatchsource.h"
 
 #endif /* QT_DISPATCH_H_ */

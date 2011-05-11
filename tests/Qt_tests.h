@@ -56,6 +56,9 @@ void Qt_dispatch_semaphore();
 void Qt_dispatch_current();
 void Qt_synchronized();
 void Qt_dispatch_timer();
+void Qt_dispatch_source_signal();
+void Qt_dispatch_source_device();
+void Qt_dispatch_source_network();
 #endif
 
 static void register_qt_tests(){
@@ -73,6 +76,9 @@ static void register_qt_tests(){
     MU_REGISTER_TEST(Qt_dispatch_current);
     MU_REGISTER_TEST(Qt_dispatch_timer);
     MU_REGISTER_TEST(Qt_synchronized);
+	MU_REGISTER_TEST(Qt_dispatch_source_signal);
+	MU_REGISTER_TEST(Qt_dispatch_source_device);
+	MU_REGISTER_TEST(Qt_dispatch_source_network);
 #endif
 #endif
 }
