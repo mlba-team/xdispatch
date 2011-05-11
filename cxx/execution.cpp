@@ -20,15 +20,22 @@
 
 
 #include <assert.h>
+#include <iostream>
 #include "xdispatch_internal.h"
 
 __XDISPATCH_USE_NAMESPACE
 
 extern "C"
-void xdispatch::run_wrap(void* dt){
+void xdispatch::run_wrap(void* dt){  
     assert(dt);
     wrap* w = static_cast<wrap*>(dt);
-    w->run();
+
+    try {
+        w->run();
+    } catch(...){
+        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
+    }
+
     delete w;
 }
 
@@ -36,7 +43,13 @@ extern "C"
 void xdispatch::run_iter_wrap(void* dt, size_t index){
     assert(dt);
     iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
-    wrap->run(index);
+
+    try {
+        wrap->run(index);
+    } catch(...){
+        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
+    }
+
     if(wrap->deref())
         delete wrap;
 }
