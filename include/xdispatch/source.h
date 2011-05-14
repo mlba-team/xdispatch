@@ -42,12 +42,16 @@ class source;
 class XDISPATCH_EXPORT sourcetype {
 
 protected:
+    sourcetype();
+
 	void ready(void* = NULL);
 	/**
 	 Overload this method in case you are implementing
 	 a sourcetype based on an dispatch_source_t. This
 	 way users can access the native object by using
-	 source::native()
+	 source::native().
+
+     By default this is returning NULL
 	 */
 	virtual dispatch_source_t native();
 
@@ -101,9 +105,16 @@ public:
 	   and executed handler. The returned data is defined by the sourcetype
 	   used.
 
+      Pass the type of the data to retrieve as template parameter. A pointer
+      of the given type will be returned, or NULL if the available data is not
+      of the requested type. If you requested a reference type, an std::bad_cast
+      exception may be thrown as well.
+
 	  @remarks Calling this method from outside of a handler is undefined
 	  */
-	static void* data();
+	template <typename T> static T* data(){
+        return static_cast<T*>(_data());
+    }
 
 	/**
 	 @returns the native dispatch_object_t associated with this source.
@@ -118,6 +129,7 @@ private:
     pdata* d;
 
 	void notify(void*);
+    static void* _data();
 	friend class sourcetype;
 };
 

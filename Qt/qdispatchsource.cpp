@@ -108,7 +108,7 @@ void QDispatchSource::setHandler(dispatch_block_t b){
 }
 #endif
 
-QObject* QDispatchSource::data(){
+QObject* QDispatchSource::_data(){
 	return Private::storage.localData();
 }
 

@@ -47,7 +47,7 @@ extern "C" void Qt_dispatch_source_network(){
 	QDispatchSource src(new QDispatchSourceTypeNetworkManager(man));
 	src.setHandler(${
 
-		QNetworkReply* r = qobject_cast<QNetworkReply*>(QDispatchSource::data());
+		QNetworkReply* r = QDispatchSource::data<QNetworkReply>();
 		MU_ASSERT_NOT_NULL(r);
 		
 

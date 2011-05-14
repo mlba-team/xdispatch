@@ -31,6 +31,10 @@ static void run_tls_initializer(void*){
 	pthread_key_create(&data_tls, NULL);
 }
 
+sourcetype::sourcetype() : cb(NULL) {
+
+}
+
 void sourcetype::set_cb(source* s){
 		assert(s);
 		cb = s;
@@ -79,8 +83,10 @@ public:
 
 source::source(sourcetype* src_t) : d(new pdata()){
 	assert(d);
+    assert(src_t);
 	d->suspend_ct = 0;
 	d->type = src_t;
+    src_t->set_cb(this);
 }
 
 source::source(const source&) {}
@@ -124,7 +130,7 @@ dispatch_object_t source::native() const {
 	return d->type->native();
 }
 
-void* source::data(){
+void* source::_data(){
 	return pthread_getspecific(data_tls);
 }
 

@@ -35,7 +35,7 @@ extern "C" void cxx_dispatch_cascade(){
     MU_BEGIN_TEST(cxx_dispatch_cascade);
 
     xdispatch::queue q = xdispatch::global_queue();
-    MU_ASSERT_NOT_NULL(q.native());
+    MU_ASSERT_NOT_NULL_HEX(q.native());
 
 	int no = 0;
 	

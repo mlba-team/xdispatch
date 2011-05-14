@@ -171,9 +171,10 @@ private:
 /**
  This type will dispatch the handler each time the given network manager finished
  a QNetworkReply. The finished reply can be obtained by using QDispatchSource::data()
- from within your handler.
+ from within your handler. Please note that equal to using QNetworkManager's finished()
+ signal directly, you shoud delete the QNetworkReply when done with it.
 
- The descrution of the network manager is your own responsibility
+ The deletion of the network manager is your own responsibility
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeNetworkManager : public QDispatchSourceType {
 
@@ -246,11 +247,17 @@ public:
 	 @returns the data associated to the current QDispatchSourceType. See
 		the individual type documentations for details on the data available.
 
+     Pass the type of the data to retrieve as template parameter. A pointer
+     of the given type will be returned, or NULL if the available data is not
+     of the requested type.
+
 	 Call this to obtain data from within a handler while executing.
 	 Calling this method from somewhere else than an executing handler
-	 is undefined
+	 is undefined.
 	 */
-	static QObject* data();
+	template <typename T> static T* data(){
+        return qobject_cast<T*>(_data());
+    }
 
 public slots:
 	void resume();
@@ -263,6 +270,8 @@ private:
 	Q_DISABLE_COPY(QDispatchSource);
 	class Private;
 	Private* d;
+
+    static QObject* _data();
 
 };
 
