@@ -30,7 +30,6 @@
 #include "../include/QtDispatch/qdispatch.h"
 #include "../include/QtDispatch/qblockrunnable.h"
 #include "qrunnableoperations.h"
-#include "JavaUtils.h"
 
 QT_BEGIN_NAMESPACE
 
