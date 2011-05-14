@@ -47,7 +47,7 @@ dispatch_source_cancel(dispatch_source_t obj)
 {
     struct dispatch_source_s* ds = obj;
 #if DISPATCH_DEBUG
-    dispatch_debug(obj, __FUNCTION__);
+    dispatch_debug(obj, "%s", __FUNCTION__);
 #endif
 	// Right after we set the cancel flag, someone else
 	// could potentially invoke the source, do the cancelation, 
@@ -426,7 +426,7 @@ dispatch_source_create(dispatch_source_type_t type,
 
 	dispatch_assert(!(ds->ds_is_level && ds->ds_is_adder));
 #if DISPATCH_DEBUG
-	dispatch_debug(ds, __FUNCTION__);
+        dispatch_debug(ds, "%s", __FUNCTION__);
 #endif
 
     _dispatch_retain((ds->do_targetq));

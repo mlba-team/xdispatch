@@ -19,6 +19,8 @@
 */
 
 #include <map>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "xdispatch_internal.h"
 
