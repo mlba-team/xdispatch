@@ -31,6 +31,14 @@ if(NOT HAS_MZ_GLOBAL)
 	endif()
 endif()
 
+# does the user want to have clang with blocks support?
+OPTION(CLANG_BLOCKS "Enable to use blocks with clang" OFF)
+if(CLANG_BLOCKS)
+    message("-- Linking with the BlocksRuntime")
+    mz_add_flag(-fblocks)
+    set(LIBS ${LIBS} BlocksRuntime)
+endif()
+
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
 CHECK_INCLUDE_FILES (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
 CHECK_INCLUDE_FILES (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)

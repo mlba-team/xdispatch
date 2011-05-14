@@ -458,7 +458,7 @@ _dispatch_source_set_event_handler2(void *context)
 void
 dispatch_source_set_event_handler(dispatch_source_t ds, dispatch_block_t handler)
 {
-    dispatch_assert(!DSOURCE_CAST(ds)->ds_is_legacy);
+    dispatch_assert(!(ds)->ds_is_legacy);
 	handler = _dispatch_Block_copy(handler);
 	dispatch_barrier_async_f((dispatch_queue_t)ds,
 		handler, _dispatch_source_set_event_handler2);

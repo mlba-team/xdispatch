@@ -90,7 +90,6 @@
 
 // clang 2.0, gcc 4.3 from mac os 10.6
 #ifdef __BLOCKS__
-
 # include <Block.h>
 # include <stddef.h>
 # define XDISPATCH_BLOCK ^
