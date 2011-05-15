@@ -90,12 +90,12 @@ std::map<void*, timer::data*> timer::data::handler_dates;
 dispatch_once_t timer::data::current_initialized = 0;
 pthread_key_t timer::data::current;
 
-timer::timer(uint64_t i, const xdispatch::queue& q) : d(new data(q)){
+timer::timer(uint64_t i, const xdispatch::queue& q, dispatch_time_t first) : d(new data(q)){
 	assert(d);
 	d->parent = this;
 	d->native = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, (dispatch_queue_t)q.native());
 	d->interval = i;
-	dispatch_source_set_timer(d->native, DISPATCH_TIME_NOW, i, 0);
+        dispatch_source_set_timer(d->native, first, i, 0);
 }
 
 timer::timer(const timer& t) : d(new data(*t.d)){

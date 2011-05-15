@@ -23,6 +23,8 @@
 #ifndef XDISPATCH_SOURCE_H_
 #define XDISPATCH_SOURCE_H_
 
+#include <boost/any.hpp>
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -44,14 +46,20 @@ class XDISPATCH_EXPORT sourcetype {
 protected:
     sourcetype();
 
-	void ready(void* = NULL);
+        /**
+         This method needs to be called every time
+         your sourcetype is read. The passed data can
+         later be obtained in the handler by using
+         source::data()
+         */
+        void ready(const boost::any& = boost::any());
 	/**
 	 Overload this method in case you are implementing
 	 a sourcetype based on an dispatch_source_t. This
 	 way users can access the native object by using
 	 source::native().
 
-     By default this is returning NULL
+         By default this is returning NULL
 	 */
 	virtual dispatch_source_t native();
 
@@ -105,15 +113,17 @@ public:
 	   and executed handler. The returned data is defined by the sourcetype
 	   used.
 
-      Pass the type of the data to retrieve as template parameter. A pointer
-      of the given type will be returned, or NULL if the available data is not
-      of the requested type. If you requested a reference type, an std::bad_cast
-      exception may be thrown as well.
+      Pass the type of the data to retrieve as template parameter. If the requested
+      datatype cannot be provided, a bad_cast exception will be thrown.
 
 	  @remarks Calling this method from outside of a handler is undefined
 	  */
-	template <typename T> static T* data(){
-        return static_cast<T*>(_data());
+        template <typename T> static T& data(){
+        try {
+            return boost::any_cast<T>(_data());
+        } catch (const boost::bad_any_cast&) {
+            throw std::bad_cast();
+        }
     }
 
 	/**
@@ -128,8 +138,8 @@ private:
     class pdata;
     pdata* d;
 
-	void notify(void*);
-    static void* _data();
+        void notify(const boost::any&);
+    static const boost::any* _data();
 	friend class sourcetype;
 };
 

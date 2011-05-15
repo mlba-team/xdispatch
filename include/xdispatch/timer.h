@@ -46,8 +46,9 @@ public:
 
         @param interval The interval in nanoseconds at which the timer will fire after the timeout occured.
         @param target The queue to execute the timer on, defaults to the global_queue
+        @param starting The time at which the timer will fire for the first time
     */
-    timer(uint64_t interval, const xdispatch::queue& target = global_queue());
+    timer(uint64_t interval, const xdispatch::queue& target = global_queue(), dispatch_time_t starting = DISPATCH_TIME_NOW);
     timer(const timer&);
     timer(dispatch_source_t);
     ~timer();
