@@ -56,6 +56,16 @@ if(MINGW)
     set(LIBS ${LIBS} ws2_32)
 endif()
 
+# platforms
+if(WIN32)
+	file(GLOB PLATFORM platform/windows/*.c platform/windows/*.h)
+elseif(APPLE)
+	file(GLOB PLATFORM platform/darwin/*.c platform/darwin/*.h)
+else()
+	file(GLOB PLATFORM platform/posix/*.c platform/posix/*.h)
+endif()
+source_group(platform FILES ${PLATFORM})
+
 # core lib
 file(GLOB INCL ../include/libdispatch/*.h)
 file(GLOB CORE src/*.c src/*.h config/*.in)
@@ -68,7 +78,7 @@ source_group(core\\shims FILES ${SHIM})
 # add new target
 add_definitions(-DDISPATCH_MAKEDLL)
 add_definitions(-D_GNU_SOURCE)
-add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM})
+add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM})
   
 # link this target with all needed libraries
 message("-- linking dispatch with: ${LIBS}")

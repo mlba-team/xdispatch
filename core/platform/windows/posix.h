@@ -18,8 +18,8 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifndef SHIM_WINDOWS_H_
-#define SHIM_WINDOWS_H_
+#ifndef POSIX_WINDOWS_H_
+#define POSIX_WINDOWS_H_
 
 // Include Win32 headers early in order to minimize the
 // likelihood of name pollution from dispatch headers.
@@ -49,7 +49,6 @@
 #include <limits.h>
 #include <errno.h>
 #include <process.h>
-#include "queue.h"
 
 //typedef signed char int8_t;
 //typedef unsigned char uint8_t;
@@ -146,4 +145,4 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 #define dup2 _dup2
 #define close _close
 
-#endif /* SHIM_WINDOWS_H_ */
+#endif /* POSIX_WINDOWS_H_ */
