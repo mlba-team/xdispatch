@@ -26,17 +26,18 @@
 __XDISPATCH_USE_NAMESPACE
 
 extern "C"
-void xdispatch::run_wrap(void* dt){  
+void xdispatch::run_operation(void* dt){  
     assert(dt);
-    wrap* w = static_cast<wrap*>(dt);
+    operation* w = static_cast<operation*>(dt);
 
     try {
-        w->run();
+        (*w)();
     } catch(...){
         std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
     }
 
-    delete w;
+    if(w->auto_delete())
+		delete w;
 }
 
 extern "C"

@@ -43,7 +43,7 @@ __XDISPATCH_BEGIN_NAMESPACE
 class XDISPATCH_EXPORT operation
 {
     public:
-    operation() : auto_del(false){}
+    operation() : auto_del(true){}
 
     virtual void operator()() = 0;
     /**
@@ -72,7 +72,7 @@ class XDISPATCH_EXPORT operation
 class XDISPATCH_EXPORT iteration_operation
 {
 public:
-    iteration_operation() : auto_del(false){}
+    iteration_operation() : auto_del(true){}
 
     virtual void operator()(size_t index) = 0;
     /**

@@ -27,27 +27,27 @@
 __XDISPATCH_USE_NAMESPACE
 
 void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_group_async_f(group,queue, new wrap(block), run_wrap);
+    dispatch_group_async_f(group,queue, new block_operation(block), run_operation);
 }
 
 void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_group_notify_f(group,queue, new wrap(block), run_wrap);
+    dispatch_group_notify_f(group,queue, new block_operation(block), run_operation);
 }
 
 void dispatch_async(dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_async_f(queue, new wrap(block), run_wrap);
+    dispatch_async_f(queue, new block_operation(block), run_operation);
 }
 
 void dispatch_sync(dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_sync_f(queue, new wrap(block), run_wrap);
+    dispatch_sync_f(queue, new block_operation(block), run_operation);
 }
 
 void dispatch_apply(size_t iterations, dispatch_queue_t queue, dispatch_iteration_block_t block){
-    dispatch_apply_f(iterations, queue, new iteration_wrap(block,iterations), run_iter_wrap);
+    dispatch_apply_f(iterations, queue, new iteration_wrap(new block_iteration_operation(block),iterations), run_iter_wrap);
 }
 
 void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_after_f(when, queue, new wrap(block), run_wrap);
+    dispatch_after_f(when, queue, new block_operation(block), run_operation);
 }
 
 static dispatch_semaphore_t known_handler_lock = dispatch_semaphore_create(1);
