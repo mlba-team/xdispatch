@@ -126,6 +126,7 @@
 #include "shims/getprogname.h"
 #include "shims/time.h"
 #include "shims/perfmon.h"
+#include "shims/compiler.h"
 
 #if USE_KEVENTS
 # include "kevent_internal.h"

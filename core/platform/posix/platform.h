@@ -38,6 +38,7 @@
 #include <signal.h>
 #include <semaphore.h>
 #include <limits.h>
+#include <pthread.h>
 
 #ifndef FD_COPY
 #define	FD_COPY(f, t)	(void)(*(t) = *(f))
