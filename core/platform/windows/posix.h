@@ -59,8 +59,10 @@
 typedef LONGLONG int64_t;
 typedef UINT64 uint64_t;
 
-#define inline __inline
-#define bool BOOL
+#ifndef __cplusplus
+# define inline __inline
+# define bool BOOL
+#endif /* __cplusplus */
 
 // memory leak detection on windows
 #if HAVE_CRTDBG_H && DISPATCH_DEBUG

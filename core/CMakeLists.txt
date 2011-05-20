@@ -58,12 +58,16 @@ endif()
 
 # platforms
 if(WIN32)
-	file(GLOB PLATFORM platform/windows/*.c platform/windows/*.h)
+	file(GLOB PLATFORM_OS platform/windows/*.c platform/windows/*.h)
+	source_group(platform\\windows FILES ${PLATFORM_OS})
 elseif(APPLE)
-	file(GLOB PLATFORM platform/darwin/*.c platform/darwin/*.h)
+	file(GLOB PLATFORM_OS platform/darwin/*.c platform/darwin/*.h)
+	source_group(platform\\darwin FILES ${PLATFORM_OS})
 else()
-	file(GLOB PLATFORM platform/posix/*.c platform/posix/*.h)
+	file(GLOB PLATFORM_OS platform/posix/*.c platform/posix/*.h)
+	source_group(platform\\posix FILES ${PLATFORM_OS})
 endif()
+file(GLOB PLATFORM platform/*.h platform/*.c)
 source_group(platform FILES ${PLATFORM})
 
 # core lib
@@ -78,7 +82,7 @@ source_group(core\\shims FILES ${SHIM})
 # add new target
 add_definitions(-DDISPATCH_MAKEDLL)
 add_definitions(-D_GNU_SOURCE)
-add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM})
+add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM_OS} ${PLATFORM})
   
 # link this target with all needed libraries
 message("-- linking dispatch with: ${LIBS}")

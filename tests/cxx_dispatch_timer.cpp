@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core/src/shims/atomic.h"
+#include "../core/platform/atomic.h"
 #include "tests.h"
 
 static xdispatch::timer* tested_timer = NULL;

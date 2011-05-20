@@ -32,7 +32,7 @@
 #	include <unistd.h>
 #endif
 
-#include "../core/src/shims/atomic.h"
+#include "../core/platform/atomic.h"
 #include "tests.h"
 
 //

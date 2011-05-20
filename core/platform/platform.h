@@ -29,4 +29,6 @@
 # include "posix/platform.h"
 #endif
 
+#include "atomic.h"
+
 #endif /* PLATFORM_H_ */

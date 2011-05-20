@@ -27,7 +27,7 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/src/shims/atomic.h"
+#include "../core/platform/atomic.h"
 
 static unsigned int* worker = 0;
 

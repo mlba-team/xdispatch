@@ -55,7 +55,7 @@
 #include "../include/xdispatch/timer.h"
 #include "../include/xdispatch/source.h"
 
-#include "shims.h"
+#include "../core/platform/platform.h"
 #include "execution.h"
 
 #undef __XDISPATCH_INDIRECT__

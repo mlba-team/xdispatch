@@ -122,7 +122,6 @@
 /* and the last missing shims */
 #include "shims/malloc_zone.h"
 #include "shims/tsd.h"
-#include "shims/atomic.h"
 #include "shims/hardware.h"
 #include "shims/getprogname.h"
 #include "shims/time.h"
