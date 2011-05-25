@@ -6,6 +6,8 @@
 #include <qthreadstorage.h>
 #include <qcoreapplication.h>
 
+#include "../core/platform/platform.h"
+
 #include "../include/QtDispatch/qdispatchqueue.h"
 #include "../include/QtDispatch/qdispatch.h"
 #include "../include/QtDispatch/qblockrunnable.h"
@@ -37,10 +39,32 @@ extern "C" static void qstart_source_thread(void* dt){
 	(*thread)->start();
 } */
 
+template <typename T> class QDispatchThreadStorage {
+
+public:
+    QDispatchThreadStorage(){
+       if(pthread_key_create(&_tls, NULL))
+           throw "Unable to create tls";
+    }
+    ~QDispatchThreadStorage(){
+    }
+
+    void setLocalData(T* o){
+        pthread_setspecific(_tls, o);
+    }
+    T* localData(){
+        return (T*)pthread_getspecific(_tls);
+    }
+
+private:
+    pthread_key_t _tls;
+
+};
+
 class QDispatchNotifySource : public QRunnable {
 
 public:
-	QDispatchNotifySource(QObject* obj, QThreadStorage<QObject*>* stor, QRunnable* h)
+	QDispatchNotifySource(QObject* obj, QDispatchThreadStorage<QObject>* stor, QRunnable* h)
 		: object(obj), storage(stor), handler(h) {
 		Q_ASSERT(stor);
 		Q_ASSERT(h);
@@ -52,14 +76,12 @@ public:
 
 		storage->setLocalData(object);
 		handler->run();
-		if(handler->autoDelete())
-			delete handler;
 		storage->setLocalData(NULL);
 	}
 
 private:
 	QObject* object;
-	QThreadStorage<QObject*>* storage;
+	QDispatchThreadStorage<QObject>* storage;
 	QRunnable* handler;
 };
 
@@ -68,6 +90,11 @@ public:
 	Private() : target(QDispatch::globalQueue()){
 		//dispatch_once_f(&QDispatchSourceThread::started, &thread, qstart_source_thread);
 	}
+    ~Private(){
+        delete type;
+        if(handler->autoDelete())
+			delete handler;
+    }
 
 	QDispatchSourceType* type;
 	// The suspend count. A value less than zero means suspended
@@ -75,10 +102,10 @@ public:
 	QDispatchQueue target;
 	QRunnable* handler;
 	//QDispatchSourceThread* thread;
-	static QThreadStorage<QObject*> storage;
+	static QDispatchThreadStorage<QObject> storage;
 };
 
-QThreadStorage<QObject*> QDispatchSource::Private::storage;
+QDispatchThreadStorage<QObject> QDispatchSource::Private::storage;
 
 QDispatchSource::QDispatchSource(QDispatchSourceType* t) : d(new Private){
 	Q_CHECK_PTR(d);
@@ -89,7 +116,6 @@ QDispatchSource::QDispatchSource(QDispatchSourceType* t) : d(new Private){
 }
 
 QDispatchSource::~QDispatchSource(){
-	delete d->type;
 	delete d;
 }
 
