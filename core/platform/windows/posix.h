@@ -45,7 +45,6 @@
 #endif
 
 #include <Windows.h>
-#include <stdint.h>
 #include <limits.h>
 #include <errno.h>
 #include <process.h>

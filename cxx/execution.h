@@ -23,6 +23,7 @@
 
 __XDISPATCH_BEGIN_NAMESPACE
 
+#ifdef XDISPATCH_HAS_BLOCKS
 class block_iteration_operation : public iteration_operation {
 public:
     block_iteration_operation(dispatch_iteration_block_t b) : block(XDISPATCH_BLOCK_COPY(b)) {}
@@ -36,6 +37,7 @@ public:
 private:
     dispatch_iteration_block_t block;
 };
+#endif
 
 class iteration_wrap {
 public:

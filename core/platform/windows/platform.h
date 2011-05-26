@@ -27,6 +27,8 @@
 
 #if _MSC_VER < 1600
 # include "stdint.h"
+#else
+# include <stdint.h>
 #endif
 
 #endif /* WINDOWS_PLATFORM_H_ */

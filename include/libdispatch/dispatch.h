@@ -37,9 +37,13 @@
 #endif
 
 #include <stddef.h>
-#include <stdint.h>
+#if _MSC_VER < 1600
+# include "../../core/platform/windows/stdint.h"
+#else
+# include <stdint.h>
+#endif
 #ifndef _WIN32
-#    include <stdbool.h>
+# include <stdbool.h>
 #endif
 
 #define DISPATCH_API_VERSION 20090501

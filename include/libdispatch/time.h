@@ -26,7 +26,11 @@
 #include "base.h" // for HeaderDoc
 #endif
 
-#include <stdint.h>
+#if _MSC_VER < 1600
+# include "../../core/platform/windows/stdint.h"
+#else
+# include <stdint.h>
+#endif
 
 __DISPATCH_BEGIN_DECLS
 

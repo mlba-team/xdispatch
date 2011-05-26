@@ -29,7 +29,7 @@
 #include <errno.h>
 
 #if _MSC_VER < 1600
-# include "stdint.h"
+# include "../../core/platform/windows/stdint.h"
 #else
 # include <stdint.h>
 #endif
