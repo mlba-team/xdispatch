@@ -1,22 +1,22 @@
 /*
- * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
- *
- * @APPLE_APACHE_LICENSE_HEADER_START@
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * @APPLE_APACHE_LICENSE_HEADER_END@
- */
+* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
+*
+* @APPLE_APACHE_LICENSE_HEADER_START@
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+* 
+* @APPLE_APACHE_LICENSE_HEADER_END@
+*/
 
 #include "internal.h"
 #if HAVE_MACH
@@ -28,12 +28,12 @@
 #endif
 
 void
-dummy_function(void)
+	dummy_function(void)
 {
 }
 
 long
-dummy_function_r0(void)
+	dummy_function_r0(void)
 {
 	return 0;
 }	
@@ -41,44 +41,44 @@ dummy_function_r0(void)
 static struct dispatch_semaphore_s _dispatch_thread_mediator[] = {
 	{
 		&_dispatch_semaphore_vtable,        /* .do_vtable */
-		0,                                  /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
+			0,                                  /* .do_next */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
 	},
 	{
 		&_dispatch_semaphore_vtable,        /* .do_vtable */
-		0,                                  /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
-	},
-	{
-		&_dispatch_semaphore_vtable,        /* .do_vtable */
-		0,                                  /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
-	},
-	{
-		&_dispatch_semaphore_vtable,        /* .do_vtable */
-		0,                                  /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
-	},
-	{
-		&_dispatch_semaphore_vtable,        /* .do_vtable */
-		0,                                  /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
-	},
-	{
-		&_dispatch_semaphore_vtable,        /* .do_vtable */
-		0,                                  /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
-	},
+			0,                                  /* .do_next */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
+		},
+		{
+			&_dispatch_semaphore_vtable,        /* .do_vtable */
+				0,                                  /* .do_next */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
+		},
+		{
+			&_dispatch_semaphore_vtable,        /* .do_vtable */
+				0,                                  /* .do_next */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
+			},
+			{
+				&_dispatch_semaphore_vtable,        /* .do_vtable */
+					0,                                  /* .do_next */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
+			},
+			{
+				&_dispatch_semaphore_vtable,        /* .do_vtable */
+					0,                                  /* .do_next */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_ref_cnt */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,      /* .do_xref_cnt */
+				},
 };
 
 static inline dispatch_queue_t
-_dispatch_get_root_queue(long priority, bool overcommit)
+	_dispatch_get_root_queue(long priority, bool overcommit)
 {
 	if (overcommit) switch (priority) {
 	case DISPATCH_QUEUE_PRIORITY_LOW:
@@ -176,52 +176,52 @@ struct dispatch_root_queue_context_s {
 static struct dispatch_root_queue_context_s _dispatch_root_queue_contexts[] = {
 	{
 #if HAVE_PTHREAD_WORKQUEUES
-	   0,                               /* .dgq_kworkqueue */
+		0,                               /* .dgq_kworkqueue */
 #endif
-      0,                               /* .dgq_pending */
-		MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
-		&_dispatch_thread_mediator[0],   /* .dgq_thread_mediator */
+			0,                               /* .dgq_pending */
+			MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
+			&_dispatch_thread_mediator[0],   /* .dgq_thread_mediator */
 	},
 	{
 #if HAVE_PTHREAD_WORKQUEUES
-	   0,                               /* .dgq_kworkqueue */
+		0,                               /* .dgq_kworkqueue */
 #endif
-      0,                               /* .dgq_pending */
-		MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
-		&_dispatch_thread_mediator[1],   /* .dgq_thread_mediator */
-	},
-	{
+			0,                               /* .dgq_pending */
+			MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
+			&_dispatch_thread_mediator[1],   /* .dgq_thread_mediator */
+		},
+		{
 #if HAVE_PTHREAD_WORKQUEUES
-	   0,                               /* .dgq_kworkqueue */
+			0,                               /* .dgq_kworkqueue */
 #endif
-      0,                               /* .dgq_pending */
-		MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
-		&_dispatch_thread_mediator[2],   /* .dgq_thread_mediator */
-	},
-	{
+				0,                               /* .dgq_pending */
+				MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
+				&_dispatch_thread_mediator[2],   /* .dgq_thread_mediator */
+		},
+		{
 #if HAVE_PTHREAD_WORKQUEUES
-	   0,                               /* .dgq_kworkqueue */
+			0,                               /* .dgq_kworkqueue */
 #endif
-      0,                               /* .dgq_pending */
-		MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
-		&_dispatch_thread_mediator[3],   /* .dgq_thread_mediator */
-	},
-	{
+				0,                               /* .dgq_pending */
+				MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
+				&_dispatch_thread_mediator[3],   /* .dgq_thread_mediator */
+			},
+			{
 #if HAVE_PTHREAD_WORKQUEUES
-	   0,                               /* .dgq_kworkqueue */
+				0,                               /* .dgq_kworkqueue */
 #endif
-      0,                               /* .dgq_pending */
-		MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
-		&_dispatch_thread_mediator[4],   /* .dgq_thread_mediator */
-	},
-	{
+					0,                               /* .dgq_pending */
+					MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
+					&_dispatch_thread_mediator[4],   /* .dgq_thread_mediator */
+			},
+			{
 #if HAVE_PTHREAD_WORKQUEUES
-	   0,                               /* .dgq_kworkqueue */
+				0,                               /* .dgq_kworkqueue */
 #endif
-      0,                               /* .dgq_pending */
-		MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
-		&_dispatch_thread_mediator[5],   /* .dgq_thread_mediator */
-	},
+					0,                               /* .dgq_pending */
+					MAX_THREAD_COUNT,                /* .dgq_thread_pool_size */
+					&_dispatch_thread_mediator[5],   /* .dgq_thread_mediator */
+				},
 };
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
@@ -229,118 +229,118 @@ static struct dispatch_root_queue_context_s _dispatch_root_queue_contexts[] = {
 struct dispatch_queue_s _dispatch_root_queues[] = {
 	{
 		&_dispatch_queue_root_vtable,             /* .do_vtable */
-		0,                                        /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
-		DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
-		0,                                        /* .do_targetq */
-		&_dispatch_root_queue_contexts[0],        /* .do_ctxt */
+			0,                                        /* .do_next */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
+			DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
+			0,                                        /* .do_targetq */
+			&_dispatch_root_queue_contexts[0],        /* .do_ctxt */
 
-		0,                                        /* .do_finalizer */
+			0,                                        /* .do_finalizer */
 
-		2,                                        /* .dq_running */
-		UINT32_MAX,                               /* .dq_width */
-   	0,                                        /* .dq_items_tail */
-	   0,                                        /* .dq_items_head */
-		4,                                        /* .dq_serialnum */
-		0,                                        /* .dq_finalizer_ctxt */
-		"com.apple.root.low-priority",            /* .dq_label */
+			2,                                        /* .dq_running */
+			UINT32_MAX,                               /* .dq_width */
+			0,                                        /* .dq_items_tail */
+			0,                                        /* .dq_items_head */
+			4,                                        /* .dq_serialnum */
+			0,                                        /* .dq_finalizer_ctxt */
+			"com.apple.root.low-priority",            /* .dq_label */
 	},
 	{
 		&_dispatch_queue_root_vtable,             /* .do_vtable */
-		0,                                        /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
-		DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
-		0,                                        /* .do_targetq */
-		&_dispatch_root_queue_contexts[1],        /* .do_ctxt */
+			0,                                        /* .do_next */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
+			DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
+			DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
+			0,                                        /* .do_targetq */
+			&_dispatch_root_queue_contexts[1],        /* .do_ctxt */
 
-		0,                                        /* .do_finalizer */
+			0,                                        /* .do_finalizer */
 
-		2,                                        /* .dq_running */
-		UINT32_MAX,                               /* .dq_width */
-   	0,                                        /* .dq_items_tail */
-	   0,                                        /* .dq_items_head */
-		5,                                        /* .dq_serialnum */
-		0,                                        /* .dq_finalizer_ctxt */
-		"com.apple.root.low-overcommit-priority", /* .dq_label */
-	},
-	{
-		&_dispatch_queue_root_vtable,             /* .do_vtable */
-		0,                                        /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
-		DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
-		0,                                        /* .do_targetq */
-		&_dispatch_root_queue_contexts[2],        /* .do_ctxt */
+			2,                                        /* .dq_running */
+			UINT32_MAX,                               /* .dq_width */
+			0,                                        /* .dq_items_tail */
+			0,                                        /* .dq_items_head */
+			5,                                        /* .dq_serialnum */
+			0,                                        /* .dq_finalizer_ctxt */
+			"com.apple.root.low-overcommit-priority", /* .dq_label */
+		},
+		{
+			&_dispatch_queue_root_vtable,             /* .do_vtable */
+				0,                                        /* .do_next */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
+				DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
+				0,                                        /* .do_targetq */
+				&_dispatch_root_queue_contexts[2],        /* .do_ctxt */
 
-		0,                                        /* .do_finalizer */
+				0,                                        /* .do_finalizer */
 
-		2,                                        /* .dq_running */
-		UINT32_MAX,                               /* .dq_width */
-   	0,                                        /* .dq_items_tail */
-	   0,                                        /* .dq_items_head */
-		6,                                        /* .dq_serialnum */
-		0,                                        /* .dq_finalizer_ctxt */
-		"com.apple.root.default-priority",        /* .dq_label */
-	},
-	{
-		&_dispatch_queue_root_vtable,             /* .do_vtable */
-		0,                                        /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
-		DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
-		0,                                        /* .do_targetq */
-		&_dispatch_root_queue_contexts[3],        /* .do_ctxt */
+				2,                                        /* .dq_running */
+				UINT32_MAX,                               /* .dq_width */
+				0,                                        /* .dq_items_tail */
+				0,                                        /* .dq_items_head */
+				6,                                        /* .dq_serialnum */
+				0,                                        /* .dq_finalizer_ctxt */
+				"com.apple.root.default-priority",        /* .dq_label */
+		},
+		{
+			&_dispatch_queue_root_vtable,             /* .do_vtable */
+				0,                                        /* .do_next */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
+				DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
+				DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
+				0,                                        /* .do_targetq */
+				&_dispatch_root_queue_contexts[3],        /* .do_ctxt */
 
-		0,                                        /* .do_finalizer */
+				0,                                        /* .do_finalizer */
 
-		2,                                        /* .dq_running */
-		UINT32_MAX,                               /* .dq_width */
-   	0,                                        /* .dq_items_tail */
-	   0,                                        /* .dq_items_head */
-		7,                                        /* .dq_serialnum */
-		0,                                        /* .dq_finalizer_ctxt */
-		"com.apple.root.default-overcommit-priority",   /* .dq_label */
-	},
-	{
-		&_dispatch_queue_root_vtable,             /* .do_vtable */
-		0,                                        /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
-		DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
-		0,                                        /* .do_targetq */
-		&_dispatch_root_queue_contexts[4],        /* .do_ctxt */
+				2,                                        /* .dq_running */
+				UINT32_MAX,                               /* .dq_width */
+				0,                                        /* .dq_items_tail */
+				0,                                        /* .dq_items_head */
+				7,                                        /* .dq_serialnum */
+				0,                                        /* .dq_finalizer_ctxt */
+				"com.apple.root.default-overcommit-priority",   /* .dq_label */
+			},
+			{
+				&_dispatch_queue_root_vtable,             /* .do_vtable */
+					0,                                        /* .do_next */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
+					DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
+					0,                                        /* .do_targetq */
+					&_dispatch_root_queue_contexts[4],        /* .do_ctxt */
 
-		0,                                        /* .do_finalizer */
+					0,                                        /* .do_finalizer */
 
-		2,                                        /* .dq_running */
-		UINT32_MAX,                               /* .dq_width */
-   	0,                                        /* .dq_items_tail */
-	   0,                                        /* .dq_items_head */
-		8,                                        /* .dq_serialnum */
-		0,                                        /* .dq_finalizer_ctxt */
-		"com.apple.root.high-priority",           /* .dq_label */
-	},
-	{
-		&_dispatch_queue_root_vtable,             /* .do_vtable */
-		0,                                        /* .do_next */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
-		DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
-		DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
-		0,                                        /* .do_targetq */
-		&_dispatch_root_queue_contexts[5],        /* .do_ctxt */
+					2,                                        /* .dq_running */
+					UINT32_MAX,                               /* .dq_width */
+					0,                                        /* .dq_items_tail */
+					0,                                        /* .dq_items_head */
+					8,                                        /* .dq_serialnum */
+					0,                                        /* .dq_finalizer_ctxt */
+					"com.apple.root.high-priority",           /* .dq_label */
+			},
+			{
+				&_dispatch_queue_root_vtable,             /* .do_vtable */
+					0,                                        /* .do_next */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_ref_cnt */
+					DISPATCH_OBJECT_GLOBAL_REFCNT,            /* .do_xref_cnt */
+					DISPATCH_OBJECT_SUSPEND_LOCK,             /* .do_suspend_cnt */
+					0,                                        /* .do_targetq */
+					&_dispatch_root_queue_contexts[5],        /* .do_ctxt */
 
-		0,                                        /* .do_finalizer */
+					0,                                        /* .do_finalizer */
 
-		2,                                        /* .dq_running */
-		UINT32_MAX,                               /* .dq_width */
-   	0,                                        /* .dq_items_tail */
-	   0,                                        /* .dq_items_head */
-		9,                                        /* .dq_serialnum */
-		0,                                        /* .dq_finalizer_ctxt */
-		"com.apple.root.high-overcommit-priority",   /* .dq_label */
-	},
+					2,                                        /* .dq_running */
+					UINT32_MAX,                               /* .dq_width */
+					0,                                        /* .dq_items_tail */
+					0,                                        /* .dq_items_head */
+					9,                                        /* .dq_serialnum */
+					0,                                        /* .dq_finalizer_ctxt */
+					"com.apple.root.high-overcommit-priority",   /* .dq_label */
+				},
 };
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
@@ -381,7 +381,7 @@ static void _dispatch_worker_thread2(void *context);
 malloc_zone_t *_dispatch_ccache_zone;
 
 static inline void
-_dispatch_continuation_free(dispatch_continuation_t dc)
+	_dispatch_continuation_free(dispatch_continuation_t dc)
 {
 	dispatch_continuation_t prev_dc = _dispatch_thread_getspecific(dispatch_cache_key);
 	dc->do_next = prev_dc;
@@ -389,14 +389,14 @@ _dispatch_continuation_free(dispatch_continuation_t dc)
 }
 
 static inline void
-_dispatch_continuation_pop(dispatch_object_t dou)
+	_dispatch_continuation_pop(dispatch_object_t dou)
 {
-    dispatch_continuation_t dc = DCOND_CAST(dou);
+	dispatch_continuation_t dc = DCOND_CAST(dou);
 	dispatch_group_t dg;
 
-    if (DISPATCH_OBJ_IS_VTABLE(DO_CAST(dou))) {
-        _dispatch_queue_invoke(DQUEUE_CAST(dou));
-        return;
+	if (DISPATCH_OBJ_IS_VTABLE(DO_CAST(dou))) {
+		_dispatch_queue_invoke(DQUEUE_CAST(dou));
+		return;
 	}
 
 	// Add the item back to the cache before calling the function. This
@@ -405,10 +405,10 @@ _dispatch_continuation_pop(dispatch_object_t dou)
 	// The ccache version is per-thread.
 	// Therefore, the object has not been reused yet.
 	// This generates better assembly.
-    if ((long)DO_CAST(dou)->do_vtable & DISPATCH_OBJ_ASYNC_BIT) {
+	if ((long)DO_CAST(dou)->do_vtable & DISPATCH_OBJ_ASYNC_BIT) {
 		_dispatch_continuation_free(dc);
 	}
-    if ((long)DO_CAST(dou)->do_vtable & DISPATCH_OBJ_GROUP_BIT) {
+	if ((long)DO_CAST(dou)->do_vtable & DISPATCH_OBJ_GROUP_BIT) {
 		dg = dc->dc_group;
 	} else {
 		dg = NULL;
@@ -416,12 +416,12 @@ _dispatch_continuation_pop(dispatch_object_t dou)
 	dc->dc_func(dc->dc_ctxt);
 	if (dg) {
 		dispatch_group_leave(dg);
-        _dispatch_release( (dg));
+		_dispatch_release( (dg));
 	}
 }
 
 struct dispatch_object_s *
-_dispatch_queue_concurrent_drain_one(dispatch_queue_t dq)
+	_dispatch_queue_concurrent_drain_one(dispatch_queue_t dq)
 {
 	struct dispatch_object_s *head, *next, *const mediator = (struct dispatch_object_s *)~0ul;
 
@@ -458,7 +458,7 @@ _dispatch_queue_concurrent_drain_one(dispatch_queue_t dq)
 
 	if (slowpath(!next)) {
 		dq->dq_items_head = NULL;
-		
+
 		if (dispatch_atomic_ptr_cmpxchg(&dq->dq_items_tail, head, NULL)) {
 			// both head and tail are NULL now
 			goto out;
@@ -477,7 +477,7 @@ out:
 }
 
 dispatch_queue_t
-dispatch_get_current_queue(void)
+	dispatch_get_current_queue(void)
 {
 	dispatch_queue_t q = _dispatch_queue_get_current();
 	return q ? q : _dispatch_get_root_queue(0, true);
@@ -485,7 +485,7 @@ dispatch_get_current_queue(void)
 
 
 dispatch_queue_t
-dispatch_get_main_queue(void)
+	dispatch_get_main_queue(void)
 {
 	return &_dispatch_main_q;
 }
@@ -493,64 +493,64 @@ dispatch_get_main_queue(void)
 struct _dispatch_hw_config_s _dispatch_hw_config;
 
 static void
-_dispatch_queue_set_width_init(void)
+	_dispatch_queue_set_width_init(void)
 {
 #ifdef __APPLE__
 	size_t valsz = sizeof(uint32_t);
 	int ret;
 
 	ret = sysctlbyname("hw.activecpu", &_dispatch_hw_config.cc_max_active,
-	    &valsz, NULL, 0);
+		&valsz, NULL, 0);
 	(void)dispatch_assume_zero(ret);
-    (void)dispatch_assume(valsz == sizeof(uint32_t));
+	(void)dispatch_assume(valsz == sizeof(uint32_t));
 
 	ret = sysctlbyname("hw.logicalcpu_max",
-	    &_dispatch_hw_config.cc_max_logical, &valsz, NULL, 0);
+		&_dispatch_hw_config.cc_max_logical, &valsz, NULL, 0);
 	(void)dispatch_assume_zero(ret);
-    (void)dispatch_assume(valsz == sizeof(uint32_t));
+	(void)dispatch_assume(valsz == sizeof(uint32_t));
 
 	ret = sysctlbyname("hw.physicalcpu_max",
-	    &_dispatch_hw_config.cc_max_physical, &valsz, NULL, 0);
+		&_dispatch_hw_config.cc_max_physical, &valsz, NULL, 0);
 	(void)dispatch_assume_zero(ret);
-    (void)dispatch_assume(valsz == sizeof(uint32_t));
+	(void)dispatch_assume(valsz == sizeof(uint32_t));
 #elif defined(__FreeBSD__)
 	size_t valsz = sizeof(uint32_t);
 	int ret;
 
 	ret = sysctlbyname("kern.smp.cpus", &_dispatch_hw_config.cc_max_active,
-	    &valsz, NULL, 0);
+		&valsz, NULL, 0);
 	(void)dispatch_assume_zero(ret);
 	(void)dispatch_assume(valsz == sizeof(uint32_t));
 
 	_dispatch_hw_config.cc_max_logical =
-	    _dispatch_hw_config.cc_max_physical =
-	    _dispatch_hw_config.cc_max_active;
+		_dispatch_hw_config.cc_max_physical =
+		_dispatch_hw_config.cc_max_active;
 #elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
 	_dispatch_hw_config.cc_max_active = (int)sysconf(_SC_NPROCESSORS_ONLN);
 	if (_dispatch_hw_config.cc_max_active < 0)
 		_dispatch_hw_config.cc_max_active = 1;
-		_dispatch_hw_config.cc_max_logical =
-	    _dispatch_hw_config.cc_max_physical =
-	    _dispatch_hw_config.cc_max_active;
+	_dispatch_hw_config.cc_max_logical =
+		_dispatch_hw_config.cc_max_physical =
+		_dispatch_hw_config.cc_max_active;
 #elif TARGET_OS_WIN32
-		SYSTEM_INFO sysinfo;
-        GetSystemInfo(&sysinfo);
-		_dispatch_hw_config.cc_max_active = (int)sysinfo.dwNumberOfProcessors;
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	_dispatch_hw_config.cc_max_active = (int)sysinfo.dwNumberOfProcessors;
 	if (_dispatch_hw_config.cc_max_active < 0)
 		_dispatch_hw_config.cc_max_active = 1;
-		_dispatch_hw_config.cc_max_logical =
-	    _dispatch_hw_config.cc_max_physical =
-	    _dispatch_hw_config.cc_max_active;
+	_dispatch_hw_config.cc_max_logical =
+		_dispatch_hw_config.cc_max_physical =
+		_dispatch_hw_config.cc_max_active;
 #else
 #warning "_dispatch_queue_set_width_init: no supported way to query CPU count"
-		_dispatch_hw_config.cc_max_logical =
-	    _dispatch_hw_config.cc_max_physical =
-	    _dispatch_hw_config.cc_max_active = 1;
+	_dispatch_hw_config.cc_max_logical =
+		_dispatch_hw_config.cc_max_physical =
+		_dispatch_hw_config.cc_max_active = 1;
 #endif
 }
 
 void
-dispatch_queue_set_width(dispatch_queue_t dq, long width)
+	dispatch_queue_set_width(dispatch_queue_t dq, long width)
 {
 	int w = (int)width;	// intentional truncation
 	uint32_t tmp;
@@ -594,7 +594,7 @@ static unsigned long _dispatch_queue_serial_numbers = 10;
 // Note to later developers: ensure that any initialization changes are
 // made for statically allocated queues (i.e. _dispatch_main_q).
 inline void
-_dispatch_queue_init(dispatch_queue_t dq)
+	_dispatch_queue_init(dispatch_queue_t dq)
 {
 	dq->do_vtable = &_dispatch_queue_vtable;
 	dq->do_next = DISPATCH_OBJECT_LISTLESS;
@@ -607,7 +607,7 @@ _dispatch_queue_init(dispatch_queue_t dq)
 }
 
 dispatch_queue_t
-dispatch_queue_create(const char *label, dispatch_queue_attr_t attr)
+	dispatch_queue_create(const char *label, dispatch_queue_attr_t attr)
 {
 	dispatch_queue_t dq;
 	size_t label_len;
@@ -638,7 +638,7 @@ dispatch_queue_create(const char *label, dispatch_queue_attr_t attr)
 #ifdef __BLOCKS__
 		if (attr->finalizer_func == (void*)_dispatch_call_block_and_release2) {
 			// if finalizer_ctxt is a Block, retain it.
- 			dq->dq_finalizer_ctxt = Block_copy(dq->dq_finalizer_ctxt);
+			dq->dq_finalizer_ctxt = Block_copy(dq->dq_finalizer_ctxt);
 			if (!(dq->dq_finalizer_ctxt)) {
 				goto out_bad;
 			}
@@ -660,7 +660,7 @@ out_bad:
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 void
-_dispatch_queue_dispose(dispatch_queue_t dq)
+	_dispatch_queue_dispose(dispatch_queue_t dq)
 {
 	if (slowpath(dq == _dispatch_queue_get_current())) {
 		DISPATCH_CRASH("Release of a queue by itself");
@@ -678,12 +678,12 @@ _dispatch_queue_dispose(dispatch_queue_t dq)
 	// trash the tail queue so that use after free will crash
 	dq->dq_items_tail = (void *)0x200;
 
-    _dispatch_dispose( (dq));
+	_dispatch_dispose( (dq));
 }
 
 DISPATCH_NOINLINE 
-void
-_dispatch_queue_push_list_slow(dispatch_queue_t dq, struct dispatch_object_s *obj)
+	void
+	_dispatch_queue_push_list_slow(dispatch_queue_t dq, struct dispatch_object_s *obj)
 {
 	// The queue must be retained before dq_items_head is written in order
 	// to ensure that the reference is still valid when _dispatch_wakeup is
@@ -691,15 +691,15 @@ _dispatch_queue_push_list_slow(dispatch_queue_t dq, struct dispatch_object_s *ob
 	// dq_items_head and _dispatch_wakeup, the blocks submitted to the
 	// queue may release the last reference to the queue when invoked by
 	// _dispatch_queue_drain. <rdar://problem/6932776>
-    _dispatch_retain( (dq));
+	_dispatch_retain( (dq));
 	dq->dq_items_head = obj;
 	_dispatch_wakeup(dq);
-    _dispatch_release( (dq));
+	_dispatch_release( (dq));
 }
 
 DISPATCH_NOINLINE
-static void
-_dispatch_barrier_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t func)
+	static void
+	_dispatch_barrier_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t func)
 {
 	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_from_heap());
 
@@ -707,20 +707,20 @@ _dispatch_barrier_async_f_slow(dispatch_queue_t dq, void *context, dispatch_func
 	dc->dc_func = func;
 	dc->dc_ctxt = context;
 
-    _dispatch_queue_push(dq,  (dc));
+	_dispatch_queue_push(dq,  (dc));
 }
 
 #ifdef __BLOCKS__
 void
-dispatch_barrier_async(dispatch_queue_t dq, void (^work)(void))
+	dispatch_barrier_async(dispatch_queue_t dq, void (^work)(void))
 {
 	dispatch_barrier_async_f(dq, _dispatch_Block_copy(work), _dispatch_call_block_and_release);
 }
 #endif
 
 DISPATCH_NOINLINE
-void
-dispatch_barrier_async_f(dispatch_queue_t dq, void *context, dispatch_function_t func)
+	void
+	dispatch_barrier_async_f(dispatch_queue_t dq, void *context, dispatch_function_t func)
 {
 	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_cacheonly());
 
@@ -737,8 +737,8 @@ dispatch_barrier_async_f(dispatch_queue_t dq, void *context, dispatch_function_t
 }
 
 DISPATCH_NOINLINE
-static void
-_dispatch_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t func)
+	static void
+	_dispatch_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t func)
 {
 	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_from_heap());
 
@@ -746,20 +746,20 @@ _dispatch_async_f_slow(dispatch_queue_t dq, void *context, dispatch_function_t f
 	dc->dc_func = func;
 	dc->dc_ctxt = context;
 
-    _dispatch_queue_push(dq,  (dc));
+	_dispatch_queue_push(dq,  (dc));
 }
 
 #ifdef __BLOCKS__
 void
-dispatch_async(dispatch_queue_t dq, void (^work)(void))
+	dispatch_async(dispatch_queue_t dq, void (^work)(void))
 {
 	dispatch_async_f(dq, _dispatch_Block_copy(work), _dispatch_call_block_and_release);
 }
 #endif
 
 DISPATCH_NOINLINE
-void
-dispatch_async_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
+	void
+	dispatch_async_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 {
 	dispatch_continuation_t dc = fastpath(_dispatch_continuation_alloc_cacheonly());
 
@@ -775,7 +775,7 @@ dispatch_async_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 	dc->dc_func = func;
 	dc->dc_ctxt = ctxt;
 
-    _dispatch_queue_push(dq,  (dc));
+	_dispatch_queue_push(dq,  (dc));
 }
 
 struct dispatch_barrier_sync_slow2_s {
@@ -786,7 +786,7 @@ struct dispatch_barrier_sync_slow2_s {
 };
 
 static void
-_dispatch_barrier_sync_f_slow_invoke(void *ctxt)
+	_dispatch_barrier_sync_f_slow_invoke(void *ctxt)
 {
 	struct dispatch_barrier_sync_slow2_s *dbss2 = ctxt;
 
@@ -801,10 +801,10 @@ _dispatch_barrier_sync_f_slow_invoke(void *ctxt)
 }
 
 DISPATCH_NOINLINE
-static void
-_dispatch_barrier_sync_f_slow(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
+	static void
+	_dispatch_barrier_sync_f_slow(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 {
-	
+
 	// It's preferred to execute synchronous blocks on the current thread
 	// due to thread-local side effects, garbage collection, etc. However,
 	// blocks submitted to the main thread MUST be run on the main thread
@@ -823,7 +823,7 @@ _dispatch_barrier_sync_f_slow(dispatch_queue_t dq, void *ctxt, dispatch_function
 		_dispatch_barrier_sync_f_slow_invoke,  /* .dc_func */
 		&dbss2,                                /* .dc_ctxt */
 	};
-	
+
 	dispatch_queue_t old_dq = _dispatch_thread_getspecific(dispatch_queue_key);
 	_dispatch_queue_push(dq, (void *)&dbss);
 	dispatch_semaphore_wait(dbss2.dbss2_sema, DISPATCH_TIME_FOREVER);
@@ -840,7 +840,7 @@ _dispatch_barrier_sync_f_slow(dispatch_queue_t dq, void *ctxt, dispatch_function
 
 #ifdef __BLOCKS__
 void
-dispatch_barrier_sync(dispatch_queue_t dq, void (^work)(void))
+	dispatch_barrier_sync(dispatch_queue_t dq, void (^work)(void))
 {
 	// Blocks submitted to the main queue MUST be run on the main thread,
 	// therefore we must Block_copy in order to notify the thread-local
@@ -856,8 +856,8 @@ dispatch_barrier_sync(dispatch_queue_t dq, void (^work)(void))
 #endif
 
 DISPATCH_NOINLINE
-void
-dispatch_barrier_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
+	void
+	dispatch_barrier_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 {
 	dispatch_queue_t old_dq = _dispatch_thread_getspecific(dispatch_queue_key);
 
@@ -865,10 +865,10 @@ dispatch_barrier_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t fun
 	// 2) the queue is not suspended
 	// 3) the queue is not weird
 	if (slowpath(dq->dq_items_tail)
-			|| slowpath(DISPATCH_OBJECT_SUSPENDED(dq))
-			|| slowpath(!_dispatch_queue_trylock(dq))) {
-		_dispatch_barrier_sync_f_slow(dq, ctxt, func);
-		return;
+		|| slowpath(DISPATCH_OBJECT_SUSPENDED(dq))
+		|| slowpath(!_dispatch_queue_trylock(dq))) {
+			_dispatch_barrier_sync_f_slow(dq, ctxt, func);
+			return;
 	}
 
 	_dispatch_thread_setspecific(dispatch_queue_key, dq);
@@ -879,7 +879,7 @@ dispatch_barrier_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t fun
 }
 
 static void
-_dispatch_sync_f_slow2(void *ctxt)
+	_dispatch_sync_f_slow2(void *ctxt)
 {
 	dispatch_queue_t dq = _dispatch_queue_get_current();
 	dispatch_atomic_add(&dq->dq_running, 2);
@@ -891,34 +891,34 @@ struct dispatch_sync_slow_s {
 };
 
 DISPATCH_NOINLINE
-static void
-_dispatch_sync_f_slow(dispatch_queue_t dq)
+	static void
+	_dispatch_sync_f_slow(dispatch_queue_t dq)
 {
 	// the global root queues do not need strict ordering
 	if (dq->do_targetq == NULL) {
 		dispatch_atomic_add(&dq->dq_running, 2);
 		return;
 	}
-   else
-   {
-	   struct dispatch_sync_slow_s dss = {
-		   NULL,                               /* .do_vtable */
-		   0,                                  /* .do_next */
-		   _dispatch_sync_f_slow2,             /* .dc_func */
-		   _dispatch_get_thread_semaphore(),   /* .dc_ctxt */
-	   };
+	else
+	{
+		struct dispatch_sync_slow_s dss = {
+			NULL,                               /* .do_vtable */
+			0,                                  /* .do_next */
+			_dispatch_sync_f_slow2,             /* .dc_func */
+			_dispatch_get_thread_semaphore(),   /* .dc_ctxt */
+		};
 
-	   // XXX FIXME -- concurrent queues can be come serial again
-	   _dispatch_queue_push(dq, (void *)&dss);
+		// XXX FIXME -- concurrent queues can be come serial again
+		_dispatch_queue_push(dq, (void *)&dss);
 
-	   dispatch_semaphore_wait(dss.dc_ctxt, DISPATCH_TIME_FOREVER);
-	   _dispatch_put_thread_semaphore(dss.dc_ctxt);
-   }
+		dispatch_semaphore_wait(dss.dc_ctxt, DISPATCH_TIME_FOREVER);
+		_dispatch_put_thread_semaphore(dss.dc_ctxt);
+	}
 }
 
 #ifdef __BLOCKS__
 void
-dispatch_sync(dispatch_queue_t dq, void (^work)(void))
+	dispatch_sync(dispatch_queue_t dq, void (^work)(void))
 {
 	struct Block_basic *bb = (void *)work;
 	dispatch_sync_f(dq, work, (dispatch_function_t)bb->Block_invoke);
@@ -926,13 +926,13 @@ dispatch_sync(dispatch_queue_t dq, void (^work)(void))
 #endif
 
 DISPATCH_NOINLINE
-void
-dispatch_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
+	void
+	dispatch_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 {
 #if defined(__GNUC__)
 	typeof(dq->dq_running) prev_cnt;
 #else
-   /* Fragile! */
+	/* Fragile! */
 	uint32_t prev_cnt;
 #endif
 	dispatch_queue_t old_dq;
@@ -969,14 +969,14 @@ dispatch_sync_f(dispatch_queue_t dq, void *ctxt, dispatch_function_t func)
 }
 
 const char *
-dispatch_queue_get_label(dispatch_queue_t dq)
+	dispatch_queue_get_label(dispatch_queue_t dq)
 {
 	return dq->dq_label;
 }
 
 #if DISPATCH_COCOA_COMPAT
 static void
-_dispatch_main_q_port_init(void *ctxt __attribute__((unused)))
+	_dispatch_main_q_port_init(void *ctxt __attribute__((unused)))
 {
 	kern_return_t kr;
 
@@ -995,18 +995,18 @@ _dispatch_main_q_port_init(void *ctxt __attribute__((unused)))
 #if DISPATCH_COCOA_COMPAT || DISPATCH_QT_COMPAT
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 DISPATCH_NOINLINE
-static void
-_dispatch_queue_set_mainq_drain_state(bool arg)
+	static void
+	_dispatch_queue_set_mainq_drain_state(bool arg)
 {
 	main_q_is_draining = arg;
 }
 #endif
 
 /*
- * XXXRW: Work-around for possible clang bug in which __builtin_trap() is not
- * marked noreturn, leading to a build error as dispatch_main() *is* marked
- * noreturn.  Mask by marking __builtin_trap() as noreturn locally.
- */
+* XXXRW: Work-around for possible clang bug in which __builtin_trap() is not
+* marked noreturn, leading to a build error as dispatch_main() *is* marked
+* noreturn.  Mask by marking __builtin_trap() as noreturn locally.
+*/
 #ifndef HAVE_NORETURN_BUILTIN_TRAP
 #if !defined(_MSC_VER)
 void __builtin_trap(void) __attribute__((__noreturn__));
@@ -1016,8 +1016,9 @@ void __builtin_trap(void) __attribute__((__noreturn__));
 #endif
 
 void
-dispatch_main(void)
+	dispatch_main(void)
 {
+	void* p;
 
 #if HAVE_PTHREAD_MAIN_NP
 	if (pthread_main_np()) {
@@ -1025,26 +1026,42 @@ dispatch_main(void)
 		_dispatch_program_is_probably_callback_driven = true;
 #if TARGET_OS_WIN32
 		// The TSD has no de-allocator on windows
-		_dispatch_queue_cleanup(_dispatch_thread_getspecific(dispatch_queue_key));
-                _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
-		// And pthread_exit would immediately return
-		while(1) 
-			Sleep(INFINITE);
+		p = pthread_getspecific(dispatch_queue_key);
+		if (p != NULL)
+			_dispatch_queue_cleanup(p);
+		p = pthread_getspecific(dispatch_sema4_key);
+		if (p != NULL)
+			_dispatch_release(p);
+		p = pthread_getspecific(dispatch_cache_key);
+		if (p != NULL)
+			_dispatch_cache_cleanup2(p);
+
+		Sleep(INFINITE);
+		DISPATCH_CRASH("Sleep() returned");
+#elif defined(__linux__)
+		/*
+		 * Workaround for a GNU/Linux bug that causes the process to
+		 * become a zombie when the main thread calls pthread_exit().
+		 */
+		sigset_t mask;
+		p = pthread_getspecific(dispatch_queue_key);
+		if (p != NULL)
+			_dispatch_queue_cleanup(p);
+		p = pthread_getspecific(dispatch_sema4_key);
+		if (p != NULL)
+			_dispatch_release(p);
+		p = pthread_getspecific(dispatch_cache_key);
+		if (p != NULL)
+			_dispatch_cache_cleanup2(p);
+
+		sigfillset(&mask);
+		pthread_sigmask(SIG_SETMASK, &mask, NULL);
+		pause();
+		DISPATCH_CRASH("pause() returned");
 #else
-# ifdef __x86_64__
-                /* TODO: Fix me (should not be needed here)
-                         this is only used on suse 64bit, weird - but without it we will
-                         get the error message "terminate called without an active exception"
-                         while using lambdas in c++
-                         */
-                _dispatch_queue_cleanup(_dispatch_thread_getspecific(dispatch_queue_key));
-                _dispatch_cache_cleanup2(_dispatch_thread_getspecific(dispatch_cache_key));
-                while(1)
-                        sleep(1000);
-# endif
 		pthread_exit(NULL);
-#endif
 		DISPATCH_CRASH("pthread_exit() returned");
+#endif
 #if HAVE_PTHREAD_MAIN_NP
 	}
 	DISPATCH_CLIENT_CRASH("dispatch_main() must be called on the main thread");
@@ -1052,26 +1069,26 @@ dispatch_main(void)
 }
 
 static void
-_dispatch_sigsuspend(void *ctxt DISPATCH_UNUSED)
+	_dispatch_sigsuspend(void *ctxt DISPATCH_UNUSED)
 {
 #if TARGET_OS_WIN32
-    for (;;) {
-        Sleep(INFINITE);
-    }
+	for (;;) {
+		Sleep(INFINITE);
+	}
 #else
-    static const sigset_t mask;
+	static const sigset_t mask;
 
-    for (;;) {
+	for (;;) {
 		sigsuspend(&mask);
-    }
+	}
 #endif
 }
 
 DISPATCH_NOINLINE
-static void
-_dispatch_queue_cleanup2(void)
+	static void
+	_dispatch_queue_cleanup2(void)
 {
-        // int res = -1;
+	// int res = -1;
 	dispatch_atomic_dec(&_dispatch_main_q.dq_running);
 
 	if (dispatch_atomic_sub(&_dispatch_main_q.do_suspend_cnt, DISPATCH_OBJECT_SUSPEND_LOCK) == 0) {
@@ -1107,7 +1124,7 @@ _dispatch_queue_cleanup2(void)
 
 #ifndef DISPATCH_NO_LEGACY
 dispatch_queue_t
-dispatch_get_concurrent_queue(long pri)
+	dispatch_get_concurrent_queue(long pri)
 {
 	if (pri > 0) {
 		pri = DISPATCH_QUEUE_PRIORITY_HIGH;
@@ -1118,8 +1135,8 @@ dispatch_get_concurrent_queue(long pri)
 }
 #endif
 
- void
-_dispatch_queue_cleanup(void *ctxt)
+void
+	_dispatch_queue_cleanup(void *ctxt)
 {
 	if (ctxt == &_dispatch_main_q) {
 		_dispatch_queue_cleanup2();
@@ -1130,7 +1147,7 @@ _dispatch_queue_cleanup(void *ctxt)
 }
 
 dispatch_queue_t
-dispatch_get_global_queue(long priority, unsigned long flags)
+	dispatch_get_global_queue(long priority, unsigned long flags)
 {
 	if (flags & ~DISPATCH_QUEUE_OVERCOMMIT) {
 		return NULL;
@@ -1140,7 +1157,7 @@ dispatch_get_global_queue(long priority, unsigned long flags)
 
 #define countof(x)	(sizeof(x) / sizeof(x[0]))
 void
-libdispatch_init(void)
+	libdispatch_init(void)
 {
 	dispatch_assert(DISPATCH_QUEUE_PRIORITY_COUNT == 3);
 	dispatch_assert(DISPATCH_ROOT_QUEUE_COUNT == 6);
@@ -1158,16 +1175,16 @@ libdispatch_init(void)
 	_dispatch_thread_key_init_np(dispatch_bcounter_key, NULL);
 #endif
 #else /* !HAVE_PTHREAD_KEY_INIT_NP */
-    /* Note: On windows there is no destructor
-             for TLS, thus we call the destructor
-             with dllMain, see shared_constructor.c
-             */
+	/* Note: On windows there is no destructor
+	for TLS, thus we call the destructor
+	with dllMain, see shared_constructor.c
+	*/
 	_dispatch_thread_key_create(&dispatch_queue_key,
-	    _dispatch_queue_cleanup);
+		_dispatch_queue_cleanup);
 	_dispatch_thread_key_create(&dispatch_sema4_key,
-	    (void (*)(void *))dispatch_release); // use the extern release
+		(void (*)(void *))dispatch_release); // use the extern release
 	_dispatch_thread_key_create(&dispatch_cache_key,
-	    _dispatch_cache_cleanup2);
+		_dispatch_cache_cleanup2);
 #ifdef DISPATCH_PERF_MON
 	_dispatch_thread_key_create(&dispatch_bcounter_key, NULL);
 #endif
@@ -1179,7 +1196,7 @@ libdispatch_init(void)
 }
 
 void
-_dispatch_queue_unlock(dispatch_queue_t dq)
+	_dispatch_queue_unlock(dispatch_queue_t dq)
 {
 	if (slowpath(dispatch_atomic_dec(&dq->dq_running))) {
 		return;
@@ -1190,35 +1207,35 @@ _dispatch_queue_unlock(dispatch_queue_t dq)
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 dispatch_queue_t
-_dispatch_wakeup(dispatch_object_t dou)
+	_dispatch_wakeup(dispatch_object_t dou)
 {
 	dispatch_queue_t tq;
 
-    if (slowpath(DISPATCH_OBJECT_SUSPENDED(DO_CAST(dou)))) {
+	if (slowpath(DISPATCH_OBJECT_SUSPENDED(DO_CAST(dou)))) {
 		return NULL;
 	}
-    if (!dx_probe(DO_CAST(dou)) && !DQUEUE_CAST(dou)->dq_items_tail) {
+	if (!dx_probe(DO_CAST(dou)) && !DQUEUE_CAST(dou)->dq_items_tail) {
 		return NULL;
 	}
 
-    if (!_dispatch_trylock(DO_CAST(dou))) {
+	if (!_dispatch_trylock(DO_CAST(dou))) {
 #if DISPATCH_COCOA_COMPAT || DISPATCH_QT_COMPAT
-        if (DQUEUE_CAST(dou) == &_dispatch_main_q) {
+		if (DQUEUE_CAST(dou) == &_dispatch_main_q) {
 			_dispatch_queue_wakeup_main();
 		}
 #endif
 		return NULL;
 	}
-    _dispatch_retain(DO_CAST(dou));
-    tq = DO_CAST(dou)->do_targetq;
-    _dispatch_queue_push(tq, DO_CAST(dou));
+	_dispatch_retain(DO_CAST(dou));
+	tq = DO_CAST(dou)->do_targetq;
+	_dispatch_queue_push(tq, DO_CAST(dou));
 	return tq;	// libdispatch doesn't need this, but the Instrument DTrace probe does
 }
 
 #if DISPATCH_COCOA_COMPAT
 DISPATCH_NOINLINE
-void
-_dispatch_queue_wakeup_main(void)
+	void
+	_dispatch_queue_wakeup_main(void)
 {
 	kern_return_t kr;
 
@@ -1252,7 +1269,7 @@ void _dispatch_queue_wakeup_main(void){
 
 #if HAVE_PTHREAD_WORKQUEUES
 static inline int
-_dispatch_rootq2wq_pri(long idx)
+	_dispatch_rootq2wq_pri(long idx)
 {
 #ifdef WORKQ_DEFAULT_PRIOQUEUE
 	switch (idx) {
@@ -1274,7 +1291,7 @@ _dispatch_rootq2wq_pri(long idx)
 #endif
 
 static void
-_dispatch_root_queues_init(void *context DISPATCH_UNUSED)
+	_dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 {
 #if HAVE_PTHREAD_WORKQUEUES
 	bool disable_wq = getenv("LIBDISPATCH_DISABLE_KWQ") ? 1 : 0;
@@ -1292,13 +1309,13 @@ _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 #if HAVE_PTHREAD_WORKQUEUES
 	r = pthread_workqueue_attr_init_np(&pwq_attr);
 #if defined(__GNUC__)
-		(void)
+	(void)
 #endif
-	dispatch_assume_zero(r);
+		dispatch_assume_zero(r);
 #endif
 
 	for (i = 0; i < DISPATCH_ROOT_QUEUE_COUNT; i++) {
-// some software hangs if the non-overcommitting queues do not overcommit when threads block
+		// some software hangs if the non-overcommitting queues do not overcommit when threads block
 #if 0
 		if (!(i & 1)) {
 			dispatch_root_queue_contexts[i].dgq_thread_pool_size = _dispatch_hw_config.cc_max_active;
@@ -1309,19 +1326,19 @@ _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 #if defined(__GNUC__)
 		(void)
 #endif
-		dispatch_assume_zero(r);
+			dispatch_assume_zero(r);
 		r = pthread_workqueue_attr_setovercommit_np(&pwq_attr, i & 1);
 #if defined(__GNUC__)
 		(void)
 #endif
-		dispatch_assume_zero(r);
+			dispatch_assume_zero(r);
 		r = 0;
 		if (disable_wq || (r = pthread_workqueue_create_np(&_dispatch_root_queue_contexts[i].dgq_kworkqueue, &pwq_attr))) {
 			if (r != ENOTSUP) {
 #if defined(__GNUC__)
-		      (void)
+				(void)
 #endif
-				dispatch_assume_zero(r);
+					dispatch_assume_zero(r);
 			}
 #endif /* HAVE_PTHREAD_WORKQUEUES */
 #if USE_MACH_SEM
@@ -1329,7 +1346,7 @@ _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 			kr = semaphore_create(mach_task_self(), &_dispatch_thread_mediator[i].dsema_port, SYNC_POLICY_LIFO, 0);
 			DISPATCH_VERIFY_MIG(kr);
 			(void)dispatch_assume_zero(kr);
-            (void)dispatch_assume(_dispatch_thread_mediator[i].dsema_port);
+			(void)dispatch_assume(_dispatch_thread_mediator[i].dsema_port);
 #endif
 #if USE_POSIX_SEM
 			/* XXXRW: POSIX semaphores don't support LIFO? */
@@ -1343,9 +1360,9 @@ _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 #if HAVE_PTHREAD_WORKQUEUES
 		} else {
 #if defined(__GNUC__)
-		   (void)
+			(void)
 #endif
-			dispatch_assume(_dispatch_root_queue_contexts[i].dgq_kworkqueue);
+				dispatch_assume(_dispatch_root_queue_contexts[i].dgq_kworkqueue);
 		}
 #endif
 	}
@@ -1355,12 +1372,12 @@ _dispatch_root_queues_init(void *context DISPATCH_UNUSED)
 #if defined(__GNUC__)
 	(void)
 #endif
-	dispatch_assume_zero(r);
+		dispatch_assume_zero(r);
 #endif
 }
 
 bool
-_dispatch_queue_wakeup_global(dispatch_queue_t dq)
+	_dispatch_queue_wakeup_global(dispatch_queue_t dq)
 {
 	static dispatch_once_t pred;
 	struct dispatch_root_queue_context_s *qc = dq->do_ctxt;
@@ -1390,7 +1407,7 @@ _dispatch_queue_wakeup_global(dispatch_queue_t dq)
 #if defined(__GNUC__)
 			(void)
 #endif
-			dispatch_assume_zero(r);
+				dispatch_assume_zero(r);
 		} else {
 			_dispatch_debug("work thread request still pending on global queue: %p", dq);
 		}
@@ -1415,7 +1432,7 @@ _dispatch_queue_wakeup_global(dispatch_queue_t dq)
 #if defined(__GNUC__)
 			(void)
 #endif
-			dispatch_assume_zero(r);
+				dispatch_assume_zero(r);
 		}
 		sleep(1);
 	}
@@ -1423,14 +1440,14 @@ _dispatch_queue_wakeup_global(dispatch_queue_t dq)
 #if defined(__GNUC__)
 	(void)
 #endif
-	dispatch_assume_zero(r);
+		dispatch_assume_zero(r);
 
 out:
 	return false;
 }
 
 void
-_dispatch_queue_serial_drain_till_empty(dispatch_queue_t dq)
+	_dispatch_queue_serial_drain_till_empty(dispatch_queue_t dq)
 {
 #if DISPATCH_PERF_MON
 	uint64_t start = _dispatch_absolute_time();
@@ -1444,8 +1461,8 @@ _dispatch_queue_serial_drain_till_empty(dispatch_queue_t dq)
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 DISPATCH_NOINLINE
-void
-_dispatch_queue_invoke(dispatch_queue_t dq)
+	void
+	_dispatch_queue_invoke(dispatch_queue_t dq)
 {
 	dispatch_queue_t tq = dq->do_targetq;
 
@@ -1460,8 +1477,8 @@ _dispatch_queue_invoke(dispatch_queue_t dq)
 		// When the suspend-count lock is dropped, then the check will happen.
 		dispatch_atomic_dec(&dq->dq_running);
 		if (tq) {
-            _dispatch_queue_push(tq,  (dq));
-            return;
+			_dispatch_queue_push(tq,  (dq));
+			return;
 		}
 	}
 
@@ -1471,34 +1488,34 @@ _dispatch_queue_invoke(dispatch_queue_t dq)
 			_dispatch_wakeup(dq);	// verify that the queue is idle
 		}
 	}
-    _dispatch_release( (dq));	// added when the queue is put on the list
+	_dispatch_release( (dq));	// added when the queue is put on the list
 }
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 static void
-_dispatch_set_target_queue2(void *ctxt)
+	_dispatch_set_target_queue2(void *ctxt)
 {
 	dispatch_queue_t prev_dq, dq = _dispatch_queue_get_current();
-		  
+
 	prev_dq = dq->do_targetq;
 	dq->do_targetq = ctxt;
-    _dispatch_release( (prev_dq));
+	_dispatch_release( (prev_dq));
 }
 
 void
-dispatch_set_target_queue(dispatch_object_t dou, dispatch_queue_t dq)
+	dispatch_set_target_queue(dispatch_object_t dou, dispatch_queue_t dq)
 {
-    if (slowpath(DO_CAST(dou)->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT)) {
+	if (slowpath(DO_CAST(dou)->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT)) {
 		return;
 	}
 	// NOTE: we test for NULL target queues internally to detect root queues
 	// therefore, if the retain crashes due to a bad input, that is OK
 	_dispatch_retain(dq);
-    dispatch_barrier_async_f(DQUEUE_CAST(dou), dq, _dispatch_set_target_queue2);
+	dispatch_barrier_async_f(DQUEUE_CAST(dou), dq, _dispatch_set_target_queue2);
 }
 
 static void
-_dispatch_async_f_redirect2(void *_ctxt)
+	_dispatch_async_f_redirect2(void *_ctxt)
 {
 	struct dispatch_continuation_s *dc = _ctxt;
 	struct dispatch_continuation_s *other_dc = dc->dc_data[1];
@@ -1512,11 +1529,11 @@ _dispatch_async_f_redirect2(void *_ctxt)
 	if (dispatch_atomic_sub(&dq->dq_running, 2) == 0) {
 		_dispatch_wakeup(dq);
 	}
-    _dispatch_release( (dq));
+	_dispatch_release( (dq));
 }
 
 static void
-_dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_dc)
+	_dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_dc)
 {
 	dispatch_continuation_t dc = (void *)other_dc;
 	dispatch_queue_t root_dq = dq;
@@ -1527,7 +1544,7 @@ _dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_
 	}
 
 	dispatch_atomic_add(&dq->dq_running, 2);
-    _dispatch_retain( (dq));
+	_dispatch_retain( (dq));
 
 	dc = _dispatch_continuation_alloc_cacheonly() ? 0 : _dispatch_continuation_alloc_from_heap();
 
@@ -1541,12 +1558,12 @@ _dispatch_async_f_redirect(dispatch_queue_t dq, struct dispatch_object_s *other_
 		root_dq = root_dq->do_targetq;
 	} while (root_dq->do_targetq);
 
-    _dispatch_queue_push(root_dq,  (dc));
+	_dispatch_queue_push(root_dq,  (dc));
 }
 
 
 void
-_dispatch_queue_drain(dispatch_queue_t dq)
+	_dispatch_queue_drain(dispatch_queue_t dq)
 {
 	dispatch_queue_t orig_tq, old_dq = _dispatch_thread_getspecific(dispatch_queue_key);
 	struct dispatch_object_s *dc = NULL, *next_dc = NULL;
@@ -1613,20 +1630,20 @@ out:
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 void *
-_dispatch_worker_thread(void *context)
+	_dispatch_worker_thread(void *context)
 {
 	dispatch_queue_t dq = context;
 	struct dispatch_root_queue_context_s *qc = dq->do_ctxt;
 
-    /* Marius Zwicker <marius @ mlba-team.de> :
-        As far as I understand this, we do not need
-        this on windows as they do not have any signals
-        and thus nothing needs to be blocked. Additionally
-        we have no kernel support at all ;)
-        */
+	/* Marius Zwicker <marius @ mlba-team.de> :
+	As far as I understand this, we do not need
+	this on windows as they do not have any signals
+	and thus nothing needs to be blocked. Additionally
+	we have no kernel support at all ;)
+	*/
 #if !TARGET_OS_WIN32
-    sigset_t mask;
-    int r;
+	sigset_t mask;
+	int r;
 
 	// workaround tweaks the kernel workqueue does for us
 	r = sigfillset(&mask);
@@ -1650,7 +1667,7 @@ _dispatch_worker_thread(void *context)
 
 // 6618342 Contact the team that owns the Instrument DTrace probe before renaming this symbol
 void
-_dispatch_worker_thread2(void *context)
+	_dispatch_worker_thread2(void *context)
 {
 	struct dispatch_object_s *item;
 	dispatch_queue_t dq = context;
@@ -1691,7 +1708,7 @@ _dispatch_worker_thread2(void *context)
 
 #if DISPATCH_PERF_MON
 void
-_dispatch_queue_merge_stats(uint64_t start)
+	_dispatch_queue_merge_stats(uint64_t start)
 {
 	uint64_t avg, delta = _dispatch_absolute_time() - start;
 	unsigned long count, bucket;
@@ -1718,13 +1735,13 @@ _dispatch_queue_merge_stats(uint64_t start)
 #endif
 
 size_t
-dispatch_queue_debug_attr(dispatch_queue_t dq, char* buf, size_t bufsiz)
+	dispatch_queue_debug_attr(dispatch_queue_t dq, char* buf, size_t bufsiz)
 {
 	return snprintf(buf, bufsiz, "parent = %p ", dq->do_targetq);
 }
 
 size_t
-dispatch_queue_debug(dispatch_queue_t dq, char* buf, size_t bufsiz)
+	dispatch_queue_debug(dispatch_queue_t dq, char* buf, size_t bufsiz)
 {
 	size_t offset = 0;
 	offset += snprintf(&buf[offset], bufsiz - offset, "%s[%p] = { ", dq->dq_label, dq);
@@ -1736,18 +1753,18 @@ dispatch_queue_debug(dispatch_queue_t dq, char* buf, size_t bufsiz)
 
 #if DISPATCH_DEBUG
 void
-dispatch_debug_queue(dispatch_queue_t dq, const char* str) {
-	if (fastpath(dq)) {
-		dispatch_debug(dq, "%s", str);
-	} else {
-		_dispatch_log("queue[NULL]: %s", str);
-	}
+	dispatch_debug_queue(dispatch_queue_t dq, const char* str) {
+		if (fastpath(dq)) {
+			dispatch_debug(dq, "%s", str);
+		} else {
+			_dispatch_log("queue[NULL]: %s", str);
+		}
 }
 #endif
 
 #if DISPATCH_COCOA_COMPAT
 void
-_dispatch_main_queue_callback_4CF(mach_msg_header_t *msg __attribute__((unused)))
+	_dispatch_main_queue_callback_4CF(mach_msg_header_t *msg __attribute__((unused)))
 {
 	if (main_q_is_draining) {
 		return;
@@ -1758,7 +1775,7 @@ _dispatch_main_queue_callback_4CF(mach_msg_header_t *msg __attribute__((unused))
 }
 
 mach_port_t
-_dispatch_get_main_queue_port_4CF(void)
+	_dispatch_get_main_queue_port_4CF(void)
 {
 	dispatch_once_f(&_dispatch_main_q_port_pred, NULL, _dispatch_main_q_port_init);
 	return main_q_port;
@@ -1786,7 +1803,7 @@ void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT handler)
 
 #ifndef DISPATCH_NO_LEGACY
 static void
-dispatch_queue_attr_dispose(dispatch_queue_attr_t attr)
+	dispatch_queue_attr_dispose(dispatch_queue_attr_t attr)
 {
 	dispatch_queue_attr_set_finalizer_f(attr, NULL, NULL);
 	_dispatch_dispose(attr);
@@ -1799,7 +1816,7 @@ static const struct dispatch_queue_attr_vtable_s dispatch_queue_attr_vtable = {
 };
 
 dispatch_queue_attr_t
-dispatch_queue_attr_create(void)
+	dispatch_queue_attr_create(void)
 {
 	dispatch_queue_attr_t a = calloc(1, sizeof(struct dispatch_queue_attr_s));
 
@@ -1815,14 +1832,14 @@ dispatch_queue_attr_create(void)
 }
 
 void
-dispatch_queue_attr_set_flags(dispatch_queue_attr_t attr, uint64_t flags)
+	dispatch_queue_attr_set_flags(dispatch_queue_attr_t attr, uint64_t flags)
 {
 	dispatch_assert_zero(flags & ~DISPATCH_QUEUE_FLAGS_MASK);
 	attr->qa_flags = (unsigned long)flags & DISPATCH_QUEUE_FLAGS_MASK;
 }
-	
+
 void
-dispatch_queue_attr_set_priority(dispatch_queue_attr_t attr, int priority)
+	dispatch_queue_attr_set_priority(dispatch_queue_attr_t attr, int priority)
 {
 	dispatch_debug_assert(attr, "NULL pointer");
 	dispatch_debug_assert(priority <= DISPATCH_QUEUE_PRIORITY_HIGH && priority >= DISPATCH_QUEUE_PRIORITY_LOW, "Invalid priority");
@@ -1837,8 +1854,8 @@ dispatch_queue_attr_set_priority(dispatch_queue_attr_t attr, int priority)
 }
 
 void
-dispatch_queue_attr_set_finalizer_f(dispatch_queue_attr_t attr,
-        void *context, dispatch_queue_finalizer_function_t finalizer)
+	dispatch_queue_attr_set_finalizer_f(dispatch_queue_attr_t attr,
+	void *context, dispatch_queue_finalizer_function_t finalizer)
 {
 #ifdef __BLOCKS__
 	if (attr->finalizer_func == (void*)_dispatch_call_block_and_release2) {
@@ -1851,8 +1868,8 @@ dispatch_queue_attr_set_finalizer_f(dispatch_queue_attr_t attr,
 
 #ifdef __BLOCKS__
 long
-dispatch_queue_attr_set_finalizer(dispatch_queue_attr_t attr,
-        dispatch_queue_finalizer_t finalizer)
+	dispatch_queue_attr_set_finalizer(dispatch_queue_attr_t attr,
+	dispatch_queue_finalizer_t finalizer)
 {
 	void *ctxt;
 	dispatch_queue_finalizer_function_t func;
@@ -1879,17 +1896,17 @@ dispatch_queue_attr_set_finalizer(dispatch_queue_attr_t attr,
 bool _dispatch_safe_fork = true;
 
 void
-dispatch_atfork_prepare(void)
+	dispatch_atfork_prepare(void)
 {
 }
 
 void
-dispatch_atfork_parent(void)
+	dispatch_atfork_parent(void)
 {
 }
 
 void
-dispatch_atfork_child(void)
+	dispatch_atfork_child(void)
 {
 	void *crash = (void *)0x100;
 	size_t i;
@@ -1911,7 +1928,7 @@ dispatch_atfork_child(void)
 }
 
 void
-dispatch_init_pthread(pthread_t pthr DISPATCH_UNUSED)
+	dispatch_init_pthread(pthread_t pthr DISPATCH_UNUSED)
 {
 }
 
@@ -1931,7 +1948,7 @@ const struct dispatch_queue_offsets_s dispatch_queue_offsets = {
 
 #ifdef __BLOCKS__
 void
-dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t work)
+	dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t work)
 {
 	// test before the copy of the block
 	if (when == DISPATCH_TIME_FOREVER) {
@@ -1951,7 +1968,7 @@ struct _dispatch_after_time_s {
 };
 
 static void
-_dispatch_after_timer_cancel(void *ctxt)
+	_dispatch_after_timer_cancel(void *ctxt)
 {
 	struct _dispatch_after_time_s *datc = ctxt;
 	dispatch_source_t ds = datc->ds;
@@ -1961,7 +1978,7 @@ _dispatch_after_timer_cancel(void *ctxt)
 }
 
 static void
-_dispatch_after_timer_callback(void *ctxt)
+	_dispatch_after_timer_callback(void *ctxt)
 {
 	struct _dispatch_after_time_s *datc = ctxt;
 
@@ -1972,8 +1989,8 @@ _dispatch_after_timer_callback(void *ctxt)
 }
 
 DISPATCH_NOINLINE
-void
-dispatch_after_f(dispatch_time_t when, dispatch_queue_t queue, void *ctxt, void (*func)(void *))
+	void
+	dispatch_after_f(dispatch_time_t when, dispatch_queue_t queue, void *ctxt, void (*func)(void *))
 {
 	uint64_t delta;
 	struct _dispatch_after_time_s *datc = NULL;
