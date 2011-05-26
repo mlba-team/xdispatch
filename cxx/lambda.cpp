@@ -108,14 +108,6 @@ void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block
 /* We cannot use a simple wrapper here, as the block might never get executed
    and that way we might produce leaks */
 
-#if defined(__i386__) || defined(__x86_64__)
-# define _dispatch_hardware_pause() asm("pause")
-#elif _WIN32
-# define _dispatch_hardware_pause() __asm pause
-#else
-# define _dispatch_hardware_pause() asm("")
-#endif
-
 void dispatch_once(dispatch_once_t *val, dispatch_block_t block){
 	volatile long *vval = val;
 

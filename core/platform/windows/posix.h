@@ -91,13 +91,6 @@ typedef UINT64 uint64_t;
 #define	FD_COPY(f, t)	(void)(*(t) = *(f))
 #endif
 
-// really just a low level abort()
-#if __GNUC__
-# define _dispatch_hardware_crash() __builtin_trap()
-#else
-# define _dispatch_hardware_crash()  __debugbreak()
-#endif
-
 // some compiler hints
 #ifndef DISPATCH_NOINLINE
 # define DISPATCH_NOINLINE
