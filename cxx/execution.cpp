@@ -32,7 +32,9 @@ void xdispatch::run_operation(void* dt){
 
     try {
         (*w)();
-    } catch(...){
+    } catch(const std::exception& e) {
+        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
+    } catch(...) {
         std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
     }
 
@@ -47,7 +49,9 @@ void xdispatch::run_iter_wrap(void* dt, size_t index){
 
     try {
         wrap->run(index);
-    } catch(...){
+    } catch(const std::exception& e) {
+        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
+    } catch(...) {
         std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
     }
 
