@@ -60,7 +60,7 @@ static void dispatch_source_handler(void* ct){
     dispatch_semaphore_wait(known_handler_lock, DISPATCH_TIME_FOREVER);
     dispatch_block_store work = known_handlers.at(ct);
     dispatch_semaphore_signal(known_handler_lock);
-    (*work)();
+    XDISPATCH_BLOCK_EXEC(work)();
     //XDISPATCH_BLOCK_RELEASE(work);
 }
 
@@ -88,7 +88,7 @@ static void dispatch_source_cancel_handler(void* ct){
     dispatch_semaphore_wait(known_cancel_handler_lock, DISPATCH_TIME_FOREVER);
     dispatch_block_store work = known_cancel_handlers.at(ct);
     dispatch_semaphore_signal(known_cancel_handler_lock);
-    (*work)();
+    XDISPATCH_BLOCK_EXEC(work)();
     //XDISPATCH_BLOCK_RELEASE(work);
 }
 

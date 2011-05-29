@@ -7,7 +7,9 @@
 * periodic timers have an increasing delay the longer they run
  (see dispatch_drift test). This might be due to an implementation
   error of EVT_FILT_TIMER on windows.
-* When built on OpenSUSE 11.4 (64bit), any call to dispatch_main()
-  after dispatching C++ lambdas using xdispatch will fail with the
-  message "terminate called without an active exception". A workaround
-  was implemented, but the real cause for this is unknown.
+* Due to an implementation bug in gcc 4.5.1 regarding the destruction
+  of lambdas, all variables used from within a block but created
+  in the outer scope will not get properly deleted as the lambdas
+  will never be freed. Issue seems to be nonexistend when using
+  clang and can easily eradicated within VS 2010 when creating
+  lambdas on the heap instead of the stack by using an explicit new.
