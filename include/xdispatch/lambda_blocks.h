@@ -96,10 +96,14 @@
 # ifndef XDISPATCH_NO_KEYWORDS
 #  define $ ^
 # endif
+# define XDISPATCH_BLOCK_PERSIST(A) Block_copy(A)
 # define XDISPATCH_BLOCK_COPY(A) Block_copy(A)
-# define XDISPATCH_BLOCK_RELEASE(A) Block_release(A)
+# define XDISPATCH_BLOCK_DELETE(A) Block_release(A)
+# define XDISPATCH_BLOCK_EXEC(A) (A)
   //typedef void (^dispatch_block_t)(void);
-  typedef void (^dispatch_iteration_block_t)(size_t);
+ typedef void (^dispatch_iteration_block_t)(size_t);
+ typedef dispatch_block_t dispatch_block_store;
+ typedef dispatch_iteration_block_t dispatch_iteration_block_store;
 # define XDISPATCH_HAS_BLOCKS
 # if defined(__cplusplus) && !defined(__clang__)
 #  warning "Sadly blocks are currently broken in C++ on this platform, we recommend using gcc 4.5.1 or clang 2.0 instead"
@@ -129,12 +133,14 @@
 # ifndef XDISPATCH_NO_KEYWORDS
 #  define $ [=]
 # endif
-# define XDISPATCH_BLOCK_COPY(A) A
-# define Block_copy(A) XDISPATCH_BLOCK_COPY(A)
-# define XDISPATCH_BLOCK_RELEASE(A) {}
-# define Block_release(A) XDISPATCH_BLOCK_RELEASE(A)
- typedef std::tr1::function< void (void) > dispatch_block_t;
- typedef std::tr1::function< void (size_t) > dispatch_iteration_block_t;
+# define XDISPATCH_BLOCK_PERSIST(A) new auto(A)
+# define XDISPATCH_BLOCK_COPY(A) new auto(*(A))
+# define XDISPATCH_BLOCK_DELETE(A) delete A
+# define XDISPATCH_BLOCK_EXEC(A) (*A)
+ typedef const std::tr1::function< void (void) >& dispatch_block_t;
+ typedef const std::tr1::function< void (size_t) >& dispatch_iteration_block_t;
+ typedef std::tr1::function< void (void) >* dispatch_block_store;
+ typedef std::tr1::function< void (size_t) >* dispatch_iteration_block_store;
 # define XDISPATCH_HAS_BLOCKS
 
 #else

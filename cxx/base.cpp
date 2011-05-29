@@ -103,11 +103,11 @@ struct tm xdispatch::as_struct_tm(dispatch_time_t t){
 
     res = *(localtime( &rawtime));
 
-    res.tm_hour += (int)(t / (3600*NSEC_PER_SEC));
-    t %= (3600*NSEC_PER_SEC);
-    res.tm_min += (int)(t / (60*NSEC_PER_SEC));
-    t %= (60*NSEC_PER_SEC);
-    res.tm_sec += (int)(t / (NSEC_PER_SEC));
+    res.tm_hour += (int)(t / (3600*(uint64_t)NSEC_PER_SEC));
+    t %= (3600*(uint64_t)NSEC_PER_SEC);
+    res.tm_min += (int)(t / (60*(uint64_t)NSEC_PER_SEC));
+    t %= (60*(uint64_t)NSEC_PER_SEC);
+    res.tm_sec += (int)(t / ((uint64_t)NSEC_PER_SEC));
 
     return res;
 }

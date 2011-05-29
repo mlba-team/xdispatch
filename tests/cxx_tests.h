@@ -53,6 +53,7 @@ void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
 void cxx_dispatch_timer();
 void cxx_dispatch_source();
+void cxx_free_lambda();
 
 static void register_cxx_tests(){
 #ifdef TEST_BLOCKS
@@ -66,6 +67,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_current);
     MU_REGISTER_TEST(cxx_dispatch_timer);
 	MU_REGISTER_TEST(cxx_dispatch_source);
+    MU_REGISTER_TEST(cxx_free_lambda);
 #endif
 }
 

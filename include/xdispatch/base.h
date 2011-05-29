@@ -134,16 +134,16 @@ private:
   */
 class block_operation : public operation {
 public:
-    block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_COPY(b)) {}
+    block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
     block_operation(const block_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
-    ~block_operation() { XDISPATCH_BLOCK_RELEASE(block); }
+    ~block_operation() { XDISPATCH_BLOCK_DELETE(block); }
 
     void operator ()(){
-        block();
+        XDISPATCH_BLOCK_EXEC(block)();
     };
 
 private:
-    dispatch_block_t block;
+    dispatch_block_store block;
 };
 #endif
 
