@@ -54,11 +54,30 @@ void dispatch_outer(){
 #endif
 }
 
+# include <tr1/functional>
+
+std::tr1::function<void(void)>* func;
+
+void create_lambda(){
+    BeFreed f;
+
+    func = new std::tr1::function<void(void)>([=](){ f.someFunction(); });
+}
+
+void run_lambda(){
+    (*func)();
+    delete func;
+}
+
 extern "C" void cxx_free_lambda(){
     MU_BEGIN_TEST(cxx_free_lambda);
 
     dispatch_outer();
-
     xdispatch::exec();
+
+    //create_lambda();
+    //run_lambda();
+    //sleep(100);
+
     MU_END_TEST;
 }
