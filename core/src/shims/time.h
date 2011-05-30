@@ -31,6 +31,10 @@
 # include <mach/mach_time.h>
 #endif
 
+#ifdef _WIN32
+void _dispatch_get_factor_init(void* context);
+#endif
+
 uint64_t _dispatch_get_nanoseconds(void);
 
 #if (defined(__i386__) || defined(__x86_64__)) && HAVE_MACH_ABSOLUTE_TIME
@@ -42,6 +46,10 @@ typedef struct _dispatch_host_time_data_s {
 	long double frac;
 	bool ratio_1_to_1;
 	dispatch_once_t pred;
+#ifdef _WIN32
+	double win_time_factor;
+	dispatch_once_t win_pred;
+#endif
 } _dispatch_host_time_data_s;
 extern _dispatch_host_time_data_s _dispatch_host_time_data;
 void _dispatch_get_host_time_init(void *context);
@@ -89,10 +97,11 @@ _dispatch_absolute_time(void)
 	return mach_absolute_time();
 #elif TARGET_OS_WIN32
 	LARGE_INTEGER now;
+	dispatch_once_f(&_dispatch_host_time_data.win_pred, NULL, _dispatch_get_factor_init);
 	if (!QueryPerformanceCounter(&now)) {
 		return 0;
 	}
-	return now.QuadPart;
+	return now.QuadPart *_dispatch_host_time_data.win_time_factor;
 #else
 	struct timespec ts;
 	int ret;

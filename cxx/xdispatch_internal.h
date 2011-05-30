@@ -56,6 +56,7 @@
 #include "../include/xdispatch/source.h"
 
 #include "../core/platform/platform.h"
+#include "../core/src/shims/hardware.h"
 #include "execution.h"
 
 #undef __XDISPATCH_INDIRECT__

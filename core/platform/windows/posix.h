@@ -45,7 +45,6 @@
 #endif
 
 #include <Windows.h>
-#include <stdint.h>
 #include <limits.h>
 #include <errno.h>
 #include <process.h>
@@ -89,13 +88,6 @@ typedef UINT64 uint64_t;
 
 #ifndef FD_COPY
 #define	FD_COPY(f, t)	(void)(*(t) = *(f))
-#endif
-
-// really just a low level abort()
-#if __GNUC__
-# define _dispatch_hardware_crash() __builtin_trap()
-#else
-# define _dispatch_hardware_crash()  __debugbreak()
 #endif
 
 // some compiler hints

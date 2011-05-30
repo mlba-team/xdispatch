@@ -7,7 +7,3 @@
 * periodic timers have an increasing delay the longer they run
  (see dispatch_drift test). This might be due to an implementation
   error of EVT_FILT_TIMER on windows.
-* When built on OpenSUSE 11.4 (64bit), any call to dispatch_main()
-  after dispatching C++ lambdas using xdispatch will fail with the
-  message "terminate called without an active exception". A workaround
-  was implemented, but the real cause for this is unknown.

@@ -23,19 +23,21 @@
 
 __XDISPATCH_BEGIN_NAMESPACE
 
+#ifdef XDISPATCH_HAS_BLOCKS
 class block_iteration_operation : public iteration_operation {
 public:
-    block_iteration_operation(dispatch_iteration_block_t b) : block(XDISPATCH_BLOCK_COPY(b)) {}
+    block_iteration_operation(dispatch_iteration_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
     block_iteration_operation(const block_iteration_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
-    ~block_iteration_operation() { XDISPATCH_BLOCK_RELEASE(block); }
+    ~block_iteration_operation() { XDISPATCH_BLOCK_DELETE(block); }
 
     void operator ()(size_t index){
-        block(index);
+        XDISPATCH_BLOCK_EXEC(block)(index);
     };
 
 private:
-    dispatch_iteration_block_t block;
+    dispatch_iteration_block_store block;
 };
+#endif
 
 class iteration_wrap {
 public:

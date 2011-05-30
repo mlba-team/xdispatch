@@ -50,7 +50,7 @@ public:
 	QIterationRunnable();
 	QIterationRunnable(size_t index);
 	QIterationRunnable(const QIterationRunnable&);
-	~QIterationRunnable();
+        virtual ~QIterationRunnable();
 	virtual void run();
 	virtual void run(size_t index) = 0;
 

@@ -53,7 +53,7 @@ public:
 	  */
 	QBlockRunnable(dispatch_block_t b);
 	QBlockRunnable(const QBlockRunnable&);
-	~QBlockRunnable();
+        virtual ~QBlockRunnable();
 	virtual void run();
 
 private:

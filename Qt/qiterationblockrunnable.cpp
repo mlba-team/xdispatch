@@ -27,13 +27,13 @@ QT_BEGIN_NAMESPACE
 
 class QIterationBlockRunnable::Private {
 public:
-	Private(dispatch_iteration_block_t b) : codeBlock(Block_copy(b)){}
-	Private(Private* d) : codeBlock(Block_copy(d->codeBlock)){}
+    Private(dispatch_iteration_block_t b) : codeBlock(XDISPATCH_BLOCK_PERSIST(b)){}
+    Private(Private* d) : codeBlock(XDISPATCH_BLOCK_COPY(d->codeBlock)){}
 	~Private(){
-		Block_release(codeBlock);
+        XDISPATCH_BLOCK_DELETE(codeBlock);
 	}
 
-	dispatch_iteration_block_t codeBlock;
+    dispatch_iteration_block_store codeBlock;
 };
 
 QIterationBlockRunnable::QIterationBlockRunnable(const QIterationBlockRunnable & b) : QIterationRunnable(b), d(new Private(b.d)){
@@ -53,7 +53,7 @@ QIterationBlockRunnable::~QIterationBlockRunnable(){
 }
 
 void QIterationBlockRunnable::run(size_t index){
-	d->codeBlock(index);
+    XDISPATCH_BLOCK_EXEC(d->codeBlock)(index);
 }
 
 QT_END_NAMESPACE

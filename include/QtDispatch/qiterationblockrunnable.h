@@ -53,8 +53,8 @@ public:
 	*/
     QIterationBlockRunnable(dispatch_iteration_block_t b);
     QIterationBlockRunnable(dispatch_iteration_block_t b, size_t index);
-	QIterationBlockRunnable(const QIterationBlockRunnable&);
-	~QIterationBlockRunnable();
+    QIterationBlockRunnable(const QIterationBlockRunnable&);
+    virtual ~QIterationBlockRunnable();
 	virtual void run(size_t);
 
 private:

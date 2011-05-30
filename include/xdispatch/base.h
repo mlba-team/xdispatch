@@ -44,8 +44,10 @@ class XDISPATCH_EXPORT operation
 {
     public:
     operation() : auto_del(true){}
+    virtual ~operation(){}
 
     virtual void operator()() = 0;
+
     /**
       Change the auto_delete flag to prevent
       the iteration from being deleted after
@@ -73,6 +75,7 @@ class XDISPATCH_EXPORT iteration_operation
 {
 public:
     iteration_operation() : auto_del(true){}
+    virtual ~iteration_operation(){}
 
     virtual void operator()(size_t index) = 0;
     /**
@@ -127,6 +130,7 @@ private:
     void (T::*func)(size_t);
 };
 
+
 #ifdef XDISPATCH_HAS_BLOCKS
 /**
   A simple operation for wrapping the given
@@ -134,16 +138,18 @@ private:
   */
 class block_operation : public operation {
 public:
-    block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_COPY(b)) {}
+    block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
     block_operation(const block_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
-    ~block_operation() { XDISPATCH_BLOCK_RELEASE(block); }
+    ~block_operation() {
+        XDISPATCH_BLOCK_DELETE(block);
+    }
 
     void operator ()(){
-        block();
+        XDISPATCH_BLOCK_EXEC(block)();
     };
 
 private:
-    dispatch_block_t block;
+    dispatch_block_store block;
 };
 #endif
 

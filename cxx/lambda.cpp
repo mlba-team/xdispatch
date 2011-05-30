@@ -51,24 +51,24 @@ void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block
 }
 
 static dispatch_semaphore_t known_handler_lock = dispatch_semaphore_create(1);
-static std::map<void*, dispatch_block_t> known_handlers;
+static std::map<void*, dispatch_block_store> known_handlers;
 
 static void dispatch_source_handler(void* ct){
     if(ct==NULL)
         return;
 
     dispatch_semaphore_wait(known_handler_lock, DISPATCH_TIME_FOREVER);
-    dispatch_block_t work = known_handlers.at(ct);
+    dispatch_block_store work = known_handlers.at(ct);
     dispatch_semaphore_signal(known_handler_lock);
-    work();
-    XDISPATCH_BLOCK_RELEASE(work);
+    XDISPATCH_BLOCK_EXEC(work)();
+    //XDISPATCH_BLOCK_RELEASE(work);
 }
 
 void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler){
-    dispatch_block_t stored = XDISPATCH_BLOCK_COPY(handler);
+    dispatch_block_store stored = XDISPATCH_BLOCK_PERSIST(handler);
 
     dispatch_semaphore_wait(known_handler_lock, DISPATCH_TIME_FOREVER);
-    known_handlers.insert( std::pair<void*, dispatch_block_t>((void*)source,stored) );
+    known_handlers.insert( std::pair<void*, dispatch_block_store>((void*)source,stored) );
     dispatch_semaphore_signal(known_handler_lock);
 
 
@@ -79,24 +79,24 @@ void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_
 }
 
 static dispatch_semaphore_t known_cancel_handler_lock = dispatch_semaphore_create(1);
-static std::map<void*, dispatch_block_t> known_cancel_handlers;
+static std::map<void*, dispatch_block_store> known_cancel_handlers;
 
 static void dispatch_source_cancel_handler(void* ct){
     if(ct==NULL)
         return;
 
     dispatch_semaphore_wait(known_cancel_handler_lock, DISPATCH_TIME_FOREVER);
-    dispatch_block_t work = known_cancel_handlers.at(ct);
+    dispatch_block_store work = known_cancel_handlers.at(ct);
     dispatch_semaphore_signal(known_cancel_handler_lock);
-    work();
-    XDISPATCH_BLOCK_RELEASE(work);
+    XDISPATCH_BLOCK_EXEC(work)();
+    //XDISPATCH_BLOCK_RELEASE(work);
 }
 
 void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler){
-    dispatch_block_t stored = XDISPATCH_BLOCK_COPY(cancel_handler);
+    dispatch_block_store stored = XDISPATCH_BLOCK_PERSIST(cancel_handler);
 
     dispatch_semaphore_wait(known_cancel_handler_lock, DISPATCH_TIME_FOREVER);
-    known_cancel_handlers.insert( std::pair<void*, dispatch_block_t>((void*)source,stored) );
+    known_cancel_handlers.insert( std::pair<void*, dispatch_block_store>((void*)source,stored) );
     dispatch_semaphore_signal(known_cancel_handler_lock);
 
     // by using the context we can pass kind of a hash key to the handler
@@ -107,14 +107,6 @@ void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block
 
 /* We cannot use a simple wrapper here, as the block might never get executed
    and that way we might produce leaks */
-
-#if defined(__i386__) || defined(__x86_64__)
-# define _dispatch_hardware_pause() asm("pause")
-#elif _WIN32
-# define _dispatch_hardware_pause() __asm pause
-#else
-# define _dispatch_hardware_pause() asm("")
-#endif
 
 void dispatch_once(dispatch_once_t *val, dispatch_block_t block){
 	volatile long *vval = val;
