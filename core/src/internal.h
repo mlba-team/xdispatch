@@ -100,18 +100,7 @@
 /* include all necessary hardware / os workarounds
  * as early as possible to prevent namespace pollution by libdispatch
  */
-#ifdef _WIN32
-# include "shims/os_windows.h"
-# include "shims/threads_windows.h"
-# include "shims/malloc_zone.h"
-#elif __APPLE__
-# include "shims/os_darwin.h"
-# include "shims/threads_posix.h"
-#else
-# include "shims/os_posix.h"
-# include "shims/threads_posix.h"
-# include "shims/malloc_zone.h"
-#endif
+#include "../platform/platform.h"
 
 /* now include the libdispatch headers */
 #define DISPATCH_API_VERSION 20090501
@@ -131,11 +120,13 @@
 #include "../../include/libdispatch/once.h"
 
 /* and the last missing shims */
-#include "shims/atomic.h"
+#include "shims/malloc_zone.h"
+#include "shims/tsd.h"
 #include "shims/hardware.h"
 #include "shims/getprogname.h"
 #include "shims/time.h"
 #include "shims/perfmon.h"
+#include "shims/compiler.h"
 
 #if USE_KEVENTS
 # include "kevent_internal.h"

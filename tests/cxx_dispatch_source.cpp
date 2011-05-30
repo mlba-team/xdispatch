@@ -7,9 +7,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,36 +18,45 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
+
+#include <stdio.h>
 #include <xdispatch/dispatch.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "../core/platform/atomic.h"
+#include "tests.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
-#include "../core/platform/atomic.h"
+struct TestType : public xdispatch::sourcetype {
 
-#include "tests.h"
+	static TestType* instance;
+	TestType(){
+		instance = this;
+	}
 
-/*
-	A test for dispatching a block using dispatch_apply
-	*/
+	void signalFinished(const xdispatch::any& v){
+		ready(v);
+	}
+};
 
-extern "C" void dispatch_apply_blocks() {
-	unsigned int* count = new unsigned int;
-	*count = 0;
-	const unsigned int final = 32;
+TestType* TestType::instance = NULL;
 
-	MU_BEGIN_TEST(dispatch_apply_blocks);
-	dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-	MU_ASSERT_NOT_NULL(queue);
+extern "C" void cxx_dispatch_source() {
+    MU_BEGIN_TEST(cxx_dispatch_source);
 
-	dispatch_apply(final, queue, $(size_t i) {
-		dispatch_atomic_inc(count);
+    xdispatch::source src(new TestType);
+	src.set_queue(xdispatch::main_queue());
+	src.handler(${
+		MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
+		MU_PASS("");
 	});
 
-	MU_ASSERT_EQUAL(*count, final);
-	delete count;
+	TestType::instance->signalFinished(std::string("any working"));
+	xdispatch::exec();
 
-	MU_PASS("Looping works for blocks");
-	MU_END_TEST;
+    MU_END_TEST
 }
 
-#endif
+#endif /* XDISPATCH_HAS_BLOCKS */

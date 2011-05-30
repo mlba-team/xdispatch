@@ -18,8 +18,8 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifndef SHIM_POSIX_H_
-#define SHIM_POSIX_H_
+#ifndef POSIX_PLATFORM_H_
+#define POSIX_PLATFORM_H_
 
 #include <unistd.h>
 #include <stdbool.h>
@@ -38,18 +38,10 @@
 #include <signal.h>
 #include <semaphore.h>
 #include <limits.h>
+#include <pthread.h>
 
 #ifndef FD_COPY
 #define	FD_COPY(f, t)	(void)(*(t) = *(f))
 #endif
 
-// really just a low level abort()
-#define _dispatch_hardware_crash() __builtin_trap()
-
-// some compiler hints
-#define DISPATCH_NOINLINE	__attribute__((noinline))
-#define DISPATCH_INLINE __attribute__((always_inline))
-#define DISPATCH_UNUSED __attribute__((unused))
-#define DISPATCH_NORETURN __attribute__((__noreturn__))
-
-#endif /* SHIM_POSIX_H_ */
+#endif /* POSIX_PLATFORM_H_ */

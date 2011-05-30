@@ -18,8 +18,8 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifndef SHIM_DARWIN_H_
-#define SHIM_DARWIN_H_
+#ifndef DARWIN_PLATFORM_H_
+#define DARWIN_PLATFORM_H_
 
 #include <sys/time.h>
 #include <unistd.h>
@@ -34,28 +34,21 @@
 #include <signal.h>
 #include <semaphore.h>
 
-# include <mach/boolean.h>
-# include <mach/clock_types.h>
-# include <mach/clock.h>
-# include <mach/exception.h>
-# include <mach/mach.h>
-# include <mach/mach_error.h>
-# include <mach/mach_host.h>
-# include <mach/mach_interface.h>
-# include <mach/mach_time.h>
-# include <mach/mach_traps.h>
-# include <mach/message.h>
-# include <mach/mig_errors.h>
-# include <mach/host_info.h>
-# include <mach/notify.h>
+#include <mach/boolean.h>
+#include <mach/clock_types.h>
+#include <mach/clock.h>
+#include <mach/exception.h>
+#include <mach/mach.h>
+#include <mach/mach_error.h>
+#include <mach/mach_host.h>
+#include <mach/mach_interface.h>
+#include <mach/mach_time.h>
+#include <mach/mach_traps.h>
+#include <mach/message.h>
+#include <mach/mig_errors.h>
+#include <mach/host_info.h>
+#include <mach/notify.h>
 
-/* really just a low level abort() */
-#define _dispatch_hardware_crash() __builtin_trap()
+#include "semaphore.h"
 
-/* some compiler hints */
-#define DISPATCH_NOINLINE	__attribute__((noinline))
-#define DISPATCH_INLINE __attribute__((always_inline))
-#define DISPATCH_UNUSED __attribute__((unused))
-#define DISPATCH_NORETURN __attribute__((__noreturn__))
-
-#endif /* SHIM_DARWIN_H_ */
+#endif /* DARWIN_PLATFORM_H_ */

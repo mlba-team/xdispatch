@@ -43,5 +43,11 @@
 #define _dispatch_debugger() asm("trap")
 #endif
 
-
+#if TARGET_OS_WIN32 && !defined(__GNUC__)
+# define _dispatch_hardware_crash()  __debugbreak()
+#else
+# define _dispatch_hardware_crash() __builtin_trap()
 #endif
+
+
+#endif /* __DISPATCH_HW_SHIMS__ */

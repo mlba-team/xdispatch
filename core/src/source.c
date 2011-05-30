@@ -47,7 +47,7 @@ dispatch_source_cancel(dispatch_source_t obj)
 {
     struct dispatch_source_s* ds = obj;
 #if DISPATCH_DEBUG
-    dispatch_debug(obj, __FUNCTION__);
+    dispatch_debug(obj, "%s", __FUNCTION__);
 #endif
 	// Right after we set the cancel flag, someone else
 	// could potentially invoke the source, do the cancelation, 
@@ -426,7 +426,7 @@ dispatch_source_create(dispatch_source_type_t type,
 
 	dispatch_assert(!(ds->ds_is_level && ds->ds_is_adder));
 #if DISPATCH_DEBUG
-	dispatch_debug(ds, __FUNCTION__);
+        dispatch_debug(ds, "%s", __FUNCTION__);
 #endif
 
     _dispatch_retain((ds->do_targetq));
@@ -458,7 +458,7 @@ _dispatch_source_set_event_handler2(void *context)
 void
 dispatch_source_set_event_handler(dispatch_source_t ds, dispatch_block_t handler)
 {
-    dispatch_assert(!DSOURCE_CAST(ds)->ds_is_legacy);
+    dispatch_assert(!(ds)->ds_is_legacy);
 	handler = _dispatch_Block_copy(handler);
 	dispatch_barrier_async_f((dispatch_queue_t)ds,
 		handler, _dispatch_source_set_event_handler2);

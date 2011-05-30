@@ -25,7 +25,7 @@
 #include <QTime>
 #include <QRunnable>
 
-#include "../core/src/shims/atomic.h"
+#include "../core/platform/atomic.h"
 #include "Qt_tests.h"
 
 static QDispatchTimer* tested_timer = NULL;

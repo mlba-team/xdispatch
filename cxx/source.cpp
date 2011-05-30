@@ -40,7 +40,7 @@ void sourcetype::set_cb(source* s){
 		cb = s;
 }
 
-void sourcetype::ready(void* dt){
+void sourcetype::ready(const any& dt){
 	if(cb)
 		cb->notify(dt);
 }
@@ -51,12 +51,12 @@ dispatch_source_t sourcetype::native(){
 
 class src_notify_operation : public operation {
 public:
-	src_notify_operation(void* dt, operation* op) : dt(dt), op(op){
+        src_notify_operation(const any& dt, operation* op) : op(op), dt(dt){
 		assert(op);
 	}
 
 	void operator()(){
-		pthread_setspecific(data_tls, dt);
+                pthread_setspecific(data_tls, &dt);
 		(*op)();
 		pthread_setspecific(data_tls, NULL);
 
@@ -65,8 +65,8 @@ public:
 	}
 
 private:
-	void* dt;
 	operation* op;
+	any dt;
 };
 
 class source::pdata {
@@ -119,7 +119,7 @@ void source::handler(dispatch_block_t b){
 }
 #endif
 
-void source::notify(void* dt){
+void source::notify(const any& dt){
 	if(d->suspend_ct < 0)
 		return;
 
@@ -130,8 +130,11 @@ dispatch_object_t source::native() const {
 	return d->type->native();
 }
 
-void* source::_data(){
-	return pthread_getspecific(data_tls);
+const any* source::_data(){
+        const any* dt_pt = (any*)pthread_getspecific(data_tls);
+        if(dt_pt == NULL)
+            throw std::exception();
+        return dt_pt;
 }
 
 source& source::operator=(const source&){

@@ -20,16 +20,8 @@
  * @APPLE_APACHE_LICENSE_HEADER_END@
  */
 
-/*
- * IMPORTANT: This header file describes INTERNAL interfaces to libdispatch
- * which are subject to change in future releases of Mac OS X. Any applications
- * relying on these interfaces WILL break.
- */
-
-#ifndef __DISPATCH_SHIMS_TSD_WINDOWS__
-#define __DISPATCH_SHIMS_TSD_WINDOWS__
-
-/* threads */
+#ifndef THREADS_WIN_H_
+#define THREADS_WIN_H_
 
 #include <process.h>
 
@@ -40,7 +32,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     void *(*start_routine)(void*), void *arg);
 #define pthread_self() GetCurrentThread()
 #define pthread_exit(u) _endthreadex(0)
-static inline int pthread_detach(pthread_t t DISPATCH_UNUSED){ return 0; }
+static inline int pthread_detach(pthread_t t){ return 0; }
 
 // currently this is borrowed from linux, we will see if this needs to get adapted
 #define NSIG 32
@@ -114,7 +106,7 @@ int pthread_cond_signal (pthread_cond_t *cv);
 int pthread_cond_broadcast (pthread_cond_t *cv);
 int pthread_cond_destroy(pthread_cond_t *cv);
 
-/* tsd */
+/* tls */
 typedef DWORD pthread_key_t;
 #define pthread_key_create(k,d) (!((*k=TlsAlloc())!=TLS_OUT_OF_INDEXES))
 #define pthread_setspecific(k,v) (!(TlsSetValue(k, v)))
@@ -129,35 +121,7 @@ int sem_init(sem_t *, int, unsigned);
 #define sem_wait(s) ((WaitForSingleObject((s),INFINITE))==WAIT_FAILED)
 int sem_timedwait(sem_t *, const struct timespec *);
 
-/* custom dispatch code */
+/* signals */
+typedef int sigset_t;
 
-extern pthread_key_t dispatch_queue_key;
-extern pthread_key_t dispatch_sema4_key;
-extern pthread_key_t dispatch_cache_key;
-extern pthread_key_t dispatch_bcounter_key;
-
-static inline void
-_dispatch_thread_setspecific(pthread_key_t k, void *v)
-{
-
-    dispatch_assert(TlsSetValue(k, v));
-
-}
-
-static inline void *
-_dispatch_thread_getspecific(pthread_key_t k)
-{
-
-    return TlsGetValue(k);
-}
-
-static inline void
-_dispatch_thread_key_create(pthread_key_t *key, void (*destructor)(void *))
-{
-    *key = TlsAlloc();
-    dispatch_assert( (*key) != TLS_OUT_OF_INDEXES);
-}
-
-#define _dispatch_thread_self (uintptr_t)GetCurrentThread
-
-#endif /* __DISPATCH_SHIMS_TSD_WINDOWS__ */
+#endif /* THREADS_WIN_H_ */

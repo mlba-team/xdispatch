@@ -23,7 +23,7 @@
 #define CXX_TESTS_H_
 
 #include "munit/MUnit.h"
-#include "../core/src/shims/atomic.h"
+#include "../core/platform/atomic.h"
 
 #ifdef __cplusplus
 # include <xdispatch/dispatch>
@@ -52,6 +52,7 @@ void cxx_dispatch_serialqueue();
 void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
 void cxx_dispatch_timer();
+void cxx_dispatch_source();
 
 static void register_cxx_tests(){
 #ifdef TEST_BLOCKS
@@ -64,6 +65,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_semaphore);
     MU_REGISTER_TEST(cxx_dispatch_current);
     MU_REGISTER_TEST(cxx_dispatch_timer);
+	MU_REGISTER_TEST(cxx_dispatch_source);
 #endif
 }
 

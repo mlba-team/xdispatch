@@ -23,7 +23,7 @@
 #include <xdispatch/dispatch.h>
 
 #include "tests.h"
-#include "../core/src/shims/atomic.h"
+#include "../core/platform/atomic.h"
 
 /*
 	A test for dispatching a function using dispatch_apply_f

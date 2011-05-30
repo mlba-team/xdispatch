@@ -23,75 +23,33 @@
 
 __XDISPATCH_BEGIN_NAMESPACE
 
-class wrap {
+class block_iteration_operation : public iteration_operation {
 public:
-#ifdef XDISPATCH_HAS_BLOCKS
-    wrap(operation* o)
-        : op(o) { assert(o); }
-    wrap(dispatch_block_t b)
-        : op(NULL) {
-        blck = XDISPATCH_BLOCK_COPY(b);
-    }
-#else
-    wrap(operation* o)
-        : op(o) { assert(o); }
-#endif
-    ~wrap() {
-        // std::cout << "OP deleted " << this << "( " << op << " )" << std::endl;
-        if(op) {
-            if(op->auto_delete())
-                delete op;
-        }
-#ifdef XDISPATCH_HAS_BLOCKS
-        else
-            XDISPATCH_BLOCK_RELEASE(blck);
-#endif
-	}
-    void run(){
-        // std::cout << "OP starting " << this << "( " << op << " )" << std::endl;
-        if(op)
-            (*op)();
-#ifdef XDISPATCH_HAS_BLOCKS
-        else
-            blck();
-#endif
-    }
+    block_iteration_operation(dispatch_iteration_block_t b) : block(XDISPATCH_BLOCK_COPY(b)) {}
+    block_iteration_operation(const block_iteration_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
+    ~block_iteration_operation() { XDISPATCH_BLOCK_RELEASE(block); }
+
+    void operator ()(size_t index){
+        block(index);
+    };
 
 private:
-    operation* op;
-#ifdef XDISPATCH_HAS_BLOCKS
-    dispatch_block_t blck;
-#endif
+    dispatch_iteration_block_t block;
 };
 
 class iteration_wrap {
 public:
-#ifdef XDISPATCH_HAS_BLOCKS
-    iteration_wrap(iteration_operation* o, size_t ct)
-        : op(o), ref(ct), block(NULL) { assert(o); }
-    iteration_wrap(const dispatch_iteration_block_t& b, size_t ct)
-        : op(NULL), ref(ct), block(b) {}
-#else
     iteration_wrap(iteration_operation* o, size_t ct)
         : op(o), ref(ct) { assert(o); }
-#endif
     ~iteration_wrap() {
         if(op) {
 			if(op->auto_delete())
 				delete op;
 		}
-#ifdef XDISPATCH_HAS_BLOCKS
-		else
-            XDISPATCH_BLOCK_RELEASE(block);
-#endif
     }
     void run(size_t index){
         if(op)
             (*op)(index);
-#ifdef XDISPATCH_HAS_BLOCKS
-        else
-            block(index);
-#endif
     }
 
     bool deref(){
@@ -101,14 +59,11 @@ public:
 private:
     iteration_operation* op;
     ATOMIC_INT ref;
-#ifdef XDISPATCH_HAS_BLOCKS
-    dispatch_iteration_block_t block;
-#endif
 };
 
 extern "C" {
+	void run_operation(void*);
     void run_iter_wrap(void*, size_t);
-    void run_wrap(void*);
 }
 
 __XDISPATCH_END_NAMESPACE
