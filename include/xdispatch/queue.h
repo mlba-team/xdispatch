@@ -187,7 +187,7 @@ public:
     C++ object. Use this, if you need to use the plain C Interface
     of libdispatch.
     */
-    virtual const dispatch_queue_t native() const;
+    virtual dispatch_object_t native() const;
     /**
      Sets the target queue of this queue, i.e. the queue
      all items of this queue will be dispatched on in turn.
@@ -195,6 +195,8 @@ public:
      @remarks This has no effect on the global queues and the main queue.
     */
     virtual void set_target(const queue&);
+
+	queue& operator= (const queue&);
     
 private:
     class data;
@@ -202,12 +204,8 @@ private:
 
 };
 
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const queue* q);
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const queue& q);
-
-bool operator ==(const queue& a, const queue& b);
-bool operator ==(const queue& a, const dispatch_queue_t& b);
-bool operator ==(const dispatch_queue_t& a, const queue& b);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const queue*);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const queue&);
 
 __XDISPATCH_END_NAMESPACE
 

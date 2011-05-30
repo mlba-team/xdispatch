@@ -51,14 +51,14 @@ void _begin_test(const char* name);
 static void _print_message(const char* format, ...){
 		static char was_called = 0;
 		va_list params;
-		char tmp[201];
+		char tmp[512];
 		if(!was_called){
 			was_called = 1;
 			printf("\n");
 		}
 		va_start(params, format);
 #ifdef WIN32_VS
-		vsprintf_s(tmp, 201, format, params);
+		vsprintf_s(tmp, 510, format, params);
 #else
 		vsprintf(tmp,format,params);
 #endif

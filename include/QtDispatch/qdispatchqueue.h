@@ -124,6 +124,8 @@ public:
 	*/
 	virtual void setTarget(const xdispatch::queue&);
 
+	QDispatchQueue& operator=(const QDispatchQueue&);
+
 public slots:
 	void suspend();
 	void resume();

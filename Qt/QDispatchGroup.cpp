@@ -96,20 +96,20 @@ bool QDispatchGroup::wait(const QTime& t){
 void QDispatchGroup::async(QRunnable *r, const xdispatch::queue& q){
     Q_ASSERT(r);
     async(new RunnableOperation(r), q);
-    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 void QDispatchGroup::async(xdispatch::operation * op, const xdispatch::queue & q){
     Q_ASSERT(op);
     xdispatch::group::async(op, q);
-    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 void QDispatchGroup::notify(QRunnable *r, const xdispatch::queue& q){
     Q_ASSERT(r);
     notify(new RunnableOperation(r), q);
 
-    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q){
@@ -117,7 +117,7 @@ void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q)
     d->notify = op;
     d->queue = new QDispatchQueue(q);
 
-    dispatch_group_notify_f(native(), xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
 }
 
 void QDispatchGroup::suspend(){

@@ -25,6 +25,16 @@ __XDISPATCH_USE_NAMESPACE
 
 class group::data {
 public:
+	data(){}
+	data(const data& other) : native(other.native){
+		assert(native);
+		dispatch_retain(native);
+	}
+	~data(){
+		if(native)
+			dispatch_release(native);
+	}
+
     dispatch_group_t native;
 };
 
@@ -41,20 +51,17 @@ group::group(dispatch_group_t g) : d(new data){
     d->native = g;
 }
 
-group::group(const group & other) : d(new data){
+group::group(const group & other) : d(new data(*other.d)){
     assert(d);
-    d->native = other.d->native;
-    assert(d->native);
-    dispatch_retain(d->native);
+	assert(d->native);
 }
 
 group::~group() {
-    dispatch_release(d->native);
     delete d;
 }
 
 void group::async(operation* r, const queue& q){
-    dispatch_queue_t nat_q = q.native();
+    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
     assert(nat_q);
     dispatch_group_async_f(d->native, nat_q, new wrap(r), run_wrap);
 }
@@ -68,12 +75,12 @@ bool group::wait(struct tm* t){
 }
 
 void group::notify(operation* r, const queue& q){
-    dispatch_queue_t nat_q = q.native();
+    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
     assert(nat_q);
     dispatch_group_notify_f(d->native, nat_q, new wrap(r), run_wrap);
 }
 
-const dispatch_group_t group::native() const {
+dispatch_object_t group::native() const {
     return d->native;
 }
 
@@ -88,17 +95,27 @@ void group::resume() {
 #ifdef XDISPATCH_HAS_BLOCKS
 
 void group::async(dispatch_block_t b, const queue& q){
-    dispatch_queue_t nat_q = q.native();
+    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
     assert(nat_q);
     dispatch_group_async(d->native, nat_q, b);
 }
 
 void group::notify(dispatch_block_t b, const queue& q){
-    dispatch_queue_t nat_q = q.native();
+    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
     assert(nat_q);
     dispatch_group_notify_f(d->native, nat_q, new wrap(b), run_wrap);
 }
 #endif
+
+group& group::operator=(const group& other){
+	if(*this != other){
+		if(d)
+			delete d;
+		d = new data(*other.d);
+		assert(d);
+	}
+	return *this;
+}
 
 std::ostream& xdispatch::operator<<(std::ostream& stream, const group* q){
     stream << "xdispatch::group";

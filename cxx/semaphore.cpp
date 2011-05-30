@@ -25,6 +25,16 @@ __XDISPATCH_USE_NAMESPACE
 
 class semaphore::data {
 public:
+	data(){}
+	data(const data& other) : native(other.native){
+		assert(native);
+		dispatch_retain(native);
+	}
+	~data(){
+		if(native)
+			dispatch_release(native);
+	}
+
     dispatch_semaphore_t native;
 };
 
@@ -42,14 +52,11 @@ semaphore::semaphore(dispatch_semaphore_t sem) : d(new data) {
 }
 
 
-semaphore::semaphore(const semaphore& other) : d(new data) {
+semaphore::semaphore(const semaphore& other) : d(new data(*other.d)) {
     assert(d);
-    d->native = other.d->native;
-    dispatch_retain(d->native);
 }
 
 semaphore::~semaphore() {
-    dispatch_release(d->native);
     delete d;
 }
 
@@ -73,6 +80,32 @@ const dispatch_semaphore_t semaphore::native() const {
     return d->native;
 }
 
+xdispatch::semaphore& semaphore::operator=(const semaphore& other){
+	if(*this != other){
+		if(d)
+			delete d;
+		d = new data(*other.d);
+		assert(d);
+	}
+	return *this;
+}
+
+bool semaphore::operator==(const semaphore& other){
+	return d->native == other.d->native;
+}
+
+bool semaphore::operator!=(const semaphore& other){
+	return d->native != other.d->native;
+}
+
+bool semaphore::operator==(const dispatch_semaphore_t& other){
+	return d->native == other;
+}
+
+bool semaphore::operator!=(const dispatch_semaphore_t& other){
+	return d->native != other;
+}
+
 std::ostream& xdispatch::operator<<(std::ostream& stream, const semaphore* q){
     stream << "xdispatch::semaphore";
     return stream;
@@ -82,3 +115,4 @@ std::ostream& xdispatch::operator<<(std::ostream& stream, const semaphore& q){
     stream << "xdispatch::semaphore";
     return stream;
 }
+

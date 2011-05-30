@@ -113,6 +113,13 @@ void QDispatchQueue::after(dispatch_block_t block, const QTime& t){
 }
 #endif
 
+QDispatchQueue& QDispatchQueue::operator=(const QDispatchQueue& other){
+	if(this != &other){
+		xdispatch::queue::operator=(other);
+	}
+	return *this;
+}
+
 Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue* q)
 {
     dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";

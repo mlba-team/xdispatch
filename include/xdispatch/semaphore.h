@@ -107,14 +107,23 @@ public:
     */
     virtual const dispatch_semaphore_t native() const;
 
+	semaphore& operator=(const semaphore&);
+	bool operator ==(const semaphore&);
+	bool operator ==(const dispatch_semaphore_t&);
+	bool operator !=(const semaphore&);
+	bool operator !=(const dispatch_semaphore_t&);
+
 private:
     class data;
     data* d;
 
 };
 
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const semaphore*);
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream& stream, const semaphore&);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const semaphore*);
+XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const semaphore&);
+
+XDISPATCH_EXPORT bool operator ==(const dispatch_semaphore_t&, const semaphore&);
+XDISPATCH_EXPORT bool operator !=(const dispatch_semaphore_t&, const semaphore&);
 
 __XDISPATCH_END_NAMESPACE
 

@@ -31,6 +31,30 @@
 
 __XDISPATCH_USE_NAMESPACE
 
+bool object::operator==(const object& other){
+	return native() == other.native();
+}
+
+bool object::operator==(const dispatch_object_t& other){
+	return native() == other;
+}
+
+bool object::operator!=(const object& other){
+	return native() != other.native();
+}
+
+bool object::operator!=(const dispatch_object_t& other){
+	return native() != other;
+}
+
+bool operator ==(const dispatch_object_t& a, const object& b){
+	return a == b.native();
+}
+
+bool operator !=(const dispatch_object_t& a, const object& b){
+	return a == b.native();
+}
+
 queue xdispatch::main_queue(){
     return queue(dispatch_get_main_queue());
 }

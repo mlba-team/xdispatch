@@ -19,44 +19,36 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
+#ifdef QT_CORE_LIB
 
-#include "../include/xdispatch/dispatch"
-#include "cxx_tests.h"
+#include <QTime>
+#include <QFile>
+#include <QtDispatch/QtDispatch>
+
+#include "Qt_tests.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
 /*
- Little tests mainly checking the correct mapping of the c++ api
- to the underlying C Api
+ Tests the source type IODevice
  */
 
-extern "C" void cxx_dispatch_cascade(){
-	
-    MU_BEGIN_TEST(cxx_dispatch_cascade);
+extern "C" void Qt_dispatch_source_device(){
+	char* argv = QString("test").toAscii().data();
+	int argc = 1;
+    QDispatchApplication app(argc,&argv);
 
-    xdispatch::queue q = xdispatch::global_queue();
-    MU_ASSERT_NOT_NULL_HEX(q.native());
+        MU_BEGIN_TEST(Qt_dispatch_source_device);
 
-	int no = 0;
-	
-    q.async(${
-		int no2 = no+100;
-        xdispatch::queue c = xdispatch::current_queue();
-        c.async(${
-			int no3 = no2+20;
-            xdispatch::current_queue().async(${
-				int no4 = no3+3 ;
-                xdispatch::current_queue().async(${
-					MU_ASSERT_EQUAL(no4,123);
-					MU_PASS("And Out");
-                });
-			});
-		});
-    });
-	
-    xdispatch::exec();
+	// TODO How? to test this?
+	QFile f;
+	QDispatchSource src(new QDispatchSourceTypeIODevice(&f));
+	MU_PASS("");
+
+	app.exec();
 	MU_END_TEST;
 }
 
 #endif
 
+#endif

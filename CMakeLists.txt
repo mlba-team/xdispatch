@@ -15,7 +15,7 @@ if(NOT HAS_MZ_GLOBAL)
 	include(${CMAKE_CURRENT_SOURCE_DIR}/Build/macros.cmake)
 
 	# QT settings
-    find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtTest)
+    find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
 	include(${QT_USE_FILE})
 	
 	# We need to ouput everything into the same directory
