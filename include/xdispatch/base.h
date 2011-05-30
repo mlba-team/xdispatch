@@ -75,6 +75,7 @@ class XDISPATCH_EXPORT iteration_operation
 {
 public:
     iteration_operation() : auto_del(true){}
+    virtual ~iteration_operation(){}
 
     virtual void operator()(size_t index) = 0;
     /**
