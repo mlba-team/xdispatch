@@ -432,6 +432,9 @@ struct dispatch_object_s *
 		// The first xchg on the tail will tell the enqueueing thread that it
 		// is safe to blindly write out to the head pointer. A cmpxchg honors
 		// the algorithm.
+#ifdef __GNUC__
+		(void)
+#endif
 		dispatch_atomic_ptr_cmpxchg(&dq->dq_items_head, mediator, NULL);
 		_dispatch_debug("no work on global work queue");
 		return NULL;
@@ -526,21 +529,20 @@ static void
 		_dispatch_hw_config.cc_max_physical =
 		_dispatch_hw_config.cc_max_active;
 #elif HAVE_SYSCONF && defined(_SC_NPROCESSORS_ONLN)
-	_dispatch_hw_config.cc_max_active = (int)sysconf(_SC_NPROCESSORS_ONLN);
-	if (_dispatch_hw_config.cc_max_active < 0)
-		_dispatch_hw_config.cc_max_active = 1;
+	int ret;
+	ret = (int)sysconf(_SC_NPROCESSORS_ONLN);
+
 	_dispatch_hw_config.cc_max_logical =
 		_dispatch_hw_config.cc_max_physical =
-		_dispatch_hw_config.cc_max_active;
+		_dispatch_hw_config.cc_max_active = (ret < 0) ? 1 : ret;
 #elif TARGET_OS_WIN32
 	SYSTEM_INFO sysinfo;
+	int ret;
 	GetSystemInfo(&sysinfo);
-	_dispatch_hw_config.cc_max_active = (int)sysinfo.dwNumberOfProcessors;
-	if (_dispatch_hw_config.cc_max_active < 0)
-		_dispatch_hw_config.cc_max_active = 1;
+	ret = (int)sysinfo.dwNumberOfProcessors;
 	_dispatch_hw_config.cc_max_logical =
 		_dispatch_hw_config.cc_max_physical =
-		_dispatch_hw_config.cc_max_active;
+		_dispatch_hw_config.cc_max_active = (ret < 0) ? 1 : ret;
 #else
 #warning "_dispatch_queue_set_width_init: no supported way to query CPU count"
 	_dispatch_hw_config.cc_max_logical =
