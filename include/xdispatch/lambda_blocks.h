@@ -117,14 +117,14 @@
 # ifndef XDISPATCH_NO_KEYWORDS
 #  define $ [=]
 # endif
-# define XDISPATCH_BLOCK_PERSIST(A) new auto(A)
-# define XDISPATCH_BLOCK_COPY(A) new auto(*(A))
-# define XDISPATCH_BLOCK_DELETE(A) delete A
-# define XDISPATCH_BLOCK_EXEC(A) (*A)
+# define XDISPATCH_BLOCK_PERSIST(A) (A)
+# define XDISPATCH_BLOCK_COPY(A) (A)
+# define XDISPATCH_BLOCK_DELETE(A) {}
+# define XDISPATCH_BLOCK_EXEC(A) (A)
  typedef const std::tr1::function< void (void) >& dispatch_block_t;
  typedef const std::tr1::function< void (size_t) >& dispatch_iteration_block_t;
- typedef std::tr1::function< void (void) >* dispatch_block_store;
- typedef std::tr1::function< void (size_t) >* dispatch_iteration_block_store;
+ typedef std::tr1::function< void (void) > dispatch_block_store;
+ typedef std::tr1::function< void (size_t) > dispatch_iteration_block_store;
 # define XDISPATCH_HAS_BLOCKS
 
 // gcc 4.5 with c++0x enabled

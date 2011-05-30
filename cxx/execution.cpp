@@ -33,9 +33,9 @@ void xdispatch::run_operation(void* dt){
     try {
         (*w)();
     } catch(const std::exception& e) {
-        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
+        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
     } catch(...) {
-        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
+        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
     }
 
     if(w->auto_delete())
@@ -50,9 +50,9 @@ void xdispatch::run_iter_wrap(void* dt, size_t index){
     try {
         wrap->run(index);
     } catch(const std::exception& e) {
-        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
+        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
     } catch(...) {
-        std::cerr << "Note: Throwing execptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
+        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
     }
 
     if(wrap->deref())
