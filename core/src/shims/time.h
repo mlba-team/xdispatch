@@ -101,7 +101,7 @@ _dispatch_absolute_time(void)
 	if (!QueryPerformanceCounter(&now)) {
 		return 0;
 	}
-	return now.QuadPart *_dispatch_host_time_data.win_time_factor;
+	return (uint64_t)(now.QuadPart *_dispatch_host_time_data.win_time_factor);
 #else
 	struct timespec ts;
 	int ret;

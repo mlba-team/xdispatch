@@ -107,7 +107,7 @@ _dispatch_mgr_invoke(dispatch_queue_t dq)
 			FD_COPY(&_dispatch_rfds, &tmp_rfds);
 			FD_COPY(&_dispatch_wfds, &tmp_wfds);
 			if (timeoutp) {
-				sel_timeout.tv_sec = timeoutp->tv_sec;
+				sel_timeout.tv_sec = (long)timeoutp->tv_sec;
 #if defined(__GNUC__)
 				sel_timeout.tv_usec = (typeof(sel_timeout.tv_usec))(timeoutp->tv_nsec / 1000u);
 #else
