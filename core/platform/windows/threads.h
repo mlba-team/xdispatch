@@ -32,6 +32,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     void *(*start_routine)(void*), void *arg);
 #define pthread_self() GetCurrentThread()
 #define pthread_exit(u) _endthreadex(0)
+#define pthread_join(h,n) WaitForSingleObject(h, INFINITE)
 static inline int pthread_detach(pthread_t t){ return 0; }
 
 // currently this is borrowed from linux, we will see if this needs to get adapted
