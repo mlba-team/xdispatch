@@ -21,12 +21,12 @@
 #ifndef TYPEDEFS_H_
 #define TYPEDEFS_H_
 
-#ifndef __cplusplus
-#	ifndef bool
-#	   define bool char
-#		define true 1
-#		define false 0
-#	endif
-#endif
+//#ifndef __cplusplus
+//#	ifndef bool
+//#	   define bool char
+//#		define true 1
+//#		define false 0
+//#	endif
+//#endif
 
 #endif /* TYPEDEFS_H_ */

@@ -21,8 +21,6 @@
 #ifndef MUNIT_ASSERT_H_
 #define MUNIT_ASSERT_H_
 
-#include "typedefs.h"
-
 /**
   Assertions for testing
   */
@@ -48,16 +46,16 @@ void _fail(const char* msg, const char* file, int line);
 #define MU_EX_D2(C) double mu_rC2 = (double)(C)
 #define MU_EX_VAL2 mu_rC2
 
-#define MU_DESC_ASSERT_TRUE(D,C) { MU_EX_L(C); _assert_true_long(MU_EX_VAL, 0, MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
-#define MU_DESC_ASSERT_TRUE_HEX(D,C) { MU_EX_L(C); _assert_true_hex(MU_EX_VAL, 0, MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
-#define MU_DESC_ASSERT_TRUE_DOUBLE(D,C) { MU_EX_D(C); _assert_true_double(MU_EX_VAL, 0, MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
-void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const char* file, int line);
-void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const char* file, int line);
-void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line);
+#define MU_DESC_ASSERT_TRUE(D,C) { MU_EX_L(C); _assert_true_long(MU_EX_VAL, 0, (char)MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
+#define MU_DESC_ASSERT_TRUE_HEX(D,C) { MU_EX_L(C); _assert_true_hex(MU_EX_VAL, 0, (char)MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
+#define MU_DESC_ASSERT_TRUE_DOUBLE(D,C) { MU_EX_D(C); _assert_true_double(MU_EX_VAL, 0, (char)MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
+void _assert_true_long(long a, long b, char cond, const char* cond_desc, const char* file, int line);
+void _assert_true_hex(long a, long b, char cond, const char* cond_desc, const char* file, int line);
+void _assert_true_double(double a, double b, char cond, const char* cond_desc, const char* file, int line);
 
 #define MU_DESC_ASSERT_NOT_TRUE(D,C) { MU_EX_L(C); _assert_true_long(MU_EX_VAL, 0, MU_EX_VAL==0, D": "#C" == 0",__FILE__,__LINE__); }
 #define MU_DESC_ASSERT_NOT_TRUE_HEX(D,C) { MU_EX_L(C); _assert_true_long_hex(MU_EX_VAL, 0, MU_EX_VAL==0, D": !"#C" == 0",__FILE__,__LINE__); }
-#define MU_DESC_ASSERT_NOT_TRUE_DOUBLE(D,C) { MU_EX_D(C); _assert_true_double((C), 0, (C)==0.0, D": "#C" == 0.0",__FILE__,__LINE__); }
+#define MU_DESC_ASSERT_NOT_TRUE_DOUBLE(D,C) { MU_EX_D(C); _assert_true_double(MU_EX_VAL, 0, MU_EX_VAL==0.0, D": "#C" == 0.0",__FILE__,__LINE__); }
 
 #define MU_DESC_ASSERT_NULL(D,A) { MU_EX_L(A); _assert_true_long(MU_EX_VAL, 0, MU_EX_VAL==0,D": "#A" == 0",__FILE__,__LINE__); }
 #define MU_DESC_ASSERT_NOT_NULL(D,A) { MU_EX_L(A); _assert_true_long(MU_EX_VAL, 0, MU_EX_VAL!=0,D": "#A" != 0",__FILE__,__LINE__); }

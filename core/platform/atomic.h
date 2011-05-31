@@ -69,6 +69,10 @@
 #  include <Windows.h>
 # endif
 
+# include <intrin.h>
+
+# pragma intrinsic(_InterlockedAnd)
+
 # define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
 # define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((p), (n), (o)) == (o) )
 # define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((p),(n))
@@ -84,7 +88,7 @@
 # define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd((p), ((LONG)(v)*(-1))) - (v))
 # define dispatch_atomic_or(p, v)	_InterlockedOr((p), (v))
 #endif
-# define dispatch_atomic_and(p, v)	InterlockedAnd((p), (v))
+# define dispatch_atomic_and(p, v)	_InterlockedAnd((p), (v))
 # define dispatch_atomic_barrier()	MemoryBarrier()
 
 # ifndef ATOMIC_INT

@@ -30,9 +30,6 @@
 #	include <Windows.h>
 #endif
 
-#include "MUnit_assert.h"
-#include "MUnit_tools.h"
-#include "typedefs.h"
 #include "private.h"
 
 void _pass(const char *msg, const char *file, int line){
@@ -66,7 +63,7 @@ void _fail(const char *msg, const char *file, int line){
 # define inline _inline
 #endif
 
-static inline void _assert_eval(const char* msg, bool cond, const char* file, int line){
+static inline void _assert_eval(const char* msg, char cond, const char* file, int line){
     if(!cond) {
         _fail(msg,file,line);
     } else if(verbose) {
@@ -75,7 +72,7 @@ static inline void _assert_eval(const char* msg, bool cond, const char* file, in
     }
 }
 
-void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const char* file, int line){
+void _assert_true_long(long a, long b, char cond, const char* cond_desc, const char* file, int line){
     char msg[512];
 #ifndef _WIN32
     sprintf(msg,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
@@ -85,7 +82,7 @@ void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const c
     _assert_eval(msg, cond, file, line);
 }
 
-void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const char* file, int line){
+void _assert_true_hex(long a, long b, char cond, const char* cond_desc, const char* file, int line){
     char msg[512];
 #ifndef _WIN32
     sprintf(msg,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
@@ -95,7 +92,7 @@ void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const ch
     _assert_eval(msg, cond, file, line);
 }
 
-void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line){
+void _assert_true_double(double a, double b, char cond, const char* cond_desc, const char* file, int line){
     char msg[512];
 #ifndef _WIN32
     sprintf(msg,"Assert %s \n\t- is %f, %f", cond_desc, a, b);

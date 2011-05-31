@@ -24,7 +24,7 @@
 
 #include "munit/MUnit.h"
 #include <xdispatch/dispatch.h>
-#include "shims/platform.h"
+#include "../core/platform/platform.h"
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
