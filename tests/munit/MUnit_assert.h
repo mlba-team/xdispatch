@@ -45,9 +45,9 @@ void _assert_true_long(long a, long b, bool cond, const char* cond_desc, const c
 void _assert_true_hex(long a, long b, bool cond, const char* cond_desc, const char* file, int line);
 void _assert_true_double(double a, double b, bool cond, const char* cond_desc, const char* file, int line);
 
-#define MU_DESC_ASSERT_NOT_TRUE(D,C) _assert_not_true_long((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
-#define MU_DESC_ASSERT_NOT_TRUE_HEX(D,C) _assert_not_true_long_hex((long)(C), 0, (C), D": "#C,__FILE__,__LINE__)
-#define MU_DESC_ASSERT_NOT_TRUE_DOUBLE(D,C) _assert_not_true_double((C), 0, (C), D": "#C,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_TRUE(D,C) _assert_not_true_long((long)(C), 0, (C)==0, D": "#C" == 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_TRUE_HEX(D,C) _assert_not_true_long_hex((long)(C), 0, (C)==0, D": !"#C" == 0",__FILE__,__LINE__)
+#define MU_DESC_ASSERT_NOT_TRUE_DOUBLE(D,C) _assert_not_true_double((C), 0, (C)==0.0, D": "#C" == 0.0",__FILE__,__LINE__)
 void _assert_not_true_long(long a, long b, bool cond,  const char* cond_desc, const char* file, int line);
 void _assert_not_true_hex(long a, long b, bool cond,  const char* cond_desc, const char* file, int line);
 void _assert_not_true_double(double a, double b, bool cond,  const char* cond_desc, const char* file, int line);
@@ -60,7 +60,7 @@ void _assert_not_true_double(double a, double b, bool cond,  const char* cond_de
 #define MU_DESC_ASSERT_NOT_NULL_DOUBLE(D,A) _assert_true_double((A), 0, (A)!=0,D": "#A" != 0",__FILE__,__LINE__)
 
 #define MU_DESC_ASSERT_EQUAL(D,A,B) _assert_true_long((long)(A),(long)(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
-#define MU_DESC_ASSERT_EQUAL_HEX(D,A,B) _assert_true_long_hex((long)(A),(long)(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
+#define MU_DESC_ASSERT_EQUAL_HEX(D,A,B) _assert_true_hex((long)(A),(long)(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
 #define MU_DESC_ASSERT_EQUAL_DOUBLE(D,A,B) _assert_true_double((A),(B),(A)==(B),D": "#A" == "#B,__FILE__,__LINE__)
 
 #define MU_DESC_ASSERT_NOT_EQUAL(D,A,B) _assert_true_long((long)(A),(long)(B),(A)!=(B),D": "#A" != "#B,__FILE__,__LINE__)

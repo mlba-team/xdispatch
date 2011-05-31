@@ -42,6 +42,7 @@ extern "C" {
 
 /* All test cases */
 
+void atomic_operations();
 void dispatch_api();
 void dispatch_simpleFunction();
 void dispatch_apply_function();
@@ -70,6 +71,7 @@ void dispatch_drift();
 #endif
 
 static void register_tests(){
+        MU_REGISTER_TEST(atomic_operations);
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);
 	MU_REGISTER_TEST(dispatch_test_sync);
