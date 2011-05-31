@@ -105,7 +105,10 @@ if(QT4_FOUND)
 endif()
 
 # custom test framework for xdispatch
-mz_add_executable(tests tests)
+option(XDISPATCH_TESTS "Enable to build the unittests" OFF)
+if(XDISPATCH_TESTS)
+	mz_add_executable(tests tests)
+endif()
 
 # documentation
 option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
