@@ -22,20 +22,34 @@ include config.mk
 
 .PHONY :: install uninstall check dist dist-upload clean merge distclean fresh-build rpm edit cscope
 
-all: $(PROGRAM).so.$(ABI_VERSION)
+all: $(PROGRAM).so.$(ABI_VERSION) $(PROGRAM)_debug.so $(PROGRAM).a $(PROGRAM)_debug.a
 
 %.o: %.c $(DEPS)
-	$(CC) -c -o $@ -I./include -I./src/common $(CFLAGS) $<
+	$(CC) -c -o $@ -I./include -I./src/common -DNDEBUG $(CFLAGS) $<
 
-$(PROGRAM).a: $(OBJS)
-	$(AR) rcs $(PROGRAM).a $(OBJS)
+$(PROGRAM).a:
+	rm -f *.o
+	$(CC) -c -I./include -I./src/common -DNDEBUG -DMAKE_STATIC=1 -static $(CFLAGS) $(SOURCES) $(LDADD)
+	$(AR) rcs $(PROGRAM).a *.o
+	$(STRIP) $(PROGRAM).a
+	rm *.o
+
+$(PROGRAM)_debug.a:
+	rm -f *.o
+	$(CC) -c -I./include -I./src/common -DMAKE_STATIC=1 -pg -static $(CFLAGS) $(SOURCES) $(LDADD)
+	$(AR) rcs $(PROGRAM)_debug.a *.o
+	rm *.o
 
 $(PROGRAM).so.$(ABI_VERSION): $(OBJS)
-	$(LD) -shared $(LDFLAGS) $(OBJS) $(LDADD)
+	$(CC) -o $@ -I./include -I./src/common -shared $(LDFLAGS) -DNDEBUG $(CFLAGS) $(SOURCES) $(LDADD)
+	$(STRIP) $(PROGRAM).so.$(ABI_VERSION)
 	$(LN) -sf $(PROGRAM).so.$(ABI_VERSION) $(PROGRAM).so.$(ABI_MAJOR)
 	$(LN) -sf $(PROGRAM).so.$(ABI_VERSION) $(PROGRAM).so
 
-install: $(PROGRAM).so.$(ABI_VERSION)
+$(PROGRAM)_debug.so:
+	$(CC) -o $@ -I./include -I./src/common -shared -rdynamic $(CFLAGS) -g3 -O0 $(SOURCES) $(LDADD)
+
+install: all
 	$(INSTALL) -d -m 755 $(INCLUDEDIR)/kqueue/sys
 	$(INSTALL) -m 644 include/sys/event.h $(INCLUDEDIR)/kqueue/sys/event.h
 	$(INSTALL) -d -m 755 $(LIBDIR) 
@@ -43,7 +57,7 @@ install: $(PROGRAM).so.$(ABI_VERSION)
 	$(INSTALL) -m 644 $(PROGRAM).so.$(ABI_MAJOR) $(LIBDIR)
 	$(LN) -sf $(PROGRAM).so.$(ABI_VERSION) $(LIBDIR)/$(PROGRAM).so.$(ABI_MAJOR)
 	$(LN) -sf $(PROGRAM).so.$(ABI_VERSION) $(LIBDIR)/$(PROGRAM).so
-	$(INSTALL) -m 644 $(PROGRAM).la $(LIBDIR)
+	$(INSTALL) -m 644 $(PROGRAM)_debug.so $(LIBDIR)
 	$(INSTALL) -d -m 755 $(LIBDIR)/pkgconfig
 	$(INSTALL) -m 644 libkqueue.pc $(LIBDIR)/pkgconfig
 	$(INSTALL) -d -m 755 $(MANDIR)/man2
@@ -61,10 +75,13 @@ uninstall:
 test/config.mk:
 	cd test && ../configure
 
-check: clean $(PROGRAM).so.$(ABI_VERSION) test/config.mk
+check: test/config.mk
 	cd test && make check
 
-debug: clean $(PROGRAM).so.$(ABI_VERSION) test/config.mk
+profile: clean $(PROGRAM)_debug.a
+	cd test && ./kqtest
+
+debug: clean all test/config.mk
 	cd test && make debug
 
 debug-check: clean test/config.mk

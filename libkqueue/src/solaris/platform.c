@@ -19,43 +19,19 @@
 const struct filter evfilt_vnode = EVFILT_NOTIMPL;
 const struct filter evfilt_proc  = EVFILT_NOTIMPL;
 
-static char * port_event_dump(port_event_t *evt);
-
 /*
  * Per-thread port event buffer used to ferry data between
  * kevent_wait() and kevent_copyout().
  */
-static port_event_t __thread evbuf[MAX_KEVENT];
+static __thread port_event_t evbuf[MAX_KEVENT];
 
-int
-solaris_kqueue_init(struct kqueue *kq)
-{
-    if ((kq->kq_id = port_create()) < 0) {
-        dbg_perror("port_create(2)");
-        return (-1);
-    }
-    dbg_printf("created event port; fd=%d", kq->kq_id);
-
-    if (filter_register_all(kq) < 0) {
-        close(kq->kq_id);
-        return (-1);
-    }
-
-    return (0);
-}
-
-void
-solaris_kqueue_free(struct kqueue *kq)
-{
-    (void) close(kq->kq_id);
-    dbg_printf("closed event port; fd=%d", kq->kq_id);
-}
+#ifndef NDEBUG
 
 /* Dump a poll(2) events bitmask */
 static char *
 poll_events_dump(short events)
 {
-    static char __thread buf[512];
+    static __thread char buf[512];
 
 #define _PL_DUMP(attrib) \
     if (events == attrib) \
@@ -81,7 +57,7 @@ poll_events_dump(short events)
 static char *
 port_event_dump(port_event_t *evt)
 {
-    static char __thread buf[512];
+    static __thread char buf[512];
 
     if (evt == NULL) {
         snprintf(&buf[0], sizeof(buf), "NULL ?!?!\n");
@@ -110,10 +86,36 @@ out:
     return (&buf[0]);
 }
 
+#endif /* !NDEBUG */
+
+int
+solaris_kqueue_init(struct kqueue *kq)
+{
+    if ((kq->kq_id = port_create()) < 0) {
+        dbg_perror("port_create(2)");
+        return (-1);
+    }
+    dbg_printf("created event port; fd=%d", kq->kq_id);
+
+    if (filter_register_all(kq) < 0) {
+        close(kq->kq_id);
+        return (-1);
+    }
+
+    return (0);
+}
+
+void
+solaris_kqueue_free(struct kqueue *kq)
+{
+    (void) close(kq->kq_id);
+    dbg_printf("closed event port; fd=%d", kq->kq_id);
+}
+
 int
 solaris_kevent_wait(
         struct kqueue *kq, 
-        int nevents,
+        int nevents UNUSED,
         const struct timespec *ts)
 
 {
@@ -143,17 +145,21 @@ solaris_kevent_wait(
 
 int
 solaris_kevent_copyout(struct kqueue *kq, int nready,
-        struct kevent *eventlist, int nevents)
+        struct kevent *eventlist, int nevents UNUSED)
 {
     port_event_t  *evt;
     struct knote  *kn;
     struct filter *filt;
-    int i, rv;
+    int i, rv, skip_event, skipped_events = 0;
 
     for (i = 0; i < nready; i++) {
         evt = &evbuf[i];
         kn = evt->portev_user;
+        skip_event = 0;
         dbg_printf("event=%s", port_event_dump(evt));
+
+        knote_lock(kn);
+
         switch (evt->portev_source) {
             case PORT_SOURCE_FD:
 //XXX-FIXME WHAT ABOUT WRITE???
@@ -166,7 +172,10 @@ solaris_kevent_copyout(struct kqueue *kq, int nready,
                             || kn->kev.flags & EV_ONESHOT)) {
                     rv = filt->kn_create(filt, kn);
                 }
-
+                
+                if (eventlist->data == 0) // if zero data is returned, we raced with a read of data from the socket, skip event to have proper semantics
+                    skip_event = 1;
+                
                 break;
 
             case PORT_SOURCE_TIMER:
@@ -197,6 +206,7 @@ solaris_kevent_copyout(struct kqueue *kq, int nready,
 
         if (rv < 0) {
             dbg_puts("kevent_copyout failed");
+            knote_unlock(kn);
             return (-1);
         }
 
@@ -207,12 +217,21 @@ solaris_kevent_copyout(struct kqueue *kq, int nready,
         if (eventlist->flags & EV_DISPATCH) 
             knote_disable(filt, kn); //TODO: Error checking
         if (eventlist->flags & EV_ONESHOT) 
+        {
             knote_delete(filt, kn); //TODO: Error checking
+        }
+        else
+        {
+            knote_unlock(kn);
+        }
 
-        eventlist++;
+        if (skip_event)
+            skipped_events++;
+        else
+            eventlist++;
     }
 
-    return (nready);
+    return (nready - skipped_events);
 }
 
 const struct kqueue_vtable kqops =

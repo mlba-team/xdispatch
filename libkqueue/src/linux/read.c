@@ -191,6 +191,9 @@ int
 evfilt_read_knote_modify(struct filter *filt, struct knote *kn, 
         const struct kevent *kev)
 {
+    (void) filt;
+    (void) kn;
+    (void) kev;
     return (-1); /* STUB */
 }
 
@@ -210,6 +213,9 @@ evfilt_read_knote_delete(struct filter *filt, struct knote *kn)
     } else {
         return epoll_update(EPOLL_CTL_DEL, filt, kn, NULL);
     }
+
+    // clang will complain about not returning a value otherwise
+    return (-1);
 }
 
 int
@@ -230,6 +236,9 @@ evfilt_read_knote_enable(struct filter *filt, struct knote *kn)
     } else {
         return epoll_update(EPOLL_CTL_ADD, filt, kn, &ev);
     }
+
+    // clang will complain about not returning a value otherwise
+    return (-1);
 }
 
 int

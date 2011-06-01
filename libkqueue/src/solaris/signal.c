@@ -33,9 +33,12 @@ signal_handler(int sig)
 {
     struct sentry *s;
    
-    if (sig < 0 || sig > SIGNAL_MAX)
-        return; //TODO: DEBUG OUTPUT
-
+    if (sig < 0 || sig >= SIGNAL_MAX) // 0..31 are valid
+    {    
+        dbg_printf("Received unexpected signal %d", sig);
+        return;
+    }
+    
     s = &sigtbl[sig];
     dbg_printf("sig=%d %d", sig, s->st_signum);
     atomic_inc((volatile uint32_t *) &s->st_count);
@@ -105,7 +108,7 @@ evfilt_signal_knote_create(struct filter *filt, struct knote *kn)
 }
 
 int
-evfilt_signal_knote_modify(struct filter *filt, struct knote *kn, 
+evfilt_signal_knote_modify(struct filter *filt UNUSED, struct knote *kn, 
                 const struct kevent *kev)
 {
     kn->kev.flags = kev->flags | EV_CLEAR;
@@ -113,7 +116,7 @@ evfilt_signal_knote_modify(struct filter *filt, struct knote *kn,
 }
 
 int
-evfilt_signal_knote_delete(struct filter *filt, struct knote *kn)
+evfilt_signal_knote_delete(struct filter *filt UNUSED, struct knote *kn)
 {   
     return ignore_signal(kn->kev.ident);
 }
@@ -125,7 +128,7 @@ evfilt_signal_knote_enable(struct filter *filt, struct knote *kn)
 }
 
 int
-evfilt_signal_knote_disable(struct filter *filt, struct knote *kn)
+evfilt_signal_knote_disable(struct filter *filt UNUSED, struct knote *kn)
 {
     return ignore_signal(kn->kev.ident);
 }

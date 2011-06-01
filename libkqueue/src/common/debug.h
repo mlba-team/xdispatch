@@ -32,7 +32,7 @@ extern char *KQUEUE_DEBUG_IDENT;
 # include <sys/syscall.h>
 # define THREAD_ID ((pid_t)  syscall(__NR_gettid))
 #elif defined(__sun)
-# define THREAD_ID (pthread_self())
+# define THREAD_ID ((int) pthread_self())
 #elif defined(_WIN32)
 # define THREAD_ID (int)(GetCurrentThreadId())
 #else 
@@ -92,26 +92,37 @@ extern char *KQUEUE_DEBUG_IDENT;
 typedef struct {
     pthread_mutex_t mtx_lock; 
     int mtx_status; 
+    int mtx_owner;
 } tracing_mutex_t; 
 
 # define tracing_mutex_init(mtx, attr) do { \
     pthread_mutex_init(&(mtx)->mtx_lock, (attr)); \
     (mtx)->mtx_status = MTX_UNLOCKED; \
+    (mtx)->mtx_owner = -1; \
 } while (0)
 
 # define tracing_mutex_destroy(mtx) pthread_mutex_destroy(&(mtx)->mtx_lock)
 
-# define tracing_mutex_assert(x,y)   assert((x)->mtx_status == (y))
+# define tracing_mutex_assert(x,y) do { \
+  if ((y) == MTX_UNLOCKED) \
+      assert((x)->mtx_status == MTX_UNLOCKED || (x)->mtx_owner != THREAD_ID); \
+  else if ((y) == MTX_LOCKED) \
+      assert((x)->mtx_status == MTX_LOCKED && (x)->mtx_owner == THREAD_ID); \
+  else \
+    abort(); \
+} while (0)
 
 # define tracing_mutex_lock(x)  do { \
     dbg_printf("waiting for %s", #x); \
     pthread_mutex_lock(&((x)->mtx_lock)); \
     dbg_printf("locked %s", #x); \
+    (x)->mtx_owner = THREAD_ID; \
     (x)->mtx_status = MTX_LOCKED; \
 } while (0)
 
 # define tracing_mutex_unlock(x)  do { \
     (x)->mtx_status = MTX_UNLOCKED; \
+    (x)->mtx_owner = -1; \
     pthread_mutex_unlock(&((x)->mtx_lock)); \
     dbg_printf("unlocked %s", # x); \
 } while (0)
