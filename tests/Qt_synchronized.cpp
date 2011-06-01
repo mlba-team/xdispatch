@@ -194,13 +194,8 @@ extern "C" void Qt_synchronized() {
     MU_MESSAGE("%f ms per Iteration", dur_mutex);
 
     // our keyword may not be slower than a normal mutex
-    MU_ASSERT_LESS_THAN_DOUBLE(dur_synchronized, dur_mutex);
-    MU_ASSERT_LESS_THAN_DOUBLE(dur_synchronize, dur_mutex);
-
-    // cleanup
-    delete test2a;
-    //delete test2b;
-    delete test1;
+    MU_ASSERT_LESS_THAN_EQUAL_DOUBLE(dur_synchronized, dur_mutex);
+    MU_ASSERT_LESS_THAN_EQUAL_DOUBLE(dur_synchronize, dur_mutex);
 
     MU_PASS("Yay");
 

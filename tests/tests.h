@@ -75,7 +75,7 @@ void dispatch_drift();
 static void register_tests(){
 	MU_REGISTER_TEST(atomic_operations);
 	MU_REGISTER_TEST(pthread_api);
-	MU_REGISTER_TEST(posix_api);
+	//MU_REGISTER_TEST(posix_api); (Test was not implemented yet)
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);
 	MU_REGISTER_TEST(dispatch_test_sync);

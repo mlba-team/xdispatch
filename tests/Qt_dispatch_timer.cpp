@@ -48,8 +48,8 @@ public:
         // as the first one will be started immediately
         if(counter > 0) {
             long diff = checked_time.elapsed();
-            MU_DESC_ASSERT_LESS_THAN("timer not too late", diff, 3*1000);
-            MU_DESC_ASSERT_LESS_THAN("timer not too early", 1*1000, diff);
+            MU_DESC_ASSERT_LESS_THAN_EQUAL("timer not too late", diff, 3*1000);
+            MU_DESC_ASSERT_LESS_THAN_EQUAL("timer not too early", 1*1000, diff);
         }
 
         checked_time.restart();
@@ -77,8 +77,8 @@ public:
 
         // assert the requested timeout interval
         long diff = checked_time.elapsed();
-        MU_DESC_ASSERT_LESS_THAN("single-shot not too late", diff, 3* 1000);
-        MU_DESC_ASSERT_LESS_THAN("single-shot not too early", 1*1000, diff);
+        MU_DESC_ASSERT_LESS_THAN_EQUAL("single-shot not too late", diff, 3* 1000);
+        MU_DESC_ASSERT_LESS_THAN_EQUAL("single-shot not too early", 1*1000, diff);
 
         // now test wether we can create a periodic timer
         MU_MESSAGE("Testing periodic timer");
