@@ -24,23 +24,14 @@
 #define THREADS_WIN_H_
 
 #include "pthread_create.h"
-#include "pthread_mutex.h"
+//#include "pthread_once.h"
+//#include "pthread_mutex.h"
 #include "pthread_cond_variables.h"
-#include "pthread_tls.h"
+//#include "pthread_tls.h"
 #include "posix_semaphore.h"
 
 // currently this is borrowed from linux, we will see if this needs to get adapted
 #define NSIG 32
-
-/* Emulation of pthreads mutex functionality */
-typedef CRITICAL_SECTION pthread_rwlock_t;
-static int _cs_init(CRITICAL_SECTION* x){  InitializeCriticalSection(x); return 0; }
-static int _cs_lock(CRITICAL_SECTION* x) {EnterCriticalSection (x); return 0; }
-static int _cs_unlock(CRITICAL_SECTION* x) {LeaveCriticalSection(x); return 0; }
-#define pthread_rwlock_rdlock _cs_lock
-#define pthread_rwlock_wrlock _cs_lock
-#define pthread_rwlock_unlock _cs_unlock
-#define pthread_rwlock_init(x,y) _cs_init((x))
 
 /* signals */
 typedef int sigset_t;

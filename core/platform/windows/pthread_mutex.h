@@ -32,6 +32,6 @@ static int pthread_mutex_destroy(pthread_mutex_t* x)
 	return 0; 
 }
 
-#define PTHREAD_MUTEX_INITIALIZER { 0 }
+#define PTHREAD_MUTEX_INITIALIZER {(void*)-1,-1,0,0,0,0}
 
 #endif /* DISPATCH_WIN_PTHREAD_MUTEX_ */

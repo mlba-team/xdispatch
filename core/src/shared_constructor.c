@@ -54,6 +54,7 @@ BOOL WINAPI DllMain(
     case DLL_THREAD_DETACH:
         // Perform cleanup on a per thread base
     {
+		/*
         // workaround for TLS destructors on windows
         void* val = _dispatch_thread_getspecific(dispatch_queue_key);
         if(val) _dispatch_queue_cleanup(val);
@@ -61,6 +62,7 @@ BOOL WINAPI DllMain(
         if(val) dispatch_release(val);
         val = _dispatch_thread_getspecific(dispatch_cache_key);
         if(val) _dispatch_cache_cleanup2(val);
+		*/
     }
         break;
     }
