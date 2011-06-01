@@ -651,7 +651,7 @@ dispatch_source_set_timer(dispatch_source_t ds,
 	// we use zero internally to mean disabled
 	if (interval == 0) {
 		// we need to use the minimal value expressable in host time
-		interval = _dispatch_host_time_data.ratio_1_to_1 ? 1 : ceil(_dispatch_host_time_data.frac);
+		interval = _dispatch_host_time_data.ratio_1_to_1 ? 1 : (uint64_t)ceil(_dispatch_host_time_data.frac);
 	} else if ((int64_t)interval < 0) {
 		// 6866347 - make sure nanoseconds won't overflow
 		interval = INT64_MAX;

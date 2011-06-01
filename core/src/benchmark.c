@@ -44,6 +44,8 @@ _dispatch_benchmark_init(void *context)
 	uint64_t start, delta;
 #ifdef __LP64__
 	__uint128_t lcost;
+#elif defined(_MSC_VER)
+	unsigned long long lcost;
 #else
 	long double lcost;
 #endif
@@ -89,6 +91,8 @@ dispatch_benchmark_f(size_t count, register void *ctxt, register void (*func)(vo
 	size_t i = 0;
 #ifdef __LP64__
 	__uint128_t conversion, big_denom;
+#elif defined(_MSC_VER)
+	unsigned long long conversion, big_denom;
 #else
 	long double conversion, big_denom;
 #endif

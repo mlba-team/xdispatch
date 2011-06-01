@@ -21,6 +21,10 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
+#if defined(__cplusplus)
+	extern "C" {
+#endif
+
 #if _WIN32
 # include "windows/platform.h"
 #elif __APPLE__
@@ -30,5 +34,9 @@
 #endif
 
 #include "atomic.h"
+
+#if defined(__cplusplus)
+	}
+#endif
 
 #endif /* PLATFORM_H_ */

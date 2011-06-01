@@ -34,9 +34,6 @@
 #	include <process.h>
 #endif
 
-#include "typedefs.h"
-#include "MUnit_tools.h"
-#include "MUnit_runner.h"
 #include "private.h"
 
 #ifdef WIN32
@@ -83,8 +80,8 @@ void MU_printHelp(){
 
 static int test_runs = 1;
 static int test_selection = -1;
-static bool keep_running = false;
-bool verbose = false;
+static char keep_running = 0;
+char verbose = 0;
 
 enum modes {
     DISPLAY_HELP,
@@ -106,7 +103,7 @@ void parse_arguments(int argc, char* argv[]){
             i++;
             test_selection = atoi(argv[i]);
         } else if(strcmp(argv[i],STR_KEEP_RUNNING) == 0) {
-            keep_running = true;
+            keep_running = 1;
         } else if(strcmp(argv[i],STR_REPEAT_TEST) == 0) {
             mode = MULTIPLE_TESTS;
             i++;
@@ -116,7 +113,7 @@ void parse_arguments(int argc, char* argv[]){
         } else if(strcmp(argv[i],STR_SHOW_HELP) == 0) {
             mode = DISPLAY_HELP;
         } else if(strcmp(argv[i],STR_VERBOSE) == 0) {
-            verbose = true;
+            verbose = 1;
         } else {
             printf("Unknown parameter: %s\n", argv[i]);
             exit(1);
@@ -124,8 +121,8 @@ void parse_arguments(int argc, char* argv[]){
     }
 }
 
-int repeat_suite(const char* bin, bool keep_running, int times);
-int repeat_test(const char* bin, int no, bool keep_running, int times);
+int repeat_suite(const char* bin, char keep_running, int times);
+int repeat_test(const char* bin, int no, char keep_running, int times);
 
 int MU_main(int argc, char *argv[]){
 
@@ -301,7 +298,7 @@ void print_result(int times, int failed_iterations){
     }
 }
 
-int repeat_test(const char* bin, int no, bool keep_running, int times){
+int repeat_test(const char* bin, int no, char keep_running, int times){
     int iteration = 0;
     int failed_iterations = 0;
 
@@ -328,7 +325,7 @@ int repeat_test(const char* bin, int no, bool keep_running, int times){
     return failed_iterations == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-int repeat_suite(const char* bin, bool keep_running, int times){
+int repeat_suite(const char* bin, char keep_running, int times){
     item_t* curr;
     int iteration = 0;
     int failed_iterations = 0;
@@ -386,7 +383,7 @@ int repeat_suite(const char* bin, bool keep_running, int times){
     return failed_iterations == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-int MU_runAllTests(const char* bin, bool keep_running){
+int MU_runAllTests(const char* bin, char keep_running){
     return repeat_suite(bin, keep_running, 1);
 }
 

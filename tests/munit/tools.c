@@ -22,8 +22,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "MUnit_tools.h"
-#include "typedefs.h"
 #include "private.h"
 
 item_t* suite;

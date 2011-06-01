@@ -24,7 +24,7 @@
 
 #include "munit/MUnit.h"
 #include <xdispatch/dispatch.h>
-#include "shims/platform.h"
+#include "../core/platform/platform.h"
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
@@ -42,6 +42,9 @@ extern "C" {
 
 /* All test cases */
 
+void atomic_operations();
+void posix_api();
+void pthread_api();
 void dispatch_api();
 void dispatch_simpleFunction();
 void dispatch_apply_function();
@@ -70,6 +73,9 @@ void dispatch_drift();
 #endif
 
 static void register_tests(){
+	MU_REGISTER_TEST(atomic_operations);
+	MU_REGISTER_TEST(pthread_api);
+	//MU_REGISTER_TEST(posix_api); (Test was not implemented yet)
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);
 	MU_REGISTER_TEST(dispatch_test_sync);

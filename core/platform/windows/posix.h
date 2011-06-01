@@ -104,23 +104,6 @@ typedef UINT64 uint64_t;
 # define DISPATCH_NORETURN
 #endif
 
-// some date functions
-struct timezone
-{
-  int  tz_minuteswest; /* minutes W of Greenwich */
-  int  tz_dsttime;     /* type of dst correction */
-};
-
-// quick workaround in case this is included after event.h
-#ifndef _SYS_EVENT_H_
-struct timespec {
-    long tv_sec; /* seconds */
-    long tv_nsec; /* nanoseconds */
-}; 
-#endif
-
-int gettimeofday(struct timeval *tv, struct timezone *tz);
-
 // some constants used throughout the code
 #ifndef ENOTSUP
 # define ENOTSUP 300
@@ -138,5 +121,7 @@ int gettimeofday(struct timeval *tv, struct timezone *tz);
 #define dup _dup
 #define dup2 _dup2
 #define close _close
+
+#include "times.h"
 
 #endif /* POSIX_WINDOWS_H_ */

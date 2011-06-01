@@ -1,4 +1,5 @@
 /*
+* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
 * Copyright (c) 2011 MLBA. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
@@ -18,18 +19,21 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifndef __TEST_SHIMS_PLATFORM_H_
-#define __TEST_SHIMS_PLATFORM_H_
 
-#ifdef _WIN32
-# include "os_windows.h"
-# include "threads_windows.h"
-#elif __APPLE__
-# include "os_darwin.h"
-# include "threads_posix.h"
-#else
-# include "os_posix.h"
-# include "threads_posix.h"
-#endif
+#include "../core/platform/atomic.h"
+#include "tests.h"
 
-#endif /* __TEST_SHIMS_PLATFORM_H_ */
+
+/*
+Test ensuring the proper functionality of the posix api on this platform
+ */
+
+
+
+void posix_api(){
+	MU_BEGIN_TEST(posix_api);
+
+	MU_PASS("");
+
+	MU_END_TEST;
+}

@@ -21,11 +21,17 @@
 #ifndef PRIVATE_H_
 #define PRIVATE_H_
 
+#include "MUnit_tools.h"
+#include "MUnit_assert.h"
+#include "MUnit_runner.h"
+
 typedef struct {
 	mu_test_func function;
     const char* name;
 } mu_test_t;
 
-extern bool verbose;
+extern char verbose;
+
+#include "typedefs.h"
 
 #endif /* PRIVATE_H_ */

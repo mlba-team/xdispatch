@@ -48,7 +48,7 @@ void MU_runTest(int no);
   @param keep_running Pass true to force running of all tests,
 					  false if you want to stop after the first failure
   */
-int MU_runAllTests(const char* bin, bool keep_running);
+int MU_runAllTests(const char* bin, char keep_running);
 
 /**
   Will print a list of all available tests
