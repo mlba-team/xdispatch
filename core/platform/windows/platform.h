@@ -21,6 +21,19 @@
 #ifndef WINDOWS_PLATFORM_H_
 #define WINDOWS_PLATFORM_H_
 
+/* Workaround for a bug in VS2008 */
+#if _MSC_VER < 1600
+# ifndef _IVEC_H_INCLUDED
+#  define _IVEC_H_INCLUDED 1
+# endif
+# ifndef _FVEC_H_INCLUDED
+#  define _FVEC_H_INCLUDED 1
+# endif
+# ifndef _DVEC_H_INCLUDED
+#  define _DVEC_H_INCLUDED 1
+# endif
+#endif
+
 #include "posix.h"
 #include "threads.h"
 #include "queue.h"

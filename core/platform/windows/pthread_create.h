@@ -38,6 +38,7 @@
 
 #include <setjmp.h>
 #include <errno.h>
+#include <intrin.h>
 
 #ifndef ETIMEDOUT
 # define ETIMEDOUT	110
@@ -657,7 +658,7 @@ static int pthread_spin_lock(pthread_spinlock_t *l)
 
 static int pthread_spin_trylock(pthread_spinlock_t *l)
 {
-	return _InterlockedExchange(l, EBUSY);
+	return InterlockedExchange(l, EBUSY);
 }
 
 static int pthread_spin_unlock(pthread_spinlock_t *l)
