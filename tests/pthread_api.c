@@ -24,7 +24,6 @@
 #include "../core/platform/platform.h"
 #include "tests.h"
 
-
 /*
 Test ensuring the proper functionality of the pthreads api on this platform
 (At least as far as this is possible within a short unittest, mainly we

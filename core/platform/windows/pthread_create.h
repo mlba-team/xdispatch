@@ -1,7 +1,6 @@
 #ifndef DISPATCH_WIN_PTHREAD_CREATE_
 #define DISPATCH_WIN_PTHREAD_CREATE_
 
-
 /*
  * Posix Threads library for Microsoft Windows
  *
@@ -39,7 +38,6 @@
 
 #include <setjmp.h>
 #include <errno.h>
-#include <sys/timeb.h>
 
 #ifndef ETIMEDOUT
 # define ETIMEDOUT	110
@@ -69,7 +67,6 @@
 #define PTHREAD_CANCELED ((void *) 0xDEADBEEF)
 
 #define PTHREAD_ONCE_INIT 0
-#define PTHREAD_MUTEX_INITIALIZER {(void*)-1,-1,0,0,0,0}
 #define PTHREAD_RWLOCK_INITIALIZER {0}
 #define PTHREAD_COND_INITIALIZER {0}
 #define PTHREAD_BARRIER_INITIALIZER \
@@ -79,16 +76,12 @@
 #define PTHREAD_DESTRUCTOR_ITERATIONS 256
 #define PTHREAD_KEYS_MAX (1<<20)
 
-#define PTHREAD_MUTEX_NORMAL 0
-#define PTHREAD_MUTEX_ERRORCHECK 1
-#define PTHREAD_MUTEX_RECURSIVE 2
-#define PTHREAD_MUTEX_DEFAULT 3
-#define PTHREAD_MUTEX_SHARED 4
-#define PTHREAD_MUTEX_PRIVATE 0
 #define PTHREAD_PRIO_NONE 0
 #define PTHREAD_PRIO_INHERIT 8
 #define PTHREAD_PRIO_PROTECT 16
-#define PTHREAD_PRIO_MULT 32
+#ifndef PTHREAD_PRIO_MULT
+# define PTHREAD_PRIO_MULT 32
+#endif
 #define PTHREAD_PROCESS_SHARED 0
 #define PTHREAD_PROCESS_PRIVATE 1
 
@@ -127,27 +120,38 @@ struct pthread_attr_t
 };
 
 typedef long pthread_once_t;
-typedef unsigned pthread_mutexattr_t;
-typedef SRWLOCK pthread_rwlock_t;
-typedef CRITICAL_SECTION pthread_mutex_t;
-typedef unsigned pthread_key_t;
 typedef void *pthread_barrierattr_t;
 typedef long pthread_spinlock_t;
-typedef int pthread_rwlockattr_t;
 
-static volatile long _pthread_cancelling;
-static int _pthread_concur;
+#ifndef WIN_PTHREAD_EXPORT
+#  ifdef DISPATCH_MAKEDLL
+#   define WIN_PTHREAD_EXPORT __declspec(dllexport)
+#  else
+#   define WIN_PTHREAD_EXPORT __declspec(dllimport)
+#  endif
+#endif
 
+/* These variables need to be declared somewhere,
+   we recommend doing directly within the main file */
+WIN_PTHREAD_EXPORT extern volatile long _pthread_cancelling;
+WIN_PTHREAD_EXPORT extern int _pthread_concur;
 /* Will default to zero as needed */
-static pthread_once_t _pthread_tls_once;
-static DWORD _pthread_tls;
+WIN_PTHREAD_EXPORT extern pthread_once_t _pthread_tls_once;
+WIN_PTHREAD_EXPORT extern DWORD _pthread_tls;
+WIN_PTHREAD_EXPORT extern pthread_mutex_t _pthread_key_lock;
+WIN_PTHREAD_EXPORT extern unsigned int _pthread_key_max;
+WIN_PTHREAD_EXPORT extern unsigned int _pthread_key_sch;
+WIN_PTHREAD_EXPORT extern void (**_pthread_key_dest)(void *);
 
-/* Note initializer is zero, so this works */
-static pthread_rwlock_t _pthread_key_lock;
-static unsigned int _pthread_key_max;
-static unsigned int _pthread_key_sch;
-static void (**_pthread_key_dest)(void *);
-
+#define DECL_WIN_PTHREAD_VARIABLES \
+	volatile long _pthread_cancelling; \
+	int _pthread_concur; \
+	pthread_once_t _pthread_tls_once = 0; \
+	DWORD _pthread_tls; \
+	pthread_mutex_t _pthread_key_lock = PTHREAD_MUTEX_INITIALIZER; \
+	unsigned int _pthread_key_max; \
+	unsigned _pthread_key_sch; \
+	void (**_pthread_key_dest)(void *)
 
 #define pthread_cleanup_push(F, A)\
 {\
@@ -235,37 +239,6 @@ static int _pthread_once_raw(pthread_once_t *o, void (*func)(void))
 	return 0;
 }
 
-static int pthread_mutex_lock(pthread_mutex_t *m)
-{
-	EnterCriticalSection(m);
-	return 0;
-}
-
-static int pthread_mutex_unlock(pthread_mutex_t *m)
-{
-	LeaveCriticalSection(m);
-	return 0;
-}
-	
-static int pthread_mutex_trylock(pthread_mutex_t *m)
-{
-	return TryEnterCriticalSection(m) ? 0 : EBUSY; 
-}
-
-static int pthread_mutex_init(pthread_mutex_t *m, pthread_mutexattr_t *a)
-{
-	(void) a;
-	InitializeCriticalSection(m);
-	
-	return 0;
-}
-
-static int pthread_mutex_destroy(pthread_mutex_t *m)
-{
-	DeleteCriticalSection(m);
-	return 0;
-}
-
 #define pthread_mutex_getprioceiling(M, P) ENOTSUP
 #define pthread_mutex_setprioceiling(M, P) ENOTSUP
 
@@ -274,37 +247,6 @@ static int pthread_equal(pthread_t t1, pthread_t t2)
 	return t1 == t2;
 }
 
-static void pthread_testcancel(void);
-
-static int pthread_rwlock_init(pthread_rwlock_t *l, pthread_rwlockattr_t *a)
-{
-	(void) a;
-	InitializeSRWLock(l);
-	
-	return 0;
-}
-
-static int pthread_rwlock_destroy(pthread_rwlock_t *l)
-{
-	(void) *l;
-	return 0;
-}
-
-static int pthread_rwlock_rdlock(pthread_rwlock_t *l)
-{
-	pthread_testcancel();
-	AcquireSRWLockShared(l);
-	
-	return 0;
-}
-
-static int pthread_rwlock_wrlock(pthread_rwlock_t *l)
-{
-	pthread_testcancel();
-	AcquireSRWLockExclusive(l);
-	
-	return 0;
-}
 
 static void pthread_tls_init(void)
 {
@@ -314,38 +256,7 @@ static void pthread_tls_init(void)
 	if (_pthread_tls == TLS_OUT_OF_INDEXES) abort();
 }
 
-static int pthread_rwlock_unlock(pthread_rwlock_t *l);
-
-static void _pthread_cleanup_dest(pthread_t t)
-{
-	unsigned int i, j;
-	
-	for (j = 0; j < PTHREAD_DESTRUCTOR_ITERATIONS; j++)
-	{
-		int flag = 0;
-	
-		for (i = 0; i < t->keymax; i++)
-		{
-			void *val = t->keyval[i];
-			
-			if (val)
-			{
-				pthread_rwlock_rdlock(&_pthread_key_lock);
-				if ((uintptr_t) _pthread_key_dest[i] > 1)
-				{
-					/* Call destructor */
-					t->keyval[i] = NULL;
-					_pthread_key_dest[i](val);
-					flag = 1;
-				}
-				pthread_rwlock_unlock(&_pthread_key_lock);
-			}
-		}
-	
-		/* Nothing to do? */
-		if (!flag) return;
-	}
-}
+static void _pthread_cleanup_dest(pthread_t t);
 
 static pthread_t pthread_self(void)
 {
@@ -386,125 +297,6 @@ static pthread_t pthread_self(void)
 	}
 	
 	return t;
-}
-
-static int pthread_rwlock_unlock(pthread_rwlock_t *l)
-{
-	void *state = *(void **)l;
-	
-	if (state == (void *) 1)
-	{
-		/* Known to be an exclusive lock */
-		ReleaseSRWLockExclusive(l);
-	}
-	else
-	{
-		/* A shared unlock will work */
-		ReleaseSRWLockShared(l);
-	}
-	
-	return 0;
-}
-
-
-static int pthread_rwlock_tryrdlock(pthread_rwlock_t *l)
-{
-	/* Get the current state of the lock */
-	void *state = *(void **) l;
-	
-	if (!state)
-	{
-		/* Unlocked to locked */
-		if (!InterlockedCompareExchangePointer((void **) l, (void *)0x11, NULL)) return 0;
-		return EBUSY;
-	}
-	
-	/* A single writer exists */
-	if (state == (void *) 1) return EBUSY;
-	
-	/* Multiple writers exist? */
-	if ((uintptr_t) state & 14) return EBUSY;
-	
-	if (InterlockedCompareExchangePointer((void **) l, (void *) ((uintptr_t)state + 16), state) == state) return 0;
-	
-	return EBUSY;
-}
-
-static int pthread_rwlock_trywrlock(pthread_rwlock_t *l)
-{
-	/* Try to grab lock if it has no users */
-	if (!InterlockedCompareExchangePointer((void **) l, (void *)1, NULL)) return 0;
-	
-	return EBUSY;
-}
-
-static unsigned long long _pthread_time_in_ms(void)
-{
-	struct __timeb64 tb;
-	
-	_ftime64(&tb);
-	
-	return tb.time * 1000 + tb.millitm;
-}
-
-static unsigned long long _pthread_time_in_ms_from_timespec(const struct timespec *ts)
-{
-	unsigned long long t = ts->tv_sec * 1000;
-	t += ts->tv_nsec / 1000000;
-
-	return t;
-}
-
-static unsigned long long _pthread_rel_time_in_ms(const struct timespec *ts)
-{
-	unsigned long long t1 = _pthread_time_in_ms_from_timespec(ts);
-	unsigned long long t2 = _pthread_time_in_ms();
-	
-	/* Prevent underflow */
-	if (t1 < t2) return 1;
-	return t1 - t2;
-}
-
-static int pthread_rwlock_timedrdlock(pthread_rwlock_t *l, const struct timespec *ts)
-{
-	unsigned long long ct = _pthread_time_in_ms();
-	unsigned long long t = _pthread_time_in_ms_from_timespec(ts);
-
-	pthread_testcancel();
-	
-	/* Use a busy-loop */
-	while (1)
-	{
-		/* Try to grab lock */
-		if (!pthread_rwlock_tryrdlock(l)) return 0;
-		
-		/* Get current time */
-		ct = _pthread_time_in_ms();
-		
-		/* Have we waited long enough? */
-		if (ct > t) return ETIMEDOUT;
-	}
-}
-
-static int pthread_rwlock_timedwrlock(pthread_rwlock_t *l, const struct timespec *ts)
-{
-	unsigned long long ct = _pthread_time_in_ms();
-	unsigned long long t = _pthread_time_in_ms_from_timespec(ts);
-
-	pthread_testcancel();
-	
-	/* Use a busy-loop */
-	while (1)
-	{
-		/* Try to grab lock */
-		if (!pthread_rwlock_trywrlock(l)) return 0;
-		
-		/* Get current time */
-		ct = _pthread_time_in_ms();
-		
-		/* Have we waited long enough? */
-		if (ct > t) return ETIMEDOUT;
-	}
 }
 	
 static int pthread_getconcurrency(int *val)
@@ -831,260 +623,6 @@ static int pthread_detach(pthread_t t)
 	return 0;
 }
 
-static int pthread_mutexattr_init(pthread_mutexattr_t *a)
-{
-	*a = 0;
-	return 0;
-}
-
-static int pthread_mutexattr_destroy(pthread_mutexattr_t *a)
-{
-	(void) a;
-	return 0;
-}
-
-static int pthread_mutexattr_gettype(pthread_mutexattr_t *a, int *type)
-{
-	*type = *a & 3;
-
-	return 0;
-}
-
-static int pthread_mutexattr_settype(pthread_mutexattr_t *a, int type)
-{
-	if ((unsigned) type > 3) return EINVAL;
-	*a &= ~3;
-	*a |= type;
-	
-	return 0;
-}
-
-static int pthread_mutexattr_getpshared(pthread_mutexattr_t *a, int *type)
-{
-	*type = *a & 4;
-	
-	return 0;
-}
-
-static int pthread_mutexattr_setpshared(pthread_mutexattr_t * a, int type)
-{
-	if ((type & 4) != type) return EINVAL;
-	
-	*a &= ~4;
-	*a |= type;
-	
-	return 0;
-}
-
-static int pthread_mutexattr_getprotocol(pthread_mutexattr_t *a, int *type)
-{
-	*type = *a & (8 + 16);
-	
-	return 0;
-}
-
-static int pthread_mutexattr_setprotocol(pthread_mutexattr_t *a, int type)
-{
-	if ((type & (8 + 16)) != 8 + 16) return EINVAL;
-	
-	*a &= ~(8 + 16);
-	*a |= type;
-	
-	return 0;
-}
-
-static int pthread_mutexattr_getprioceiling(pthread_mutexattr_t *a, int * prio)
-{
-	*prio = *a / PTHREAD_PRIO_MULT;
-	return 0;
-}
-
-static int pthread_mutexattr_setprioceiling(pthread_mutexattr_t *a, int prio)
-{
-	*a &= (PTHREAD_PRIO_MULT - 1);
-	*a += prio * PTHREAD_PRIO_MULT;
-	
-	return 0;
-}
-
-static int pthread_mutex_timedlock(pthread_mutex_t *m, struct timespec *ts)
-{
-	unsigned long long t, ct;
-	
-	struct _pthread_crit_t
-	{
-		void *debug;
-		LONG count;
-		LONG r_count;
-		HANDLE owner;
-		HANDLE sem;
-		ULONG_PTR spin;
-	};
-	
-	/* Try to lock it without waiting */
-	if (!pthread_mutex_trylock(m)) return 0;
-	
-	ct = _pthread_time_in_ms();
-	t = _pthread_time_in_ms_from_timespec(ts);
-	
-	while (1)
-	{
-		/* Have we waited long enough? */
-		if (ct > t) return ETIMEDOUT;
-		
-		/* Wait on semaphore within critical section */
-		WaitForSingleObject(((struct _pthread_crit_t *)m)->sem, (DWORD)(t - ct));
-		
-		/* Try to grab lock */
-		if (!pthread_mutex_trylock(m)) return 0;
-		
-		/* Get current time */
-		ct = _pthread_time_in_ms();
-	}
-}
-
-static int pthread_key_create(pthread_key_t *key, void (* dest)(void *))
-{
-	typedef void(**d_func)(void*);
-	unsigned int i;
-	long nmax;
-	d_func d;
-
-	if (!key) return EINVAL;
-	
-	pthread_rwlock_wrlock(&_pthread_key_lock);
-	
-	for (i = _pthread_key_sch; i < _pthread_key_max; i++)
-	{
-		if (!_pthread_key_dest[i])
-		{
-			*key = i;
-			if (dest)
-			{
-				_pthread_key_dest[i] = dest;
-			}
-			else
-			{
-				_pthread_key_dest[i] = (void(*)(void *))1;
-			}
-			pthread_rwlock_unlock(&_pthread_key_lock);
-			
-			return 0;
-		}
-	}
-	
-	for (i = 0; i < _pthread_key_sch; i++)
-	{
-		if (!_pthread_key_dest[i])
-		{
-			*key = i;
-			if (dest)
-			{
-				_pthread_key_dest[i] = dest;
-			}
-			else
-			{
-				_pthread_key_dest[i] = (void(*)(void *))1;
-			}
-			pthread_rwlock_unlock(&_pthread_key_lock);
-			
-			return 0;
-		}
-	}
-	
-	if (!_pthread_key_max) _pthread_key_max = 1;
-	if (_pthread_key_max == PTHREAD_KEYS_MAX)
-	{
-		pthread_rwlock_unlock(&_pthread_key_lock);
-		
-		return ENOMEM;
-	}
-	
-	nmax = _pthread_key_max * 2;
-	if (nmax > PTHREAD_KEYS_MAX) nmax = PTHREAD_KEYS_MAX;
-	
-	/* No spare room anywhere */
-	d = (d_func)realloc(_pthread_key_dest, nmax * sizeof(*d));
-	if (!d)
-	{
-		pthread_rwlock_unlock(&_pthread_key_lock);
-		
-		return ENOMEM;
-	}
-	
-	/* Clear new region */
-	memset((void *) &d[_pthread_key_max], 0, (nmax-_pthread_key_max)*sizeof(void *));
-	
-	/* Use new region */
-	_pthread_key_dest = d;
-	_pthread_key_sch = _pthread_key_max + 1;
-	*key = _pthread_key_max;
-	_pthread_key_max = nmax;
-	
-	if (dest)
-	{
-		_pthread_key_dest[*key] = dest;
-	}
-	else
-	{
-		_pthread_key_dest[*key] = (void(*)(void *))1;
-	}
-
-	pthread_rwlock_unlock(&_pthread_key_lock);
-	
-	return 0;
-}
-
-static int pthread_key_delete(pthread_key_t key)
-{
-	if (key > _pthread_key_max) return EINVAL;
-	if (!_pthread_key_dest) return EINVAL;
-	
-	pthread_rwlock_wrlock(&_pthread_key_lock);
-	_pthread_key_dest[key] = NULL;
-	
-	/* Start next search from our location */
-	if (_pthread_key_sch > key) _pthread_key_sch = key;
-	
-	pthread_rwlock_unlock(&_pthread_key_lock);
-	
-	return 0;
-}
-
-static void *pthread_getspecific(pthread_key_t key)
-{
-	pthread_t t = pthread_self();
-	
-	if (key >= t->keymax) return NULL;
-	
-	return t->keyval[key];
-
-}
-
-static int pthread_setspecific(pthread_key_t key, const void *value)
-{
-	pthread_t t = pthread_self();
-
-	if (key > t->keymax)
-	{
-		int keymax = (key + 1) * 2;
-		void **kv = (void**)realloc(t->keyval, keymax * sizeof(void *));
-		
-		if (!kv) return ENOMEM;
-		
-		/* Clear new region */
-		memset(&kv[t->keymax], 0, (keymax - t->keymax)*sizeof(void*));
-		
-		t->keyval = kv;
-		t->keymax = keymax;
-	}
-	
-	t->keyval[key] = (void *) value;
-	
-	return 0;
-}
-
-
 static int pthread_spin_init(pthread_spinlock_t *l, int pshared)
 {
 	(void) pshared;
@@ -1129,29 +667,6 @@ static int pthread_spin_unlock(pthread_spinlock_t *l)
 	
 	*l = 0;
 	
-	return 0;
-}
-
-static int pthread_rwlockattr_destroy(pthread_rwlockattr_t *a)
-{
-	(void) a;
-	return 0;
-}
-
-static int pthread_rwlockattr_init(pthread_rwlockattr_t *a)
-{
-	*a = 0;
-}
-
-static int pthread_rwlockattr_getpshared(pthread_rwlockattr_t *a, int *s)
-{
-	*s = *a;
-	return 0;
-}
-
-static int pthread_rwlockattr_setpshared(pthread_rwlockattr_t *a, int s)
-{
-	*a = s;
 	return 0;
 }
 

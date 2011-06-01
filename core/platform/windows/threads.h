@@ -23,14 +23,21 @@
 #ifndef THREADS_WIN_H_
 #define THREADS_WIN_H_
 
+/* 
+ Needs to be set to ensure we are using only function calls
+ availabe on windows XP and later. (Windows Vista when not set)
+ */
+#define TARGET_OS_WIN_XP 1
+
+#include "pthread_mutex.h"
 #include "pthread_create.h"
-//#include "pthread_once.h"
-//#include "pthread_mutex.h"
 #include "pthread_cond_variables.h"
-//#include "pthread_tls.h"
+#include "pthread_tls.h"
 #include "posix_semaphore.h"
 
-// currently this is borrowed from linux, we will see if this needs to get adapted
+/*
+ currently this is borrowed from linux, we will see if this needs to become adapted
+*/
 #define NSIG 32
 
 /* signals */
