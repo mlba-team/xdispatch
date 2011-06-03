@@ -30,13 +30,13 @@ void xdispatch::run_operation(void* dt){
     assert(dt);
     operation* w = static_cast<operation*>(dt);
 
-    try {
+  /*  try { */
         (*w)();
-    } catch(const std::exception& e) {
+  /*  } catch(const std::exception& e) {
         std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
     } catch(...) {
         std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
-    }
+    } */
 
     if(w->auto_delete())
 		delete w;
@@ -47,13 +47,13 @@ void xdispatch::run_iter_wrap(void* dt, size_t index){
     assert(dt);
     iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
 
-    try {
+   /* try { */
         wrap->run(index);
-    } catch(const std::exception& e) {
+   /* } catch(const std::exception& e) {
         std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
     } catch(...) {
         std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
-    }
+    } */
 
     if(wrap->deref())
         delete wrap;
