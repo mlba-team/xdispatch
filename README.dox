@@ -55,7 +55,7 @@ Requirements differ depending on your goals. Please see the \ref requirements pa
 @section m1 Get a copy
 
 Since version 0.3 libXDispatch is provided as ready-to-use binary package within the downloads
-section at http://opensource.mlba-team.de/xdispatch/files.
+section at <a href="http://opensource.mlba-team.de/xdispatch/files">http://opensource.mlba-team.de/xdispatch/files</a>.
 
 The current xdispatch sources can both be browsed at http://opensource.mlba-team.de/websvn 
 and is accessable using subversion as well. To get your own copy, run:
