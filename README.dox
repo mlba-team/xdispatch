@@ -3,7 +3,7 @@
 @author Marius Zwicker / MLBA
 @section intro_sec Introduction
 
-libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on mac os 10.6+ 
+libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on Mac OS 10.6+ 
 but on Windows and Linux. On each platform libDispatch is built on, the build 
 system (in our case CMake) will automatically search for existing dispatch implementations  (possibly integrated
 deeper than this user space implementation can do). If found, this "native"
