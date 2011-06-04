@@ -54,7 +54,7 @@ Another possible approach is to include the sources directly into your own sourc
 recommended way when already using CMake. When doing so, all you need to do is to add the xdispatch directory by using the add_subdirectory() call, setting the proper
 global includes to our include/ directory and linking your own targets with the targets xdispatch and/or QtDispatch.
 
-For examples and demonstrations of xdispatch and the Grand Central Dispatch approach, we recommend to have a look at the unit tests and refer to Apple's Online Documentation
+For examples and demonstrations of xdispatch and the Grand Central Dispatch approach, we recommend to have a look at \ref tutorial and refer to Apple's Online Documentation
 mentioned in the README.dox file.
 
 @section build Building libXDispatch

@@ -1,6 +1,5 @@
 /**
 @mainpage libXDispatch - Overview
-@author Marius Zwicker / MLBA
 @section intro_sec Introduction
 
 libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on Mac OS 10.6+ 
@@ -76,7 +75,7 @@ svn co http://opensource.mlba-team.de/svn/xdispatch/branches/stable
 
 Those versions were tested on all supported platforms and should be stable to use.
 
-Please do not forget to take a look at the requirements section. In case you want to report a
+Please do not forget to take a look at the requirements section and \ref tutorial. In case you want to report a
 bug or contribute to this project, please contact us using email via xdispatch (at) mlba-team.de
 
 **/
