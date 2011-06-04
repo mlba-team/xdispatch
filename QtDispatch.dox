@@ -31,5 +31,7 @@ This will automatically include  all other needed headers as well. Below you fin
  - QIterationRunnable
  - QDispatchCoreApplication
  - QDispatchApplication
+ - QDispatchSource
+ - QDispatchSourceType
    
 */

@@ -7,7 +7,7 @@
 libXDispatch was tested on and currently run's on the following operating systems:
 
  - Mac OS 10.6
- - Windows XP SP3 and Windows 7
+ - Windows XP SP3 and Windows 7 32bit/64bit
  - Debian 6.0
  - openSUSE 11.4
  - Ubuntu 10.10
@@ -18,11 +18,29 @@ to test it yet. The officially supported development environments and/or toolcha
  - Clang 2.0
  - XCode 4 (using the clang backend)
  - GCC 4.2+ – to use lambdas we recommend GCC 4.5.1+
- - MSVC as shipped with Visual Studio 2010
+ - MSVC as shipped with Visual Studio 2008
+ - Visual Studio 2010, building both 32bit and 64bit binaries
  - MinGW (shipping gcc 4.5.x)
  
-We welcome any news on sucessful builds on other operating systems / toolchains as well. Please
-contact us to report any success stories.
+libXDispatch is coming as ready-to-use, i.e. we include all dependencies (except Qt) within our
+source tree. Of course you do not need to use our versions of the third party libraries, but use
+your own. To do so, you should have the following libraries installed and have them reachable by
+compiler and linker:
+<ul>
+ <li>
+	libkqueue (at least version 0.5, for full platform support we are shipping with the trunk revision 523)
+	The sources and further information can be found at http://mark.heily.com/project/libkqueue
+ </li>
+ <li>
+	libpthread_workqueue (trunk revision 119 recommended and tested)
+	More information about this library is available at http://mark.heily.com/libpthreadworkqueue
+ </li>
+</ul>
+Please note that both libraries are available as debian packages using apt or aptitude as well. Our
+build scripts will automatically detect any pre-installed versions.
+ 
+Of course we welcome any news on sucessful builds on other operating systems / toolchains currently not declared as
+officially supported. Please contact us to report any success stories.
 
 @section dev Developing with libXDispatch
 
@@ -31,6 +49,13 @@ environments. Afterwards go to the <a href="http://opensource.mlba-team.de/xdisp
 are the necessary headers and library files you have to link with. Normally linking with xdispatch should
 be sufficient. When using the Qt interface, you have to link with QtDispatch as well. Please note that you 
 have to link with the Qt additionally in case you want to use the QtDispatch library.
+
+Another possible approach is to include the sources directly into your own source tree, e.g. by using svn:externals and referring to our stable branch. This is the
+recommended way when already using CMake. When doing so, all you need to do is to add the xdispatch directory by using the add_subdirectory() call, setting the proper
+global includes to our include/ directory and linking your own targets with the targets xdispatch and/or QtDispatch.
+
+For examples and demonstrations of xdispatch and the Grand Central Dispatch approach, we recommend to have a look at the unit tests and refer to Apple's Online Documentation
+mentioned in the README.dox file.
 
 @section build Building libXDispatch
 

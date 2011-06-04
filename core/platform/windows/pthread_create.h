@@ -38,6 +38,7 @@
 
 #include <setjmp.h>
 #include <errno.h>
+#include <intrin.h>
 
 #ifndef ETIMEDOUT
 # define ETIMEDOUT	110
@@ -549,7 +550,7 @@ static unsigned int WINAPI pthread_create_wrapper(void *args)
 static int pthread_create(pthread_t *th, pthread_attr_t *attr, void *(* func)(void *), void *arg)
 {
 	struct _pthread_v *tv = (struct _pthread_v *)malloc(sizeof(struct _pthread_v));
-	unsigned ssize = 0;
+	size_t ssize = 0;
 	
 	if (!tv) return 1;
 	
@@ -574,7 +575,7 @@ static int pthread_create(pthread_t *th, pthread_attr_t *attr, void *(* func)(vo
 	/* Make sure tv->h has value of -1 */
 	_ReadWriteBarrier();
 
-	tv->h = (HANDLE) _beginthreadex(NULL, ssize, pthread_create_wrapper, tv, 0, NULL);
+	tv->h = (HANDLE) _beginthreadex(NULL, (unsigned int)ssize, pthread_create_wrapper, tv, 0, NULL);
 	
 	/* Failed */
 	if (!tv->h) return 1;
@@ -657,7 +658,7 @@ static int pthread_spin_lock(pthread_spinlock_t *l)
 
 static int pthread_spin_trylock(pthread_spinlock_t *l)
 {
-	return _InterlockedExchange(l, EBUSY);
+	return InterlockedExchange(l, EBUSY);
 }
 
 static int pthread_spin_unlock(pthread_spinlock_t *l)

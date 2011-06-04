@@ -3,7 +3,7 @@
 @author Marius Zwicker / MLBA
 @section intro_sec Introduction
 
-libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on mac os 10.6+ 
+libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on Mac OS 10.6+ 
 but on Windows and Linux. On each platform libDispatch is built on, the build 
 system (in our case CMake) will automatically search for existing dispatch implementations  (possibly integrated
 deeper than this user space implementation can do). If found, this "native"
@@ -55,7 +55,7 @@ Requirements differ depending on your goals. Please see the \ref requirements pa
 @section m1 Get a copy
 
 Since version 0.3 libXDispatch is provided as ready-to-use binary package within the downloads
-section at http://opensource.mlba-team.de/xdispatch/files.
+section at <a href="http://opensource.mlba-team.de/xdispatch/files">http://opensource.mlba-team.de/xdispatch/files</a>.
 
 The current xdispatch sources can both be browsed at http://opensource.mlba-team.de/websvn 
 and is accessable using subversion as well. To get your own copy, run:
