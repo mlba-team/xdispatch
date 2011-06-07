@@ -672,4 +672,25 @@ div.header a {
                 padding: 3px;
             }
 
-	
+div#global_nav {
+	margin: 20px;
+	margin-top: 120px;
+	border: 1px solid #bbb;
+	background-color: #eee; 
+	border-radius: 5px; 
+	width: 200px; 
+	float: right;
+}
+
+div.global_nav_item {
+	font-size: 7pt; 
+	border-bottom: 1px solid #bbb; 
+	padding: 5px; 
+	padding-left: 40px;
+	background-position: 6px 10px;
+	background-repeat: no-repeat;
+}
+
+div.global_nav_item span {
+	font-size: 15pt;
+}
