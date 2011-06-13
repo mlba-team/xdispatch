@@ -32,7 +32,7 @@ struct dispatch_apply_s {
 	_dispatch_apply_function_t	da_func;
 	void	*da_ctxt;
 	size_t	da_iterations;
-	size_t	da_index;
+	uint32_t	da_index;
 	uint32_t	da_thr_cnt;
 	dispatch_semaphore_t da_sema;
 	long	_da_pad1[DISPATCH_CACHELINE_SIZE / sizeof(long)];

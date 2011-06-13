@@ -51,7 +51,7 @@ struct dispatch_timer_source_s {
 
 struct dispatch_set_timer_params {
 	dispatch_source_t ds;
-	uintptr_t ident;
+	uint32_t ident;
 	struct dispatch_timer_source_s values;
 };
 
@@ -85,12 +85,12 @@ struct dispatch_source_s {
 			unsigned int ds_atomic_flags;
 
 			unsigned long ds_data;
-			unsigned long ds_pending_data;
+			uint32_t ds_pending_data;
 			unsigned long ds_pending_data_mask;
 			
 			TAILQ_ENTRY(dispatch_source_s) ds_list;
 			
-			unsigned long ds_ident_hack;
+			uint32_t ds_ident_hack;
 			
 			struct dispatch_timer_source_s ds_timer;
         };

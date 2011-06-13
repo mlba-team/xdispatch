@@ -73,19 +73,17 @@
 
 # pragma intrinsic(_InterlockedAnd)
 
-# define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
-# define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((p), (n), (o)) == (o) )
 # define dispatch_atomic_ptr_xchg(p, n) InterlockedExchangePointer((p),(n))
 # define dispatch_atomic_ptr_cmpxchg(p, o, n) ( InterlockedCompareExchangePointer((p), (n), (o)) == (o) )
 # define dispatch_atomic_inc(p)	InterlockedIncrement((p))
 # define dispatch_atomic_dec(p)	InterlockedDecrement((p))
-#if defined (__x86_64__)
-# define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd64((p), (v)) + (v))
-# define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd64((p), ((LONG)(v)*(-1))) - (v))
-# define dispatch_atomic_or(p, v)	InterlockedOr((p), (v))
-#else
+# define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((p), (n), (o)) == (o) )
+# define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
 # define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd((p), (v)) + (v))
 # define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd((p), ((LONG)(v)*(-1))) - (v))
+#if defined (_M_IA64) || defined (_M_X64)
+# define dispatch_atomic_or(p, v)	InterlockedOr((p), (v))
+#else
 # define dispatch_atomic_or(p, v)	_InterlockedOr((p), (v))
 #endif
 # define dispatch_atomic_and(p, v)	_InterlockedAnd((p), (v))

@@ -39,7 +39,7 @@ union {
 	char padding[64];
 } indices[BLOCKS];
 
-size_t iterations = (size_t)(QUEUES * BLOCKS * 0.25);
+uint32_t iterations = (size_t)(QUEUES * BLOCKS * 0.25);
 
 void
 histogram(void) {
@@ -79,7 +79,7 @@ histogram(void) {
 
 void
 cascade(void* context) {
-	size_t idx, *idxptr = context;
+	uint32_t idx, *idxptr = (uint32_t*)context;
 
 	if (done) return;
 	

@@ -59,7 +59,7 @@ struct dispatch_queue_vtable_s {
 	uint32_t dq_width; \
 	struct dispatch_object_s *dq_items_tail; \
 	struct dispatch_object_s *volatile dq_items_head; \
-	unsigned long dq_serialnum; \
+	uint32_t dq_serialnum; \
 	void *dq_finalizer_ctxt
 #endif
 

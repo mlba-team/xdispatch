@@ -52,7 +52,7 @@ union {
 } counts[PRIORITIES];
 
 #define ITERATIONS (size_t)(PRIORITIES * BLOCKS * 0.5)
-static size_t iterations = ITERATIONS;
+static uint32_t iterations = ITERATIONS;
 
 static void histogram(void) {
     size_t maxcount = BLOCKS;
@@ -85,8 +85,8 @@ static void histogram(void) {
 void
 cpubusy(void* context)
 {
-	size_t *count = (size_t*)context;
-	size_t iterdone;
+	uint32_t *count = (uint32_t*)context;
+	uint32_t iterdone;
 
 	size_t idx;
 	for (idx = 0; idx < LOOP_COUNT; ++idx) {

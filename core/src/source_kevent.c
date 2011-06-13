@@ -927,7 +927,7 @@ _dispatch_run_timers2(unsigned int timer)
 		} else {
 			// Calculate number of missed intervals.
 			missed = (now - ds->ds_timer.target) / ds->ds_timer.interval;
-			dispatch_atomic_add(&ds->ds_pending_data, missed + 1);
+			dispatch_atomic_add(&ds->ds_pending_data, (uint32_t)(missed + 1));
 			ds->ds_timer.target += (missed + 1) * ds->ds_timer.interval;
 		}
 
