@@ -40,7 +40,7 @@ extern "C" void Qt_dispatch_queue(){
 
 	MU_BEGIN_TEST(Qt_dispatch_queue);
 
-	unsigned int* worker = new unsigned int;
+	uintptr_t* worker = new uintptr_t;
 	*worker = 0;
 
     QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);

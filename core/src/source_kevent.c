@@ -569,7 +569,7 @@ _dispatch_source_merge_kevent(dispatch_source_t ds, const struct kevent *ke)
 	} else if (ds->ds_is_adder) {
 		dispatch_atomic_add(&ds->ds_pending_data, ke->data);
 	} else {
-		dispatch_atomic_or(&ds->ds_pending_data, ke->fflags & ds->ds_pending_data_mask);
+		dispatch_atomic_or(&ds->ds_pending_data, (intptr_t)(ke->fflags & ds->ds_pending_data_mask));
 	}
 
 	// EV_DISPATCH and EV_ONESHOT sources are no longer armed after delivery
@@ -927,7 +927,7 @@ _dispatch_run_timers2(unsigned int timer)
 		} else {
 			// Calculate number of missed intervals.
 			missed = (now - ds->ds_timer.target) / ds->ds_timer.interval;
-			dispatch_atomic_add(&ds->ds_pending_data, (uint32_t)(missed + 1));
+			dispatch_atomic_add(&ds->ds_pending_data, (uintptr_t)(missed + 1));
 			ds->ds_timer.target += (missed + 1) * ds->ds_timer.interval;
 		}
 

@@ -82,15 +82,15 @@ struct dispatch_source_s {
 			ds_cancel_is_block:1,
 			ds_handler_is_block:1;
 
-			unsigned int ds_atomic_flags;
+			uintptr_t ds_atomic_flags;
 
-			unsigned long ds_data;
-			uint32_t ds_pending_data;
-			unsigned long ds_pending_data_mask;
+			uintptr_t ds_data;
+			intptr_t ds_pending_data;
+			uintptr_t ds_pending_data_mask;
 			
 			TAILQ_ENTRY(dispatch_source_s) ds_list;
 			
-			uint32_t ds_ident_hack;
+			uintptr_t ds_ident_hack;
 			
 			struct dispatch_timer_source_s ds_timer;
         };

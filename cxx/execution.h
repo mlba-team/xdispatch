@@ -60,7 +60,7 @@ public:
 
 private:
     iteration_operation* op;
-    size_t ref;
+    uintptr_t ref;
 };
 
 extern "C" {

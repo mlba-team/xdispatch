@@ -103,7 +103,7 @@ extern "C" void cxx_dispatch_timer() {
 
     MU_MESSAGE("Testing single-shot timer");
     gettimeofday(&checked_time, NULL);
-    xdispatch::timer::single_shot(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC*2.0), xdispatch::global_queue(), new test_single_shot);
+    xdispatch::timer::single_shot(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC*2), xdispatch::global_queue(), new test_single_shot);
     xdispatch::exec();
 
     MU_END_TEST

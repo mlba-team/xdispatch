@@ -82,7 +82,7 @@ dispatch_release(dispatch_object_t dou)
 {
 	struct dispatch_object_s *obj = DO_CAST(dou);
 
-	uint32_t oldval;
+	intptr_t oldval;
 
 	if (obj->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
 		return;
@@ -132,7 +132,7 @@ _dispatch_release(dispatch_object_t dou)
 {
 	struct dispatch_object_s *obj = DO_CAST(dou);
 
-	uint32_t oldval;
+	intptr_t oldval;
 
 	if (obj->do_ref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
 		return; // global object

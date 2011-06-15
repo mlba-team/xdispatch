@@ -91,7 +91,7 @@ dispatch_source_testcancel(dispatch_source_t ds)
 unsigned long
 dispatch_source_get_mask(dispatch_source_t ds)
 {
-	return ds->ds_pending_data_mask;
+	return (unsigned long)ds->ds_pending_data_mask;
 }
 
 uintptr_t
@@ -103,7 +103,7 @@ dispatch_source_get_handle(dispatch_source_t ds)
 unsigned long
 dispatch_source_get_data(dispatch_source_t ds)
 {
-	return ds->ds_data;
+	return (unsigned long)ds->ds_data;
 }
 
 dispatch_queue_t
@@ -199,7 +199,7 @@ _dispatch_source_dispose(dispatch_source_t ds)
 void
 _dispatch_source_latch_and_call(dispatch_source_t ds)
 {
-	unsigned long prev;
+	intptr_t prev;
 
 	if ((ds->ds_atomic_flags & DSF_CANCELED) || (ds->do_xref_cnt == 0)) {
 		return;

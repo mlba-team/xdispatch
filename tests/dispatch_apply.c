@@ -30,12 +30,12 @@
 	*/
 
 static void argumentFunction(void* data, size_t index){
-	dispatch_atomic_inc((int*)data);
+	dispatch_atomic_inc((intptr_t*)data);
 }
 
 void dispatch_apply_function() {
     const unsigned int final = 32;
-	unsigned int* count = malloc(sizeof(unsigned int));
+	intptr_t* count = calloc(1,sizeof(intptr_t));
 	dispatch_queue_t  queue;
 	MU_BEGIN_TEST(dispatch_apply_function);
 	*count = 0;

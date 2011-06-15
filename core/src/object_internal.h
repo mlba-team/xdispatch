@@ -67,9 +67,9 @@ enum {
 #define DISPATCH_STRUCT_HEADER(x, y)	\
 	const struct y *do_vtable;	\
 	struct x *volatile do_next;	\
-	uint32_t do_ref_cnt;	\
-	uint32_t do_xref_cnt;	\
-	uint32_t do_suspend_cnt;	\
+	intptr_t do_ref_cnt;	\
+	intptr_t do_xref_cnt;	\
+	intptr_t do_suspend_cnt;	\
 	struct dispatch_queue_s *do_targetq;	\
 	void *do_ctxt; \
 	dispatch_function_t do_finalizer

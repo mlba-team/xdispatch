@@ -37,7 +37,7 @@
 extern "C" void cxx_dispatch_mainqueue(){
     MU_BEGIN_TEST(cxx_dispatch_mainqueue);
 
-	unsigned int* worker = new unsigned int;
+	uintptr_t* worker = new uintptr_t;
     *worker = 0;
 
     xdispatch::queue q = xdispatch::main_queue();

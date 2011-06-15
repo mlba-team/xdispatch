@@ -206,7 +206,7 @@ _dispatch_semaphore_wait_slow(dispatch_semaphore_t dsema, dispatch_time_t timeou
 #if USE_POSIX_SEM || USE_WIN32_SEM
 	int ret;
 #endif
-	long orig;
+	intptr_t orig;
 	
 again:
 	// Mach semaphores appear to sometimes spuriously wake up.  Therefore,
@@ -522,7 +522,7 @@ _dispatch_group_wait_slow(dispatch_semaphore_t dsema, dispatch_time_t timeout)
 #if USE_POSIX_SEM || USE_WIN32_SEM
 	int ret;
 #endif
-	uint32_t orig;
+	intptr_t orig;
 	
 again:
 	// check before we cause another signal to be sent by incrementing dsema->dsema_group_waiters

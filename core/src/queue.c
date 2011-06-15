@@ -168,8 +168,8 @@ struct dispatch_root_queue_context_s {
 #if HAVE_PTHREAD_WORKQUEUES
 	pthread_workqueue_t dgq_kworkqueue;
 #endif
-	uint32_t dgq_pending;
-	uint32_t dgq_thread_pool_size;
+	uintptr_t dgq_pending;
+	intptr_t dgq_thread_pool_size;
 	dispatch_semaphore_t dgq_thread_mediator;
 };
 
@@ -591,7 +591,7 @@ void
 // 3 - _unused_
 // 4,5,6,7,8,9 - global queues
 // we use 'xadd' on Intel, so the initial value == next assigned
-static unsigned long _dispatch_queue_serial_numbers = 10;
+static uintptr_t _dispatch_queue_serial_numbers = 10;
 
 // Note to later developers: ensure that any initialization changes are
 // made for statically allocated queues (i.e. _dispatch_main_q).
@@ -935,7 +935,7 @@ DISPATCH_NOINLINE
 	typeof(dq->dq_running) prev_cnt;
 #else
 	/* Fragile! */
-	uint32_t prev_cnt;
+	uintptr_t prev_cnt;
 #endif
 	dispatch_queue_t old_dq;
 
@@ -1388,7 +1388,7 @@ bool
 	unsigned int gen_cnt;
 #endif
 	pthread_t pthr;
-	int r, t_count;
+	intptr_t r, t_count;
 
 	if (!dq->dq_items_tail) {
 		return false;
