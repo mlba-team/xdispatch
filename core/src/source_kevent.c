@@ -605,7 +605,7 @@ dispatch_source_merge_data(dispatch_source_t ds, unsigned long val)
 	};
 
 	dispatch_assert(ds->ds_dkev->dk_kevent.filter == DISPATCH_EVFILT_CUSTOM_ADD ||
-					ds->ds_dkev->dk_kevent.filter == DISPATCH_EVFILT_CUSTOM_OR);
+                        (ds->ds_dkev->dk_kevent.filter == DISPATCH_EVFILT_CUSTOM_OR && val <= INT_MAX));
 
 	_dispatch_source_merge_kevent(ds, &kev);
 }
@@ -622,9 +622,12 @@ dispatch_source_type_kevent_init(dispatch_source_t ds, dispatch_source_type_t ty
 			return false;
 		}
 		break;
+        case DISPATCH_EVFILT_CUSTOM_OR:
+        case DISPATCH_EVFILT_CUSTOM_ADD:
+                if (mask) {
+                    return false;
+                }
 	case EVFILT_FS:
-	case DISPATCH_EVFILT_CUSTOM_ADD:
-	case DISPATCH_EVFILT_CUSTOM_OR:
 	case DISPATCH_EVFILT_TIMER:
 		if (handle) {
 			return false;
