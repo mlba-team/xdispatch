@@ -134,7 +134,7 @@
 
 #ifdef __BLOCKS__
 # include <Block.h>
-# include "shims/Block_private.h"
+# include <Block_private.h>
 #endif
 
 #include "blocks.h"
