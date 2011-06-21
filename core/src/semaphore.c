@@ -734,7 +734,11 @@ _dispatch_semaphore_debug(dispatch_semaphore_t dsema, char *buf, size_t bufsiz)
 	    dsema->dsema_port);
 #endif
 	offset += snprintf(&buf[offset], bufsiz - offset,
-	    "value = %ld, orig = %ld }", dsema->dsema_value, dsema->dsema_orig);
+#ifdef __x86_64__
+            "value = %ld, orig = %ld }", dsema->dsema_value, dsema->dsema_orig);
+#else
+            "value = %d, orig = %d }", dsema->dsema_value, dsema->dsema_orig);
+#endif
 	return offset;
 }
 

@@ -227,6 +227,10 @@ dispatch_object_debug_attr(dispatch_object_t dou, char* buf, size_t bufsiz)
 {
 	struct dispatch_object_s *obj = DO_CAST(dou);
 
+#ifdef __x86_64__
         return snprintf(buf, bufsiz, "refcnt = 0x%lx, suspend_cnt = 0x%lx, ",
+#else
+        return snprintf(buf, bufsiz, "refcnt = 0x%x, suspend_cnt = 0x%x, ",
+#endif
 					obj->do_ref_cnt, obj->do_suspend_cnt);
 }
