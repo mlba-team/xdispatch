@@ -143,6 +143,11 @@ The
 function returns the currently pending data for the dispatch source.
 This function should only be called from within the source's event handler.
 The result of calling this function from any other context is undefined.
+In the case of
+.Vt DISPATCH_SOURCE_TYPE_DATA_OR
+, only the lower 32 bits of
+.Fa mask
+will be used.
 .Pp
 The
 .Fn dispatch_source_merge_data

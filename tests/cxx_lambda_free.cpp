@@ -28,7 +28,7 @@ static bool was_freed = false;
 
 struct BeFreed2 {
 
-    BeFreed2() : ref_ct(new ATOMIC_INT) {
+    BeFreed2() : ref_ct(new uintptr_t) {
         *ref_ct = 1;
     }
     BeFreed2(const BeFreed2& other) : ref_ct(other.ref_ct){
@@ -43,13 +43,13 @@ struct BeFreed2 {
 
     void someFunction() const { /* Do nothing (tm) */ }
 
-    ATOMIC_INT* ref_ct;
+    uintptr_t* ref_ct;
 };
 
 
 struct BeFreed {
 
-    BeFreed() : ref_ct(new ATOMIC_INT) {
+    BeFreed() : ref_ct(new uintptr_t) {
         *ref_ct = 1;
     }
     BeFreed(const BeFreed& other) : ref_ct(other.ref_ct){
@@ -65,7 +65,7 @@ struct BeFreed {
 
     void someFunction() const { /* Do nothing (tm) */ }
 
-    ATOMIC_INT* ref_ct;
+    uintptr_t* ref_ct;
 };
 
 static void dispatch_outer(){

@@ -29,7 +29,7 @@
 #include "Qt_tests.h"
 #include "../core/platform/atomic.h"
 
-static unsigned int* worker = 0;
+static uintptr_t* worker = 0;
 
 class GroupTest : public QObject {
 
@@ -64,7 +64,7 @@ extern "C" void Qt_dispatch_group(){
 
 	MU_BEGIN_TEST(Qt_dispatch_group);
 
-    worker = new unsigned int;
+    worker = new uintptr_t;
 	*worker = 0;
 
 	QDispatchGroup group;

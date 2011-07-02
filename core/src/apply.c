@@ -31,9 +31,9 @@ struct dispatch_apply_s {
 	long	_da_pad0[DISPATCH_CACHELINE_SIZE / sizeof(long)];
 	_dispatch_apply_function_t	da_func;
 	void	*da_ctxt;
-	size_t	da_iterations;
-	size_t	da_index;
-	uint32_t	da_thr_cnt;
+	uintptr_t	da_iterations;
+	uintptr_t	da_index;
+	uintptr_t	da_thr_cnt;
 	dispatch_semaphore_t da_sema;
 	long	_da_pad1[DISPATCH_CACHELINE_SIZE / sizeof(long)];
 };
@@ -64,7 +64,7 @@ static void
 _dispatch_apply_serial(void *context)
 {
 	struct dispatch_apply_s *da = (struct dispatch_apply_s*)context;
-	size_t idx = 0;
+	uintptr_t idx = 0;
 
 	_dispatch_workitem_dec(); // this unit executes many items
 	do {

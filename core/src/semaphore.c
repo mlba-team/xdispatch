@@ -206,7 +206,7 @@ _dispatch_semaphore_wait_slow(dispatch_semaphore_t dsema, dispatch_time_t timeou
 #if USE_POSIX_SEM || USE_WIN32_SEM
 	int ret;
 #endif
-	long orig;
+	intptr_t orig;
 	
 again:
 	// Mach semaphores appear to sometimes spuriously wake up.  Therefore,
@@ -461,7 +461,7 @@ _dispatch_group_wake(dispatch_semaphore_t dsema)
 {
 	struct dispatch_sema_notify_s *tmp;
 	struct dispatch_sema_notify_s *head = (struct dispatch_sema_notify_s *)dispatch_atomic_ptr_xchg(&dsema->dsema_notify_head, NULL);
-	long rval = (long)dispatch_atomic_xchg(&dsema->dsema_group_waiters, 0);
+	uint32_t rval = (long)dispatch_atomic_xchg(&dsema->dsema_group_waiters, 0);
 	bool do_rel = (head != NULL);
 #if USE_MACH_SEM
 	long kr;
@@ -522,7 +522,7 @@ _dispatch_group_wait_slow(dispatch_semaphore_t dsema, dispatch_time_t timeout)
 #if USE_POSIX_SEM || USE_WIN32_SEM
 	int ret;
 #endif
-	long orig;
+	intptr_t orig;
 	
 again:
 	// check before we cause another signal to be sent by incrementing dsema->dsema_group_waiters
@@ -734,7 +734,11 @@ _dispatch_semaphore_debug(dispatch_semaphore_t dsema, char *buf, size_t bufsiz)
 	    dsema->dsema_port);
 #endif
 	offset += snprintf(&buf[offset], bufsiz - offset,
-	    "value = %ld, orig = %ld }", dsema->dsema_value, dsema->dsema_orig);
+#ifdef __x86_64__
+            "value = %ld, orig = %ld }", dsema->dsema_value, dsema->dsema_orig);
+#else
+            "value = %d, orig = %d }", dsema->dsema_value, dsema->dsema_orig);
+#endif
 	return offset;
 }
 

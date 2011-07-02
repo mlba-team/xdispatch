@@ -82,7 +82,7 @@ dispatch_release(dispatch_object_t dou)
 {
 	struct dispatch_object_s *obj = DO_CAST(dou);
 
-	unsigned int oldval;
+	intptr_t oldval;
 
 	if (obj->do_xref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
 		return;
@@ -132,7 +132,7 @@ _dispatch_release(dispatch_object_t dou)
 {
 	struct dispatch_object_s *obj = DO_CAST(dou);
 
-	unsigned int oldval;
+	intptr_t oldval;
 
 	if (obj->do_ref_cnt == DISPATCH_OBJECT_GLOBAL_REFCNT) {
 		return; // global object
@@ -227,6 +227,10 @@ dispatch_object_debug_attr(dispatch_object_t dou, char* buf, size_t bufsiz)
 {
 	struct dispatch_object_s *obj = DO_CAST(dou);
 
-	return snprintf(buf, bufsiz, "refcnt = 0x%x, suspend_cnt = 0x%x, ",
+#ifdef __x86_64__
+        return snprintf(buf, bufsiz, "refcnt = 0x%lx, suspend_cnt = 0x%lx, ",
+#else
+        return snprintf(buf, bufsiz, "refcnt = 0x%x, suspend_cnt = 0x%x, ",
+#endif
 					obj->do_ref_cnt, obj->do_suspend_cnt);
 }

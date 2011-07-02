@@ -29,7 +29,7 @@ static bool was_freed = false;
 
 struct QtBeFreed2 {
 
-    QtBeFreed2() : ref_ct(new ATOMIC_INT) {
+    QtBeFreed2() : ref_ct(new uintptr_t) {
         *ref_ct = 1;
     }
     QtBeFreed2(const QtBeFreed2& other) : ref_ct(other.ref_ct){
@@ -44,13 +44,13 @@ struct QtBeFreed2 {
 
     void someFunction() const { /* Do nothing (tm) */ }
 
-    ATOMIC_INT* ref_ct;
+    uintptr_t* ref_ct;
 };
 
 
 struct QtBeFreed {
 
-    QtBeFreed() : ref_ct(new ATOMIC_INT) {
+    QtBeFreed() : ref_ct(new uintptr_t) {
         *ref_ct = 1;
     }
     QtBeFreed(const QtBeFreed& other) : ref_ct(other.ref_ct){
@@ -66,7 +66,7 @@ struct QtBeFreed {
 
     void someFunction() const { /* Do nothing (tm) */ }
 
-    ATOMIC_INT* ref_ct;
+    uintptr_t* ref_ct;
 };
 
 static void Qt_dispatch_outer(){

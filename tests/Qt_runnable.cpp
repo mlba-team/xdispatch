@@ -27,7 +27,7 @@
 
 #include "Qt_tests.h"
 
-static int counter = 0;
+static uintptr_t counter = 0;
 
 class TestRunnable : public QIterationRunnable {
     

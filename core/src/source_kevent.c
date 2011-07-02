@@ -569,7 +569,7 @@ _dispatch_source_merge_kevent(dispatch_source_t ds, const struct kevent *ke)
 	} else if (ds->ds_is_adder) {
 		dispatch_atomic_add(&ds->ds_pending_data, ke->data);
 	} else {
-		dispatch_atomic_or(&ds->ds_pending_data, ke->fflags & ds->ds_pending_data_mask);
+		dispatch_atomic_or(&ds->ds_pending_data, (intptr_t)(ke->fflags & ds->ds_pending_data_mask));
 	}
 
 	// EV_DISPATCH and EV_ONESHOT sources are no longer armed after delivery
@@ -605,7 +605,7 @@ dispatch_source_merge_data(dispatch_source_t ds, unsigned long val)
 	};
 
 	dispatch_assert(ds->ds_dkev->dk_kevent.filter == DISPATCH_EVFILT_CUSTOM_ADD ||
-					ds->ds_dkev->dk_kevent.filter == DISPATCH_EVFILT_CUSTOM_OR);
+                        (ds->ds_dkev->dk_kevent.filter == DISPATCH_EVFILT_CUSTOM_OR && val <= INT_MAX));
 
 	_dispatch_source_merge_kevent(ds, &kev);
 }
@@ -622,9 +622,12 @@ dispatch_source_type_kevent_init(dispatch_source_t ds, dispatch_source_type_t ty
 			return false;
 		}
 		break;
+        case DISPATCH_EVFILT_CUSTOM_OR:
+        case DISPATCH_EVFILT_CUSTOM_ADD:
+                if (mask) {
+                    return false;
+                }
 	case EVFILT_FS:
-	case DISPATCH_EVFILT_CUSTOM_ADD:
-	case DISPATCH_EVFILT_CUSTOM_OR:
 	case DISPATCH_EVFILT_TIMER:
 		if (handle) {
 			return false;
@@ -927,7 +930,7 @@ _dispatch_run_timers2(unsigned int timer)
 		} else {
 			// Calculate number of missed intervals.
 			missed = (now - ds->ds_timer.target) / ds->ds_timer.interval;
-			dispatch_atomic_add(&ds->ds_pending_data, missed + 1);
+			dispatch_atomic_add(&ds->ds_pending_data, (uintptr_t)(missed + 1));
 			ds->ds_timer.target += (missed + 1) * ds->ds_timer.interval;
 		}
 

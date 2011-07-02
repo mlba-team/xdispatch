@@ -46,20 +46,20 @@ struct dispatch_queue_vtable_s {
 
 #ifndef DISPATCH_NO_LEGACY
 #define DISPATCH_QUEUE_HEADER \
-	uint32_t dq_running; \
-	uint32_t dq_width; \
+	uintptr_t dq_running; \
+	uintptr_t dq_width; \
 	struct dispatch_object_s *dq_items_tail; \
 	struct dispatch_object_s *volatile dq_items_head; \
-	unsigned long dq_serialnum; \
+	uintptr_t dq_serialnum; \
 	void *dq_finalizer_ctxt; \
 	dispatch_queue_finalizer_function_t dq_finalizer_func
 #else
 #define DISPATCH_QUEUE_HEADER \
-	uint32_t dq_running; \
-	uint32_t dq_width; \
+	uintptr_t dq_running; \
+	uintptr_t dq_width; \
 	struct dispatch_object_s *dq_items_tail; \
 	struct dispatch_object_s *volatile dq_items_head; \
-	unsigned long dq_serialnum; \
+	uintptr_t dq_serialnum; \
 	void *dq_finalizer_ctxt
 #endif
 

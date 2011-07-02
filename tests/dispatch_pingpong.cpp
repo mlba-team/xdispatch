@@ -37,8 +37,8 @@
 #include "tests.h"
 
 
-uint32_t count = 0;
-const uint32_t final = 10000; // 10M
+uintptr_t count = 0;
+const uintptr_t final = 10000; // 10M
 
 void pingpongloop(dispatch_group_t group, dispatch_queue_t ping, dispatch_queue_t pong, size_t counter) {
 	//printf("[%p] %s: %lu\n", (void*)(uintptr_t)pthread_self(), dispatch_queue_get_label(dispatch_get_current_queue()), counter);

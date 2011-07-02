@@ -60,7 +60,7 @@ public:
 
 private:
     iteration_operation* op;
-    ATOMIC_INT ref;
+    uintptr_t ref;
 };
 
 extern "C" {

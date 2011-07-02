@@ -75,7 +75,7 @@ public:
 		dispatch_once_f(&init_data_tls, NULL, run_tls_initializer);
 	}
 
-	long suspend_ct;
+	uintptr_t suspend_ct;
 	sourcetype* type;
 	queue target;
 	operation* handler;
@@ -84,7 +84,7 @@ public:
 source::source(sourcetype* src_t) : d(new pdata()){
 	assert(d);
     assert(src_t);
-	d->suspend_ct = 0;
+	d->suspend_ct = 1;
 	d->type = src_t;
     src_t->set_cb(this);
 }
@@ -120,7 +120,7 @@ void source::handler(dispatch_block_t b){
 #endif
 
 void source::notify(const any& dt){
-	if(d->suspend_ct < 0)
+	if(d->suspend_ct == 0)
 		return;
 
 	d->target.async(new src_notify_operation(dt, d->handler));

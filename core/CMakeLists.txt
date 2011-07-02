@@ -6,11 +6,7 @@ INCLUDE (CheckSymbolExists)
 
 # start new subproject
 set(NAME dispatch)
-if(MSVC)
-	project(${NAME} CXX)
-else()
-	project(${NAME} C)
-endif()
+project(${NAME} C)
 
 # do we have kernel support for pthread_workqueues?
 CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)

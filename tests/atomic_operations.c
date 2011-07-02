@@ -33,8 +33,8 @@ Test ensuring the atomic operations work the same on all platforms/compilers
   contents of *ptr.
   */
 static void test_atomic_xchg(){
-    unsigned int variable = 1;
-    unsigned int old = dispatch_atomic_xchg(&variable, 3);
+    uintptr_t variable = 1;
+    uintptr_t old = dispatch_atomic_xchg(&variable, 3);
 
     MU_DESC_ASSERT_EQUAL("xchg", old, 1);
     MU_DESC_ASSERT_EQUAL("xchg", variable, 3);
@@ -47,7 +47,7 @@ static void test_atomic_xchg(){
   false (=0) otherwise
   */
 static void test_atomic_cmpxchg(){
-    unsigned int variable = 1;
+    uintptr_t variable = 1;
     char changed = dispatch_atomic_cmpxchg(&variable, 4, 3);
     MU_DESC_ASSERT_NOT_TRUE("cmpxchg", changed);
     MU_DESC_ASSERT_EQUAL("cmpxchg", variable, 1);
@@ -91,8 +91,8 @@ static void test_atomic_ptr_cmpxchg(){
   Increase the value by one and return the NEW value
   */
 static void test_atomic_inc(){
-    unsigned int variable = 1;
-    unsigned int newval = dispatch_atomic_inc(&variable);
+    uintptr_t variable = 1;
+    uintptr_t newval = dispatch_atomic_inc(&variable);
 
     MU_DESC_ASSERT_EQUAL("inc", variable, 2);
     MU_DESC_ASSERT_EQUAL("inc", variable, newval);
@@ -102,8 +102,8 @@ static void test_atomic_inc(){
   Decrease the value by one and return the NEW value
   */
 static void test_atomic_dec(){
-    unsigned int variable = 2;
-    unsigned int newval = dispatch_atomic_dec(&variable);
+    uintptr_t variable = 2;
+    uintptr_t newval = dispatch_atomic_dec(&variable);
 
     MU_DESC_ASSERT_EQUAL("dec", variable, 1);
     MU_DESC_ASSERT_EQUAL("dec", variable, newval);
@@ -113,8 +113,8 @@ static void test_atomic_dec(){
   Add the given number to the value and return the NEW value
   */
 static void test_atomic_add(){
-    unsigned int variable = 2;
-    unsigned int newval = dispatch_atomic_add(&variable, 2);
+    uintptr_t variable = 2;
+    uintptr_t newval = dispatch_atomic_add(&variable, 2);
 
     MU_DESC_ASSERT_EQUAL("add", variable, 4);
     MU_DESC_ASSERT_EQUAL("add", variable, newval);
@@ -124,8 +124,8 @@ static void test_atomic_add(){
   Subtract the given number from the value and return the NEW value
   */
 static void test_atomic_sub(){
-    unsigned int variable = 2;
-    unsigned int newval = dispatch_atomic_sub(&variable, 2);
+    uintptr_t variable = 2;
+    uintptr_t newval = dispatch_atomic_sub(&variable, 2);
 
     MU_DESC_ASSERT_EQUAL("sub", variable, 0);
     MU_DESC_ASSERT_EQUAL("sub", variable, newval);
@@ -135,8 +135,8 @@ static void test_atomic_sub(){
   Store the ored combination and return the OLD value (before changing)
   */
 static void test_atomic_or(){
-    unsigned int variable = 0;
-    unsigned int oldval = dispatch_atomic_or(&variable, 1);
+    uintptr_t variable = 0;
+    uintptr_t oldval = dispatch_atomic_or(&variable, 1);
 
     MU_DESC_ASSERT_EQUAL("or", variable, 1);
     MU_DESC_ASSERT_EQUAL("or", oldval, 0);
@@ -146,8 +146,8 @@ static void test_atomic_or(){
   Store the anded combination and return the OLD value
   */
 static void test_atomic_and(){
-    unsigned int variable = 1;
-    unsigned int oldval = dispatch_atomic_and(&variable, 0);
+    uintptr_t variable = 1;
+    uintptr_t oldval = dispatch_atomic_and(&variable, 0);
 
     MU_DESC_ASSERT_EQUAL("or", variable, 0);
     MU_DESC_ASSERT_EQUAL("or", oldval, 1);

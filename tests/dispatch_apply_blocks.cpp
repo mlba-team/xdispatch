@@ -31,7 +31,7 @@
 	*/
 
 extern "C" void dispatch_apply_blocks() {
-	unsigned int* count = new unsigned int;
+	uintptr_t* count = new uintptr_t;
 	*count = 0;
 	const unsigned int final = 32;
 

@@ -32,7 +32,7 @@
  really get different treatment
  */
 
-static int done = 0;
+static intptr_t done = 0;
 
 #define BLOCKS 128
 #define PRIORITIES 3
@@ -52,7 +52,7 @@ union {
 } counts[PRIORITIES];
 
 #define ITERATIONS (size_t)(PRIORITIES * BLOCKS * 0.5)
-static size_t iterations = ITERATIONS;
+static uintptr_t iterations = ITERATIONS;
 
 static void histogram(void) {
     size_t maxcount = BLOCKS;
@@ -85,8 +85,8 @@ static void histogram(void) {
 void
 cpubusy(void* context)
 {
-	size_t *count = (size_t*)context;
-	size_t iterdone;
+	uintptr_t *count = (uintptr_t*)context;
+	uintptr_t iterdone;
 
 	size_t idx;
 	for (idx = 0; idx < LOOP_COUNT; ++idx) {
