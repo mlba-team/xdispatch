@@ -1029,37 +1029,57 @@ void
 #if TARGET_OS_WIN32
 		// The TSD has no de-allocator on windows
 		p = pthread_getspecific(dispatch_queue_key);
+
 		if (p != NULL)
+
 			_dispatch_queue_cleanup(p);
+
 		p = pthread_getspecific(dispatch_sema4_key);
+
 		if (p != NULL)
+
 			_dispatch_release(p);
+
 		p = pthread_getspecific(dispatch_cache_key);
+
 		if (p != NULL)
+
 			_dispatch_cache_cleanup2(p);
 
 		Sleep(INFINITE);
 		DISPATCH_CRASH("Sleep() returned");
 #elif defined(__linux__)
 		/*
+
 		 * Workaround for a GNU/Linux bug that causes the process to
+
 		 * become a zombie when the main thread calls pthread_exit().
+
 		 */
 		sigset_t mask;
 		p = pthread_getspecific(dispatch_queue_key);
+
 		if (p != NULL)
+
 			_dispatch_queue_cleanup(p);
+
 		p = pthread_getspecific(dispatch_sema4_key);
+
 		if (p != NULL)
+
 			_dispatch_release(p);
+
 		p = pthread_getspecific(dispatch_cache_key);
+
 		if (p != NULL)
+
 			_dispatch_cache_cleanup2(p);
 
 		sigfillset(&mask);
 		pthread_sigmask(SIG_SETMASK, &mask, NULL);
-		pause();
-		DISPATCH_CRASH("pause() returned");
+		for (;;) {
+			pause();
+		}
 #else
 		pthread_exit(NULL);
 		DISPATCH_CRASH("pthread_exit() returned");
