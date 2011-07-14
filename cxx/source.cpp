@@ -56,7 +56,7 @@ public:
 	}
 
 	void operator()(){
-                pthread_setspecific(data_tls, &dt);
+        pthread_setspecific(data_tls, &dt);
 		(*op)();
 		pthread_setspecific(data_tls, NULL);
 
@@ -71,7 +71,7 @@ private:
 
 class source::pdata {
 public:
-	pdata() : target(global_queue()) {
+	pdata() : target(global_queue()), handler(NULL) {
 		dispatch_once_f(&init_data_tls, NULL, run_tls_initializer);
 	}
 
@@ -93,6 +93,8 @@ source::source(const source&) {}
 
 source::~source(){
 	delete d->type;
+	if( d->handler )
+		delete d->handler;
 	delete d;
 }
 
@@ -110,7 +112,12 @@ void source::set_queue(const queue& q){
 
 void source::handler(operation* op){
 	assert(op);
+
+	if(d->handler)
+		delete d->handler;
+
 	d->handler = op;
+	d->handler->set_auto_delete(false);
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS
