@@ -44,7 +44,9 @@
 # pragma warning( disable : 4996 )
 #endif
 
+#define WIN32_LEAN_AND_MEAN 1
 #include <Windows.h>
+#include <WinSock2.h>
 #include <limits.h>
 #include <errno.h>
 #include <process.h>

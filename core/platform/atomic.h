@@ -66,6 +66,7 @@
 
 # ifndef WINVER
 #  define WINVER 0x0501
+#  define WIN32_LEAN_AND_MEAN 1
 #  include <Windows.h>
 # endif
 
