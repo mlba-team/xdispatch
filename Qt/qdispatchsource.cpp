@@ -111,7 +111,7 @@ QDispatchSource::QDispatchSource(QDispatchSourceType* t) : d(new Private){
 	Q_CHECK_PTR(d);
 	Q_ASSERT(t);
 	d->type = t;
-	connect(t, SIGNAL(ready(QObject*)), this, SLOT(signal(QObject*)));
+	connect(t, SIGNAL(ready(QObject*)), this, SLOT(signal(QObject*)), Qt::DirectConnection);
 	//t->init(d->thread);
 }
 
