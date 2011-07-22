@@ -14,24 +14,27 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-.PHONY :: install uninstall check dist dist-upload publish-www clean merge distclean fresh-build rpm edit cscope valgrind
+obj-m = pthread_workqueue.o
+KVERSION = $(shell uname -r)
 
-include ../../config.mk
+all: pthread_workqueue.ko modtest
 
-all: test-$(PROGRAM)
-
-test-$(PROGRAM): test.c
-	$(CC) $(CFLAGS) -g -O0 -o test-$(PROGRAM) -I../.. -I../../include -L../.. test.c -lpthread_workqueue -lpthread -lrt
-
-check: test-$(PROGRAM)
-	LD_LIBRARY_PATH=../..:/usr/sfw/lib/amd64 ./test-$(PROGRAM)
-
-debug: test-$(PROGRAM)
-	LD_LIBRARY_PATH=../.. gdb ./test-$(PROGRAM)
-
-valgrind: test-$(PROGRAM)
-	LD_LIBRARY_PATH=../..:/usr/sfw/lib/amd64 \
-	valgrind --tool=memcheck --leak-check=full --show-reachable=yes --num-callers=20 --track-fds=yes ./test-$(PROGRAM)
+pthread_workqueue.ko: pthread_workqueue.c
+	make -C /lib/modules/`uname -r`/build M=$(PWD) modules
 
 clean:
-	rm -f test-$(PROGRAM)
+	make -C /lib/modules/`uname -r`/build M=$(PWD) clean
+	rm -f modtest
+
+modtest: test.c
+	gcc -o modtest -Wall -Werror test.c
+
+edit:
+	$(EDITOR) Makefile *.[ch]
+
+check: modtest
+	sudo rmmod pthread_workqueue || true
+	sudo insmod ./pthread_workqueue.ko
+	sleep 2
+	sudo chmod 777 /dev/pthread_workqueue
+	./modtest

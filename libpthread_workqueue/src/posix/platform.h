@@ -6,7 +6,9 @@
 
 #include <sys/resource.h>
 #include <sys/queue.h>
+#include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 #include <pthread.h>
 
@@ -21,9 +23,13 @@
 # include <atomic.h>
 # define atomic_inc      atomic_inc_32
 # define atomic_dec      atomic_dec_32
+# define atomic_and      atomic_and_uint_nv
+# define atomic_or      atomic_or_uint_nv
 #else
 # define atomic_inc(p)   __sync_add_and_fetch((p), 1)
 # define atomic_dec(p)   __sync_sub_and_fetch((p), 1)
+# define atomic_and(p,v)   __sync_and_and_fetch((p), (v))
+# define atomic_or(p,v)   __sync_or_and_fetch((p), (v))
 #endif
 
 #ifdef MAKE_STATIC

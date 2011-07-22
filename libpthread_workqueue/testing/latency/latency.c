@@ -20,13 +20,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
 #include <ctype.h>
-#include <sys/time.h>
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+
+#ifndef _WIN32
+# include <unistd.h>
+# include <pthread.h>
+# include <sys/time.h>
+#endif
+
 #include "latency.h"
 
 pthread_workqueue_t workqueues[WORKQUEUE_COUNT]; 
@@ -61,19 +65,54 @@ unsigned long gettime(void)
 
 #else
 
-static unsigned long gettime(void)
+static mytime_t gettime(void)
 {
-    struct timespec ts;
 #ifdef __linux__
+	struct timespec ts;
     if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
-#else
-    if (clock_gettime(CLOCK_HIGHRES, &ts) != 0)
-#endif
-        fprintf(stderr, "Failed to get high resolution clock! errno = %d\n", errno);   
+		        fprintf(stderr, "Failed to get high resolution clock! errno = %d\n", errno);   
     return ((ts.tv_sec * NANOSECONDS_PER_SECOND) + ts.tv_nsec);
+#elif defined(_WIN32)
+	LARGE_INTEGER now;
+	LARGE_INTEGER freq;
+	if (!QueryPerformanceCounter(&now) )
+		fprintf(stderr, "Failed to get performance counter!\n");
+	if (!QueryPerformanceFrequency(&freq) )
+		fprintf(stderr, "Failed to get performance frequency!\n");
+
+	return (mytime_t)(now.QuadPart * NANOSECONDS_PER_SECOND / freq.QuadPart);
+#else
+    struct timespec ts;
+    if (clock_gettime(CLOCK_HIGHRES, &ts) != 0)
+		        fprintf(stderr, "Failed to get high resolution clock! errno = %d\n", errno);   
+    return ((ts.tv_sec * NANOSECONDS_PER_SECOND) + ts.tv_nsec);
+#endif
 }
 
 #endif
+
+#ifdef _WIN32
+
+static void my_sleep(unsigned long nanoseconds) {
+	LARGE_INTEGER start, end;
+	LARGE_INTEGER freq;
+	
+	QueryPerformanceCounter(&start);
+	QueryPerformanceFrequency(&freq);
+
+	// sleep with ms resolution ...
+	Sleep(nanoseconds / 1000000);
+
+	// ... and busy-wait afterwards, until the requested delay was reached
+	QueryPerformanceCounter(&end);
+	while( (end.QuadPart - start.QuadPart) * NANOSECONDS_PER_SECOND / freq.QuadPart < nanoseconds ){
+		YieldProcessor();
+		QueryPerformanceCounter(&end);
+	}
+
+}
+
+#else
 
 // real resolution on solaris is at best system clock tick, i.e. 100Hz unless having the
 // high res system clock (1000Hz in that case)
@@ -98,6 +137,8 @@ static void my_sleep(unsigned long nanoseconds)
     
     return;
 }
+
+#endif
 
 static void _process_data(void* context)
 {
@@ -152,7 +193,8 @@ static void _event_tick(void* context)
 
 static void _generate_simulated_events()
 {
-	long i, tick, ticks_generated = 0, overhead;
+	unsigned long i = 0, tick;
+	mytime_t overhead;
     mytime_t start, current, overhead_start = 0, overhead_end = 0;
 
     start = current = gettime();
@@ -185,10 +227,14 @@ static void _generate_simulated_events()
         overhead_start = gettime();
         
         events_processed = GENERATOR_WORKQUEUE_COUNT * EVENTS_GENERATED_PER_TICK; // number of items that will be processed
-        
+  
+#if (LATENCY_RUN_GENERATOR_IN_MAIN_THREAD == 0)
         for (i = 0; i < GENERATOR_WORKQUEUE_COUNT; i++)
             (void) pthread_workqueue_additem_np(workqueue_generator[i].wq, _event_tick, (void *) i, NULL, NULL);
-        
+#else
+        _event_tick((void *)i);
+#endif
+
         // wait for all events to be processed
         pthread_mutex_lock(&generator_mutex);
         while (events_processed > 0)
@@ -229,7 +275,6 @@ static void _gather_statistics(unsigned long queue_index)
 void _print_statistics()
 {
 	unsigned long i, j, total_events = 0, last_percentile = 0, accumulated_percentile = 0;
-	void *events_done;
         
 	printf("Collecting statistics...\n");
 	
@@ -238,8 +283,9 @@ void _print_statistics()
     
 	printf("Test is done, run time was %.3f seconds, %.1fM events generated and processed.\n", (double)((double)(real_end - real_start) / (double) NANOSECONDS_PER_SECOND), total_events/1000000.0); 
 	
+    //FIXME - casting from mytime_t (u_long) to int will truncate the result
 	printf("Global dispatch queue aggregate statistics for %d queues: %dM events, min = %d ns, avg = %.1f ns, max = %d ns\n",
-           global_stats_used, global_statistics.count/1000000, global_statistics.min, global_statistics.avg, global_statistics.max);
+           global_stats_used, global_statistics.count/1000000, (int) global_statistics.min, global_statistics.avg, (int) global_statistics.max);
     
     printf("\nDistribution:\n");
     for (i = 0; i < DISTRIBUTION_BUCKETS; i++)
@@ -271,14 +317,17 @@ void _print_statistics()
 	return;
 }	
 
-
-int main(int argc, const char * argv[])
+int main(void)
 {
 	int i;
     pthread_workqueue_attr_t attr;
     
 #ifdef __APPLE__
     (void) mach_timebase_info(&sTimebaseInfo);
+#endif
+	
+#ifdef MAKE_STATIC
+	pthread_workqueue_init_np();
 #endif
     
 	memset(&workqueues, 0, sizeof(workqueues));
@@ -292,11 +341,14 @@ int main(int argc, const char * argv[])
     if (pthread_workqueue_attr_init_np(&attr) != 0)
         fprintf(stderr, "Failed to set workqueue attributes\n");
     
-    if (pthread_workqueue_attr_setqueuepriority_np(&attr, WORKQ_HIGH_PRIOQUEUE) != 0) // high prio for generators
-        fprintf(stderr, "Failed to set workqueue priority\n");
-
     for (i = 0; i < GENERATOR_WORKQUEUE_COUNT; i++)
     {
+        if (pthread_workqueue_attr_setqueuepriority_np(&attr, i) != 0) 
+            fprintf(stderr, "Failed to set workqueue priority\n");
+
+        if (pthread_workqueue_attr_setovercommit_np(&attr, 1) != 0)
+            fprintf(stderr, "Failed to set workqueue overcommit\n");
+
         workqueue_generator[i].wq_events = malloc(sizeof(struct wq_event) * EVENTS_GENERATED_PER_TICK);
         memset(workqueue_generator[i].wq_events, 0, (sizeof(struct wq_event) * EVENTS_GENERATED_PER_TICK));
         
@@ -309,7 +361,7 @@ int main(int argc, const char * argv[])
         if (pthread_workqueue_attr_init_np(&attr) != 0)
             fprintf(stderr, "Failed to set workqueue attributes\n");
         
-        if (pthread_workqueue_attr_setqueuepriority_np(&attr, (i % (WORKQ_LOW_PRIOQUEUE + 1))) != 0) // spread it round-robin in terms of prio
+        if (pthread_workqueue_attr_setqueuepriority_np(&attr, i) != 0) 
             fprintf(stderr, "Failed to set workqueue priority\n");
         
         if (pthread_workqueue_create_np(&workqueues[i], &attr) != 0)

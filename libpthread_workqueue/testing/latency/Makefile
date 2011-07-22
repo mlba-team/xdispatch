@@ -1,10 +1,17 @@
 CC=gcc
 
+include ../../config.mk
+
+all: latency
+
 latency:
-	$(CC) -m64 -I../../include -L../.. -o latency latency.c -lpthread -lrt -lpthread_workqueue
+	$(CC) $(CFLAGS) -I../../include -L../.. -Wl,-rpath,$(BASEDIR) -o latency latency.c -lpthread_workqueue -lpthread -lrt
+
+solaris:
+	$(CC) $(CFLAGS) -I../../include -L../.. -R$(BASEDIR) -o latency latency.c -lpthread_workqueue -lpthread -lrt
 
 macosx:
-	$(CC) -m64 -I../../include -L../.. -R../.. -o latencym latency.c -lpthread
+	$(CC) $(CFLAGS) -I../../include -L../.. -R$(BASEDIR) -o latencym latency.c -lpthread
 
 check: latency
 	LD_LIBRARY_PATH=../..:/usr/sfw/lib/amd64 ./latency

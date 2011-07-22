@@ -1,10 +1,11 @@
 program="libpthread_workqueue"
-version="0.5a"
+version="0.8.2"
 abi_major="0"
 abi_minor="0"
 abi_version="$abi_major.$abi_minor"
-cflags="-Wall -Werror -D_XOPEN_SOURCE=600 -D__EXTENSIONS__ -D_GNU_SOURCE -std=c99 -I./include -I./src"
-ldflags="-lpthread"
+cflags="-Wall -Wextra -Werror -D_XOPEN_SOURCE=600 -D__EXTENSIONS__ -D_GNU_SOURCE -std=c99 -I./include -I./src"
+ldflags=""
+ldadd="-lpthread -lrt"
 sources='src/api.c src/$(API)/manager.c src/$(API)/thread_info.c src/witem_cache.c src/$(API)/thread_rt.c'
 libdepends=""
 deps="src/*.h"
@@ -41,7 +42,7 @@ post_configure_hook() {
         #       by SFWgcc
         #
         cflags="$cflags -m64 -fpic"
-    	ldflags="$ldflags -m64 -fpic"
+    	ldflags="$ldflags -m64 -fpic -lumem"
     	;;
     *)
         if [ "`uname -m`" = "x86_64" ] ; then
@@ -49,8 +50,8 @@ post_configure_hook() {
         else
             arch_flags=""
         fi
-        cflags="$cflags $arch_flags -fpic -fvisibility=hidden"
-    	ldflags="$ldflags $arch_flags -fpic"
+        cflags="$cflags $arch_flags -fpic -fvisibility=hidden -pthread"
+    	ldflags="$ldflags $arch_flags -fpic -pthread"
 	;;
     esac
 }

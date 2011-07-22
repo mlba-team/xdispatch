@@ -1,3 +1,3 @@
- * need to uninitialize library after fork() using pthread_atfork()
+BUGS
+----
 
- * need to implement pthread_main_np()

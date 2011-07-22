@@ -83,6 +83,7 @@
     <ClInclude Include="src\private.h" />
     <ClInclude Include="src\windows\platform.h" />
     <ClInclude Include="src\windows\queue.h" />
+    <ClInclude Include="src\windows\winpthreads.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

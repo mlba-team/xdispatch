@@ -29,6 +29,7 @@
 
 #include "private.h"
 
+unsigned int PWQ_ACTIVE_CPU = 0;
 int DEBUG_WORKQUEUE = 0;
 char *WORKQUEUE_DEBUG_IDENT = "WQ";
 
@@ -49,13 +50,21 @@ pthread_workqueue_init_np(void)
 #else
     DEBUG_WORKQUEUE = (getenv("PWQ_DEBUG") == NULL) ? 0 : 1;
 # ifndef _WIN32
-    USE_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
+    PWQ_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
+    PWQ_ACTIVE_CPU = (getenv("PWQ_ACTIVE_CPU") == NULL) ? 0 : atoi(getenv("PWQ_ACTIVE_CPU"));
+
+    if (getenv("PWQ_SPIN_USEC") != NULL)
+        PWQ_SPIN_USEC = atoi(getenv("PWQ_SPIN_USEC"));
+    
+    if (getenv("PWQ_SPIN_THREADS") != NULL)
+        PWQ_SPIN_THREADS =  atoi(getenv("PWQ_SPIN_THREADS"));
+
 # endif
 #endif
 
     if (manager_init() < 0)
         return (-1);
- 
+
     dbg_puts("pthread_workqueue library initialized");
     return (0);
 }
@@ -67,7 +76,7 @@ pthread_workqueue_create_np(pthread_workqueue_t *workqp,
     pthread_workqueue_t workq;
 
     if ((attr != NULL) && ((attr->sig != PTHREAD_WORKQUEUE_ATTR_SIG) ||
-         (attr->queueprio < 0) || (attr->queueprio > WORKQ_NUM_PRIOQUEUE)))
+         (attr->queueprio < 0) || (attr->queueprio >= WORKQ_NUM_PRIOQUEUE)))
         return (EINVAL);
     if ((workq = calloc(1, sizeof(*workq))) == NULL)
         return (ENOMEM);
@@ -85,7 +94,7 @@ pthread_workqueue_create_np(pthread_workqueue_t *workqp,
 
     manager_workqueue_create(workq);
 
-    dbg_printf("created queue %p", workq);
+    dbg_printf("created queue %p", (void *) workq);
 
     *workqp = workq;
     return (0);
@@ -102,24 +111,16 @@ pthread_workqueue_additem_np(pthread_workqueue_t workq,
     if (valid_workq(workq) == 0)
         return (EINVAL);
 
-    witem = fastpath(witem_alloc_cacheonly());
-    if (slowpath(witem == NULL))
-        witem = witem_alloc_from_heap();
-
-    witem->gencount = 0;
-    witem->func = workitem_func;
-    witem->func_arg = workitem_arg;
-    witem->flags = 0;
-    witem->item_entry.stqe_next = 0;
-
-    manager_workqueue_additem(workq, witem);
+    witem = witem_alloc(workitem_func, workitem_arg);
 
     if (itemhandlep != NULL)
         *itemhandlep = (pthread_workitem_handle_t *) witem;
     if (gencountp != NULL)
         *gencountp = witem->gencount;
 
-    dbg_printf("added an item to queue %p", workq);
+    manager_workqueue_additem(workq, witem);
+
+    dbg_printf("added item %p to queue %p", (void *) witem, (void *) workq);
 
     return (0);
 }
@@ -193,37 +194,8 @@ pthread_workqueue_attr_setqueuepriority_np(
         return (EINVAL);
 }
 
-/*
- * Does not exist in the Apple implementation, but needed on Linux
- * due to a kernel bug that causes the process to become a zombie when
- * the main thread calls pthread_exit().
- *
- * More info:
- *   http://www.0x61.com/forum/viewtopic.php?f=109&t=997736&view=next
- */
-void VISIBLE
-pthread_workqueue_main_np(void)
+unsigned long VISIBLE
+pthread_workqueue_peek_np(const char *key)
 {
-
-    //TESTING - dispatch testsuite requires this..
-#ifndef _WIN32
-	pthread_exit(0);
-#endif
-
-    /* 
-    struct worker w;
-    pthread_mutex_lock(&wqlist_mtx);
-    if (wqlist_has_manager) {
-        pthread_mutex_unlock(&wqlist_mtx);
-        dbg_puts("running as a worker");
-        memset(&w, 0, sizeof(w));
-        worker_main(&w);
-    } else {
-        wqlist_has_manager = 1;
-        pthread_mutex_unlock(&wqlist_mtx);
-
-        dbg_puts("running as a manager");
-        manager_main(NULL);
-    }
-    */
+    return manager_peek(key);
 }

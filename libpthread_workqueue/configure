@@ -19,7 +19,7 @@ makeconf_version="$Revision: 10 $"
 
 c_exports="program version target api cflags"
 
-make_exports="program version target api distfile \
+make_exports="program version target api distfile basedir \
               prefix bindir sbindir libdir includedir mandir \
               cflags ldflags ldadd libdepends \
               sources objs deps mans headers extra_dist subdirs \
@@ -81,6 +81,7 @@ process_env() {
     test -n "$LN" && ld="$LN"
     test -n "$LDFLAGS" && ldflags="$LDFLAGS"
     test -n "$AR" && ar="$AR"
+    basedir=`pwd`
 }
  
 check_header() {	 

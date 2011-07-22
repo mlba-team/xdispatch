@@ -46,6 +46,11 @@
 #include "pthread_workqueue.h"
 #include "debug.h"
 
+/* The maximum number of workqueues that can be created.
+   This is based on libdispatch only needing 6 workqueues.
+   */
+#define PTHREAD_WORKQUEUE_MAX 31
+
 /* The total number of priority levels. */
 #define WORKQ_NUM_PRIOQUEUE 3
 
@@ -55,7 +60,12 @@
 
 /* Whether to use real-time threads for the workers if available */
 
-extern int USE_RT_THREADS;
+extern unsigned int PWQ_RT_THREADS;
+extern time_t PWQ_SPIN_USEC;
+extern unsigned int PWQ_SPIN_THREADS;
+
+/* A limit of the number of cpu:s that we view as available, useful when e.g. using processor sets */
+extern unsigned int PWQ_ACTIVE_CPU;
 
 #if __GNUC__
 #define fastpath(x)     ((__typeof__(x))__builtin_expect((long)(x), ~0l))
@@ -67,7 +77,17 @@ extern int USE_RT_THREADS;
 
 #define CACHELINE_SIZE	64
 #define ROUND_UP_TO_CACHELINE_SIZE(x)	(((x) + (CACHELINE_SIZE - 1)) & ~(CACHELINE_SIZE - 1))
-#define WITEM_CACHE_DISABLE 1
+
+/*
+ * The work item cache, has three different optional implementations:
+ * 1. No cache, just normal malloc/free using the standard malloc library in use
+ * 2. Libumem based object cache, requires linkage with libumem - for non-Solaris see http://labs.omniti.com/labs/portableumem
+ *    this is the most balanced cache supporting migration across threads of allocated/freed witems
+ * 3. TSD based cache, modelled on libdispatch continuation implementation, can lead to imbalance with assymetric 
+ *    producer/consumer threads as allocated memory is cached by the thread freeing it
+ */
+
+#define WITEM_CACHE_TYPE 1 // Set to 1, 2 or 3 to specify witem cache implementation to use
 
 struct work {
     STAILQ_ENTRY(work)   item_entry; 
@@ -75,17 +95,9 @@ struct work {
     void                *func_arg;
     unsigned int         flags;
     unsigned int         gencount;
+#if (WITEM_CACHE_TYPE == 3)
 	struct work *volatile wi_next;
-};
-
-struct worker {
-    LIST_ENTRY(worker)   entries;
-    pthread_t            tid;
-    enum {
-        WORKER_STATE_SLEEPING,
-        WORKER_STATE_RUNNING,
-        WORKER_STATE_ZOMBIE,
-    } state;
+#endif
 };
 
 struct _pthread_workqueue {
@@ -93,7 +105,7 @@ struct _pthread_workqueue {
     unsigned int         flags;
     int                  queueprio;
     int                  overcommit;
-    LIST_ENTRY(_pthread_workqueue) wqlist_entry;
+    unsigned int         wqlist_index;
     STAILQ_HEAD(,work)   item_listhead;
     pthread_spinlock_t   mtx;
 #ifdef WORKQUEUE_PLATFORM_SPECIFIC
@@ -101,12 +113,13 @@ struct _pthread_workqueue {
 #endif
 };
 
+/* manager.c */
 int manager_init(void);
+unsigned long manager_peek(const char *);
 void manager_workqueue_create(struct _pthread_workqueue *);
 void manager_workqueue_additem(struct _pthread_workqueue *, struct work *);
 
-struct work *witem_alloc_from_heap(void);
-struct work *witem_alloc_cacheonly();
+struct work *witem_alloc(void (*func)(void *), void *func_arg); // returns a properly initialized witem
 void witem_free(struct work *wi);
 int witem_cache_init(void);
 void witem_cache_cleanup(void *value);

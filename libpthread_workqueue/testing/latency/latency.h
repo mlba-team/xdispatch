@@ -20,12 +20,17 @@
 
 #include "pthread_workqueue.h"
 
+#ifdef _WIN32
+# include "../../src/windows/platform.h"
+#endif
+
 // Run settings
 #define SECONDS_TO_RUN 10
-#define WORKQUEUE_COUNT 6
+#define WORKQUEUE_COUNT 3
 #define GENERATOR_WORKQUEUE_COUNT 1
 #define SLEEP_BEFORE_START 0
 #define FORCE_BUSY_LOOP 0
+#define LATENCY_RUN_GENERATOR_IN_MAIN_THREAD 0
 
 // Data rates
 #define EVENTS_GENERATED_PER_TICK 100   // simulate some small bursting 
@@ -41,7 +46,11 @@
 #define EVENT_TIME_SLICE (NANOSECONDS_PER_SECOND / EVENT_GENERATION_FREQUENCY)
 #define SYSTEM_CLOCK_RESOLUTION 100
 
+#ifdef _WIN32
+typedef unsigned long long mytime_t;
+#else
 typedef unsigned long mytime_t;
+#endif
 
 struct wq_event 
 {
@@ -51,10 +60,10 @@ struct wq_event
 
 struct wq_statistics 
 {
-	unsigned int min; 
-	unsigned int max; 
+	mytime_t min; 
+	mytime_t max; 
 	double avg; 
-	unsigned int total; 
+	mytime_t total; 
 	unsigned int count; 
 	unsigned int count_over_threshold; 
     unsigned int distribution[DISTRIBUTION_BUCKETS];
@@ -73,6 +82,11 @@ struct wq_event_generator
 # define atomic_dec      atomic_dec_32
 # define atomic_inc_nv   atomic_inc_32_nv
 # define atomic_dec_nv   atomic_dec_32_nv
+#elif defined(_WIN32)
+# define atomic_inc(p)   (void) InterlockedIncrement((p))
+# define atomic_dec(p)   (void) InterlockedDecrement((p))
+# define atomic_inc_nv(p)  InterlockedIncrement((p))
+# define atomic_dec_nv(p)  InterlockedDecrement((p))
 #else
 # define atomic_inc(p)   (void) __sync_add_and_fetch((p), 1)
 # define atomic_dec(p)   (void) __sync_sub_and_fetch((p), 1)

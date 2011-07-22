@@ -28,49 +28,106 @@
 
 #include "private.h"
 
-/*
- * Work item cache modelled on libdispatch continuation implementation
- */
 
+/* no witem cache */
 
-#if WITEM_CACHE_DISABLE    
+#if (WITEM_CACHE_TYPE == 1)
 
 int
 witem_cache_init(void)
 {
-    return (0);
+   return (0);
 }
 
 struct work *
-witem_alloc_from_heap(void)
+witem_alloc(void (*func)(void *), void *func_arg)
 {
 	struct work *witem;
     
 	while (!(witem = fastpath(malloc(ROUND_UP_TO_CACHELINE_SIZE(sizeof(*witem)))))) {
 		sleep(1);
 	}
-    
-	return witem;
-}
 
-struct work *
-witem_alloc_cacheonly()
-{
-	return NULL;
+    witem->gencount = 0;
+    witem->flags = 0;
+    witem->item_entry.stqe_next = 0;
+    witem->func = func;
+    witem->func_arg = func_arg;
+
+	return witem;
 }
 
 void 
 witem_free(struct work *wi)
 {
+    dbg_printf("freed work item %p", wi);
     free(wi);
 }
 
 void
 witem_cache_cleanup(void *value)
 {
+    (void) value;
 }
 
-#else
+/* libumem based object cache */
+
+#elif (WITEM_CACHE_TYPE == 2)
+
+#include <umem.h>
+
+static umem_cache_t  *witem_cache;
+
+int
+witem_cache_init(void)
+{
+    witem_cache = umem_cache_create((char *) "witem_cache",   
+                                    sizeof(struct work),   
+                                    CACHELINE_SIZE,  
+                                    NULL,
+                                    NULL, 
+                                    NULL, 
+                                    NULL, 
+                                    NULL, 
+                                    0);
+    return (0);
+}
+
+struct work *
+witem_alloc(void (*func)(void *), void *func_arg)
+{
+	struct work *witem;
+    
+	while (!(witem = fastpath(umem_cache_alloc(witem_cache, UMEM_DEFAULT)))) {
+		sleep(1);
+	}
+    
+    witem->gencount = 0;
+    witem->flags = 0;
+    witem->item_entry.stqe_next = 0;
+    witem->func = func;
+    witem->func_arg = func_arg;
+
+	return witem;
+}
+
+void 
+witem_free(struct work *wi)
+{
+    umem_cache_free(witem_cache, wi);
+    return;
+}
+
+void
+witem_cache_cleanup(void *value)
+{
+    void * p;
+    p = value;
+}
+
+/* TSD based cacheing per thread */
+
+#elif (WITEM_CACHE_TYPE == 3)
 
 pthread_key_t witem_cache_key;
 
@@ -81,7 +138,7 @@ witem_cache_init(void)
     return (0);
 }
 
-struct work *
+static struct work *
 witem_alloc_from_heap(void)
 {
 	struct work *witem;
@@ -90,25 +147,47 @@ witem_alloc_from_heap(void)
 		sleep(1);
 	}
     
+    witem->gencount = 0;
+    witem->flags = 0;
+    witem->item_entry.stqe_next = 0;
+
 	return witem;
 }
 
 struct work *
-witem_alloc_cacheonly()
+witem_alloc(void (*func)(void *), void *func_arg)
 {
-    struct work *wi = fastpath(pthread_getspecific(witem_cache_key));
-	if (wi) {
-		pthread_setspecific(witem_cache_key, wi->wi_next);
+    struct work *witem = fastpath(pthread_getspecific(witem_cache_key));
+	if (witem) 
+    {
+		pthread_setspecific(witem_cache_key, witem->wi_next);
 	}
-	return wi;
+    else
+    {
+        witem = witem_alloc_from_heap();
+    }
+
+    witem->func = func;
+    witem->func_arg = func_arg;
+    
+	return witem;
 }
 
 void 
-witem_free(struct work *wi)
+witem_free(struct work *witem)
 {
 	struct work *prev_wi = pthread_getspecific(witem_cache_key);
-	wi->wi_next = prev_wi;
-	pthread_setspecific(witem_cache_key, wi);
+
+	witem->wi_next = prev_wi;
+    
+    // We need to initialize here also...
+    witem->gencount = 0;
+    witem->flags = 0;
+    witem->item_entry.stqe_next = 0;
+    witem->func = NULL;
+    witem->func_arg = NULL;
+
+	pthread_setspecific(witem_cache_key, witem);
 }
 
 void
@@ -121,5 +200,8 @@ witem_cache_cleanup(void *value)
 		free(wi);
 	}
 }
-#endif
+#else
 
+#error Invalid witem cache type specified
+
+#endif

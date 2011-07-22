@@ -14,11 +14,14 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-.PHONY :: install uninstall check dist dist-upload publish-www clean merge distclean fresh-build rpm edit cscope valgrind
+# Flags to pass to dpkg-buildpackage
+DPKGFLAGS=-uc -us
+
+.PHONY :: install uninstall check dist dist-upload publish-www clean merge distclean fresh-build rpm edit cscope valgrind testing
 
 include config.mk
 
-all: $(PROGRAM).so
+all: $(PROGRAM).so testing
 
 %.dll: $(OBJS)
 	$(LD) -o $@ $(LDFLAGS) $(OBJS) $(LDADD)
@@ -57,7 +60,7 @@ check: $(PROGRAM).so
 	cd testing && make check
 
 edit:
-	$(EDITOR) `find ./ -name '*.c' -o -name '*.h'` Makefile
+	$(EDITOR) `find ./src -name '*.c' -o -name '*.h'` Makefile
 
 $(PROGRAM)-$(VERSION).tar.gz: 
 	mkdir $(PROGRAM)-$(VERSION)
@@ -67,16 +70,22 @@ $(PROGRAM)-$(VERSION).tar.gz:
 	tar zcf $(PROGRAM)-$(VERSION).tar.gz $(PROGRAM)-$(VERSION)
 	rm -rf $(PROGRAM)-$(VERSION)
 
+testing:
+	cd testing && make
+
 dist: clean $(PROGRAM)-$(VERSION).tar.gz
 
-dist-upload: dist
-	scp $(PROGRAM)-$(VERSION).tar.gz heily.com:~/public_html/proj/$(PROGRAM)/dist
+%.asc:
+	gpg --armor --detach-sign `echo '$@' | sed 's/.asc$$//'`
+
+dist-upload: dist $(DISTFILE).asc
+	scp $(DISTFILE) $(DISTFILE).asc heily.com:/var/www/heily.com/dist/$(PROGRAM)
 
 publish-www:
 	cp -R www/* ~/public_html/libkqueue/
 
 clean:
-	rm -f tags $(PROGRAM)-$(VERSION).tar.gz *.a $(OBJS) *.pc *.so *.so.* test-$(PROGRAM)
+	rm -f tags $(DISTFILE) $(DISTFILE).asc *.a $(OBJS) *.pc *.so *.so.* test-$(PROGRAM)
 	cd testing && make clean
 	rm -rf pkg
 
@@ -97,13 +106,13 @@ rpm: clean $(DISTFILE)
 
 deb: clean $(DISTFILE)
 	mkdir pkg
-	cd pkg && tar zxf ../$(DISTFILE) 
-	cp $(DISTFILE) pkg/$(PROGRAM)_$(VERSION).orig.tar.gz
-	cp -R ports/debian pkg/$(PROGRAM)-$(VERSION) 
+	cd pkg && tar zxf ../$(DISTFILE) && mv libpthread_workqueue-$(VERSION) libpthread-workqueue-$(VERSION)
+	cp $(DISTFILE) pkg/libpthread-workqueue_$(VERSION).orig.tar.gz
+	cp -R ports/debian pkg/libpthread-workqueue-$(VERSION) 
 	cd pkg && \
-	rm -rf `find $(PROGRAM)-$(VERSION)/debian -type d -name .svn` ; \
-	perl -pi -e 's/\@\@VERSION\@\@/$(VERSION)/' $(PROGRAM)-$(VERSION)/debian/changelog ; \
-	cd $(PROGRAM)-$(VERSION) && dpkg-buildpackage -uc -us
+	rm -rf `find libpthread-workqueue-$(VERSION)/debian -type d -name .svn` ; \
+	perl -pi -e 's/\@\@VERSION\@\@/$(VERSION)/' libpthread-workqueue-$(VERSION)/debian/changelog ; \
+	cd libpthread-workqueue-$(VERSION) && dpkg-buildpackage $(DPKGFLAGS)
 	lintian -i pkg/*.deb
 	@printf "\nThe following packages have been created:\n"
 	@find ./pkg -name '*.deb' | sed 's/^/    /'

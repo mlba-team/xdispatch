@@ -48,7 +48,7 @@
 
 void ptwq_set_current_thread_priority(int priority)
 {
-    long retval;
+    long retval = 0;
 
     dbg_printf("reconfiguring thread for priority level=%u", priority);
 
@@ -77,7 +77,7 @@ void ptwq_set_current_thread_priority(int priority)
 
 #else
 
-void ptwq_set_current_thread_priority(int priority)
+void ptwq_set_current_thread_priority(int priority  __attribute__ ((unused)))
 {    
     return;
 }
