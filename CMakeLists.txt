@@ -41,9 +41,6 @@ if(CLANG_BLOCKS)
     endif()
     mz_add_flag(-fblocks)
     set(LIBS ${LIBS} BlocksRuntime)
-else()
- # visibility flag is not welcome when using clang
- mz_add_flag(-fvisibility=hidden)
 endif()
 
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)

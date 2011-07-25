@@ -62,8 +62,8 @@ public:
     void unlock();
 
 private:
-    dispatch_semaphore_t sem;
-    bool lock;
+    struct data;
+    data* _d;
 
     synclock& operator= (synclock);
 

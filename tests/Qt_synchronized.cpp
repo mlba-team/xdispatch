@@ -31,8 +31,8 @@
 
 static bool flag = false;
 static size_t counter = 0;
-static QDispatchSynclock lock;
-static QMutex mutex;
+static xdispatch::synclock lock;
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 class MutexRun : public QIterationRunnable {
 
@@ -40,13 +40,13 @@ public:
     void run(size_t index){
         Q_UNUSED(index);
 
-        mutex.lock();
+        MU_ASSERT_NULL( pthread_mutex_lock(&mutex) );
         if(flag) {
             counter++;
             flag = false;
         } else
             flag = true;
-        mutex.unlock();
+        MU_ASSERT_NULL( pthread_mutex_unlock(&mutex) );
 
     }
 
