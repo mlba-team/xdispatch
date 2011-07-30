@@ -47,7 +47,7 @@ extern "C" void cxx_dispatch_source() {
     MU_BEGIN_TEST(cxx_dispatch_source);
 
     xdispatch::source src(new TestType);
-	src.set_queue(xdispatch::main_queue());
+    src.target_queue(xdispatch::main_queue());
 	src.handler(${
 		MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
 		MU_PASS("");

@@ -58,7 +58,7 @@ extern "C" void Qt_dispatch_source_signal(){
 
 	// configure the source
 	QDispatchSource src(new QDispatchSourceTypeSignal(&object, SIGNAL(ready())));
-	src.setTarget(QDispatch::globalQueue(QDispatch::LOW));
+    src.setTargetQueue(QDispatch::globalQueue(QDispatch::LOW));
 	src.setHandler(${
 		MU_MESSAGE("Signal was emitted");
 		if(QDispatch::currentQueue().native() == dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0))
