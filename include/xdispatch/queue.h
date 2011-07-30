@@ -153,14 +153,14 @@ public:
     When not passing a queue, the finalizer operation
     will be executed on the queue itself.
     */
-    virtual void set_finalizer(operation*, const queue& = global_queue());
+    virtual void finalizer(operation*, const queue& = global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
     /**
     Same as set_finalizer(operation*, queue*).
     Will wrap the given block in an operation and store
     it as finalizer.
     */
-    virtual void set_finalizer(dispatch_block_t, const queue& = global_queue());
+    virtual void finalizer(dispatch_block_t, const queue& = global_queue());
 #endif
     /**
     @return The label of the queue that was used while creating it
@@ -194,7 +194,7 @@ public:
      
      @remarks This has no effect on the global queues and the main queue.
     */
-    virtual void set_target(const queue&);
+    virtual void target_queue(const queue&);
 
 	queue& operator= (const queue&);
     

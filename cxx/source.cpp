@@ -106,8 +106,12 @@ void source::resume(){
 	dispatch_atomic_inc(&d->suspend_ct);
 }
 
-void source::set_queue(const queue& q){
+void source::target_queue(const queue& q){
 	d->target = q;
+}
+
+queue source::target_queue() const {
+    return d->target;
 }
 
 void source::handler(operation* op){
@@ -117,7 +121,7 @@ void source::handler(operation* op){
 		delete d->handler;
 
 	d->handler = op;
-	d->handler->set_auto_delete(false);
+	d->handler->auto_delete(false);
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS

@@ -238,11 +238,16 @@ public:
 	 */
 	void setHandler(dispatch_block_t);
 #endif
+    /**
+      @returns The queue the handler will be dispatched on.
+        Defaults to QDispatch::globalQueue();
+     */
+    QDispatchQueue targetQueue() const;
 	/**
 	 Sets the target, i.e. the queue the handler will be dispatched
 	 on. Defaults to QDispatch::globalQueue().
 	 */
-	void setTarget(const QDispatchQueue&);
+    void setTargetQueue(const QDispatchQueue&);
 	/**
 	 @returns the data associated to the current QDispatchSourceType. See
 		the individual type documentations for details on the data available.

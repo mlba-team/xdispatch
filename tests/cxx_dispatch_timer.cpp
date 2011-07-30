@@ -90,7 +90,7 @@ public:
         MU_ASSERT_NOT_NULL(tested_timer);
         MU_ASSERT_NOT_NULL(tested_timer->native());
         tested_timer->handler(new test_periodic);
-        tested_timer->set_queue(xdispatch::main_queue());
+        tested_timer->target_queue(xdispatch::main_queue());
         gettimeofday(&checked_time, NULL);
 
         tested_timer->start();

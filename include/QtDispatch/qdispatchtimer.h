@@ -66,7 +66,7 @@ public:
     /**
       Sets the queue the timer will execute on
       */
-    void setQueue(const xdispatch::queue&);
+    void setTargetQueue(const xdispatch::queue&);
     /**
       @returns The queue the handler will be executed on
       */

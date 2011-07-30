@@ -93,7 +93,7 @@ void queue::sync(operation* op){
     dispatch_sync_f(d->native, op, run_operation);
 }
 
-void queue::set_finalizer(operation* op, const queue& q){
+void queue::finalizer(operation* op, const queue& q){
     dispatch_set_finalizer_f(d->native, run_operation);
     dispatch_set_context(d->native, op);
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
@@ -115,7 +115,7 @@ dispatch_object_t queue::native() const {
     return d->native;
 }
 
-void queue::set_target(const queue& q) {
+void queue::target_queue(const queue& q) {
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
@@ -141,8 +141,8 @@ void queue::sync(dispatch_block_t b){
     dispatch_sync(d->native, b);
 }
 
-void queue::set_finalizer(dispatch_block_t b, const queue& q){
-   set_finalizer(new block_operation(b), q);
+void queue::finalizer(dispatch_block_t b, const queue& q){
+   finalizer(new block_operation(b), q);
 }
 
 #endif

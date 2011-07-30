@@ -53,7 +53,7 @@ class XDISPATCH_EXPORT operation
       the iteration from being deleted after
       finishing its execution. Defaults to true
       */
-    virtual void set_auto_delete(bool a){ auto_del = a; }
+    virtual void auto_delete(bool a){ auto_del = a; }
     /**
       @return the current auto_delete flag
       @see set_auto_delete();
@@ -83,7 +83,7 @@ public:
       the iteration from being deleted after
       finishing its execution. Defaults to true
       */
-    virtual void set_auto_delete(bool a){ auto_del = a; }
+    virtual void auto_delete(bool a){ auto_del = a; }
     /**
       @return the current auto_delete flag
       @see set_auto_delete();

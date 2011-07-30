@@ -85,7 +85,7 @@ public:
         tested_timer = new QDispatchTimer(2000);
         MU_ASSERT_NOT_NULL(tested_timer);
         tested_timer->setHandler(new testPeriodic);
-        tested_timer->setQueue(QDispatch::mainQueue());
+        tested_timer->setTargetQueue(QDispatch::mainQueue());
         checked_time.restart();
 
         tested_timer->start();
