@@ -62,5 +62,5 @@ if(MINGW)
 endif()
 
 # link this target with all needed libraries
-target_link_libraries(xdispatch_tests xdispatch ${TEST_LIB} munit ${RES_OBJECT})
+target_link_libraries(xdispatch_tests xdispatch ${TEST_LIB} ${LIBS} munit ${RES_OBJECT})
 mz_target_props(xdispatch_tests)
