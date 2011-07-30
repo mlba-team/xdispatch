@@ -167,19 +167,19 @@ void timer::handler(xdispatch::operation * op){
 
 	// set the new handler
 	d->can_delete = op->auto_delete();
-	op->set_auto_delete(false);
+    op->auto_delete(false);
 	d->handler = op;
 	d->handler_dates[d->native] = d;
 	dispatch_set_context(d->native, d->native);
 	dispatch_source_set_event_handler_f(d->native, data::event_handler);
 }
 
-void timer::set_queue(const xdispatch::queue &q){
+void timer::target_queue(const xdispatch::queue &q){
 	d->target = q;
 	dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
-xdispatch::queue timer::queue(){
+xdispatch::queue timer::target_queue(){
 	return d->target;
 }
 

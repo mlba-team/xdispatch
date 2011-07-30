@@ -119,8 +119,12 @@ QDispatchSource::~QDispatchSource(){
 	delete d;
 }
 
-void QDispatchSource::setTarget(const QDispatchQueue& q){
+void QDispatchSource::setTargetQueue(const QDispatchQueue& q){
 	d->target = q;
+}
+
+QDispatchQueue QDispatchSource::targetQueue() const {
+    return d->target;
 }
 
 void QDispatchSource::setHandler(QRunnable* r){

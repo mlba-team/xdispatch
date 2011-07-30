@@ -59,8 +59,8 @@ void QDispatchTimer::setInterval(int msec){
     timer::interval(msec* NSEC_PER_MSEC);
 }
 
-void QDispatchTimer::setQueue(const xdispatch::queue& q){
-    timer::set_queue(q);
+void QDispatchTimer::setTargetQueue(const xdispatch::queue& q){
+    timer::target_queue(q);
 }
 
 void QDispatchTimer::setHandler(QRunnable* r){

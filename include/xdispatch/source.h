@@ -178,7 +178,11 @@ public:
 	/**
 	Sets the queue the handler will be executed on
 	*/
-	void set_queue(const xdispatch::queue&);
+    void target_queue(const xdispatch::queue&);
+    /**
+    @returns the queue the handler will be executed on
+    */
+    xdispatch::queue target_queue() const;
 	/**
 	@returns the data that is associated with the currently dispatched
 	and executed handler. The returned data is defined by the sourcetype

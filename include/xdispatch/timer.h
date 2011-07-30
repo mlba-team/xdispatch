@@ -103,11 +103,11 @@ public:
     /**
       Sets the queue the handler will be executed on
       */
-    void set_queue(const xdispatch::queue&);
+    void target_queue(const xdispatch::queue&);
     /**
       @returns the queue the handler will be executed on
       */
-    xdispatch::queue queue();
+    xdispatch::queue target_queue();
     /**
       @returns The native dispatch_source_t associated with the timer
       */
