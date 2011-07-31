@@ -99,7 +99,7 @@ static int pthread_mutex_destroy(pthread_mutex_t *m)
 	return 0;
 }
 
-#define PTHREAD_MUTEX_INITIALIZER {(void*)-1,-1,0,0,0,0}
+#define PTHREAD_MUTEX_INITIALIZER {(PRTL_CRITICAL_SECTION_DEBUG)-1,-1,0,0,0,0}
 #define PTHREAD_MUTEX_NORMAL 0
 #define PTHREAD_MUTEX_ERRORCHECK 1
 #define PTHREAD_MUTEX_RECURSIVE 2
