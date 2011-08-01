@@ -184,7 +184,7 @@ manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
 unsigned long
 manager_peek(const char *key)
 {
-    unsigned long rv;
+    unsigned long rv = 0;
 
     if (strcmp(key, "combined_idle") == 0) {
         dbg_puts("TODO");

@@ -38,7 +38,7 @@
 
 /* Environment setting */
 unsigned int PWQ_RT_THREADS = 0;
-time_t PWQ_SPIN_USEC = 10000; // The number of microseconds we should spin loop if desired
+unsigned long PWQ_SPIN_LAPS = 10*1000*1000; // The number of laps we should spin loop if desired (default 10M)
 unsigned int PWQ_SPIN_THREADS = 0; // The number of threads that should be kept spinning
 unsigned volatile int current_threads_spinning = 0; // The number of threads currently spinning
 
@@ -210,6 +210,10 @@ wqlist_scan(int *queue_priority)
             do
             {
                 new_mask = atomic_and(&wqlist_mask, ~(wqlist_index_bit));
+
+                if (slowpath((new_mask & wqlist_index_bit))) // if we would race, issue pause instruction
+                    _hardware_pause();
+                
             } while (new_mask & wqlist_index_bit);
         }
         if (queue_priority != NULL)
@@ -307,7 +311,6 @@ worker_main(void *arg)
     void (*func)(void *);
     void *func_arg;
     int queue_priority = 0;
-    struct timespec ts_start, ts_now;
     
     (void) arg;
     dbg_puts("worker thread started");
@@ -335,19 +338,16 @@ worker_main(void *arg)
 
                 if (current_threads_spinning <= PWQ_SPIN_THREADS)
                 {
-                    clock_gettime(CLOCK_REALTIME, &ts_start);
-                    ts_now.tv_sec = ts_start.tv_sec;
-                    ts_now.tv_nsec = ts_start.tv_nsec;
+                    unsigned long current_lap = 0;
                     
-                    // Spin until we get an item or PWQ_SPIN_USEC microseconds passes
-                    while (!witem && (((ts_now.tv_sec - ts_start.tv_sec) * 1000000) + (((ts_now.tv_nsec - ts_start.tv_nsec) / 1000)) <= PWQ_SPIN_USEC))
+                    // Spin until we get an item or PWQ_SPIN_LAPS have passed
+                    while (!witem && (current_lap <= PWQ_SPIN_LAPS))
                     {
                         witem = wqlist_scan(&queue_priority);
                         if (!witem)
                         {
-                            // Perhaps a hardware pause
-                            // instruction could be used here to keep the pace down, probably not needed though
-                            clock_gettime(CLOCK_REALTIME, &ts_now);
+                            current_lap++;
+                            _hardware_pause();
                         }
                     }                
                 }
@@ -660,6 +660,10 @@ manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
             do
             {
                 new_mask = atomic_or(&wqlist_mask, wqlist_index_bit);
+
+                if (slowpath((!(new_mask & wqlist_index_bit)))) // if we would race, issue pause instruction
+                    _hardware_pause();
+
             } while (!(new_mask & wqlist_index_bit));
         }
         

@@ -53,8 +53,8 @@ pthread_workqueue_init_np(void)
     PWQ_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
     PWQ_ACTIVE_CPU = (getenv("PWQ_ACTIVE_CPU") == NULL) ? 0 : atoi(getenv("PWQ_ACTIVE_CPU"));
 
-    if (getenv("PWQ_SPIN_USEC") != NULL)
-        PWQ_SPIN_USEC = atoi(getenv("PWQ_SPIN_USEC"));
+    if (getenv("PWQ_SPIN_LAPS") != NULL)
+        PWQ_SPIN_LAPS = atol(getenv("PWQ_SPIN_LAPS"));
     
     if (getenv("PWQ_SPIN_THREADS") != NULL)
         PWQ_SPIN_THREADS =  atoi(getenv("PWQ_SPIN_THREADS"));
