@@ -90,4 +90,6 @@ Status of Qt API implementation
 ===============================
 (an X marks an API as done)
 
-All done :)
+- Elaborate ways of adding event queue
+  support while executing Qt code on
+  QtDispatch queues

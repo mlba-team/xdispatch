@@ -1,6 +1,28 @@
 /**
 @page change_log CHANGELOG
 
+@section changes-6 Version 0.6.0
+
+released 01/08/2011
+
+ - Updated libpthread_workqueue to version 0.8.2 (r200)
+ - Updated libkqueue to r526
+ - Merged a patch by Mark Heily originally contributed to the
+   libdispatch mailing lists
+ - Changed several long datatypes to be an intptr_t instead
+   resulting in better compatibility with non LP64 platforms
+   and a consistent behaviour throughout all architectures
+ - streamlined the C++ and Qt inspired interfaces to use a
+   consistent setter and getter style throughout the entire api
+ - Fixed a bug within xdispatch::source causing source handlers 
+   to be deleted too early and thus causing sigfaults
+ - Including a copy of libblocksruntime to enable building with
+   clang and using blocks without needing any further dependencies
+ - Fixed an issue causing a QDispatchSource not to fire when 
+   using custom QIODevices
+ - Forced use of Winsock2.h instead of Winsock.h on Windows platforms
+   and reduced the number of headers included by xdispatch/dispatch.h
+   
 @section changes-5 Version 0.5.0
 
 released 01/06/2011
