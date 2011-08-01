@@ -5,7 +5,8 @@
 
 released 01/08/2011
 
- - Updated libpthread_workqueue to version 0.8.2 (r195)
+ - Updated libpthread_workqueue to version 0.8.2 (r200)
+ - Updated libkqueue to r526
  - Merged a patch by Mark Heily originally contributed to the
    libdispatch mailing lists
  - Changed several long datatypes to be an intptr_t instead
