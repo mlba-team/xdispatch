@@ -120,7 +120,7 @@ knote_delete(struct filter *filt, struct knote *kn)
 }
 
 struct knote *
-knote_lookup(struct filter *filt, short ident)
+knote_lookup(struct filter *filt, uintptr_t ident)
 {
     struct knote query;
     struct knote *ent = NULL;
@@ -133,7 +133,11 @@ knote_lookup(struct filter *filt, short ident)
         knote_lock(ent);
     pthread_rwlock_unlock(&filt->kf_knote_mtx);
 
-    dbg_printf("id=%d ent=%p", ident, ent);
+#ifdef __x86_64__
+    dbg_printf("id=%lu ent=%p", ident, ent);
+#else
+    dbg_printf("id=%u ent=%p", ident, ent);
+#endif
 
     return (ent);
 }
