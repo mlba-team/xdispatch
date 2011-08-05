@@ -26,35 +26,53 @@
 __XDISPATCH_USE_NAMESPACE
 
 extern "C"
-void xdispatch::run_operation(void* dt){  
-    assert(dt);
-    operation* w = static_cast<operation*>(dt);
+    void xdispatch::run_operation(void* dt){  
+        assert(dt);
+        operation* w = static_cast<operation*>(dt);
 
-  /*  try { */
-        (*w)();
-  /*  } catch(const std::exception& e) {
-        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
-    } catch(...) {
-        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
-    } */
+        try {
+            (*w)();
+        } catch(const std::exception& e) {
+            std::cerr << "##################################################################" << std::endl;
+            std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl; 
+            std::cerr << "           not supported, please make sure to catch them before:\n" << std::endl;
+            std::cerr << e.what() << std::endl;
+            std::cerr << "##################################################################" << std::endl;
+            abort();
+        } catch(...) {
+            std::cerr << "##################################################################" << std::endl;
+            std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl; 
+            std::cerr << "           not supported, please make sure to catch them before!" << std::endl;
+            std::cerr << "##################################################################" << std::endl;
+            abort();
+        }
 
-    if(w->auto_delete())
-		delete w;
+        if(w->auto_delete())
+            delete w;
 }
 
 extern "C"
-void xdispatch::run_iter_wrap(void* dt, size_t index){
-    assert(dt);
-    iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
+    void xdispatch::run_iter_wrap(void* dt, size_t index){
+        assert(dt);
+        iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
 
-   /* try { */
-        wrap->run(index);
-   /* } catch(const std::exception& e) {
-        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before: " << e.what() << std::endl;
-    } catch(...) {
-        std::cerr << "Note: Throwing exceptions within an xdispatch::operation is not supported, please make sure to catch them before!" << std::endl;
-    } */
+        try {
+            wrap->run(index);
+        } catch(const std::exception& e) {
+            std::cerr << "##################################################################" << std::endl;
+            std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl; 
+            std::cerr << "           not supported, please make sure to catch them before:\n" << std::endl;
+            std::cerr << e.what() << std::endl;
+            std::cerr << "##################################################################" << std::endl;
+            abort();
+        } catch(...) {
+            std::cerr << "##################################################################" << std::endl;
+            std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl; 
+            std::cerr << "           not supported, please make sure to catch them before!" << std::endl;
+            std::cerr << "##################################################################" << std::endl;
+            abort();
+        }
 
-    if(wrap->deref())
-        delete wrap;
+        if(wrap->deref())
+            delete wrap;
 }
