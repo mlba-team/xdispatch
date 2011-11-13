@@ -7,6 +7,9 @@ INCLUDE (CheckSymbolExists)
 set(NAME xdispatch)
 project(${NAME})
 
+include(CTest)
+enable_testing()
+
 # check if mz_tools is available
 if(NOT HAS_MZ_GLOBAL)
 
