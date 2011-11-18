@@ -63,6 +63,10 @@ public:
 		QDispatchEvent::TYPECONSTANT = QEvent::Type(QEvent::registerEventType(QEvent::User+1));
 		instance = new QDispatchLibBridge();
 		_dispatch_register_signal_handler_4QT(handleNewItem);
+
+                // there might be another job pending
+                // make sure that it is processed
+                handleNewItem();
 	}
 
 	static void removeCallback(){
