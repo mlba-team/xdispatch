@@ -109,13 +109,13 @@ void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block
    and that way we might produce leaks */
 
 static void dispatch_once_block(void* blk){
-	dispatch_block_store* block = (dispatch_block_store*)blk;
-	(*block)();
+    dispatch_block_store* block = (dispatch_block_store*)blk;
+    (*block)();
 }
 
 void dispatch_once(dispatch_once_t *val, dispatch_block_t block){
-	dispatch_block_store blk = block;
-	dispatch_once_f(val, &blk, dispatch_once_block);
+    dispatch_block_store blk = block;
+    dispatch_once_f(val, &blk, dispatch_once_block);
 }
 
 #endif

@@ -32,27 +32,27 @@
 __XDISPATCH_USE_NAMESPACE
 
 bool object::operator==(const object& other){
-	return native() == other.native();
+    return native() == other.native();
 }
 
 bool object::operator==(const dispatch_object_t& other){
-	return native() == other;
+    return native() == other;
 }
 
 bool object::operator!=(const object& other){
-	return native() != other.native();
+    return native() != other.native();
 }
 
 bool object::operator!=(const dispatch_object_t& other){
-	return native() != other;
+    return native() != other;
 }
 
 bool operator ==(const dispatch_object_t& a, const object& b){
-	return a == b.native();
+    return a == b.native();
 }
 
 bool operator !=(const dispatch_object_t& a, const object& b){
-	return a == b.native();
+    return a == b.native();
 }
 
 queue xdispatch::main_queue(){
@@ -62,14 +62,14 @@ queue xdispatch::main_queue(){
 queue xdispatch::global_queue(queue_priority p){
     long selection;
     switch(p) {
-    case LOW:
-        selection = DISPATCH_QUEUE_PRIORITY_LOW;
-        break;
-    case HIGH:
-        selection = DISPATCH_QUEUE_PRIORITY_HIGH;
-        break;
-    default:
-        selection = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+        case LOW:
+            selection = DISPATCH_QUEUE_PRIORITY_LOW;
+            break;
+        case HIGH:
+            selection = DISPATCH_QUEUE_PRIORITY_HIGH;
+            break;
+        default:
+            selection = DISPATCH_QUEUE_PRIORITY_DEFAULT;
     }
     return queue(dispatch_get_global_queue(selection, 0));
 }

@@ -26,17 +26,17 @@
 __XDISPATCH_USE_NAMESPACE
 
 class queue::data {
-public:
-	data(){}
-	data(const data& other)
-		: native(other.native), label(other.label){
-			assert(native);
-			dispatch_retain(native);
-	}
-	~data(){
-	    if(native)
-			dispatch_release(native);
-	}
+    public:
+    data(){}
+    data(const data& other)
+        : native(other.native), label(other.label){
+        assert(native);
+        dispatch_retain(native);
+    }
+    ~data(){
+        if(native)
+            dispatch_release(native);
+    }
 
     dispatch_queue_t native;
     std::string label;
@@ -142,19 +142,19 @@ void queue::sync(dispatch_block_t b){
 }
 
 void queue::finalizer(dispatch_block_t b, const queue& q){
-   finalizer(new block_operation(b), q);
+    finalizer(new block_operation(b), q);
 }
 
 #endif
 
 xdispatch::queue& queue::operator=(const queue& other){
-	if(*this != other){
-		if(d)
-			delete d;
-		d = new data(*other.d);
-		assert(d);
-	}
-	return *this;
+    if(*this != other){
+        if(d)
+            delete d;
+        d = new data(*other.d);
+        assert(d);
+    }
+    return *this;
 }
 
 std::ostream& xdispatch::operator<<(std::ostream& stream, const queue* q)
