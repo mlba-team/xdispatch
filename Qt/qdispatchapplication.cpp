@@ -30,11 +30,11 @@
 QT_BEGIN_NAMESPACE
 
 QDispatchApplication::QDispatchApplication(int& argc, char** argv) : QApplication(argc, argv) {
-		QDispatchLibBridge::registerCallback();
+    QDispatchLibBridge::registerCallback();
 }
 
 QDispatchApplication::~QDispatchApplication(){
-	QDispatchLibBridge::removeCallback();
+    QDispatchLibBridge::removeCallback();
 }
 
 QT_END_NAMESPACE
