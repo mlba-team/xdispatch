@@ -98,7 +98,9 @@ public:
     /**
       Sets the block that will be executed every time the timer fires
       */
-    void handler(dispatch_block_t);
+    inline void handler(dispatch_block_t b) {
+        handler( new block_operation(b) );
+    }
 #endif
     /**
       Sets the queue the handler will be executed on
@@ -132,12 +134,16 @@ public:
       Creates a single shot timer executing the given block on the given
       queue at the given time. This is quite similar to using xdispatch::queue::after()
       */
-    static void single_shot(dispatch_time_t, const xdispatch::queue&, dispatch_block_t);
+    static void single_shot(dispatch_time_t t, const xdispatch::queue& q, dispatch_block_t b) {
+        single_shot( t, q, new block_operation(b) );
+    }
     /**
       Creates a single shot timer executing the given block on the given
       queue at the given time. This is quite similar to using xdispatch::queue::after()
       */
-    static void single_shot(struct tm*, const xdispatch::queue&, dispatch_block_t);
+    static void single_shot(struct tm* t, const xdispatch::queue& q, dispatch_block_t b) {
+        single_shot( t, q, new block_operation(b) );
+    }
 #endif
 
     timer& operator =(const timer&);

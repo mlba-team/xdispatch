@@ -119,34 +119,6 @@ void queue::target_queue(const queue& q) {
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
-void queue::async(dispatch_block_t b){
-    dispatch_async(d->native, b);
-}
-
-void queue::apply(dispatch_iteration_block_t b, size_t times){
-    dispatch_apply(times, d->native, b);
-}
-
-void queue::after(dispatch_block_t b, struct tm* time){
-    dispatch_after(as_dispatch_time(time), d->native, b);
-}
-
-void queue::after(dispatch_block_t b, dispatch_time_t time){
-    dispatch_after(time, d->native, b);
-}
-
-void queue::sync(dispatch_block_t b){
-    dispatch_sync(d->native, b);
-}
-
-void queue::finalizer(dispatch_block_t b, const queue& q){
-    finalizer(new block_operation(b), q);
-}
-
-#endif
-
 xdispatch::queue& queue::operator=(const queue& other){
     if(*this != other){
         if(d)

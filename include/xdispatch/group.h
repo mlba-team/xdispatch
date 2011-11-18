@@ -65,7 +65,9 @@ public:
     Same as dispatch(operation* r, ...)
     Will wrap the given block in an operation and put it on the queue.
     */
-    void async(dispatch_block_t b, const queue& q = global_queue());
+    inline void async(dispatch_block_t b, const queue& q = global_queue()) {
+        async( new block_operation(b), q );
+    }
 #endif
     /**
     Waits until the given time has passed
@@ -107,7 +109,9 @@ public:
     or reused for additional operations.
     @see dispatch() for more information.
     */
-    void notify(dispatch_block_t b, const queue& q = global_queue());
+    inline void notify(dispatch_block_t b, const queue& q = global_queue()) {
+        notify( new block_operation(b), q );
+    }
 #endif
     /**
     Suspends the invocation of work items belonging to this group.

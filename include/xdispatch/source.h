@@ -173,7 +173,9 @@ public:
 	to data provided by the source and possibly being the
 	reason for the handler to be dispatched.
 	*/
-	void handler(dispatch_block_t);
+        virtual inline void handler(dispatch_block_t b) {
+            handler( new block_operation(b) );
+        }
 #endif
 	/**
 	Sets the queue the handler will be executed on

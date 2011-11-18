@@ -196,21 +196,6 @@ void timer::single_shot(struct tm* t, const xdispatch::queue & q, xdispatch::ope
     xdispatch::queue(q).after(op, t);
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
-void timer::handler(dispatch_block_t b){
-    handler(new xdispatch::block_operation(b));
-}
-
-void timer::single_shot(dispatch_time_t t, const xdispatch::queue & q, dispatch_block_t b){
-    xdispatch::queue(q).after(b, t);
-}
-
-void timer::single_shot(struct tm* t, const xdispatch::queue & q, dispatch_block_t b){
-    xdispatch::queue(q).after(b, t);
-}
-#endif
-
 timer& timer::operator=(const timer& other){
     if(*this != other){
         if(d)

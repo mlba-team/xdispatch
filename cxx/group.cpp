@@ -92,21 +92,6 @@ void group::resume() {
     dispatch_resume(d->native);
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
-void group::async(dispatch_block_t b, const queue& q){
-    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
-    assert(nat_q);
-    dispatch_group_async(d->native, nat_q, b);
-}
-
-void group::notify(dispatch_block_t b, const queue& q){
-    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
-    assert(nat_q);
-    dispatch_group_notify_f(d->native, nat_q, new block_operation(b), run_operation);
-}
-#endif
-
 group& group::operator=(const group& other){
     if(*this != other){
         if(d)

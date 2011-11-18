@@ -137,19 +137,37 @@ private:
   block as an xdispatch::operation
   */
 class block_operation : public operation {
-public:
-    block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
-    block_operation(const block_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
-    ~block_operation() {
-        XDISPATCH_BLOCK_DELETE(block);
-    }
+    public:
+        block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
+        block_operation(const block_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
+        ~block_operation() {
+            XDISPATCH_BLOCK_DELETE(block);
+        }
 
-    void operator ()(){
-        XDISPATCH_BLOCK_EXEC(block)();
-    };
+        void operator ()(){
+            XDISPATCH_BLOCK_EXEC(block)();
+        };
 
-private:
-    dispatch_block_store block;
+    private:
+        dispatch_block_store block;
+};
+
+/**
+  A simple iteration operation needed when
+  applying a block several times
+  */
+class block_iteration_operation : public iteration_operation {
+    public:
+        block_iteration_operation(dispatch_iteration_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
+        block_iteration_operation(const block_iteration_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
+        ~block_iteration_operation() { XDISPATCH_BLOCK_DELETE(block); }
+
+        void operator ()(size_t index){
+            XDISPATCH_BLOCK_EXEC(block)(index);
+        };
+
+    private:
+        dispatch_iteration_block_store block;
 };
 #endif
 
@@ -159,29 +177,29 @@ private:
 class XDISPATCH_EXPORT object {
 
 public:
-	/**
-	 Resumes the invocation of operations
-	 or blocks assigned to the object
-	 */
-	virtual void resume() = 0;
-	/**
-	 Suspends the invocation of operations or blocks
-	 assigned to the object. The object will be suspended
-	 as soon as the currently executed operation or block
-	 finished.
+    /**
+     Resumes the invocation of operations
+     or blocks assigned to the object
+     */
+    virtual void resume() = 0;
+    /**
+     Suspends the invocation of operations or blocks
+     assigned to the object. The object will be suspended
+     as soon as the currently executed operation or block
+     finished.
 
-	 @remarks Calls to suspend() should be balanced with calls
-	  to resume() to continue an object
-	  */
-	virtual void suspend() = 0;
-	/**
-	 Returns the native dispatch object associated to
-	 the xdispatch object
-	 */
-	virtual dispatch_object_t native() const = 0;
+     @remarks Calls to suspend() should be balanced with calls
+      to resume() to continue an object
+      */
+    virtual void suspend() = 0;
+    /**
+     Returns the native dispatch object associated to
+     the xdispatch object
+     */
+    virtual dispatch_object_t native() const = 0;
 
-	bool operator ==(const object&);
-	bool operator !=(const object&);
+    bool operator ==(const object&);
+    bool operator !=(const object&);
     bool operator ==(const dispatch_object_t&);
     bool operator !=(const dispatch_object_t&);
 };

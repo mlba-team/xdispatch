@@ -75,7 +75,9 @@ public:
     Same as async(operation*).
     Will put the given block on the queue.
     */
-    virtual void async(dispatch_block_t);
+    virtual inline void async(dispatch_block_t b) {
+        async( new block_operation(b) );
+    }
 #endif
     /**
     Applies the given iteration_operation for async execution
@@ -99,7 +101,9 @@ public:
 
     @see apply(iteration_operation*, size_t times)
     */
-    virtual void apply(dispatch_iteration_block_t, size_t times);
+    virtual inline void apply(dispatch_iteration_block_t b, size_t times) {
+        apply( new block_iteration_operation(b), times );
+    }
 #endif
     /**
     Applies the given operation for async execution
@@ -120,8 +124,12 @@ public:
     Will wrap the given block in an operation and put it on the
     queue.
     */
-    virtual void after(dispatch_block_t, struct tm* time);
-    virtual void after(dispatch_block_t, dispatch_time_t time);
+    virtual inline void after(dispatch_block_t b, struct tm* time) {
+        after( new block_operation(b), time );
+    }
+    virtual inline void after(dispatch_block_t b, dispatch_time_t time) {
+        after( new block_operation(b), time );
+    }
 #endif
     /**
     Applies the given operation for execution
@@ -138,7 +146,9 @@ public:
     Will wrap the given block in an operation and put it on the
     queue.
     */
-    virtual void sync(dispatch_block_t);
+    virtual inline void sync(dispatch_block_t b) {
+        sync( new block_operation(b) );
+    }
 #endif
     /**
     Sets the given operation as finalizer for this
@@ -160,7 +170,9 @@ public:
     Will wrap the given block in an operation and store
     it as finalizer.
     */
-    virtual void finalizer(dispatch_block_t, const queue& = global_queue());
+    virtual inline void finalizer(dispatch_block_t b, const queue& q = global_queue()) {
+        finalizer( new block_operation(b), q );
+    }
 #endif
     /**
     @return The label of the queue that was used while creating it

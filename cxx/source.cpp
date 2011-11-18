@@ -124,12 +124,6 @@ void source::handler(operation* op){
     d->handler->auto_delete(false);
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-void source::handler(dispatch_block_t b){
-    handler(new block_operation(b));
-}
-#endif
-
 void source::notify(const any& dt){
     if(d->suspend_ct == 0)
         return;
