@@ -21,6 +21,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <stdlib.h>
 #include "xdispatch_internal.h"
 
 __XDISPATCH_USE_NAMESPACE
