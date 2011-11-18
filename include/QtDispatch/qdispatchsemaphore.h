@@ -23,7 +23,6 @@
 #define QDISPATCH_SEMAPHORE_H_
 
 #include "qdispatchglobal.h"
-#include "../xdispatch/dispatch.h"
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE

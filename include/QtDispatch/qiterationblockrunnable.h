@@ -24,7 +24,7 @@
 #define QITERATIONBLOCKRUNNABLE_H_
 
 #include "qiterationrunnable.h"
-#include "../xdispatch/dispatch.h"
+
 #include "qdispatchglobal.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS

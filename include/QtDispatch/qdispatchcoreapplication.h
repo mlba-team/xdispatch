@@ -25,7 +25,7 @@
 
 #include "qdispatchapplication.h"
 #include "qdispatchglobal.h"
-#include "../xdispatch/dispatch.h"
+
 #include <qcoreapplication.h>
 
 QT_BEGIN_HEADER

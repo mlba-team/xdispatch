@@ -24,7 +24,7 @@
 #define QDISPATCH_QUEUE
 
 #include <qobject.h>
-#include "../xdispatch/dispatch.h"
+
 #include "qdispatchglobal.h"
 
 QT_BEGIN_HEADER
