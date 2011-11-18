@@ -142,19 +142,28 @@ endif()
 
 # package target
 include(InstallRequiredSystemLibraries)
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "userspace implementation of grand central dispatch")
-SET(CPACK_PACKAGE_VENDOR "MLBA")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-SET(CPACK_PACKAGE_VERSION "0.7.0devel")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "userspace implementation of grand central dispatch")
+set(CPACK_PACKAGE_VENDOR "www.mlba-team.de")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_VERSION "0.7.0devel")
 
 # deb package
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>=2.13-1) , libgcc1 (>=4.5.1), libstdc++6 (>=4.5.1)") #, libllvm2.9")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marius Zwicker")
+set(CPACK_DEBIAN_PACKAGE_NAME "libxdispatch")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>=2.13-1) , libgcc1 (>=4.5.1), libstdc++6 (>=4.5.1)") #, libllvm2.9")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marius Zwicker")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "userspace implementation of grand central dispatch")
 set(CPACK_PACKAGE_DESCRIPTION "Provides an userspace implementation of the grand central dispatch api introduced with Mac OS X 10.6. Additionally a platform independent C++ interface is included")
 set(CPACK_DEBIAN_PACKAGE_SECTION "Devel")
 set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}-${PACKAGE_COMPILER}-${PACKAGE_ARCH}")
 
-SET(CPACK_PACKAGE_FILE_NAME "xdispatch_${CPACK_PACKAGE_VERSION}_${PACKAGE_COMPILER}_${PACKAGE_ARCH}")
+# rpm package
+set(CPACK_RPM_PACKAGE_NAME "libxdispatch")
+set(CPACK_RPM_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}-${PACKAGE_COMPILER}-${PACKAGE_ARCH}")
+set(CPACK_RPM_PACKAGE_LICENSE "Apache License, Version 2.0")
+set(CPACK_RPM_PACKAGE_REQUIRES "glibc, libstdc++45")
+set(CPACK_RPM_PACKAGE_ARCHITECTURE "${PACAKGE_ARCH}")
+
+
+SET(CPACK_PACKAGE_FILE_NAME "libxdispatch_${CPACK_PACKAGE_VERSION}_${PACKAGE_COMPILER}_${PACKAGE_ARCH}")
 include(CPack)
