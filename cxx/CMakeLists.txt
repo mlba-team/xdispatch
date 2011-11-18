@@ -25,8 +25,12 @@ mz_target_props(${NAME})
 
 
 install(TARGETS xdispatch
+            COMPONENT libxdispatch
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin
             ARCHIVE DESTINATION lib)
-install(DIRECTORY ../include/xdispatch DESTINATION include PATTERN "*.svn" EXCLUDE)
+install(DIRECTORY ../include/xdispatch
+            DESTINATION include
+            COMPONENT libxdispatch
+            PATTERN "*.svn" EXCLUDE)
 

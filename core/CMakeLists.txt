@@ -92,8 +92,12 @@ INCLUDE_DIRECTORIES(
 )
 
 install(TARGETS dispatch
+            COMPONENT libxdispatch
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin
             ARCHIVE DESTINATION lib)
-install(DIRECTORY ../include/libdispatch DESTINATION include PATTERN "*.svn" EXCLUDE)
+install(DIRECTORY ../include/libdispatch
+            DESTINATION include
+            COMPONENT libxdispatch
+            PATTERN "*.svn" EXCLUDE)
 
