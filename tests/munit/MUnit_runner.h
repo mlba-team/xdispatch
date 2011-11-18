@@ -25,6 +25,10 @@
   Will print a help information
   */
 void MU_printHelp();
+/**
+  Will print a list of cmake compatible add_test() calls
+  */
+void MU_printTestsCTest();
 
 /**
   Provides a fully implenented main

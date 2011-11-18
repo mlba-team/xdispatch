@@ -36,21 +36,13 @@
 
 #include "private.h"
 
-#ifdef WIN32
-const char* STR_VERBOSE = "/v";
-const char* STR_LIST_TESTS = "/l";
-const char* STR_SHOW_HELP = "/?";
-const char* STR_RUN_TEST = "/t";
-const char* STR_KEEP_RUNNING = "/k";
-const char* STR_REPEAT_TEST = "/r";
-#else
 const char* STR_VERBOSE = "-v";
 const char* STR_LIST_TESTS = "-l";
 const char* STR_SHOW_HELP = "-h";
 const char* STR_RUN_TEST = "-t";
 const char* STR_KEEP_RUNNING = "-k";
 const char* STR_REPEAT_TEST = "-r";
-#endif
+const char* STR_CTEST = "-ctl";
 
 void print_header() {
 	printf("\n   MUnit Test Framework with independent processes\n");
@@ -86,6 +78,7 @@ char verbose = 0;
 enum modes {
     DISPLAY_HELP,
     DISPLAY_TESTS,
+    DISPLAY_CTEST,
     MULTIPLE_TESTS,
     RUN_SINGLE,
     SUITE
@@ -110,6 +103,8 @@ void parse_arguments(int argc, char* argv[]){
             test_runs = atoi(argv[i]);
         } else if(strcmp(argv[i],STR_LIST_TESTS) == 0) {
             mode = DISPLAY_TESTS;
+        } else if(strcmp(argv[i],STR_CTEST) == 0) {
+            mode = DISPLAY_CTEST;
         } else if(strcmp(argv[i],STR_SHOW_HELP) == 0) {
             mode = DISPLAY_HELP;
         } else if(strcmp(argv[i],STR_VERBOSE) == 0) {
@@ -134,6 +129,10 @@ int MU_main(int argc, char *argv[]){
         break;
     case DISPLAY_TESTS:
         MU_printTests();
+        return 0;
+        break;
+    case DISPLAY_CTEST:
+        MU_printTestsCTest();
         return 0;
         break;
     case RUN_SINGLE:
@@ -404,6 +403,30 @@ void MU_runTest(int no){
 
 	test = (mu_test_t*)curr->data;
 	test->function();
+}
+
+void MU_printTestsCTest(){
+    int no = 0;
+        item_t* curr;
+        mu_test_t* test;
+
+        print_header();
+        printf("Add to your CMakeLists.txt\n");
+        printf("----------------------------------\n");
+
+        curr = suite;
+
+        while(curr->next!=NULL){
+                curr = curr->next;
+        no++;
+
+        // clear cache first
+        fflush(stdout);
+        // then print the info
+                test = (mu_test_t*)curr->data;
+                printf("add_test( NAME %s COMMAND ${TEST_EXE} -t %u )\n",test->name, no);
+        }
+        printf("\n");
 }
 
 void MU_printTests(){
