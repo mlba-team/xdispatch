@@ -34,4 +34,11 @@ endif()
 
 set_target_properties(BlocksRuntime PROPERTIES DEBUG_POSTFIX "D")
 
-
+install(TARGETS BlocksRuntime
+            COMPONENT libxdispatch
+            LIBRARY DESTINATION lib
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib)
+install(FILES Block.h
+            DESTINATION include
+            COMPONENT libxdispatch)
