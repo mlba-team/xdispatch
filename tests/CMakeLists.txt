@@ -124,6 +124,8 @@ if( BUILD_XDISPATCH_TESTS)
     add_test( NAME Qt_dispatch_source_device COMMAND ${TEST_EXE} -t 51 )
     add_test( NAME Qt_dispatch_source_network COMMAND ${TEST_EXE} -t 52 )
     add_test( NAME Qt_free_lambda COMMAND ${TEST_EXE} -t 53 )
+    add_test( NAME Qt_early_dispatch1 COMMAND ${TEST_EXE} -t 54 )
+    add_test( NAME Qt_early_dispatch2 COMMAND ${TEST_EXE} -t 55 )
 
 endif()
 

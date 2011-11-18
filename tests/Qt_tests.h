@@ -61,6 +61,8 @@ void Qt_dispatch_source_signal();
 void Qt_dispatch_source_device();
 void Qt_dispatch_source_network();
 void Qt_free_lambda();
+void Qt_early_dispatch1();
+void Qt_early_dispatch2();
 #endif
 
 static void register_qt_tests(){
@@ -81,7 +83,9 @@ static void register_qt_tests(){
 	MU_REGISTER_TEST(Qt_dispatch_source_signal);
 	MU_REGISTER_TEST(Qt_dispatch_source_device);
 	MU_REGISTER_TEST(Qt_dispatch_source_network);
-        MU_REGISTER_TEST(Qt_free_lambda);
+    MU_REGISTER_TEST(Qt_free_lambda);
+    MU_REGISTER_TEST(Qt_early_dispatch1);
+    MU_REGISTER_TEST(Qt_early_dispatch2);
 #endif
 #endif
 }
