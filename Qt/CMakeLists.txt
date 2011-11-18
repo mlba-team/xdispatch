@@ -28,7 +28,10 @@ target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRA
 
 mz_target_props(QtDispatch)
 
-install(TARGETS QtDispatch 
+if(WIN32)
+    install(TARGETS QtDispatch
 	LIBRARY DESTINATION lib
 	RUNTIME DESTINATION bin
 	ARCHIVE DESTINATION lib)
+    install(DIRECTORY ../include/QtDispatch DESTINATION . PATTERN "*.svn" EXCLUDE)
+endif()

@@ -23,7 +23,10 @@ message("-- linking xdispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})
 mz_target_props(${NAME})
 
-install(TARGETS xdispatch 
-	LIBRARY DESTINATION lib
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION lib)
+
+install(TARGETS xdispatch
+            LIBRARY DESTINATION lib
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib)
+install(DIRECTORY ../include/xdispatch DESTINATION include PATTERN "*.svn" EXCLUDE)
+
