@@ -1,0 +1,62 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red31\green72\blue31;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww13020\viewh13600\viewkind0
+\deftab720
+\pard\pardeftab720\sa220\ql\qnatural
+
+\f0\b\fs28 \cf0 Introduction\
+\pard\pardeftab720\sa300\ql\qnatural
+
+\b0\fs24 \cf0 libXDispatch provides the power of libdispatch (or Grand Central Dispatch if you like) not only on Mac OS 10.6+ but on Windows and Linux. On each platform libDispatch is built on, the build system (in our case CMake) will automatically search for existing dispatch implementations (possibly integrated deeper than this user space implementation can do). If found, this "native" implementation will automatically be used. If no implementation is available, our own will be used.\
+Currently a native libdispatch is available on Mac OS X 10.6+ only and therefore will only be used when built on that platform.\
+Please see Apple's documentation on {\field{\*\fldinst{HYPERLINK "http://developer.apple.com/"}}{\fldrslt \cf2 http://developer.apple.com}} and the libdispatch project at {\field{\*\fldinst{HYPERLINK "http://libdispatch.macosforge.org/"}}{\fldrslt \cf2 http://libdispatch.macosforge.org}} as well.\
+See the {\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/change_log.html"}}{\fldrslt 
+\b \cf2 CHANGELOG}} or the {\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/news.htm"}}{\fldrslt \cf2 NEWS PAGE}} to get to know the recent development.\
+\pard\pardeftab720\sa240\ql\qnatural
+
+\b \cf0 Original (plain C) Interface\
+\pard\pardeftab720\sa300\ql\qnatural
+
+\b0 \cf0 Except the source functions, the entire libdispatch interface is available and can be found in the following files (all headers located at include/libdispatch, symbols included in xdispatch binary):\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\ql\qnatural
+\ls1\ilvl0
+\b \cf2 {\listtext	\'95	}{\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/libdispatch_2queue_8h.html"}}{\fldrslt libdispatch/queue.h}}
+\b0 \cf0 \
+\ls1\ilvl0
+\b \cf2 {\listtext	\'95	}{\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/libdispatch_2group_8h.html"}}{\fldrslt libdispatch/group.h}}
+\b0 \cf0 \
+\ls1\ilvl0
+\b \cf2 {\listtext	\'95	}{\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/time_8h.html"}}{\fldrslt libdispatch/time.h}}
+\b0 \cf0 \
+\ls1\ilvl0
+\b \cf2 {\listtext	\'95	}{\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/object_8h.html"}}{\fldrslt libdispatch/object.h}}
+\b0 \cf0 \
+\ls1\ilvl0
+\b \cf2 {\listtext	\'95	}{\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/libdispatch_2semaphore_8h.html"}}{\fldrslt libdispatch/semaphore.h}}\
+\pard\tx560\pardeftab720\ql\qnatural
+
+\b0 \cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+
+\b \cf0 C++ Interface\
+\pard\pardeftab720\sa300\ql\qnatural
+
+\b0 \cf0 As a first level of abstraction we created a plain C++ interface providing a more OO way of programming. Detailed information can be found at the related page {\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/group___x_dispatch.html"}}{\fldrslt 
+\b \cf2 XDispatch}}.\
+\pard\pardeftab720\sa240\ql\qnatural
+
+\b \cf0 Qt Interface\
+\pard\pardeftab720\sa300\ql\qnatural
+
+\b0 \cf0 Additionally an interface wrapping libdispatch as Qt Classes was created. All needed work was done to integrate it with Qt's main event loop. For more information, please see the document on {\field{\*\fldinst{HYPERLINK "http://opensource.mlba-team.de/xdispatch/group___qt_dispatch.html"}}{\fldrslt 
+\b \cf2 QtDispatch}}\
+\pard\pardeftab720\sa240\ql\qnatural
+
+\b \cf0 GCD's use of Blocks\
+\pard\pardeftab720\sa300\ql\qnatural
+
+\b0 \cf0 When Apple introduced Grand Central Dispatch it extended its compilers by a new feature they called "Blocks". Basically this is lambdas (sometimes called closures as well). They allow an easier way to utilize the libdispatch api and are available when using Clang or the gcc 4.2 that's shipped with Apple's current Developer Tools.\
+On compilers implementing the block syntax, it is fully functional when using this port. However we support way more compilers when using the C++ interface libXDispatch. Please see the documentation found over there for extended details.}
