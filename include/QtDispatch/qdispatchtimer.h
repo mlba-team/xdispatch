@@ -45,91 +45,88 @@ QT_MODULE(Dispatch)
   */
 class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::timer {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-    /**
+    public:
+        /**
         Constructs a new timer firing every msec milliseconds.
         The timer will be constructed in a stopped state, use
         start() to launch it.
 
         @remarks Never pass a value less than zero here
         */
-    QDispatchTimer(int msec, QObject* parent = NULL);
-    QDispatchTimer(const QDispatchTimer&);
-    QDispatchTimer(const xdispatch::timer&, QObject* parent = NULL);
-    ~QDispatchTimer();
-    /**
-      Changes the interval of the timer to msec
-      */
-    void setInterval(int msec);
-    /**
-      Sets the queue the timer will execute on
-      */
-    void setTargetQueue(const xdispatch::queue&);
-    /**
-      @returns The queue the handler will be executed on
-      */
-    /**
-      Sets the runnable that will be executed
-      every time the timer fires
-      */
-    void setHandler(QRunnable*);
+        QDispatchTimer(int msec, QObject* parent = NULL);
+        QDispatchTimer(const QDispatchTimer&);
+        QDispatchTimer(const xdispatch::timer&, QObject* parent = NULL);
+        ~QDispatchTimer();
+        /**
+          Changes the interval of the timer to msec
+          */
+        void setInterval(int msec);
+        /**
+          Sets the queue the timer will execute on
+          */
+        void setTargetQueue(const xdispatch::queue&);
+        /**
+          Sets the runnable that will be executed
+          every time the timer fires
+          */
+        void setHandler(QRunnable*);
 #ifdef XDISPATCH_HAS_BLOCKS
-    /**
-      Sets a block that will be executed every
-      time the timer fires
-      */
-    void setHandler(dispatch_block_t);
+        /**
+          Sets a block that will be executed every
+          time the timer fires
+          */
+        void setHandler(dispatch_block_t);
 #endif
-    /**
-      Sets the latency, i.e. the divergence the
-      timer may have. Please note that this can
-      only be regarded as a hint and is not garuanted
-      to be followed strictly.
-      */
-    void setLatency(int usec);
-    /**
-      Creates a single shot timer executing the given runnable on the given
-      queue at the given time. This is quite similar to using QDispatchQueue::after()
-      */
-    static void singleShot(dispatch_time_t, const xdispatch::queue&, QRunnable*);
-    /**
-      Creates a single shot timer executing the given runnable on the given
-      queue at the given time. This is quite similar to using QDispatchQueue::after()
-      */
-    static void singleShot(const QTime&, const xdispatch::queue&, QRunnable*);
+        /**
+          Sets the latency, i.e. the divergence the
+          timer may have. Please note that this can
+          only be regarded as a hint and is not garuanted
+          to be followed strictly.
+          */
+        void setLatency(int usec);
+        /**
+          Creates a single shot timer executing the given runnable on the given
+          queue at the given time. This is quite similar to using QDispatchQueue::after()
+          */
+        static void singleShot(dispatch_time_t, const xdispatch::queue&, QRunnable*);
+        /**
+          Creates a single shot timer executing the given runnable on the given
+          queue at the given time. This is quite similar to using QDispatchQueue::after()
+          */
+        static void singleShot(const QTime&, const xdispatch::queue&, QRunnable*);
 #ifdef XDISPATCH_HAS_BLOCKS
-    /**
-      Creates a single shot timer executing the given block on the given
-      queue at the given time. This is quite similar to using QDispatchQueue::after()
-      */
-    static void singleShot(dispatch_time_t, const xdispatch::queue&, dispatch_block_t);
-    /**
-      Creates a single shot timer executing the given block on the given
-      queue at the given time. This is quite similar to using QDispatchQueue::after()
-      */
-    static void singleShot(const QTime&, const xdispatch::queue&, dispatch_block_t);
+        /**
+          Creates a single shot timer executing the given block on the given
+          queue at the given time. This is quite similar to using QDispatchQueue::after()
+          */
+        static void singleShot(dispatch_time_t, const xdispatch::queue&, dispatch_block_t);
+        /**
+          Creates a single shot timer executing the given block on the given
+          queue at the given time. This is quite similar to using QDispatchQueue::after()
+          */
+        static void singleShot(const QTime&, const xdispatch::queue&, dispatch_block_t);
 #endif
-    static QDispatchTimer* current();
+        static QDispatchTimer* current();
 
-    bool operator ==(const QDispatchTimer&);
+        bool operator ==(const QDispatchTimer&);
 
-public slots:
-    /**
-      Starts the timer.
-      @remarks A new created timer will be stopped.
-      */
-    void start();
-    /**
-      Stops the timer.
-      @remarks Calls to start() and stop() need to be balanced
-      */
-    void stop();
+    public slots:
+        /**
+          Starts the timer.
+          @remarks A new created timer will be stopped.
+          */
+        void start();
+        /**
+          Stops the timer.
+          @remarks Calls to start() and stop() need to be balanced
+          */
+        void stop();
 
-private:
-    class Private;
-    Private* d;
+    private:
+        class Private;
+        Private* d;
 
 };
 

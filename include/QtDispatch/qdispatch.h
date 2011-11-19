@@ -48,50 +48,50 @@ also see Apple's documentation on libDispatch.
 */
 class Q_DISPATCH_EXPORT QDispatch {
 
-public:
-    
-	/**
-	Three priority classes used for the three standard
-	global queues
-	*/
-    enum Priority { HIGH, DEFAULT, LOW };
+    public:
 
-	/**
-	Returns the main queue. This is the queue running
-	within the Qt Event Loop. Thus only items put
-	on this queue can change the GUI.
-	*/
-    static QDispatchQueue mainQueue();
-	/**
-	Returns the global queue associated to the given
-	Priority p.
+        /**
+    Three priority classes used for the three standard
+    global queues
+    */
+        enum Priority { HIGH, DEFAULT, LOW };
 
-	Runnables submitted to these global concurrent queues
-	may be executed concurrently with respect to
+        /**
+    Returns the main queue. This is the queue running
+    within the Qt Event Loop. Thus only items put
+    on this queue can change the GUI.
+    */
+        static QDispatchQueue mainQueue();
+        /**
+    Returns the global queue associated to the given
+    Priority p.
+
+    Runnables submitted to these global concurrent queues
+    may be executed concurrently with respect to
     each other.
-	*/
-    static QDispatchQueue globalQueue(Priority p = DEFAULT);
-	/**
+    */
+        static QDispatchQueue globalQueue(Priority p = DEFAULT);
+        /**
     @return The queue the currently active
         runnable (or block) is executed in.
-	*/
-    static QDispatchQueue currentQueue();
-	/**
-	@return The given QTime converted to a dispatch_time_t
-	*/
-    static dispatch_time_t asDispatchTime(const QTime&);
-	/**
-	@remarks Please be careful when using this converter as
-	a QTime is tracking 24 hours max, whereas a
-	dispatch_time_t can hold way more. This additional
-	time will be cropped while converting.
+    */
+        static QDispatchQueue currentQueue();
+        /**
+    @return The given QTime converted to a dispatch_time_t
+    */
+        static dispatch_time_t asDispatchTime(const QTime&);
+        /**
+    @remarks Please be careful when using this converter as
+    a QTime is tracking 24 hours max, whereas a
+    dispatch_time_t can hold way more. This additional
+    time will be cropped while converting.
 
-	@return The given dispatch_time_t as QTime
-	*/
-    static QTime asQTime(dispatch_time_t t);
+    @return The given dispatch_time_t as QTime
+    */
+        static QTime asQTime(dispatch_time_t t);
 
-private:
-	QDispatch();
+    private:
+        QDispatch();
 
 };
 

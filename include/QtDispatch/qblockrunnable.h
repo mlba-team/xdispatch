@@ -42,22 +42,22 @@ QT_MODULE(Dispatch)
   */
 class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
 
-public:
-	/**
-	  Constructs a new QBlockRunnable using the given block, e.g.
+    public:
+        /**
+          Constructs a new QBlockRunnable using the given block, e.g.
 
-	  @code
-	  QBlockRunnable task(${cout << "Hello World\n";});
-	  @endcode
-	  */
-	QBlockRunnable(dispatch_block_t b);
-	QBlockRunnable(const QBlockRunnable&);
+          @code
+          QBlockRunnable task(${cout << "Hello World\n";});
+          @endcode
+          */
+        QBlockRunnable(dispatch_block_t b);
+        QBlockRunnable(const QBlockRunnable&);
         virtual ~QBlockRunnable();
-	virtual void run();
+        virtual void run();
 
-private:
-	class Private;
-	Private* d;
+    private:
+        class Private;
+        Private* d;
 
 };
 

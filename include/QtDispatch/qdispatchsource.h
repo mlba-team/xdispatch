@@ -50,27 +50,27 @@ class QDispatchSource;
  */
 class Q_DISPATCH_EXPORT QDispatchSourceType : public QObject {
 
-	Q_OBJECT
+        Q_OBJECT
 
-protected:
-	/**
-	 @deprecated
-	 */
-	virtual void init(QThread*) = 0;
+    protected:
+        /**
+         @deprecated
+         */
+        virtual void init(QThread*) = 0;
 
-signals:
-	/**
-	 This signal shall be emitted each time the source the
-	 type represents has news available. The passed QObject*
-	 shall either be the new data available or a pointer to
-	 another QObject associated with the source.
+    signals:
+        /**
+         This signal shall be emitted each time the source the
+         type represents has news available. The passed QObject*
+         shall either be the new data available or a pointer to
+         another QObject associated with the source.
 
-	 The pointer passed here can later be obtained by the handler
-	 by using QDispatchSource::data()
-	 */
-	void ready(QObject* = NULL);
+         The pointer passed here can later be obtained by the handler
+         by using QDispatchSource::data()
+         */
+        void ready(QObject* = NULL);
 
-	friend class QDispatchSource;
+        friend class QDispatchSource;
 };
 
 /**
@@ -82,15 +82,15 @@ signals:
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeSignal : public QDispatchSourceType {
 
-public:
-	QDispatchSourceTypeSignal(QObject* sender, const char* signal);
-	~QDispatchSourceTypeSignal();
+    public:
+        QDispatchSourceTypeSignal(QObject* sender, const char* signal);
+        ~QDispatchSourceTypeSignal();
 
-protected:
-	virtual void init(QThread*);
+    protected:
+        virtual void init(QThread*);
 
-private:
-	Q_DISABLE_COPY(QDispatchSourceTypeSignal);
+    private:
+        Q_DISABLE_COPY(QDispatchSourceTypeSignal)
 
 };
 
@@ -104,21 +104,21 @@ private:
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeIODevice : public QDispatchSourceType {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-	QDispatchSourceTypeIODevice(QIODevice*);
-	~QDispatchSourceTypeIODevice();
+    public:
+        QDispatchSourceTypeIODevice(QIODevice*);
+        ~QDispatchSourceTypeIODevice();
 
-protected:
-	virtual void init(QThread*);
+    protected:
+        virtual void init(QThread*);
 
-private slots:
-	void avail();
+    private slots:
+        void avail();
 
-private:
-	Q_DISABLE_COPY(QDispatchSourceTypeIODevice);
-	QIODevice* dev;
+    private:
+        Q_DISABLE_COPY(QDispatchSourceTypeIODevice)
+        QIODevice* dev;
 };
 
 /**
@@ -131,13 +131,13 @@ private:
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceRead : public QDispatchSourceTypeIODevice {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-	QDispatchSourceTypeIODeviceRead(QIODevice*);
+    public:
+        QDispatchSourceTypeIODeviceRead(QIODevice*);
 
-private:
-	Q_DISABLE_COPY(QDispatchSourceTypeIODeviceRead);
+    private:
+        Q_DISABLE_COPY(QDispatchSourceTypeIODeviceRead)
 };
 
 /**
@@ -150,21 +150,21 @@ private:
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceWrite : public QDispatchSourceType {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-	QDispatchSourceTypeIODeviceWrite(QIODevice*);
-	~QDispatchSourceTypeIODeviceWrite();
+    public:
+        QDispatchSourceTypeIODeviceWrite(QIODevice*);
+        ~QDispatchSourceTypeIODeviceWrite();
 
-protected:
-	virtual void init(QThread*);
+    protected:
+        virtual void init(QThread*);
 
-private slots:
-	void finished(qint64);
+    private slots:
+        void finished(qint64);
 
-private:
-	Q_DISABLE_COPY(QDispatchSourceTypeIODeviceWrite);
-	QIODevice* dev;
+    private:
+        Q_DISABLE_COPY(QDispatchSourceTypeIODeviceWrite)
+        QIODevice* dev;
 };
 
 /**
@@ -177,21 +177,21 @@ private:
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeNetworkManager : public QDispatchSourceType {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-	QDispatchSourceTypeNetworkManager(QNetworkAccessManager*);
-	~QDispatchSourceTypeNetworkManager();
+    public:
+        QDispatchSourceTypeNetworkManager(QNetworkAccessManager*);
+        ~QDispatchSourceTypeNetworkManager();
 
-private slots:
-	void finished(QNetworkReply*);
+    private slots:
+        void finished(QNetworkReply*);
 
-protected:
-	void init(QThread*);
+    protected:
+        void init(QThread*);
 
-private:
-	Q_DISABLE_COPY(QDispatchSourceTypeNetworkManager);
-	QNetworkAccessManager* manager;
+    private:
+        Q_DISABLE_COPY(QDispatchSourceTypeNetworkManager)
+        QNetworkAccessManager* manager;
 };
 
 /**
@@ -200,82 +200,82 @@ private:
  job and dispatch a specified handler upon completion.
 
  The currently supported QDispatchSourceTypes are:
-	- QDispatchSourceTypeSignal
-	- QDispatchSourceTypeQIODevice
-	- QDispatchSourceTypeQIODeviceRead
-	- QDispatchSourceTypeQIODeviceWrite
-	- QDispatchSourceTypeNetworkManager
+    - QDispatchSourceTypeSignal
+    - QDispatchSourceTypeQIODevice
+    - QDispatchSourceTypeQIODeviceRead
+    - QDispatchSourceTypeQIODeviceWrite
+    - QDispatchSourceTypeNetworkManager
 
  You can easily add your own by subclassing QDispatchSourceType
  */
 class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-	/**
-	 Creates a new source waiting for the given type.
-	 The passed type will be deleted as soon as the source is deleted
-	 */
-	QDispatchSource(QDispatchSourceType*);
-	~QDispatchSource();
-	/**
-	 Sets the given runnable as handler that will be executed each time
-	 the source has become ready.
+    public:
+        /**
+         Creates a new source waiting for the given type.
+         The passed type will be deleted as soon as the source is deleted
+         */
+        QDispatchSource(QDispatchSourceType*);
+        ~QDispatchSource();
+        /**
+         Sets the given runnable as handler that will be executed each time
+         the source has become ready.
 
-	 @see data() and the source type's documentation on how to obtain
-			information about the reason the source has become ready
-	 */
-	void setHandler(QRunnable*);
+         @see data() and the source type's documentation on how to obtain
+                information about the reason the source has become ready
+         */
+        void setHandler(QRunnable*);
 #ifdef XDISPATCH_HAS_BLOCKS
-	/**
-	 Sets the given block as handler that will be executed each time
-	 the source has become ready.
+        /**
+         Sets the given block as handler that will be executed each time
+         the source has become ready.
 
-	 @see data() and the source type's documentation on how to obtain
-			information about the reason the source has become ready
-	 */
-	void setHandler(dispatch_block_t);
+         @see data() and the source type's documentation on how to obtain
+                information about the reason the source has become ready
+         */
+        void setHandler(dispatch_block_t);
 #endif
-    /**
-      @returns The queue the handler will be dispatched on.
-        Defaults to QDispatch::globalQueue();
-     */
-    QDispatchQueue targetQueue() const;
-	/**
-	 Sets the target, i.e. the queue the handler will be dispatched
-	 on. Defaults to QDispatch::globalQueue().
-	 */
-    void setTargetQueue(const QDispatchQueue&);
-	/**
-	 @returns the data associated to the current QDispatchSourceType. See
-		the individual type documentations for details on the data available.
+        /**
+          @returns The queue the handler will be dispatched on.
+            Defaults to QDispatch::globalQueue();
+         */
+        QDispatchQueue targetQueue() const;
+        /**
+         Sets the target, i.e. the queue the handler will be dispatched
+         on. Defaults to QDispatch::globalQueue().
+         */
+        void setTargetQueue(const QDispatchQueue&);
+        /**
+         @returns the data associated to the current QDispatchSourceType. See
+            the individual type documentations for details on the data available.
 
-     Pass the type of the data to retrieve as template parameter. A pointer
-     of the given type will be returned, or NULL if the available data is not
-     of the requested type.
+         Pass the type of the data to retrieve as template parameter. A pointer
+         of the given type will be returned, or NULL if the available data is not
+         of the requested type.
 
-	 Call this to obtain data from within a handler while executing.
-	 Calling this method from somewhere else than an executing handler
-	 is undefined.
-	 */
-	template <typename T> static T* data(){
-        return qobject_cast<T*>(_data());
-    }
+         Call this to obtain data from within a handler while executing.
+         Calling this method from somewhere else than an executing handler
+         is undefined.
+         */
+        template <typename T> static T* data(){
+            return qobject_cast<T*>(_data());
+        }
 
-public slots:
-	void resume();
-	void suspend();
+    public slots:
+        void resume();
+        void suspend();
 
-private slots:
-	void signal(QObject* = NULL);
+    private slots:
+        void signal(QObject* = NULL);
 
-private:
-	Q_DISABLE_COPY(QDispatchSource);
-	class Private;
-	Private* d;
+    private:
+        Q_DISABLE_COPY(QDispatchSource)
+        class Private;
+        Private* d;
 
-    static QObject* _data();
+        static QObject* _data();
 
 };
 

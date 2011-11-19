@@ -42,21 +42,21 @@ was created.
 */
 class Q_DISPATCH_EXPORT QIterationRunnable : public QRunnable {
 
-public:
-	/**
-	Constructs a new QBlockRunnable passing
-	the given parameter.
-	*/
-	QIterationRunnable();
-	QIterationRunnable(size_t index);
-	QIterationRunnable(const QIterationRunnable&);
+    public:
+        /**
+        Constructs a new QBlockRunnable passing
+        the given parameter.
+        */
+        QIterationRunnable();
+        QIterationRunnable(size_t index);
+        QIterationRunnable(const QIterationRunnable&);
         virtual ~QIterationRunnable();
-	virtual void run();
-	virtual void run(size_t index) = 0;
+        virtual void run();
+        virtual void run(size_t index) = 0;
 
-private:
-	class Private;
-	Private* d;
+    private:
+        class Private;
+        Private* d;
 
 };
 
