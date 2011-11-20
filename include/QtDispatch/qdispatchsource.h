@@ -23,9 +23,9 @@
 #define QDISPATCH_SOURCE_H_
 
 #include <qobject.h>
-#include <qrunnable.h>
 
 #include "qdispatchglobal.h"
+#include "qblockrunnable.h"
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
@@ -235,7 +235,9 @@ class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
          @see data() and the source type's documentation on how to obtain
                 information about the reason the source has become ready
          */
-        void setHandler(dispatch_block_t);
+        inline void setHandler(dispatch_block_t b) {
+            setHandler( new QBlockRunnable(b) );
+        }
 #endif
         /**
           @returns The queue the handler will be dispatched on.

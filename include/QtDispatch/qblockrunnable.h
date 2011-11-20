@@ -50,14 +50,20 @@ class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
           QBlockRunnable task(${cout << "Hello World\n";});
           @endcode
           */
-        QBlockRunnable(dispatch_block_t b);
-        QBlockRunnable(const QBlockRunnable&);
-        virtual ~QBlockRunnable();
-        virtual void run();
+        QBlockRunnable(dispatch_block_t b)
+            : QRunnable(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+        QBlockRunnable(const QBlockRunnable& other)
+            : QRunnable(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
+        virtual ~QBlockRunnable() {
+            XDISPATCH_BLOCK_DELETE(block);
+        }
+
+        virtual void run(){
+            XDISPATCH_BLOCK_EXEC(block)();
+        };
 
     private:
-        class Private;
-        Private* d;
+        dispatch_block_store block;
 
 };
 

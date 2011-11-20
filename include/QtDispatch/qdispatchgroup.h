@@ -24,8 +24,9 @@
 #define QDISPATCH_GROUP_H_
 
 #include <QObject>
-#include "qdispatchglobal.h"
 
+#include "qdispatchglobal.h"
+#include "qblockrunnable.h"
 
 
 QT_BEGIN_HEADER
@@ -69,7 +70,9 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
         void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
         void async(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
-        void async(dispatch_block_t b, const xdispatch::queue& = xdispatch::global_queue());
+        inline void async(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
+            async( new QBlockRunnable(b), q );
+        }
 #endif
         /**
         Waits until the given time has passed
@@ -100,7 +103,9 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
         /**
          @see notify(QRunnable* r, const xdispatch::queue&);
          */
-        void notify(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
+        inline void notify(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
+            notify( new QBlockRunnable(b), q );
+        }
 #endif
 
     public slots:

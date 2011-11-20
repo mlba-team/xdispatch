@@ -47,17 +47,15 @@ class Q_DISPATCH_EXPORT QIterationRunnable : public QRunnable {
         Constructs a new QBlockRunnable passing
         the given parameter.
         */
-        QIterationRunnable();
-        QIterationRunnable(size_t index);
-        QIterationRunnable(const QIterationRunnable&);
-        virtual ~QIterationRunnable();
-        virtual void run();
+        QIterationRunnable()
+            : QRunnable() {}
+        QIterationRunnable(const QIterationRunnable& o)
+            : QRunnable(o) {}
+
         virtual void run(size_t index) = 0;
 
     private:
-        class Private;
-        Private* d;
-
+        virtual void run(){}
 };
 
 QT_END_NAMESPACE

@@ -132,12 +132,6 @@ void QDispatchSource::setHandler(QRunnable* r){
 	d->handler = r;
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-void QDispatchSource::setHandler(dispatch_block_t b){
-	setHandler(new QBlockRunnable(b));
-}
-#endif
-
 QObject* QDispatchSource::_data(){
 	return Private::storage.localData();
 }

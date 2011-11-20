@@ -26,6 +26,7 @@
 #include <qobject.h>
 
 #include "qdispatchglobal.h"
+#include "qblockrunnable.h"
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
@@ -63,7 +64,7 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         Applies the given QRunnable for async execution
         in this queue and returns immediately.
         */
-        virtual void async(QRunnable*);
+        void async(QRunnable*);
         using xdispatch::queue::async;
         /**
         Applies the given QRunnable for async execution
@@ -75,7 +76,7 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
 
         @param times The number of times the QRunnable will be executed
         */
-        virtual void apply(QIterationRunnable*, int times);
+        void apply(QIterationRunnable*, int times);
         using xdispatch::queue::apply;
         /**
         Applies the given QRunnable for async execution
@@ -83,8 +84,8 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         @param time The time to wait until the QRunnable is applied to
         the queue.
         */
-        virtual void after(QRunnable*, const QTime& time);
-        virtual void after(QRunnable*, dispatch_time_t time);
+        void after(QRunnable*, const QTime& time);
+        void after(QRunnable*, dispatch_time_t time);
         using xdispatch::queue::after;
 #ifdef XDISPATCH_HAS_BLOCKS
         /**
@@ -92,14 +93,16 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         Will wrap the given block in a QRunnable and put it on the
         queue.
         */
-        virtual void after(dispatch_block_t, const QTime& time);
+        inline void after(dispatch_block_t b, const QTime& time) {
+            after( new QBlockRunnable(b), time );
+        }
 #endif
         /**
         Applies the given QRunnable for execution
         int his queue and blocks until the QRunnable
         was executed
         */
-        virtual void sync(QRunnable*);
+        void sync(QRunnable*);
         using xdispatch::queue::sync;
         /**
         Sets the given runnable as finalizer for this
@@ -111,10 +114,12 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         @remarks Finalizers will never be called on the
         global queues or the main queue.
         */
-        virtual void setFinalizer(QRunnable*, const xdispatch::queue& = xdispatch::global_queue());
-        virtual void setFinalizer(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
+        void setFinalizer(QRunnable*, const xdispatch::queue& = xdispatch::global_queue());
+        void setFinalizer(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
-        virtual void setFinalizer(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
+        inline void setFinalizer(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
+            setFinalizer( new QBlockRunnable(b), q );
+        }
 #endif
         /**
         Sets the target queue of this queue, i.e. the queue
@@ -122,7 +127,7 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
 
         @remarks This has no effect on the global queues and the main queue.
         */
-        virtual void setTarget(const xdispatch::queue&);
+        void setTarget(const xdispatch::queue&);
 
         QDispatchQueue& operator=(const QDispatchQueue&);
 
@@ -130,12 +135,6 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         void suspend();
         void resume();
 
-    private:
-        /* virtual void set_finalizer(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
-    #ifdef XDISPATCH_HAS_BLOCKS
-    virtual void set_finalizer(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
-    #endif
-    virtual void set_target(const xdispatch::queue&); */
 };
 
 Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QDispatchQueue* q);

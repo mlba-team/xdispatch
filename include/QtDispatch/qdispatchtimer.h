@@ -23,6 +23,7 @@
 #define QDISPATCH_TIMER_H_
 
 #include "qdispatchglobal.h"
+#include "qblockrunnable.h"
 
 #include <qobject.h>
 
@@ -77,7 +78,9 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
           Sets a block that will be executed every
           time the timer fires
           */
-        void setHandler(dispatch_block_t);
+        inline void setHandler(dispatch_block_t b) {
+            setHandler( new QBlockRunnable(b) );
+        }
 #endif
         /**
           Sets the latency, i.e. the divergence the
@@ -101,12 +104,16 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
           Creates a single shot timer executing the given block on the given
           queue at the given time. This is quite similar to using QDispatchQueue::after()
           */
-        static void singleShot(dispatch_time_t, const xdispatch::queue&, dispatch_block_t);
+        static void singleShot(dispatch_time_t t, const xdispatch::queue& q, dispatch_block_t b) {
+            singleShot( t, q, new QBlockRunnable(b) );
+        }
         /**
           Creates a single shot timer executing the given block on the given
           queue at the given time. This is quite similar to using QDispatchQueue::after()
           */
-        static void singleShot(const QTime&, const xdispatch::queue&, dispatch_block_t);
+        static void singleShot(const QTime& t, const xdispatch::queue& q, dispatch_block_t b) {
+            singleShot( t, q, new QBlockRunnable(b) );
+        }
 #endif
         static QDispatchTimer* current();
 
