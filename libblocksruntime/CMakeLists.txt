@@ -33,12 +33,24 @@ else()
 endif()
 
 set_target_properties(BlocksRuntime PROPERTIES DEBUG_POSTFIX "D")
+set_property(TARGET BlocksRuntime PROPERTY VERSION 0.1-1)
+set_property(TARGET BlocksRuntime PROPERTY SOVERSION 0.1-1)
 
-install(TARGETS BlocksRuntime
-            COMPONENT libxdispatch
-            LIBRARY DESTINATION lib
-            RUNTIME DESTINATION bin
-            ARCHIVE DESTINATION lib)
-install(FILES Block.h
+            
+if(APPLE)
+    set_property(TARGET BlocksRuntime PROPERTY FRAMEWORK TRUE)
+    set_property(TARGET BlocksRuntime PROPERTY PUBLIC_HEADER Block.h)
+
+    install(TARGETS BlocksRuntime
+                COMPONENT libxdispatch
+                FRAMEWORK DESTINATION "Library/Frameworks")
+else()
+    install(TARGETS BlocksRuntime
+                COMPONENT libxdispatch
+                LIBRARY DESTINATION lib
+                RUNTIME DESTINATION bin
+                ARCHIVE DESTINATION lib)
+    install(FILES Block.h
             DESTINATION include
             COMPONENT libxdispatch)
+endif()            

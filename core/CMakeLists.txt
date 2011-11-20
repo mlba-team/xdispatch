@@ -85,19 +85,31 @@ message("-- linking dispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})
 set_target_properties(${NAME} PROPERTIES DEBUG_POSTFIX "D")
 
+set_property(TARGET dispatch PROPERTY VERSION ${XDISPATCH_VERSION})
+set_property(TARGET dispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
+
 # finally create the config.h
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-install(TARGETS dispatch
-            COMPONENT libxdispatch
-            LIBRARY DESTINATION lib
-            RUNTIME DESTINATION bin
-            ARCHIVE DESTINATION lib)
-install(DIRECTORY ../include/libdispatch
-            DESTINATION include
-            COMPONENT libxdispatch
-            PATTERN "*.svn" EXCLUDE)
 
+if(APPLE)
+    set_property(TARGET dispatch PROPERTY FRAMEWORK TRUE)
+    set_property(TARGET dispatch PROPERTY PUBLIC_HEADER ${INCL})
+
+    install(TARGETS dispatch
+                COMPONENT libxdispatch
+                FRAMEWORK DESTINATION "Library/Frameworks")
+else()
+    install(TARGETS dispatch
+                COMPONENT libxdispatch
+                LIBRARY DESTINATION lib
+                RUNTIME DESTINATION bin
+                ARCHIVE DESTINATION lib)
+    install(DIRECTORY ../include/libdispatch
+                DESTINATION include
+                COMPONENT libxdispatch
+                PATTERN "*.svn" EXCLUDE)
+endif()
