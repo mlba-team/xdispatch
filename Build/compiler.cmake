@@ -35,7 +35,7 @@ endmacro()
 macro(mz_add_flag FLAG)
     mz_add_cxx_flag(${FLAG})
     mz_add_c_flag(${FLAG})
-message("-- add flag ${FLAG}")
+    #message("-- add flag ${FLAG}")
 endmacro()
 
 macro(mz_use_default_compiler_settings)
@@ -70,7 +70,7 @@ FUNCTION(_MZ_COMPILER_IS_CLANG _OUTPUT)
   OUTPUT_VARIABLE _MZ_CLANG_VERSION
   )
 
-  if(${_MZ_CLANG_VERSION} MATCHES ".*clang.*")
+  if("${_MZ_CLANG_VERSION}" MATCHES ".*clang.*")
     set(${_OUTPUT} TRUE PARENT_SCOPE)
   else()
     set(${_OUTPUT} FALSE PARENT_SCOPE)
