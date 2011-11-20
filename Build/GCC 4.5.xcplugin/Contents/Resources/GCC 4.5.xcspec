@@ -1,0 +1,45 @@
+(
+	{
+		Identifier = "com.mlba.compilers.gcc.4_5";
+		BasedOn = "default:com.apple.compilers.gcc.4_2";
+		Type = Compiler;
+		Name = "GCC 4.5";
+		Description = "GNU C/C++ Compiler version 4.5";
+		Version = "com.mlba.compilers.gcc.4_5";
+		Vendor = "MLBA";
+		ExecPath = "/opt/compiler/bin/apple-450-gcc";
+		Architectures = (
+	        "x86_64",
+	    );
+	    Options = (
+			{
+				Name = arch;
+				Type = String;
+				CommandLineArgs = {
+					"<<otherwise>>" = ();
+				};
+			},
+			{
+                Name = "GCC_CW_ASM_SYNTAX";
+                Type = Boolean;
+                DefaultValue = NO;
+                CommandLineArgs = { YES = (); NO = (); };
+                Architectures = (i386, x86_64);
+                AppearsAfter = GCC_ALTIVEC_EXTENSIONS;
+                Category = Language;
+            },
+            {
+                Name = "GCC_ENABLE_PASCAL_STRINGS";
+                CommandLineArgs = ();
+            },
+            {
+                Name = "GCC_WARN_FOUR_CHARACTER_CONSTANTS";
+                CommandLineArgs = ();
+            },
+            {
+                Name = "WARNING_CFLAGS";
+                CommandLineArgs = ();
+            }
+	    );
+	},
+)
