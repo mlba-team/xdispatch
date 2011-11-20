@@ -63,7 +63,7 @@ group::~group() {
 void group::async(operation* r, const queue& q){
     dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
     assert(nat_q);
-    dispatch_group_async_f(d->native, nat_q, r, run_operation);
+    dispatch_group_async_f(d->native, nat_q, r, _xdispatch_run_operation);
 }
 
 bool group::wait(dispatch_time_t time){
@@ -77,7 +77,7 @@ bool group::wait(struct tm* t){
 void group::notify(operation* r, const queue& q){
     dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
     assert(nat_q);
-    dispatch_group_notify_f(d->native, nat_q, r, run_operation);
+    dispatch_group_notify_f(d->native, nat_q, r, _xdispatch_run_operation);
 }
 
 dispatch_object_t group::native() const {

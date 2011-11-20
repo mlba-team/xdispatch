@@ -50,6 +50,7 @@
 # include "synchronized.h"
 # include "lambda_blocks.h"
 # include "base.h"
+# include "lambda_dispatch.h"
 # include "queue.h"
 # include "group.h"
 # include "semaphore.h"

@@ -43,25 +43,25 @@ __XDISPATCH_BEGIN_NAMESPACE
 class XDISPATCH_EXPORT operation
 {
     public:
-    operation() : auto_del(true){}
-    virtual ~operation(){}
+        operation() : auto_del(true){}
+        virtual ~operation(){}
 
-    virtual void operator()() = 0;
+        virtual void operator()() = 0;
 
-    /**
-      Change the auto_delete flag to prevent
-      the iteration from being deleted after
-      finishing its execution. Defaults to true
-      */
-    virtual void auto_delete(bool a){ auto_del = a; }
-    /**
-      @return the current auto_delete flag
-      @see set_auto_delete();
-      */
-    virtual bool auto_delete(){ return auto_del; }
+        /**
+          Change the auto_delete flag to prevent
+          the iteration from being deleted after
+          finishing its execution. Defaults to true
+          */
+        virtual void auto_delete(bool a){ auto_del = a; }
+        /**
+          @return the current auto_delete flag
+          @see set_auto_delete();
+          */
+        virtual bool auto_delete(){ return auto_del; }
 
     private:
-    bool auto_del;
+        bool auto_del;
 };
 
 /**
@@ -73,25 +73,25 @@ class XDISPATCH_EXPORT operation
   */
 class XDISPATCH_EXPORT iteration_operation
 {
-public:
-    iteration_operation() : auto_del(true){}
-    virtual ~iteration_operation(){}
+    public:
+        iteration_operation() : auto_del(true){}
+        virtual ~iteration_operation(){}
 
-    virtual void operator()(size_t index) = 0;
-    /**
-      Change the auto_delete flag to prevent
-      the iteration from being deleted after
-      finishing its execution. Defaults to true
-      */
-    virtual void auto_delete(bool a){ auto_del = a; }
-    /**
-      @return the current auto_delete flag
-      @see set_auto_delete();
-      */
-    virtual bool auto_delete(){ return auto_del; }
+        virtual void operator()(size_t index) = 0;
+        /**
+          Change the auto_delete flag to prevent
+          the iteration from being deleted after
+          finishing its execution. Defaults to true
+          */
+        virtual void auto_delete(bool a){ auto_del = a; }
+        /**
+          @return the current auto_delete flag
+          @see set_auto_delete();
+          */
+        virtual bool auto_delete(){ return auto_del; }
 
-private:
-    bool auto_del;
+    private:
+        bool auto_del;
 };
 
 /**
@@ -100,16 +100,16 @@ private:
   */
 template <class T>  class ptr_operation : public operation
 {
-public:
-    ptr_operation(T* object, void(T::*function)())
-        : obj(object), func(function) {}
-    virtual void operator()() {
-        (*obj.*func)();
-    }
+    public:
+        ptr_operation(T* object, void(T::*function)())
+            : obj(object), func(function) {}
+        virtual void operator()() {
+            (*obj.*func)();
+        }
 
-private:
-    T* obj;
-    void (T::*func)();
+    private:
+        T* obj;
+        void (T::*func)();
 };
 
 /**
@@ -118,16 +118,16 @@ private:
   */
 template <class T> class  ptr_iteration_operation : public iteration_operation
 {
-public:
-    ptr_iteration_operation(T* object, void(T::*function)(size_t))
-        : obj(object), func(function) {}
-    virtual void operator()(size_t index) {
-        (*obj.*func)(index);
-    }
+    public:
+        ptr_iteration_operation(T* object, void(T::*function)(size_t))
+            : obj(object), func(function) {}
+        virtual void operator()(size_t index) {
+            (*obj.*func)(index);
+        }
 
-private:
-    T* obj;
-    void (T::*func)(size_t);
+    private:
+        T* obj;
+        void (T::*func)(size_t);
 };
 
 
@@ -170,6 +170,18 @@ class block_iteration_operation : public iteration_operation {
         dispatch_iteration_block_store block;
 };
 #endif
+
+class XDISPATCH_EXPORT iteration_wrap {
+    public:
+        iteration_wrap(iteration_operation* o, size_t ct);
+        ~iteration_wrap();
+        iteration_operation* operation();
+        bool deref();
+
+    private:
+        iteration_operation* op;
+        uintptr_t ref;
+};
 
 /**
  The base class of all xdispatch classes
@@ -261,5 +273,10 @@ XDISPATCH_EXPORT dispatch_time_t as_delayed_time(uint64_t delay, dispatch_time_t
 XDISPATCH_EXPORT void exec();
 
 __XDISPATCH_END_NAMESPACE
+
+extern "C" {
+XDISPATCH_EXPORT void _xdispatch_run_operation(void*);
+XDISPATCH_EXPORT void _xdispatch_run_iter_wrap(void*, size_t);
+}
 
 #endif /* XDISPATCH_BASE_H_ */

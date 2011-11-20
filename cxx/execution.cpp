@@ -26,10 +26,33 @@
 
 __XDISPATCH_USE_NAMESPACE
 
+iteration_wrap::iteration_wrap(iteration_operation* o, size_t ct)
+    : op(o), ref(ct) {
+    assert(o);
+}
+
+iteration_wrap::~iteration_wrap() {
+
+    if(op && op->auto_delete())
+            delete op;
+
+}
+
+iteration_operation* iteration_wrap::operation(){
+    return op;
+}
+
+bool iteration_wrap::deref(){
+    return dispatch_atomic_dec(&ref)==0;
+}
+
+
+
 extern "C"
-void xdispatch::run_operation(void* dt){
+void _xdispatch_run_operation(void* dt){
     assert(dt);
     operation* w = static_cast<operation*>(dt);
+    assert(w);
 
     try {
         (*w)();
@@ -53,12 +76,13 @@ void xdispatch::run_operation(void* dt){
 }
 
 extern "C"
-void xdispatch::run_iter_wrap(void* dt, size_t index){
+void _xdispatch_run_iter_wrap(void* dt, size_t index){
     assert(dt);
     iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
+    assert(wrap);
 
     try {
-        wrap->run(index);
+        ( *(wrap->operation()) )(index);
     } catch(const std::exception& e) {
         std::cerr << "##################################################################" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
@@ -74,6 +98,4 @@ void xdispatch::run_iter_wrap(void* dt, size_t index){
         abort();
     }
 
-    if(wrap->deref())
-        delete wrap;
 }

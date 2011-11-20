@@ -25,8 +25,8 @@
 	This prevents a lot of errors from occuring
 	*/
 
-#ifndef XDISPATCH_BLOCKS_H_
-#define XDISPATCH_BLOCKS_H_
+#ifndef XDISPATCH_LAMBDA_BLOCKS_H_
+#define XDISPATCH_LAMBDA_BLOCKS_H_
 
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
@@ -151,38 +151,6 @@
 
 #endif
 
-#if defined(XDISPATCH_HAS_BLOCKS) && !defined(__BLOCKS__)
 
-#ifndef XDISPATCH_EXPORT
-# ifdef _WIN32
-#  ifdef XDISPATCH_MAKEDLL
-#   define XDISPATCH_EXPORT __declspec(dllexport)
-#  else
-#   define XDISPATCH_EXPORT __declspec(dllimport)
-#  endif
-# else
-#  define XDISPATCH_EXPORT __attribute__((visibility("default")))
-# endif
-#endif
 
-XDISPATCH_EXPORT void dispatch_async(dispatch_queue_t queue, dispatch_block_t function);
-
-XDISPATCH_EXPORT void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t function);
-
-XDISPATCH_EXPORT void dispatch_sync(dispatch_queue_t queue, dispatch_block_t function);
-
-XDISPATCH_EXPORT void dispatch_apply(size_t iterations, dispatch_queue_t queue, dispatch_iteration_block_t function);
-
-XDISPATCH_EXPORT void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t function);
-
-XDISPATCH_EXPORT void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block);
-
-XDISPATCH_EXPORT void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler);
-
-XDISPATCH_EXPORT void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler);
-
-XDISPATCH_EXPORT void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
-
-#endif
-
-#endif /* XDISPATCH_BLOCKS_H_ */
+#endif /* XDISPATCH_LAMBDA_BLOCKS_H_ */

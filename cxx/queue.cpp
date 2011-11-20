@@ -74,11 +74,12 @@ queue::~queue(){
 }
 
 void queue::async(operation* op){
-    dispatch_async_f(d->native, op, run_operation);
+    dispatch_async_f(d->native, op, _xdispatch_run_operation);
 }
 
 void queue::apply(iteration_operation* op, size_t times){
-    dispatch_apply_f(times, d->native, new iteration_wrap(op, times), run_iter_wrap);
+    iteration_wrap wrap( op, times );
+    dispatch_apply_f(times, d->native, &wrap, _xdispatch_run_iter_wrap);
 }
 
 void queue::after(operation* op, struct tm* time){
@@ -86,15 +87,15 @@ void queue::after(operation* op, struct tm* time){
 }
 
 void queue::after(operation* op, dispatch_time_t time){
-    dispatch_after_f(time, d->native, op, run_operation);
+    dispatch_after_f(time, d->native, op, _xdispatch_run_operation);
 }
 
 void queue::sync(operation* op){
-    dispatch_sync_f(d->native, op, run_operation);
+    dispatch_sync_f(d->native, op, _xdispatch_run_operation);
 }
 
 void queue::finalizer(operation* op, const queue& q){
-    dispatch_set_finalizer_f(d->native, run_operation);
+    dispatch_set_finalizer_f(d->native, _xdispatch_run_operation);
     dispatch_set_context(d->native, op);
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
