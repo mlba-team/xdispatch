@@ -138,8 +138,10 @@ template <class T> class  ptr_iteration_operation : public iteration_operation
   */
 class block_operation : public operation {
     public:
-        block_operation(dispatch_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
-        block_operation(const block_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
+        block_operation(dispatch_block_t b)
+            : operation(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+        block_operation(const block_operation& other)
+            : operation(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
         ~block_operation() {
             XDISPATCH_BLOCK_DELETE(block);
         }
@@ -158,8 +160,10 @@ class block_operation : public operation {
   */
 class block_iteration_operation : public iteration_operation {
     public:
-        block_iteration_operation(dispatch_iteration_block_t b) : block(XDISPATCH_BLOCK_PERSIST(b)) {}
-        block_iteration_operation(const block_iteration_operation& other) : block(XDISPATCH_BLOCK_COPY(other.block)) {}
+        block_iteration_operation(dispatch_iteration_block_t b)
+            : iteration_operation(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+        block_iteration_operation(const block_iteration_operation& other)
+            : iteration_operation(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
         ~block_iteration_operation() { XDISPATCH_BLOCK_DELETE(block); }
 
         void operator ()(size_t index){
@@ -171,17 +175,6 @@ class block_iteration_operation : public iteration_operation {
 };
 #endif
 
-class XDISPATCH_EXPORT iteration_wrap {
-    public:
-        iteration_wrap(iteration_operation* o, size_t ct);
-        ~iteration_wrap();
-        iteration_operation* operation();
-        bool deref();
-
-    private:
-        iteration_operation* op;
-        uintptr_t ref;
-};
 
 /**
  The base class of all xdispatch classes
@@ -205,7 +198,7 @@ public:
       */
     virtual void suspend() = 0;
     /**
-     Returns the native dispatch object associated to
+     @returns the native dispatch object associated to
      the xdispatch object
      */
     virtual dispatch_object_t native() const = 0;
@@ -273,10 +266,5 @@ XDISPATCH_EXPORT dispatch_time_t as_delayed_time(uint64_t delay, dispatch_time_t
 XDISPATCH_EXPORT void exec();
 
 __XDISPATCH_END_NAMESPACE
-
-extern "C" {
-XDISPATCH_EXPORT void _xdispatch_run_operation(void*);
-XDISPATCH_EXPORT void _xdispatch_run_iter_wrap(void*, size_t);
-}
 
 #endif /* XDISPATCH_BASE_H_ */

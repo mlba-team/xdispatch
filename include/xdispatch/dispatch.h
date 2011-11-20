@@ -50,12 +50,13 @@
 # include "synchronized.h"
 # include "lambda_blocks.h"
 # include "base.h"
-# include "lambda_dispatch.h"
+# include "once.h"
 # include "queue.h"
 # include "group.h"
 # include "semaphore.h"
 # include "timer.h"
 # include "source.h"
+# include "lambda_dispatch.h"
 # undef __XDISPATCH_INDIRECT__
 
 #undef XDISPATCH_EXPORT

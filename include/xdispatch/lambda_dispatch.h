@@ -37,35 +37,37 @@
 #if defined(XDISPATCH_HAS_BLOCKS) && !defined(__BLOCKS__)
 
 inline void dispatch_async(dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_async_f(queue, new xdispatch::block_operation(block), _xdispatch_run_operation);
+    xdispatch::queue( queue ).async( block );
 }
 
 inline void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_after_f(when, queue, new xdispatch::block_operation(block), _xdispatch_run_operation);
+    xdispatch::queue( queue ).after( block, when );
 }
 
 inline void dispatch_sync(dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_sync_f(queue, new xdispatch::block_operation(block), _xdispatch_run_operation);
+    xdispatch::queue( queue ).sync( block );
 }
 
 inline void dispatch_apply(size_t iterations, dispatch_queue_t queue, dispatch_iteration_block_t block){
-    xdispatch::iteration_wrap wrap( new xdispatch::block_iteration_operation(block), iterations );
-    dispatch_apply_f(iterations, queue, &wrap, _xdispatch_run_iter_wrap);
+    xdispatch::queue( queue ).apply( block, iterations );
 }
 
 inline void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_group_async_f(group, queue, new xdispatch::block_operation(block), _xdispatch_run_operation);
+    xdispatch::group( group ).async( block, queue );
 }
 
 inline void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
-    dispatch_group_notify_f(group,queue, new xdispatch::block_operation(block), _xdispatch_run_operation);
+    xdispatch::group( group ).notify( block, queue );
 }
 
 XDISPATCH_EXPORT void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler);
 
 XDISPATCH_EXPORT void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler);
 
-XDISPATCH_EXPORT void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block);
+inline void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block){
+    xdispatch::once o( predicate );
+    o( block );
+}
 
 #endif
 

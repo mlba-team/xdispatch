@@ -24,31 +24,30 @@
 #include <xdispatch/dispatch.h>
 
 /*
- A simple test for ensuring that getting the global
- queues is actually working
+ A (very) simple test for ensuring the once
+ methods are properly working.
+ NOTE: Still lacking a parallel test
  */
 
-static void pass(void* dt){
-    MU_PASS("Core API is working");
+static dispatch_once_t once_obj;
+static int once_counter = 0;
+
+static void increment(void* unused) {
+    once_counter++;
 }
 
-void dispatch_api() {
-    dispatch_queue_t q = NULL;
+void test_dispatch_once() {
+    MU_BEGIN_TEST(test_dispatch_once);
 
-	MU_BEGIN_TEST(dispatch_api);
+    MU_ASSERT_EQUAL( once_counter, 0 );
+    dispatch_once_f( &once_obj, NULL, increment );
+    dispatch_once_f( &once_obj, NULL, increment );
+    dispatch_once_f( &once_obj, NULL, increment );
+    dispatch_once_f( &once_obj, NULL, increment );
+    dispatch_once_f( &once_obj, NULL, increment );
+    MU_ASSERT_EQUAL( once_counter, 1 );
 
-    q = dispatch_get_main_queue();
-    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_main_queue",q);
-    dispatch_async_f(q, NULL, pass);
-
-	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
-    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_global_queue", q);
-	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0);
-    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_global_queue", q);
-	q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
-    MU_DESC_ASSERT_NOT_NULL_HEX("dispatch_get_global_queue", q);
-
-    dispatch_main();
+    MU_PASS("");
 
 	MU_END_TEST;
 }

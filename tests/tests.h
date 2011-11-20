@@ -59,6 +59,7 @@ void dispatch_starfish();
 void dispatch_memory_use();
 void dispatch_test_sync();
 void dispatch_group_function();
+void test_dispatch_once();
 #ifdef TEST_BLOCKS
 void cross_blocks();
 void dispatch_plusplus();
@@ -75,6 +76,7 @@ void dispatch_drift();
 static void register_tests(){
 	MU_REGISTER_TEST(atomic_operations);
 	MU_REGISTER_TEST(pthread_api);
+    MU_REGISTER_TEST(test_dispatch_once);
 	//MU_REGISTER_TEST(posix_api); (Test was not implemented yet)
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);

@@ -74,6 +74,8 @@ public:
     /**
     Same as async(operation*).
     Will put the given block on the queue.
+
+    @see async(operation*)
     */
     virtual inline void async(dispatch_block_t b) {
         async( new block_operation(b) );
