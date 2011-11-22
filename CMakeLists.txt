@@ -119,73 +119,17 @@ if(XDISPATCH_DOCS)
 	include(docs/docgen.cmake)
 endif()
 
-# install target
-if(WIN32)
-    install(FILES README.dox CHANGELOG.dox LICENSE NOTICE TODO.txt DESTINATION .)
-endif()
+# packaging
+include(package/version.cmake)
 
-# packaging information
-if(MZ_64BIT)
-    set(PACKAGE_ARCH "amd64")
-else()
-    set(PACKAGE_ARCH "i386")
-endif()
-if(MZ_IS_CLANG)
-    set(PACKAGE_COMPILER "clang")
-else()
-    if(MZ_IS_VS)
-        set(PACKAGE_COMPILER "msvc")
-    else()
-        set(PACKAGE_COMPILER "gcc")
-    endif()
-endif()
-
-# package target
-include(InstallRequiredSystemLibraries)
-set(CPACK_COMPONENTS_ALL libxdispatch libQtDispatch)
-set(CPACK_COMPONENT_LIBXDISPATCH_DISPLAY_NAME "XDispatch")
-set(CPACK_COMPONENT_LIBXDISPATCH_DESCRIPTION "C++ API for Grand Central Dispatch")
-set(CPACK_COMPONENT_LIBQTDISPATCH_DISPLAY_NAME "QtDispatch")
-set(CPACK_COMPONENT_LIBQTDISPATCH_DESCRIPTION "Provides integration of Grand Central Dispatch into the Qt Event-Loop. Additionally a QThreadPool compatible API to Grand Central Dispatch is provided")
-set(CPACK_COMPONENT_LIBQTDISPATCH_DEPENDS libxdispatch)
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "userspace implementation of grand central dispatch")
-set(CPACK_PACKAGE_VENDOR "www.mlba-team.de")
 if(APPLE)
-    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.rtf")
-    set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.rtf")
-    set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rtf")
-else()
-    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-    set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
-    set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
+	include(package/osx/pkg.cmake)
+elseif(UNIX)
+	include(package/rpm/rpm.cmake)
+	include(package/debian/deb.cmake)	
+else() # Windows ...
+	include(package/windows/zip.rpm)
 endif()
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "7")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
-set(CPACK_PACKAGE_VERSION "${XDISPATCH_VERSION}")
+	
 
-# package maker (OSX)
-if(APPLE)
-    set(CPACK_PACKAGING_INSTALL_PREFIX "/")
-endif()
-set(CPACK_OSX_PACKAGE_VERSION "10.6")
-
-# deb package
-set(CPACK_DEBIAN_PACKAGE_NAME "libxdispatch")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>=2.13-1) , libgcc1 (>=4.5.1), libstdc++6 (>=4.5.1)") #, libllvm2.9")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Marius Zwicker")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Userspace implementation of grand central dispatch")
-set(CPACK_PACKAGE_DESCRIPTION "Provides an userspace implementation of the grand central dispatch api introduced with Mac OS X 10.6. Additionally a platform independent C++ interface is included")
-set(CPACK_DEBIAN_PACKAGE_SECTION "Devel")
-set(CPACK_DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}-${PACKAGE_COMPILER}-${PACKAGE_ARCH}")
-
-# rpm package
-set(CPACK_RPM_PACKAGE_NAME "libxdispatch")
-set(CPACK_RPM_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}.${PACKAGE_COMPILER}.${PACKAGE_ARCH}")
-set(CPACK_RPM_PACKAGE_LICENSE "Apache License, Version 2.0")
-set(CPACK_RPM_PACKAGE_REQUIRES "glibc, libstdc++45")
-set(CPACK_RPM_PACKAGE_ARCHITECTURE "${PACAKGE_ARCH}")
-
-
-SET(CPACK_PACKAGE_FILE_NAME "xdispatch_${CPACK_PACKAGE_VERSION}_${CMAKE_SYSTEM_NAME}_${PACKAGE_COMPILER}_${PACKAGE_ARCH}")
 include(CPack)
