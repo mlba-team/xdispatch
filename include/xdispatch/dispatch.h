@@ -54,8 +54,8 @@
 # include "queue.h"
 # include "group.h"
 # include "semaphore.h"
-# include "timer.h"
 # include "source.h"
+# include "timer.h"
 # include "lambda_dispatch.h"
 # undef __XDISPATCH_INDIRECT__
 

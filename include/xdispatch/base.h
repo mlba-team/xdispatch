@@ -88,7 +88,7 @@ class XDISPATCH_EXPORT iteration_operation
           @return the current auto_delete flag
           @see set_auto_delete();
           */
-        virtual bool auto_delete(){ return auto_del; }
+        virtual bool auto_delete() const { return auto_del; }
 
     private:
         bool auto_del;
@@ -244,7 +244,7 @@ XDISPATCH_EXPORT queue global_queue(queue_priority p = DEFAULT);
     */
 XDISPATCH_EXPORT queue current_queue();
 /**
-    @return The given QTime converted to a dispatch_time_t
+    @return The given tm converted to a dispatch_time_t
     */
 XDISPATCH_EXPORT dispatch_time_t as_dispatch_time(struct tm*);
 /**

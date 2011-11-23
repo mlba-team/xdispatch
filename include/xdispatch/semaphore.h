@@ -41,81 +41,81 @@ __XDISPATCH_BEGIN_NAMESPACE
   */
 class XDISPATCH_EXPORT semaphore {
 
-public:
-    /**
-        Constructs a new semaphore with the given initial value.
+    public:
+        /**
+            Constructs a new semaphore with the given initial value.
 
-        Passing zero for the value is useful for when two threads
-        need to reconcile the completion of a particular event.
-        Passing a value greather than zero is useful for managing
-        a finite pool of resources, where the pool size is equal
-        to the value.
+            Passing zero for the value is useful for when two threads
+            need to reconcile the completion of a particular event.
+            Passing a value greather than zero is useful for managing
+            a finite pool of resources, where the pool size is equal
+            to the value.
 
-        @remarks Never pass a value less than zero here
-    */
-    semaphore(int = 1);
-    /**
-        Constructs a new semaphore using the given dispatch_semaphore_t
-        object
+            @remarks Never pass a value less than zero here
         */
-    semaphore(dispatch_semaphore_t);
-    semaphore(const semaphore&);
-    ~semaphore();
+        semaphore(int = 1);
+        /**
+            Constructs a new semaphore using the given dispatch_semaphore_t
+            object
+            */
+        semaphore(dispatch_semaphore_t);
+        semaphore(const semaphore&);
+        ~semaphore();
 
-    /**
-        Release the semaphore.
+        /**
+            Release the semaphore.
 
-        Increments the counting semaphore. If the previous
-        value was less than zero, this function wakes a
-        waiting thread before returning.
+            Increments the counting semaphore. If the previous
+            value was less than zero, this function wakes a
+            waiting thread before returning.
 
-        @return non-zero if a thread was woken, zero otherwise.
-    */
-    int release();
-    /**
-        Acquires the semaphore.
+            @return non-zero if a thread was woken, zero otherwise.
+        */
+        int release();
+        /**
+            Acquires the semaphore.
 
-        Decrements the counting semaphore. If the value is
-        less than zero it will wait until another
-        thread released the semaphore.
-     */
-    void acquire();
-    /**
-        Tries to acquire the semaphore.
+            Decrements the counting semaphore. If the value is
+            less than zero it will wait until another
+            thread released the semaphore.
+         */
+        void acquire();
+        /**
+            Tries to acquire the semaphore.
 
-        Decrements the counting semaphore. If the value is
-        less than zero it will wait until either another
-        thread released the semaphore or the timeout passed.
+            Decrements the counting semaphore. If the value is
+            less than zero it will wait until either another
+            thread released the semaphore or the timeout passed.
 
-        @return true if acquiring the semaphore succeeded.
-    */
-    bool try_acquire(dispatch_time_t);
-    /**
-        Tries to acquire the semaphore.
+            @return true if acquiring the semaphore succeeded.
+        */
+        bool try_acquire(dispatch_time_t);
+        /**
+            Tries to acquire the semaphore.
 
-        Decrements the counting semaphore. If the value is
-        less than zero it will wait until either another
-        thread released the semaphore or the timeout passed.
+            Decrements the counting semaphore. If the value is
+            less than zero it will wait until either another
+            thread released the semaphore or the timeout passed.
 
-        @return true if acquiring the semaphore succeeded.
-    */
-    bool try_acquire(struct tm*);
-    /**
-    @returns The dispatch_semaphore_t object associated with this
-    C++ object. Use this, if you need to use the plain C Interface
-    of libdispatch.
-    */
-    virtual const dispatch_semaphore_t native() const;
+            @return true if acquiring the semaphore succeeded.
+        */
+        bool try_acquire(struct tm*);
+        /**
+        @returns The dispatch_semaphore_t object associated with this
+        C++ object. Use this, if you need to use the plain C Interface
+        of libdispatch.
+        */
+        virtual const dispatch_semaphore_t native() const;
 
-	semaphore& operator=(const semaphore&);
-	bool operator ==(const semaphore&);
-	bool operator ==(const dispatch_semaphore_t&);
-	bool operator !=(const semaphore&);
-	bool operator !=(const dispatch_semaphore_t&);
+        semaphore& operator=(const semaphore&);
+        bool operator ==(const semaphore&);
+        bool operator ==(const dispatch_semaphore_t&);
+        bool operator !=(const semaphore&);
+        bool operator !=(const dispatch_semaphore_t&);
 
-private:
-    class data;
-    data* d;
+    private:
+        class data;
+        data* d;
 
 };
 
