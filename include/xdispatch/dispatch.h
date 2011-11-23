@@ -26,7 +26,7 @@
 #  include <dispatch/dispatch.h>
 #  define NSEC_PER_MSEC 1000000ll
 # else
-#  include "../libdispatch/dispatch.h"
+#  include "../dispatch/dispatch.h"
 # endif
 
 #if defined(__cplusplus)

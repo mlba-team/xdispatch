@@ -67,7 +67,7 @@ file(GLOB PLATFORM platform/*.h platform/*.c)
 source_group(platform FILES ${PLATFORM})
 
 # core lib
-file(GLOB INCL ../include/libdispatch/*.h)
+file(GLOB INCL ../include/dispatch/*.h)
 file(GLOB CORE src/*.c src/*.h config/*.in)
 file(GLOB SHIM src/shims/*.c src/shims/*.h)
 source_group(dispatch FILES ${INCL})
@@ -108,7 +108,7 @@ else()
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
-    install(DIRECTORY ../include/libdispatch
+    install(DIRECTORY ../include/dispatch
                 DESTINATION include
                 COMPONENT libxdispatch
                 PATTERN "*.svn" EXCLUDE)

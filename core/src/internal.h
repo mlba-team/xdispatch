@@ -109,15 +109,15 @@
 #define __DISPATCH_INDIRECT__
 #endif
 
-#include "../../include/libdispatch/base.h"
-#include "../../include/libdispatch/object.h"
-#include "../../include/libdispatch/time.h"
-#include "../../include/libdispatch/queue.h"
-#include "../../include/libdispatch/source.h"
-#include "../../include/libdispatch/group.h"
-#include "../../include/libdispatch/semaphore.h"
-#include "../../include/libdispatch/source.h"
-#include "../../include/libdispatch/once.h"
+#include "../../include/dispatch/base.h"
+#include "../../include/dispatch/object.h"
+#include "../../include/dispatch/time.h"
+#include "../../include/dispatch/queue.h"
+#include "../../include/dispatch/source.h"
+#include "../../include/dispatch/group.h"
+#include "../../include/dispatch/semaphore.h"
+#include "../../include/dispatch/source.h"
+#include "../../include/dispatch/once.h"
 
 /* and the last missing shims */
 #include "shims/malloc_zone.h"

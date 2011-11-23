@@ -26,7 +26,7 @@
 #  include <dispatch/dispatch.h>
 #  define NSEC_PER_MSEC 1000000ll
 # else
-#  include "../include/libdispatch/dispatch.h"
+#  include "../include/dispatch/dispatch.h"
 # endif
 
 #include <assert.h>
