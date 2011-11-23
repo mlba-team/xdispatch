@@ -24,6 +24,8 @@
 
 __XDISPATCH_USE_NAMESPACE
 
+// sourcetype interface
+
 static dispatch_once_t init_data_tls = 0;
 static pthread_key_t data_tls;
 
@@ -32,6 +34,10 @@ static void run_tls_initializer(void*){
 }
 
 sourcetype::sourcetype() : cb(NULL) {
+
+}
+
+sourcetype::~sourcetype() {
 
 }
 
@@ -48,6 +54,30 @@ void sourcetype::ready(const any& dt){
 dispatch_source_t sourcetype::native(){
     return NULL;
 }
+
+
+// sourcetype for using dispatch_source_t
+
+/*
+
+native_source::native_source( dispatch_source_t s )
+    : sourcetype(), _source( s ) {
+
+    assert( s );
+    dispatch_retain( s );
+}
+
+native_source::~native_source() {
+    dispatch_release( _source );
+}
+
+dispatch_source_t native_source::native(){
+    return _source;
+}
+
+*/
+
+// the source class
 
 class src_notify_operation : public operation {
     public:

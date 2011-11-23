@@ -58,7 +58,7 @@ class XDISPATCH_EXPORT operation
           @return the current auto_delete flag
           @see set_auto_delete();
           */
-        virtual bool auto_delete(){ return auto_del; }
+        virtual bool auto_delete() const { return auto_del; }
 
     private:
         bool auto_del;
