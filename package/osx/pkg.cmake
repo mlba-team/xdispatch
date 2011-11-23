@@ -7,4 +7,4 @@ set( CPACK_OSX_PACKAGE_VERSION "10.6")
 
 
 message("-- Configured generator 'PackageMaker'")
-set( XDISPATCH_CPACK ${XDISPATCH_CPACK} PackageMaker PARENT_SCOPE)
+set( XDISPATCH_CPACK ${XDISPATCH_CPACK} PackageMaker )
