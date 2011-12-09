@@ -41,7 +41,7 @@ CHECK_SYMBOL_EXISTS( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 CHECK_FUNCTION_EXISTS( sysconf HAVE_SYSCONF)
 
 if(LINUX)
-    set(LIBS ${LIBS} rt)
+    set(LIBS ${LIBS} rt m)
 endif()
 
 if(NOT WIN32)
@@ -100,16 +100,16 @@ if(APPLE)
     set_property(TARGET dispatch PROPERTY PUBLIC_HEADER ${INCL})
 
     install(TARGETS dispatch
-                COMPONENT libxdispatch
+                COMPONENT libdispatch
                 FRAMEWORK DESTINATION "Library/Frameworks")
 else()
     install(TARGETS dispatch
-                COMPONENT libxdispatch
+                COMPONENT libdispatch
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
     install(DIRECTORY ../include/dispatch
                 DESTINATION include
-                COMPONENT libxdispatch
+                COMPONENT libdispatch-dev
                 PATTERN "*.svn" EXCLUDE)
 endif()

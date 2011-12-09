@@ -41,7 +41,7 @@ else()
                 ARCHIVE DESTINATION lib)
     install(DIRECTORY ../include/xdispatch
                 DESTINATION include
-                COMPONENT libxdispatch
+                COMPONENT libxdispatch-dev
                 PATTERN "*.svn" EXCLUDE)
 endif()
 

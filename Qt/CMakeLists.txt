@@ -45,6 +45,6 @@ else()
                 ARCHIVE DESTINATION lib)
     install(DIRECTORY ../include/QtDispatch
                 DESTINATION include
-                COMPONENT libQtDispatch
+                COMPONENT libQtDispatch-dev
                 PATTERN "*.svn" EXCLUDE)
 endif()

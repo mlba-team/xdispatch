@@ -22,8 +22,7 @@ project(BlocksRuntime)
 set(HEADERS Block.h Block_private.h)
 set(SRC runtime.c data.c)
 
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DBlocksRuntime_EXPORTS -fPIC -std=c99 -Wall -Wextra -W -pedantic -Wno-unused-parameter")
-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_DEBUG} -DBlocksRuntime_EXPORTS -fPIC -std=c99 -Wall -Wextra -W -pedantic -Wno-unused-parameter")
+mz_add_flag(-DBlocksRuntime_EXPORTS -fPIC -std=c99 -Wall -Wextra -W -pedantic -Wno-unused-parameter)
 
 OPTION(STATIC_BLOCKSRUNTIME "Enable to build libBlocksRuntime as static library" OFF)
 if(STATIC_BLOCKSRUNTIME)
