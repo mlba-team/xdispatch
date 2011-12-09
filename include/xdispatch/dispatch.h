@@ -24,7 +24,9 @@
 
 # ifdef HAVE_NATIVE_DISPATCH_H
 #  include <dispatch/dispatch.h>
-#  define NSEC_PER_MSEC 1000000ll
+#  ifndef NSEC_PER_MSEC
+#   define NSEC_PER_MSEC 1000000ll
+#  endif
 # else
 #  include "../dispatch/dispatch.h"
 # endif

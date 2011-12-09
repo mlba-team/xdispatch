@@ -34,8 +34,19 @@ set( CPACK_RESOURCE_FILE_LICENSE 	"${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set( CPACK_RESOURCE_FILE_README 	"${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
 set( CPACK_PACKAGE_DESCRIPTION_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
 
-# The components xdispatch is built of
-set( CPACK_COMPONENTS_ALL libdispatch libdispatch-dev libxdispatch libxdispatch-dev libQtDispatch libQtDispatch-dev )
+# components xdispatch is built of
+# depending on the platform, different components are needed
+if(APPLE)
+    set( CPACK_COMPONENTS_ALL libxdispatch libQtDispatch )
+else()
+    if(UNIX AND NOT APPLE)
+        set( CPACK_COMPONENTS_ALL libdispatch libdispatch-dev libxdispatch libxdispatch-dev libQtDispatch libQtDispatch-dev )
+    else()
+        set( CPACK_COMPONENTS_ALL libdispatch libxdispatch libQtDispatch )
+    endif()
+endif()
+
+# component descriptions and dependencies
 set( CPACK_COMPONENT_LIBDISPATCH_DISPLAY_NAME "Grand Central Dispatch")
 set( CPACK_COMPONENT_LIBDISPATCH_DESCRIPTION "user space implementation of the Grand Central Dispatch API")
 set( CPACK_COMPONENT_LIBDISPATCH-DEV_DISPLAY_NAME "Grand Central Dispatch - Development Files")
@@ -43,7 +54,11 @@ set( CPACK_COMPONENT_LIBDISPATCH-DEV_DESCRIPTION "user space implementation of t
 set( CPACK_COMPONENT_LIBDISPATCH-DEV_DEPENDS libdispatch)
 set( CPACK_COMPONENT_LIBXDISPATCH_DISPLAY_NAME "XDispatch")
 set( CPACK_COMPONENT_LIBXDISPATCH_DESCRIPTION "C++ API for Grand Central Dispatch")
-set( CPACK_COMPONENT_LIBXDISPATCH_DEPENDS libdispatch)
+if(APPLE)
+    set( CPACK_COMPONENT_LIBXDISPATCH_DEPENDS libdispatch)
+else()
+    set( CPACK_COMPONENT_LIBXDISPATCH_DEPENDS )
+endif()
 set( CPACK_COMPONENT_LIBXDISPATCH-DEV_DISPLAY_NAME "XDispatch - Development Files")
 set( CPACK_COMPONENT_LIBXDISPATCH-DEV_DESCRIPTION "C++ API for Grand Central Dispatch")
 set( CPACK_COMPONENT_LIBXDISPATCH-DEV_DEPENDS libxdispatch)
