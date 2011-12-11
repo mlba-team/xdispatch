@@ -51,7 +51,7 @@ CHECK_INCLUDE_FILES (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    set(STATIC_KQUEUE On)
+    set(STATIC_KQUEUE ON)
     mz_add_definition(MAKE_STATIC)
     mz_add_library(libkqueue libkqueue)
     include_directories(
@@ -71,7 +71,7 @@ if(NOT WIN32)
 endif()
 
 if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    set(STATIC_WORKQUEUE On)
+    set(STATIC_WORKQUEUE ON)
     mz_add_definition(MAKE_STATIC)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
     include_directories(

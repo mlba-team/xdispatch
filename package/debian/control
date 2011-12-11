@@ -1,0 +1,92 @@
+Source: xdispatch
+Priority: optional
+Section: devel
+Maintainer: Marius Zwicker <xdispatch@mlba-team.de>
+Build-Depends: debhelper (>= 7.0.50~), quilt (>= 0.46-7~), cmake,
+ libc6, libgcc1, clang, libqt4-core (>=4:4.7.3), libqt4-gui (>=4:4.7.3),
+ libqt4-network (>=4:4.7.3), libqt4-dev
+Standards-Version: 3.9.1
+Vcs-Svn: https://opensource.mlba-team.de/svn/xdispatch
+Vcs-Browser: http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch
+Homepage: http://opensource.mlba-team.de/xdispatch
+
+Package: libdispatch
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: libdispatch0, libblocksruntime0
+Provides: libblocksruntime0
+Conflicts: libdispatch0, libblocksruntime0
+Description: Userspace implementation of grand central dispatch API
+ Provides the Grand Central Dispatch API introduced by Apple in Mac OS X 
+ 10.5 as userspace implementation.
+ .
+ Includes the BlocksRuntime needed to using block syntax in conjunction with clang
+
+Package: libdispatch-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libdispatch (= ${binary:Version}), pkg-config
+Description: development files for libdispatch
+ Userspace implementation of grand central dispatch API - Development Files
+ .
+ Provides the Grand Central Dispatch API introduced by Apple in Mac OS X 
+ 10.5 as userspace implementation.
+ .
+ Includes the BlocksRuntime needed to using block syntax in conjunction 
+ with clang
+
+Package: libxdispatch
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libdispatch(= ${binary:Version})
+Description: C++ API for Grand Central Dispatch
+ Provides a C++ object-oriented programming interface for utilizing
+ the functionality of Grand Central Dispatch
+ .
+ As an alternative to blocks, the C++11x lambda syntax is supported when
+ using gcc 4.5.1 and above. Additionally classes for modeling task 
+ hierarchies as well as asynchronous programming are provided.
+ .
+ For convenience this library will extend the libdispatch API to support
+ C++11x lambdas as well
+
+Package: libxdispatch-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libxdispatch (= ${binary:Version}), pkg-config
+Description: development files for libxdispatch
+ C++ API for Grand Central Dispatch - Development Files
+ .
+ Provides a C++ object-oriented programming interface for utilizing
+ the functionality of Grand Central Dispatch
+ .
+ As an alternative to blocks, the C++11x lambda syntax is supported when
+ using gcc 4.5.1 and above. Additionally classes for modeling task 
+ hierarchies as well as asynchronous programming are provided.
+ .
+ For convenience this library will extend the libdispatch API to support
+ C++11x lambdas as well 
+
+Package: libqtdispatch
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libxdispatch(= ${binary:Version}),
+ libdispatch(= ${binary:Version}), libqt4-core (>=4:4.7.3), libqt4-gui (>=4:4.7.3),
+ libqt4-network (>=4:4.7.3)
+Description: Qt compatible API wrapper for Grand Central Dispatch
+ Provides integration of Grand Central Dispatch into the Qt Event-Loop.
+ .
+ A QThreadPool compatible API to Grand Central Dispatch is included.
+  
+Package: libqtdispatch-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libqtdispatch (= ${binary:Version}), 
+ pkg-config, libqt4-dev
+Description: development files for libQtDispatch
+ Qt compatible API wrapper for Grand Central Dispatch - Development Files
+ .
+ Provides integration of Grand Central Dispatch into the Qt Event-Loop.
+ .
+ A QThreadPool compatible API to Grand Central Dispatch is provided
