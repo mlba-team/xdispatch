@@ -48,7 +48,8 @@ extern "C" {
 void Qt_runnable();
 void Qt_dispatch_debug();
 void Qt_dispatch_cascade();
-void Qt_dispatch_group();
+void Qt_dispatch_group1();
+void Qt_dispatch_group2();
 void Qt_dispatch_mainqueue();
 void Qt_dispatch_queue();
 void Qt_dispatch_serialqueue();
@@ -74,7 +75,8 @@ static void register_qt_tests(){
 	MU_REGISTER_TEST(Qt_dispatch_mainqueue);
 	MU_REGISTER_TEST(Qt_dispatch_cascade);
 	MU_REGISTER_TEST(Qt_dispatch_after);
-	MU_REGISTER_TEST(Qt_dispatch_group);
+    MU_REGISTER_TEST(Qt_dispatch_group1);
+    MU_REGISTER_TEST(Qt_dispatch_group2);
 	MU_REGISTER_TEST(Qt_dispatch_serialqueue);
 	MU_REGISTER_TEST(Qt_dispatch_semaphore);
     MU_REGISTER_TEST(Qt_dispatch_current);

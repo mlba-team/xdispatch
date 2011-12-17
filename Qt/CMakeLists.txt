@@ -7,6 +7,7 @@ file(GLOB QINCLUDE ../include/QtDispatch/Q*)
 # include qt headers (if found)	
 INCLUDE_DIRECTORIES(
 	${QT_QTCORE_INCLUDE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 # tell qt we're building a dll
@@ -14,11 +15,12 @@ mz_add_definition(QT_MAKEDLL)
 
 # moc qt files
 mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
+qt4_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 
 source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
 
-add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H})
+add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 mz_target_props(QtDispatch)
