@@ -98,3 +98,25 @@ synclock xdispatch::get_lock_for_key(unsigned int key){
 
     return synclock(sem);
 }
+
+static std::map<std::string, dispatch_semaphore_t> user_lock_semaphores;
+
+synclock xdispatch::get_lock_for_key(const std::string& key){
+    dispatch_semaphore_t sem = NULL;
+
+    if (user_lock_semaphores.count(key) != 0)
+        sem = user_lock_semaphores.at(key);
+    else {
+        dispatch_semaphore_wait(rw_lock,DISPATCH_TIME_FOREVER);
+        if(user_lock_semaphores.count(key) != 0)
+            sem = user_lock_semaphores.at(key);
+        else {
+            sem = dispatch_semaphore_create(1);
+            assert(sem);
+            user_lock_semaphores.insert( std::pair<std::string, dispatch_semaphore_t>(key,sem) );
+        }
+        dispatch_semaphore_signal(rw_lock);
+    }
+
+    return synclock(sem);
+}
