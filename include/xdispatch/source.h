@@ -137,13 +137,21 @@ class XDISPATCH_EXPORT sourcetype {
             virtual dispatch_source_t native();
 
     private:
+            sourcetype(const sourcetype&){}
             void set_cb(source*);
             friend class source;
             source* cb;
 };
 
-/*
+/**
+  Constructs a sourcetype using a dispatch_source_t
+  object as its main source.
 
+  @remark As soon as you passed a native_source
+    object in order to create an xdispatch::source object,
+    the xdispatch source will modify the context of the
+    dispatch_source_t in order to work properly.
+  */
 class XDISPATCH_EXPORT native_source : public sourcetype {
 
     public:
@@ -151,14 +159,12 @@ class XDISPATCH_EXPORT native_source : public sourcetype {
         ~native_source();
 
     protected:
-        void ready(const any&);
         virtual dispatch_source_t native();
 
     private:
         dispatch_source_t _source;
 };
 
-*/
 
 /**
 Provides a source implementation.
@@ -214,6 +220,8 @@ class XDISPATCH_EXPORT source : public object {
             datatype cannot be provided, a bad_cast exception will be thrown.
 
             @remarks Calling this method from outside of a handler is undefined
+            @remarks When using a native_source, no data will be available here
+                but has to be retrieved using the dispatch_source_get_*() functions
             */
             template <typename T> static T data(){
                     return _data()->cast<T>();

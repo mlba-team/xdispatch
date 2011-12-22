@@ -43,12 +43,20 @@ sourcetype::~sourcetype() {
 
 void sourcetype::set_cb(source* s){
     assert(s);
-    cb = s;
+    // TODO: Is this synchronization really needed?
+    //       Also check if maintaining an own object is faster
+    synchronize("xd_st_cb") {
+        cb = s;
+    }
 }
 
 void sourcetype::ready(const any& dt){
-    if(cb)
-        cb->notify(dt);
+    // TODO: Is this synchronization really needed?
+    //       Also check if maintaining an own object is faster
+    synchronize("xd_st_cb") {
+        if(cb)
+            cb->notify(dt);
+    }
 }
 
 dispatch_source_t sourcetype::native(){
@@ -57,8 +65,6 @@ dispatch_source_t sourcetype::native(){
 
 
 // sourcetype for using dispatch_source_t
-
-/*
 
 native_source::native_source( dispatch_source_t s )
     : sourcetype(), _source( s ) {
@@ -75,7 +81,7 @@ dispatch_source_t native_source::native(){
     return _source;
 }
 
-*/
+
 
 // the source class
 
@@ -147,18 +153,29 @@ queue source::target_queue() const {
 void source::handler(operation* op){
     assert(op);
 
-    if(d->handler)
-        delete d->handler;
+    if( native() ) {
+        dispatch_set_context( (dispatch_source_t)native(), op );
+        dispatch_source_set_event_handler_f( (dispatch_source_t)native(), _xdispatch_run_operation );
+        return;
+    }
 
-    d->handler = op;
-    d->handler->auto_delete(false);
+    // TODO: Is this synchronization really needed?
+    //       Also check if maintaining an own object is faster
+    synchronize("xd_src_handle") {
+        if(d->handler && d->handler->auto_delete())
+            delete d->handler;
+
+        d->handler = op;
+        d->handler->auto_delete(false);
+    }
 }
 
 void source::notify(const any& dt){
     if(d->suspend_ct == 0)
         return;
 
-    d->target.async(new src_notify_operation(dt, d->handler));
+    if(d->handler)
+        d->target.async(new src_notify_operation(dt, d->handler));
 }
 
 dispatch_object_t source::native() const {
