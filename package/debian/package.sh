@@ -15,7 +15,7 @@ echo -- clean svn information
 rm -rf `find . -type d -name .svn`
 # delete old build files
 echo -- cleaning build directories
-rm -rf Build/QtCreator_ProjectFiles Build/Release_MakeFiles Build/MakeFiles Build/Docs
+rm -rf Build/QtCreator_ProjectFiles Build/*MakeFiles Build/Docs Build/VS10_ProjectFiles*
 # copy debian packaging information
 echo -- copy packaging information
 cp -rf package/debian debian

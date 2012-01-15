@@ -83,7 +83,7 @@ public:
     }
 };
 
-void cxx_dispatch_group() {
+extern "C" void cxx_dispatch_group() {
     bool res;
     xdispatch::group* group;
 

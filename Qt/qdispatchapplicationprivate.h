@@ -60,7 +60,7 @@ public:
 	}
 
 	static void registerCallback(){
-		QDispatchEvent::TYPECONSTANT = QEvent::Type(QEvent::registerEventType(QEvent::User+1));
+        QDispatchEvent::TYPECONSTANT = QEvent::Type( QEvent::registerEventType() );
 		instance = new QDispatchLibBridge();
 		_dispatch_register_signal_handler_4QT(handleNewItem);
 

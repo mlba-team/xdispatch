@@ -24,6 +24,7 @@
 #include <QPointer>
 #include <QTime>
 #include <QDebug>
+#include <QObject>
 
 #include "../include/QtDispatch/qdispatchqueue.h"
 #include "../include/QtDispatch/qdispatchgroup.h"
@@ -33,59 +34,86 @@
 
 QT_BEGIN_NAMESPACE
 
-class QDispatchGroup::Private {
-public:
-    Private() : obj(NULL), notify(NULL), references(2) {}
-	~Private() {
-        if(notify && notify->auto_delete())
-			delete notify;
-        if(queue)
-            delete queue;
-	}
+class QDispatchGroup::Private : public QObject {
 
-	void runNotify(){
-        if(queue && notify)
-            queue->async(notify);
+    Q_OBJECT
 
-        if(obj)
-            emit obj->allFinished();
-	}
+    public:
+        Private()
+            : QObject() {}
 
-    static void notifier(void* dt){
-        Q_ASSERT(dt);
-        QDispatchGroup::Private* d = static_cast<QDispatchGroup::Private*>(dt);
+        void emitFinished(){
+            emit groupFinished();
+        }
 
-        d->runNotify();
-        if(!d->obj && !d->references.deref())
-            delete d;
-    }
+    signals:
+        void groupFinished();
 
-    QPointer<QDispatchGroup> obj;
-    xdispatch::operation* notify;
-    QDispatchQueue* queue;
-    QAtomicInt references;
 };
 
+
+class QDispatchGroup::Emitter : public xdispatch::operation {
+
+    public:
+        Emitter(QDispatchGroup::Private* p)
+            : operation(), _runnable(NULL), _operation(NULL), _group(p) {
+
+        }
+
+        Emitter(QRunnable* qr, QDispatchGroup::Private* p)
+            : operation(), _runnable(qr), _operation(NULL), _group(p) {
+
+        }
+        Emitter(xdispatch::operation* op, QDispatchGroup::Private* p)
+            : operation(), _runnable(NULL), _operation(op), _group(p) {
+
+        }
+        virtual ~Emitter() {
+            if( _runnable && _runnable->autoDelete() )
+                delete _runnable;
+            if( _operation && _operation->auto_delete() )
+                delete _operation;
+        }
+
+        void operator ()(){
+            if( _runnable )
+                _runnable->run();
+            if( _operation )
+                (*_operation)();
+
+            if( ! _group.isNull() )
+                _group.data()->emitFinished();
+        }
+
+    private:
+        QRunnable *_runnable;
+        xdispatch::operation* _operation;
+        QWeakPointer<QDispatchGroup::Private> _group;
+};
+
+
 QDispatchGroup::QDispatchGroup() : d(new Private()){
-	d->obj = this;
+    connect( d.data(), SIGNAL(groupFinished()), this, SIGNAL(allFinished()) );
 }
 
 QDispatchGroup::QDispatchGroup(dispatch_group_t o) : xdispatch::group(o), d(new Private()){
-    d->obj = this;
+    connect( d.data(), SIGNAL(groupFinished()), this, SIGNAL(allFinished()) );
 }
 
 QDispatchGroup::QDispatchGroup(const QDispatchGroup & obj) : xdispatch::group(obj), d(new Private()){
-    d->obj = this;
+    connect( d.data(), SIGNAL(groupFinished()), this, SIGNAL(allFinished()) );
 }
 
 QDispatchGroup::QDispatchGroup(const xdispatch::group & obj) : xdispatch::group(obj), d(new Private()){
-    d->obj = this;
+    connect( d.data(), SIGNAL(groupFinished()), this, SIGNAL(allFinished()) );
 }
 
 QDispatchGroup::~QDispatchGroup(){
-    if(!d->references.deref())
-        delete d;
 
+}
+
+void QDispatchGroup::enableAllFinishedSignal() {
+    notify( new Emitter( d.data() ), xdispatch::main_queue() );
 }
 
 bool QDispatchGroup::wait(const QTime& t){
@@ -94,29 +122,20 @@ bool QDispatchGroup::wait(const QTime& t){
 
 void QDispatchGroup::async(QRunnable *r, const xdispatch::queue& q){
     Q_ASSERT(r);
-    async(new RunnableOperation(r), q);
-    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
-}
 
-void QDispatchGroup::async(xdispatch::operation * op, const xdispatch::queue & q){
-    Q_ASSERT(op);
-    xdispatch::group::async(op, q);
-    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    async(new RunnableOperation(r), q);
 }
 
 void QDispatchGroup::notify(QRunnable *r, const xdispatch::queue& q){
     Q_ASSERT(r);
-    notify(new RunnableOperation(r), q);
 
-    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    xdispatch::group::notify( new Emitter( r, d.data() ), q );
 }
 
 void QDispatchGroup::notify(xdispatch::operation* op, const xdispatch::queue& q){
     Q_ASSERT(op);
-    d->notify = op;
-    d->queue = new QDispatchQueue(q);
 
-    dispatch_group_notify_f((dispatch_group_t)native(), (dispatch_queue_t)xdispatch::global_queue().native(), d, QDispatchGroup::Private::notifier);
+    xdispatch::group::notify( new Emitter( op, d.data() ), q );
 }
 
 void QDispatchGroup::suspend(){
@@ -129,8 +148,10 @@ void QDispatchGroup::resume(){
 
 QDebug operator<<(QDebug dbg, const QDispatchGroup& g)
 {	
-    dbg.nospace() << "QDispatchGroup (" << (g.d->notify==0 ? "no" : "has") << " notifier)";
+    dbg.nospace() << "QDispatchGroup (no details available)";
 	return dbg.space();
 }
+
+#include <moc_qdispatchgroup.moc>
 
 QT_END_NAMESPACE

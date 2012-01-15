@@ -24,7 +24,7 @@
 #define QDISPATCH_GROUP_H_
 
 #include <QObject>
-
+#include <QScopedPointer>
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
 
@@ -68,12 +68,7 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
         @param q The Queue to use. If no Queue is given, the system default queue will be used
         */
         void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
-        void async(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
-#ifdef XDISPATCH_HAS_BLOCKS
-        inline void async(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
-            async( new QBlockRunnable(b), q );
-        }
-#endif
+        using xdispatch::group::async;
         /**
         Waits until the given time has passed
         or all dispatched runnables in the group were executed
@@ -107,6 +102,21 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
             notify( new QBlockRunnable(b), q );
         }
 #endif
+        /**
+          Activates the allFinished() signal or this QDispatchGroup. Needs to
+          be called everytime all scheduled work on the group finished and new work
+          was submitted which was not finished yet.
+
+          Note: All installed notification handlers will be disabled
+                and all other QDispatchGroup objects working on the same group
+                will stop to emit the signal, i.e. only one QDispatchGroup object
+                can emit the signal at a time.
+
+          Note2: When assigning a new notification handler by using notify()
+                 the signal of this object will be enabled by default
+
+         */
+        void enableAllFinishedSignal();
 
     public slots:
         void resume();
@@ -119,15 +129,19 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
 
         Every time the all work dispatched to the group (i.e.
         the group is empty) this signal will be emitted.
+
+        @see enableAllFinishedSignal()
         */
         void allFinished();
 
     private:
 
+        class Emitter;
+        friend class Emitter;
         friend Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);
 
         class Private;
-        Private* d;
+        QScopedPointer<Private> d;
 };
 
 Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);

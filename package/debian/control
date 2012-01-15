@@ -3,8 +3,8 @@ Priority: optional
 Section: devel
 Maintainer: Marius Zwicker <xdispatch@mlba-team.de>
 Build-Depends: debhelper (>= 7.0.50~), quilt (>= 0.46-7~), cmake,
- libc6, libgcc1, clang, libqt4-core (>=4:4.7.3), libqt4-gui (>=4:4.7.3),
- libqt4-network (>=4:4.7.3), libqt4-dev
+ libc6, libgcc1, clang, libqt4-core, libqt4-gui,
+ libqt4-network, libqt4-dev
 Standards-Version: 3.9.1
 Vcs-Svn: https://opensource.mlba-team.de/svn/xdispatch
 Vcs-Browser: http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch
@@ -73,8 +73,7 @@ Package: libqtdispatch
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libxdispatch(= ${binary:Version}),
- libdispatch(= ${binary:Version}), libqt4-core (>=4:4.7.3), libqt4-gui (>=4:4.7.3),
- libqt4-network (>=4:4.7.3)
+ libdispatch(= ${binary:Version})
 Description: Qt compatible API wrapper for Grand Central Dispatch
  Provides integration of Grand Central Dispatch with the Qt Event-Loop.
  .
