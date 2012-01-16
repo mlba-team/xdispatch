@@ -39,6 +39,8 @@ public:
     }
 
 private:
+    RunnableOperation(const RunnableOperation&) {}
+
     QRunnable* runnable;
 };
 
@@ -57,6 +59,8 @@ public:
     }
 
 private:
+    IterationRunnableOperation(const IterationRunnableOperation&) {}
+
     QIterationRunnable* runnable;
 };
 

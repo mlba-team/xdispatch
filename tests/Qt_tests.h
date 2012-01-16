@@ -64,6 +64,7 @@ void Qt_dispatch_source_network();
 void Qt_free_lambda();
 void Qt_early_dispatch1();
 void Qt_early_dispatch2();
+void Qt_dispatch_fibo();
 #endif
 
 static void register_qt_tests(){
@@ -88,6 +89,7 @@ static void register_qt_tests(){
     MU_REGISTER_TEST(Qt_free_lambda);
     MU_REGISTER_TEST(Qt_early_dispatch1);
     MU_REGISTER_TEST(Qt_early_dispatch2);
+    MU_REGISTER_TEST(Qt_dispatch_fibo);
 #endif
 #endif
 }
