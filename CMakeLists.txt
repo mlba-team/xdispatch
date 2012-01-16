@@ -128,7 +128,7 @@ elseif(UNIX)
 	include(package/rpm/rpm.cmake)
 	include(package/debian/deb.cmake)	
 else() # Windows ...
-	include(package/windows/zip.rpm)
+	include(package/windows/zip.cmake)
 endif()
 	
 
