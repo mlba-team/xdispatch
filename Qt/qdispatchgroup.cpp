@@ -117,7 +117,10 @@ void QDispatchGroup::enableAllFinishedSignal() {
 }
 
 bool QDispatchGroup::wait(const QTime& t){
-    return wait(QDispatch::asDispatchTime(t));
+    if( t.msec() == 0 )
+        return wait( DISPATCH_TIME_FOREVER );
+    else
+        return wait( QDispatch::asDispatchTime(t) );
 }
 
 void QDispatchGroup::async(QRunnable *r, const xdispatch::queue& q){
