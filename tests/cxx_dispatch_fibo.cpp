@@ -26,10 +26,10 @@
 #include "../include/xdispatch/dispatch"
 #include "cxx_tests.h"
 
-class OperationFibo : public xdispatch::operation {
+class operation_fibo : public xdispatch::operation {
 
     public:
-        OperationFibo(int fiboNumber)
+        operation_fibo(int fiboNumber)
             : _myFibo(fiboNumber) {}
 
         void operator()() {
@@ -37,8 +37,8 @@ class OperationFibo : public xdispatch::operation {
                 // nothing
             } else {
                 xdispatch::group leGroupe;
-                xdispatch::operation* fiboA = new OperationFibo( _myFibo - 1 );
-                xdispatch::operation* fiboB = new OperationFibo( _myFibo - 2 );
+                xdispatch::operation* fiboA = new operation_fibo( _myFibo - 1 );
+                xdispatch::operation* fiboB = new operation_fibo( _myFibo - 2 );
                 leGroupe.async( fiboA );
                 leGroupe.async( fiboB );
 
@@ -64,7 +64,7 @@ extern "C" void cxx_dispatch_fibo(){
     int cpt = 0;
     while(cpt < 3000) {
         for(int i=0; i<6; i++) {
-            theOps[i] = new OperationFibo( 8 );
+            theOps[i] = new operation_fibo( 8 );
             theGroup.async( theOps[i] );
         }
         theGroup.wait( DISPATCH_TIME_FOREVER );
