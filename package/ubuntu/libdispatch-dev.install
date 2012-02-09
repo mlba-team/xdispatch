@@ -1,0 +1,4 @@
+usr/include/dispatch/*
+usr/include/Block.h
+usr/lib/libdispatch.so
+usr/lib/libBlocksRuntime.so

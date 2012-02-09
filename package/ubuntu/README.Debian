@@ -1,0 +1,10 @@
+Notes for the Debian xdispatch packages:
+
+ To compile code against libdispatch, use:
+
+   gcc -c code.c -o code.o -ldispatch
+
+ To compile code against libxdispatch, use:
+
+   g++ -c code.cpp -o code.o -lxdispatch -ldispatch
+
