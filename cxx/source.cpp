@@ -35,6 +35,10 @@ sourcetype::sourcetype() : cb(NULL) {
 
 }
 
+sourcetype::~sourcetype() {
+
+}
+
 void sourcetype::set_cb(source* s){
 		assert(s);
 		cb = s;

@@ -31,6 +31,14 @@
 
 __XDISPATCH_USE_NAMESPACE
 
+object::object() {
+
+}
+
+object::~object() {
+
+}
+
 bool object::operator==(const object& other){
 	return native() == other.native();
 }

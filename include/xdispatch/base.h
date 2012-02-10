@@ -159,6 +159,9 @@ private:
 class XDISPATCH_EXPORT object {
 
 public:
+    object();
+    virtual ~object();
+
 	/**
 	 Resumes the invocation of operations
 	 or blocks assigned to the object
