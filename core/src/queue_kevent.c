@@ -25,7 +25,7 @@
 #pragma comment(lib, "ws2_32.lib")
 #endif
 
-static bool _dispatch_select_workaround;
+static bool _dispatch_select_workaround = false;
 static fd_set _dispatch_rfds;
 static fd_set _dispatch_wfds;
 static void *_dispatch_rfd_ptrs[FD_SETSIZE];
