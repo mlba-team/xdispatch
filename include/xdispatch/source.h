@@ -135,6 +135,15 @@ class XDISPATCH_EXPORT sourcetype {
             By default this is returning NULL
             */
             virtual dispatch_source_t native();
+            /**
+            Will be called when a source is cancelled,
+            is called BEFORE the cancel handler (if any)
+            is executed on the configured queue.
+
+            Override this method to e.g. clean up some
+            resources before the cancel handler is called
+            */
+            virtual void on_cancel();
 
     private:
             sourcetype(const sourcetype&){}
@@ -230,8 +239,60 @@ class XDISPATCH_EXPORT source : public object {
             /**
             @returns the native dispatch_object_t associated with this source.
             This depends on the sourcetype used and will normally return NULL
+            @see native_source();
             */
             virtual dispatch_object_t native() const;
+            /**
+            @returns the native dispatch_source_t associated with this source.
+            This depends on the sourcetype used and will normally return NULL
+            @see native()
+            */
+            virtual dispatch_source_t native_source() const;
+            /**
+            Asynchronously cancels the dispatch source, preventing any further
+            invocation of its event handler block.
+
+            Cancellation prevents any further invocation of the event handler
+            block for the specified dispatch source, but does not interrupt an
+            event handler block that is already in progress. The optional cancellation
+            handler is submitted to the target queue once the event handler block has
+            been completed.
+
+            The cancellation handler is submitted to the source's target queue when
+            the source's event handler has finished, indicating that it is safe to
+            close the source's handle (e.g. file descriptor or mach port if any).
+
+            The optional cancellation handler is submitted to the xdispatch::source object's
+            target queue only after the system has released all of its references to any
+            underlying system objects (file descriptors or mach ports). Thus, the cancellation
+            handler is a convenient place to close or deallocate such system objects.
+
+            @remarks It is invalid to close a file descriptor or deallocate a mach port currently
+            being tracked by a xdispatch::source object before the cancellation handler is invoked.
+            */
+            void cancel();
+            /**
+            Sets the cancellation handler block for the given dispatch source.
+
+            The cancellation handler (if specified) is submitted to the source's
+            target queue in response to a call to dispatch_source_cancel when the
+            system has released all references to the source's underlying handle
+            and the source's event handler block has returned.
+            */
+            void cancel_handler(xdispatch::operation*);
+    #ifdef XDISPATCH_HAS_BLOCKS
+            /**
+            Sets the cancellation handler block for the given dispatch source.
+
+            The cancellation handler (if specified) is submitted to the source's
+            target queue in response to a call to dispatch_source_cancel when the
+            system has released all references to the source's underlying handle
+            and the source's event handler block has returned.
+            */
+            virtual inline void cancel_handler(dispatch_block_t b) {
+                cancel_handler( new block_operation(b) );
+            }
+    #endif
 
     private:
             source(const source&);

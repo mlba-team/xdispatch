@@ -60,9 +60,13 @@ inline void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue
     xdispatch::group( group ).notify( block, queue );
 }
 
-XDISPATCH_EXPORT void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler);
+inline void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler){
+    xdispatch::source( new xdispatch::native_source(source) ).handler( handler );
+}
 
-XDISPATCH_EXPORT void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler);
+inline void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler){
+    xdispatch::source( new xdispatch::native_source(source) ).cancel_handler( cancel_handler );
+}
 
 inline void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block){
     xdispatch::once o( predicate );

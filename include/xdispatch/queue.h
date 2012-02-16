@@ -200,8 +200,16 @@ class XDISPATCH_EXPORT queue : public object {
         @returns The dispatch_queue_t object associated with this
         C++ object. Use this, if you need to use the plain C Interface
         of libdispatch.
+        @see native_queue()
         */
         virtual dispatch_object_t native() const;
+        /**
+        @returns The dispatch_queue_t object associated with this
+        C++ object. Use this, if you need to use the plain C Interface
+        of libdispatch.
+        @see native()
+        */
+        virtual dispatch_queue_t native_queue() const;
         /**
          Sets the target queue of this queue, i.e. the queue
          all items of this queue will be dispatched on in turn.

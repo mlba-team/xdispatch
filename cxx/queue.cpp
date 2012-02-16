@@ -116,6 +116,10 @@ dispatch_object_t queue::native() const {
     return d->native;
 }
 
+dispatch_queue_t queue::native_queue() const {
+    return d->native;
+}
+
 void queue::target_queue(const queue& q) {
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
