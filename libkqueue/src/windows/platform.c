@@ -123,19 +123,23 @@ windows_kevent_wait(struct kqueue *kq, int no, const struct timespec *timeout)
     DWORD       timeout_ms;
     BOOL        success;
     
-	/* Convert timeout to milliseconds */
-	/* NOTE: loss of precision for timeout values less than 1ms */
-	if (timeout == NULL) {
+    if (timeout == NULL) {
 		timeout_ms = INFINITE;
-	} else {
+    else if( timeout->tv_sec == 0 && timeout->tv_nsec < 1000000 ) {
+        /* do we need to try high precision timing? */
+        // TODO: This is currently not possible on windows!
+        timeout_ms = 0;
+	} else {  /* Convert timeout to milliseconds */
 		timeout_ms = 0;
 		if (timeout->tv_sec > 0)
-			timeout_ms += ((DWORD)timeout->tv_sec) / 1000;
-		if (timeout->tv_sec > 0)
+			timeout_ms += ((DWORD)timeout->tv_sec) * 1000;
+		if (timeout->tv_nsec > 0)
 			timeout_ms += timeout->tv_nsec / 1000000;
 	}
 
     dbg_printf("waiting for events (timeout=%u ms)", (unsigned int) timeout_ms);
+    if(timeout_ms <= 0)
+        dbg_printf("Woop, not waiting !?");
     memset(&iocp_buf, 0, sizeof(iocp_buf));
     success = GetQueuedCompletionStatus(kq->kq_iocp, 
             &iocp_buf.bytes, &iocp_buf.key, &iocp_buf.overlap, 
