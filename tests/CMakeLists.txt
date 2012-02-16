@@ -13,9 +13,11 @@ if( BUILD_XDISPATCH_TESTS)
     source_group(tests FILES ${TESTSRCS})
     source_group(shims FILES ${SHIMS})
 
-    if(QT4_FOUND)
+    if(XDISPATCH_QT_SUPPORT)
 	    # test cases for Qt Interface
 	    file(GLOB QTESTHEADER Qt_*.cpp)
+		
+		mz_add_definition(XDISPATCH_QT_SUPPORT=1)
 
         # we need to manually define mocced files
         qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group.moc)
