@@ -44,7 +44,7 @@
 extern "C" {
 #endif
 
-#ifdef QT_CORE_LIB
+#if XDISPATCH_QT_SUPPORT
 void Qt_runnable();
 void Qt_dispatch_debug();
 void Qt_dispatch_cascade();
@@ -68,7 +68,7 @@ void Qt_dispatch_fibo();
 #endif
 
 static void register_qt_tests(){
-#ifdef QT_CORE_LIB
+#ifdef XDISPATCH_QT_SUPPORT
 #ifdef TEST_BLOCKS
     MU_REGISTER_TEST(Qt_runnable);
 	MU_REGISTER_TEST(Qt_dispatch_debug);
