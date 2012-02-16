@@ -101,11 +101,11 @@ class XDISPATCH_EXPORT semaphore {
         */
         bool try_acquire(struct tm*);
         /**
-        @returns The dispatch_semaphore_t object associated with this
-        C++ object. Use this, if you need to use the plain C Interface
-        of libdispatch.
+            @returns The dispatch_semaphore_t object associated with this
+            C++ object. Use this, if you need to use the plain C Interface
+            of libdispatch.
         */
-        virtual const dispatch_semaphore_t native() const;
+        const dispatch_semaphore_t native() const;
 
         semaphore& operator=(const semaphore&);
         bool operator ==(const semaphore&);

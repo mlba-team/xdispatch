@@ -181,32 +181,34 @@ class block_iteration_operation : public iteration_operation {
  */
 class XDISPATCH_EXPORT object {
 
-public:
-    /**
-     Resumes the invocation of operations
-     or blocks assigned to the object
-     */
-    virtual void resume() = 0;
-    /**
-     Suspends the invocation of operations or blocks
-     assigned to the object. The object will be suspended
-     as soon as the currently executed operation or block
-     finished.
+    public:
+        object();
+        virtual ~object();
+        /**
+         Resumes the invocation of operations
+         or blocks assigned to the object
+         */
+        virtual void resume() = 0;
+        /**
+         Suspends the invocation of operations or blocks
+         assigned to the object. The object will be suspended
+         as soon as the currently executed operation or block
+         finished.
 
-     @remarks Calls to suspend() should be balanced with calls
-      to resume() to continue an object
-      */
-    virtual void suspend() = 0;
-    /**
-     @returns the native dispatch object associated to
-     the xdispatch object
-     */
-    virtual dispatch_object_t native() const = 0;
+         @remarks Calls to suspend() should be balanced with calls
+          to resume() to continue an object
+          */
+        virtual void suspend() = 0;
+        /**
+         @returns the native dispatch object associated to
+         the xdispatch object
+         */
+        virtual dispatch_object_t native() const = 0;
 
-    bool operator ==(const object&);
-    bool operator !=(const object&);
-    bool operator ==(const dispatch_object_t&);
-    bool operator !=(const dispatch_object_t&);
+        bool operator ==(const object&);
+        bool operator !=(const object&);
+        bool operator ==(const dispatch_object_t&);
+        bool operator !=(const dispatch_object_t&);
 };
 
 XDISPATCH_EXPORT bool operator ==(const dispatch_object_t&, const object&);

@@ -47,7 +47,7 @@ struct any {
 	any() : stored(0) {}
 	template<typename Type> any(const Type& val) : stored(new holder<Type>(val)) {}
 	any(const any& other) : stored(other.stored ? other.stored->clone() : 0 ) {}
-	~any() { delete stored; }
+    virtual ~any() { delete stored; }
 
 	any & swap(any & v)
 	{
@@ -79,7 +79,7 @@ struct any {
 private:
 
 	struct place_holder {
-        virtual ~place_holder(){}
+        virtual ~place_holder() {}
 		virtual place_holder * clone() const = 0;
 		virtual const std::type_info & type() const = 0;
 	};
