@@ -33,13 +33,15 @@ _dispatch_get_host_time_init(void *context DISPATCH_UNUSED)
 	_dispatch_host_time_data.frac = tbi.numer;
 	_dispatch_host_time_data.frac /= tbi.denom;
 	_dispatch_host_time_data.ratio_1_to_1 = (tbi.numer == tbi.denom);
-#else // TARGET_OS_WIN32 
+#else // TARGET_OS_WIN32 || TARGET_OS_LINUX
+# if TARGET_OS_WIN32
     LARGE_INTEGER freq;
+    dispatch_assume(QueryPerformanceFrequency(&freq));
+    _dispatch_host_time_data.win_time_factor = (long double)NSEC_PER_SEC / (long double)freq.QuadPart;
+# endif
 
 	_dispatch_host_time_data.frac = 1.0;
 	_dispatch_host_time_data.ratio_1_to_1 = 1;
-	dispatch_assume(QueryPerformanceFrequency(&freq));
-	_dispatch_host_time_data.win_time_factor = (long double)NSEC_PER_SEC / (long double)freq.QuadPart;
 #endif
 }
 
