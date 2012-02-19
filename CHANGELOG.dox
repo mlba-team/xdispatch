@@ -1,6 +1,33 @@
 /**
 @page change_log CHANGELOG
 
+@section changes-61 Version 0.6.1
+
+released ??/02/2012
+
+ - Fixed a missing boolean variable initialization, causing the select() 
+   fallback mechanism to be used on windows from time to time
+ - Fixed a bug in the windows implementation of kqueue, causing timeouts 
+   to be over far too early and thus causing unecessary cpu load when using
+   dispatch timers
+ - Changed the implementation of _dispatch_get_nanoseconds to return similar 
+   values on all platforms
+ - Added some missing virtual destructors discovered by the code analysis of 
+   clang 3.1 (trunk 148486)
+ - Added flat to disable QtDispatch although Qt is available on the build host
+ - Fixed a bug within QDispatchGroup causing a call with QTime(0,0) not to wait
+   until the group was entirely processed
+ - Did a rewrite of the QDispatchGroup implementation more closely to the 
+   xdispatch::group, this makes the allFinished signal an opt-in
+ - Made the event code of the registered QEventType dynamic to resolve 
+   conflicts with existing Qt applications
+ - Fixed a bug causing very early dispatched jobs never to get executed
+   when using QDispatchApplications
+ - Added missing inclusion of stdlib.h
+ - Modified exceptions thrown from within xdispatch operations to be caught 
+   resulting in a call to abort() as throwing an exception through plain C 
+   code results in odd behaviour
+
 @section changes-6 Version 0.6.0
 
 released 01/08/2011
