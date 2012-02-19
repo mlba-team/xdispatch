@@ -1,4 +1,4 @@
-xdispatch (0.7.0~devel) oneiric; urgency=low
+xdispatch (0.7.0~devel-0ubuntu1) oneiric; urgency=low
 
   * Initial release. Testing deb deployment.
    
