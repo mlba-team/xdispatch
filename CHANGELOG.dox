@@ -3,7 +3,7 @@
 
 @section changes-61 Version 0.6.1
 
-released ??/02/2012
+released 22/02/2012
 
  - Fixed a missing boolean variable initialization, causing the select() 
    fallback mechanism to be used on windows from time to time
