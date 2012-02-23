@@ -183,8 +183,10 @@ class XDISPATCH_EXPORT queue;
  */
 class XDISPATCH_EXPORT object {
 
-    public:
+    protected:
         object();
+
+    public:
         virtual ~object();
         /**
          Resumes the invocation of operations
@@ -226,6 +228,37 @@ XDISPATCH_EXPORT bool operator !=(const dispatch_object_t&, const object&);
 class queue;
 
 /**
+  Stores high resolution times used
+  for timers and timeouts throughout xdispatch
+*/
+typedef dispatch_time_t time;
+/**
+  A constant representing a time that will
+  be elapsed immediately
+  */
+static const time time_now = DISPATCH_TIME_NOW;
+/**
+  A constant representing infinite time,
+  i.e. a timeout passed this value will never go by
+  */
+static const time time_forever = DISPATCH_TIME_FOREVER;
+/**
+  The number of nanoseconds per second
+  */
+static const uint64_t nsec_per_sec = NSEC_PER_SEC;
+/**
+  The number of nanoseconds per millisecond
+  */
+static const uint64_t nsec_per_msec = NSEC_PER_MSEC;
+/**
+  The number of nanoseconds per microsecond
+  */
+static const uint64_t nsec_per_usec = NSEC_PER_USEC;
+/**
+  The number of microseconds per second
+  */
+static const uint64_t usec_per_sec = USEC_PER_SEC;
+/**
     Three priority classes used for the three standard
     global queues
     */
@@ -255,19 +288,26 @@ XDISPATCH_EXPORT queue global_queue(queue_priority p = DEFAULT);
     */
 XDISPATCH_EXPORT queue current_queue();
 /**
-    @return The given tm converted to a dispatch_time_t
+    @return The given tm converted to a time
     */
-XDISPATCH_EXPORT dispatch_time_t as_dispatch_time(struct tm*);
+XDISPATCH_EXPORT time as_dispatch_time(struct tm*);
+/**
+    @return The given time converted to a dispatch time
+    */
+inline XDISPATCH_EXPORT dispatch_time_t as_native_dispatch_time(const time& t) {
+    return t;
+}
+
 /**
     @return The given dispatch_time_t as time_t
     */
-XDISPATCH_EXPORT struct tm as_struct_tm(dispatch_time_t t);
+XDISPATCH_EXPORT struct tm as_struct_tm(const time& t);
 /**
     @return A dispatch_time_t representing the given delay
     @param delay The delay in nanoseconds
     @param base The base to add the delay to, defaults to the current time
     */
-XDISPATCH_EXPORT dispatch_time_t as_delayed_time(uint64_t delay, dispatch_time_t base = DISPATCH_TIME_NOW);
+XDISPATCH_EXPORT time as_delayed_time(uint64_t delay, time base = time_now);
 /**
     Enters the dispatching loop for the main thread.
     Call this somewhere within the main thread to enable

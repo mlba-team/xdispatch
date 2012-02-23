@@ -69,10 +69,7 @@ struct pointer {
 
 __XDISPATCH_END_NAMESPACE
 
-// TODO: Is this compatible regarding sizes ?
-//       When switching between clang and gcc this might introduce errors
-
-// gcc 4.5 with c++0x enabled
+// gcc 4.5+ with c++0x enabled
 #elif defined __GXX_EXPERIMENTAL_CXX0X_
 
 # include <memory>
@@ -82,7 +79,10 @@ __XDISPATCH_BEGIN_NAMESPACE
 template < typename _Type >
 struct pointer {
 
-    typedef ::std::unique_ptr< _Type > unique;
+    // although we have std::unique_ptr, we cannot use it
+    // as this would mean different sizes whenever mixing
+    // clang and gcc
+    typedef ::std::auto_ptr< _Type > unique;
     typedef ::std::shared_ptr< _Type > shared;
     typedef ::std::weak_ptr< _Type > weak;
 

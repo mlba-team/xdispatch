@@ -85,7 +85,7 @@ synclock xdispatch::get_lock_for_key(unsigned int key){
     if (lock_semaphores.count(key) != 0)
         sem = lock_semaphores[key];
     else {
-        dispatch_semaphore_wait(rw_lock,DISPATCH_TIME_FOREVER);
+        dispatch_semaphore_wait(rw_lock, time_forever);
         if(lock_semaphores.count(key) != 0)
             sem = lock_semaphores[key];
         else {
@@ -107,7 +107,7 @@ synclock xdispatch::get_lock_for_key(const std::string& key){
     if (user_lock_semaphores.count(key) != 0)
         sem = user_lock_semaphores.at(key);
     else {
-        dispatch_semaphore_wait(rw_lock,DISPATCH_TIME_FOREVER);
+        dispatch_semaphore_wait(rw_lock, time_forever);
         if(user_lock_semaphores.count(key) != 0)
             sem = user_lock_semaphores.at(key);
         else {

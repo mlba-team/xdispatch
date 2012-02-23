@@ -65,7 +65,7 @@ int semaphore::release() {
 }
 
 void semaphore::acquire() {
-    dispatch_semaphore_wait(d->native, DISPATCH_TIME_FOREVER);
+    dispatch_semaphore_wait(d->native, time_forever);
 }
 
 bool semaphore::try_acquire(dispatch_time_t time) {

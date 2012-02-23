@@ -114,20 +114,21 @@ dispatch_time_t xdispatch::as_dispatch_time(struct tm* t){
         return as_delayed_time(0);
     }
 
-    return as_delayed_time( (uint64_t)(diff*NSEC_PER_SEC) );
+    return as_delayed_time( (uint64_t)(diff*nsec_per_sec) );
 }
 
-struct tm xdispatch::as_struct_tm(dispatch_time_t t){
+struct tm xdispatch::as_struct_tm(const time& t){
     time_t rawtime = time(NULL);
     struct tm res;
 
+    dispatch_time_t dtt = as_native_dispatch_time(t);
     res = *(localtime( &rawtime));
 
-    res.tm_hour += (int)(t / (3600*(uint64_t)NSEC_PER_SEC));
-    t %= (3600*(uint64_t)NSEC_PER_SEC);
-    res.tm_min += (int)(t / (60*(uint64_t)NSEC_PER_SEC));
-    t %= (60*(uint64_t)NSEC_PER_SEC);
-    res.tm_sec += (int)(t / ((uint64_t)NSEC_PER_SEC));
+    res.tm_hour += (int)(dtt / (3600*nsec_per_sec));
+    dtt %= (3600*(uint64_t)NSEC_PER_SEC);
+    res.tm_min += (int)(dtt / (60*nsec_per_sec));
+    dtt %= (60*(uint64_t)NSEC_PER_SEC);
+    res.tm_sec += (int)(dtt / nsec_per_sec);
 
     return res;
 }

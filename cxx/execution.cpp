@@ -62,13 +62,13 @@ void _xdispatch_run_operation(void* dt){
         std::cerr << "           not supported, please make sure to catch them before:\n" << std::endl;
         std::cerr << e.what() << std::endl;
         std::cerr << "##################################################################" << std::endl;
-        abort();
+        std::terminate();
     } catch(...) {
         std::cerr << "##################################################################" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
         std::cerr << "           not supported, please make sure to catch them before!" << std::endl;
         std::cerr << "##################################################################" << std::endl;
-        abort();
+        std::terminate();
     }
 
     if(w->auto_delete())
@@ -89,13 +89,13 @@ void _xdispatch_run_iter_wrap(void* dt, size_t index){
         std::cerr << "           not supported, please make sure to catch them before:\n" << std::endl;
         std::cerr << e.what() << std::endl;
         std::cerr << "##################################################################" << std::endl;
-        abort();
+        std::terminate();
     } catch(...) {
         std::cerr << "##################################################################" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
         std::cerr << "           not supported, please make sure to catch them before!" << std::endl;
         std::cerr << "##################################################################" << std::endl;
-        abort();
+        std::terminate();
     }
 
 }

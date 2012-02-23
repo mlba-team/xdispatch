@@ -56,7 +56,7 @@ class timer::data {
         xdispatch::queue target;
 
         inline void update_timeout(){
-            dispatch_source_set_timer(native, DISPATCH_TIME_NOW, interval, latency);
+            dispatch_source_set_timer(native, time_now, interval, latency);
         }
 
         static std::map<void*, timer::data*> handler_dates;
