@@ -112,11 +112,11 @@ extern "C" void Qt_dispatch_group1() {
     group = createGroup(3, 7);
     MU_ASSERT_NOT_NULL(group);
 
-    res = group->wait(dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC));
+    res = group->wait(dispatch_time(QDispatch::TimeNow, 5ull * NSEC_PER_SEC));
     MU_ASSERT_EQUAL(res, false);
 
     // retry after timeout (this time succeed)
-    res = group->wait(dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC));
+    res = group->wait(dispatch_time(QDispatch::TimeNow, 5ull * NSEC_PER_SEC));
     MU_ASSERT_EQUAL(res, true);
 
     delete group;

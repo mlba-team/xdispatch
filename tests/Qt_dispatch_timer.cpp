@@ -102,7 +102,7 @@ extern "C" void Qt_dispatch_timer() {
 
     MU_MESSAGE("Testing single-shot timer");
     checked_time.restart();
-    QDispatchTimer::singleShot(dispatch_time(DISPATCH_TIME_NOW, 2*NSEC_PER_SEC), QDispatch::globalQueue(), new testSingleShot());
+    QDispatchTimer::singleShot(dispatch_time(QDispatch::TimeNow, 2*NSEC_PER_SEC), QDispatch::globalQueue(), new testSingleShot());
     //QDispatchTimer::singleShot(QTime::currentTime().addSecs(2), QDispatch::globalQueue(), new test_single_shot);
 
     app.exec();
