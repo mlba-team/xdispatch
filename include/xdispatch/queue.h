@@ -179,7 +179,7 @@ class XDISPATCH_EXPORT queue : public object {
         /**
         @return The label of the queue that was used while creating it
         */
-        const std::string label() const;
+        const std::string& label() const;
         /**
         @returns The dispatch_queue_t object associated with this
         C++ object. Use this, if you need to use the plain C Interface

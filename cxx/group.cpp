@@ -38,20 +38,23 @@ class group::data {
     dispatch_group_t native;
 };
 
-group::group() : d(new data){
+group::group()
+    : object(), d(new data){
     assert( d.get() );
     d->native = dispatch_group_create();
     assert(d->native);
 }
 
-group::group(dispatch_group_t g) : d(new data){
+group::group(dispatch_group_t g)
+    : object(), d(new data){
     assert(g);
     assert( d.get() );
     dispatch_retain(g);
     d->native = g;
 }
 
-group::group(const group & other) : d(new data(*other.d)){
+group::group(const group & other)
+    : object(other), d(new data(*other.d)){
     assert( d.get() );
     assert(d->native);
 }
@@ -90,6 +93,7 @@ dispatch_group_t group::native_group () const {
 
 group& group::operator=(const group& other){
     if(*this != other){
+        object::operator = (other);
         d = pointer<data>::unique( new data(*other.d) );
         assert(d.get ());
     }

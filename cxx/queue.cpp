@@ -42,7 +42,8 @@ class queue::data {
     std::string label;
 };
 
-queue::queue(dispatch_queue_t q) : d(new data){
+queue::queue(dispatch_queue_t q)
+    : object(), d(new data){
     assert( d.get () );
     dispatch_retain(q);
     d->native = q;
@@ -50,18 +51,21 @@ queue::queue(dispatch_queue_t q) : d(new data){
     d->label = std::string(dispatch_queue_get_label(q));
 }
 
-queue::queue(const queue& other) : d(new data(*other.d)){
+queue::queue(const queue& other)
+    : object(other), d(new data(*other.d)){
     assert( d.get () );
 }
 
-queue::queue(const std::string & label) : d(new data){
+queue::queue(const std::string & label)
+    : object(), d(new data){
     assert( d.get () );
     d->native = dispatch_queue_create(label.c_str(),NULL);
     assert(d->native);
     d->label = label;
 }
 
-queue::queue(const char* label) : d(new data){
+queue::queue(const char* label)
+    : object(), d(new data){
     assert(label);
     assert( d.get () );
     d->native = dispatch_queue_create(label,NULL);
@@ -100,7 +104,7 @@ void queue::finalizer(operation* op, const queue& q){
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
-const std::string queue::label() const {
+const std::string &queue::label() const {
     return d->label;
 }
 
@@ -114,6 +118,7 @@ dispatch_queue_t queue::native_queue() const {
 
 xdispatch::queue& queue::operator=(const queue& other){
     if(*this != other){
+        object::operator = (other);
         d = pointer<data>::unique( new data(*other.d) );
         assert( d.get () );
     }
