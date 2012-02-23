@@ -61,7 +61,7 @@ endif()
 
 # currently there's a bug in mingw causing the
 # builtin atomic opts not to work without this
-if(MINGW)
+if(MINGW AND MZ_32BIT)
 	mz_add_flag( -march=i486)
 endif()
 
@@ -105,9 +105,16 @@ if(PARENT_SCOPE)
 	set(HAS_LIBDISPATCH TRUE PARENT_SCOPE)
 endif()
 
+
 # Qt Extension if Qt is available
 if(QT4_FOUND)
-    mz_add_library(QtDispatch Qt)
+	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
+else()
+	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
+endif()
+
+if(XDISPATCH_QT_SUPPORT)
+	mz_add_library(QtDispatch Qt)
 endif()
 
 # custom test framework for xdispatch
