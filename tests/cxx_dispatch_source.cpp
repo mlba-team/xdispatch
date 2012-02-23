@@ -53,6 +53,8 @@ extern "C" void cxx_dispatch_source() {
 		MU_PASS("");
 	});
 
+    src.resume();
+
 	TestType::instance->signalFinished(std::string("any working"));
 	xdispatch::exec();
 

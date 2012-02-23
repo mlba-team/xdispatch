@@ -34,6 +34,14 @@
 
 /// provide block specific libdispatch functions as well
 
+#ifdef __cplusplus
+
+// needed for dispatch_source_t compatibility
+void XDISPATCH_EXPORT _xdispatch_source_set_event_handler(dispatch_source_t, xdispatch::operation* op);
+void XDISPATCH_EXPORT _xdispatch_source_set_cancel_handler(dispatch_source_t, xdispatch::operation* op);
+
+#endif
+
 #if defined(XDISPATCH_HAS_BLOCKS) && !defined(__BLOCKS__)
 
 inline void dispatch_async(dispatch_queue_t queue, dispatch_block_t block){
@@ -61,11 +69,11 @@ inline void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue
 }
 
 inline void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler){
-    xdispatch::source( new xdispatch::native_source(source) ).handler( handler );
+    _xdispatch_source_set_event_handler( source, handler );
 }
 
 inline void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler){
-    xdispatch::source( new xdispatch::native_source(source) ).cancel_handler( cancel_handler );
+    _xdispatch_source_set_cancel_handler( source, handler );
 }
 
 inline void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block){

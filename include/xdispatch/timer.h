@@ -38,7 +38,7 @@ __XDISPATCH_BEGIN_NAMESPACE
            you do any changes to this source not by using the timer object
            it is not garanteed, that the timer object will still work as expected.
   */
-class XDISPATCH_EXPORT timer : public object {
+class XDISPATCH_EXPORT timer : public source {
 
     public:
         /**
@@ -50,7 +50,6 @@ class XDISPATCH_EXPORT timer : public object {
         */
         timer(uint64_t interval, const xdispatch::queue& target = global_queue(), time starting = time_now);
         timer(const timer&);
-        timer(dispatch_source_t);
         ~timer();
 
         /**
@@ -71,49 +70,14 @@ class XDISPATCH_EXPORT timer : public object {
                    Once started, ensure balanced calls between start() and stop().
               @see resume();
         */
-        void start();
-            /**
-              @see start();
-              */
-            void resume();
+        inline void start(){ resume(); }
         /**
           Will stop the timer.
           @remarks A new created timer will be stopped and needs to me started first.
                    Once started, ensure balanced calls between start() and stop().
               @see suspend()
         */
-        void stop();
-        /**
-          @see stop();
-          */
-        void suspend();
-        /**
-          Sets the operation that will be executed every time the timer fires.
-          As in queues, the timer takes possesion of the operation and will handle deletion.
-          To change this behaviour, set the auto_delete flag of the operation.
-          @see operation::auto_delete();
-          */
-        void handler(xdispatch::operation*);
-#ifdef XDISPATCH_HAS_BLOCKS
-        /**
-          Sets the block that will be executed every time the timer fires
-          */
-        inline void handler(dispatch_block_t b) {
-            handler( new block_operation(b) );
-        }
-#endif
-        /**
-          Sets the queue the handler will be executed on
-          */
-        void target_queue(const xdispatch::queue&);
-        /**
-          @returns the queue the handler will be executed on
-          */
-        xdispatch::queue target_queue();
-        /**
-          @returns The native dispatch_source_t associated with the timer
-          */
-        dispatch_object_t native() const;
+        inline void stop(){ suspend(); }
         /**
           @returns The timer responsible for the handler to be executed or
                    NULL if the handler was not executed because of a timer firing
@@ -147,10 +111,6 @@ class XDISPATCH_EXPORT timer : public object {
 #endif
 
         timer& operator =(const timer&);
-
-    private:
-        class data;
-        data* d;
 
 };
 

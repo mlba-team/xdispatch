@@ -23,13 +23,18 @@
 #include <stdexcept>
 
 #include "xdispatch_internal.h"
+#include "source_internal.h"
 
 __XDISPATCH_USE_NAMESPACE
 
-// sourcetype interface
-
+// used for storing the threadlocal data
 static dispatch_once_t init_data_tls = 0;
 static pthread_key_t data_tls;
+std::map< dispatch_source_t, pointer<native_source_wrapper>::shared > native_source_wrapper::xdispatch_source_wrappers;
+
+
+// sourcetype interface
+
 
 static void run_tls_initializer(void*){
     pthread_key_create(&data_tls, NULL);
@@ -50,6 +55,14 @@ void sourcetype::set_cb(source* s){
     synchronize("xd_st_cb") {
         cb = s;
     }
+}
+
+void sourcetype::on_resume (){
+
+}
+
+void sourcetype::on_suspend (){
+
 }
 
 void sourcetype::ready(const any& dt){
@@ -73,20 +86,41 @@ void sourcetype::on_cancel() {
 // sourcetype for using dispatch_source_t
 
 native_source::native_source( dispatch_source_t s )
-    : sourcetype(), _source( s ) {
+    : sourcetype(), _source( native_source_wrapper::atomic_get(s) ) {
 
     assert( s );
     dispatch_retain( s );
+
+    _source->event_operation(new ptr_operation<native_source>(this, &native_source::on_source_ready));
 }
 
 native_source::~native_source() {
-    dispatch_release( _source );
+
 }
 
 dispatch_source_t native_source::native(){
-    return _source;
+    return _source->get();
 }
 
+void native_source::on_cancel () {
+    dispatch_source_cancel ( _source->get() );
+}
+
+void native_source::on_resume () {
+    dispatch_resume ( _source->get() );
+}
+
+void native_source::on_suspend () {
+    dispatch_suspend ( _source->get() );
+}
+
+void native_source::on_source_ready () {
+    ready ();
+}
+
+bool native_source::propagate_targetqueue () const {
+    return true;
+}
 
 
 // the source class
@@ -112,7 +146,7 @@ class src_notify_operation : public operation {
 class source::pdata {
     public:
         pdata(sourcetype* src_t)
-            : suspend_ct(1), cancelled(0), type( src_t )
+            : suspend_ct(/* suspended by default */ 0), cancelled(0), type( src_t )
                 ,target(global_queue()), handler(NULL), cancel_handler(NULL) {
             dispatch_once_f(&init_data_tls, NULL, run_tls_initializer);
             assert(src_t);
@@ -124,6 +158,10 @@ class source::pdata {
                 delete handler;
             if( cancel_handler && cancel_handler->auto_delete() )
                 delete cancel_handler;
+        }
+
+        inline bool fast_dispatch() const {
+            return type->native() != NULL && type->propagate_targetqueue();
         }
 
         uintptr_t suspend_ct;
@@ -141,7 +179,7 @@ source::source(sourcetype* src_t) : d(new pdata(src_t)){
 }
 
 source::source(const source&) {
-
+ // TODO: implement me!!!
 }
 
 source::~source(){
@@ -150,59 +188,39 @@ source::~source(){
 }
 
 void source::suspend(){
-    if( native() )
-        dispatch_suspend( native() );
-    else
-        dispatch_atomic_dec(&d->suspend_ct);
+    // if we reach 0, this means that 1 was
+    // the old value, as such we need to suspend
+    // the sourcetype as the state changed
+    if( dispatch_atomic_dec(&d->suspend_ct) == 0 )
+        d->type->on_suspend();
 }
 
 void source::resume(){
-    if( native() )
-        dispatch_resume( native() );
-    else
-        dispatch_atomic_inc(&d->suspend_ct);
+    // less than 1 means suspended, we only
+    // need to signal to the sourcetype when
+    // the state changed from 0 to 1
+    if( dispatch_atomic_inc(&d->suspend_ct) == 1 )
+        d->type->on_resume();
 }
 
 void source::target_queue(const queue& q){
-    if( native() )
+    if( d->fast_dispatch() )
         dispatch_set_target_queue( native(), q.native_queue() );
 
+    // TODO: Atomic?
     d->target = q;
 }
 
 queue source::target_queue() const {
+
+    // TODO: Atomic?
     return d->target;
 }
 
 
 
-
-// we need to do some tricks here when using native source
-// objects as they cannot be passed a custom argument to their handler function
-// TODO: operations in there might never get deleted
-static std::map< dispatch_object_t, operation* > xdispatch_source_handlers;
-extern "C" void xdispatch_source_run_handler(void* data){
-
-    dispatch_object_t object = (dispatch_object_t)(data);
-    if( xdispatch_source_handlers.count(object) == 0 )
-        return;
-
-    operation* op = xdispatch_source_handlers.at( object );
-    if( !op )
-        return;
-
-    op->operator ()();
-}
-
 void source::handler(operation* op){
     assert(op);
-
-    if( native() ) {
-        xdispatch_source_handlers[ native() ] = op;
-        dispatch_set_context( native(), native() );
-        dispatch_source_set_event_handler_f( native_source(), xdispatch_source_run_handler );
-        return;
-    }
 
     // TODO: Is this synchronization really needed?
     //       Also check if maintaining an own object is faster
@@ -217,16 +235,21 @@ void source::handler(operation* op){
 
 
 void source::notify(const any& dt){
-    if(d->suspend_ct == 0)
+    if(d->suspend_ct <= 0)
         return;
 
     // only run the handler if there is any and the source was not cancelled
-    if(d->handler && dispatch_atomic_cmpxchg( &d->cancelled, 1, 1) == 0 )
+    if( !d->handler || dispatch_atomic_cmpxchg( &d->cancelled, 1, 1) != 0 )
+        return;
+
+    if( d->fast_dispatch() )
+        src_notify_operation(dt, d->handler).operator () ();
+    else
         target_queue().async(new src_notify_operation(dt, d->handler));
 }
 
 dispatch_object_t source::native() const {
-    return d->type->native();
+    return native_source();
 }
 
 dispatch_source_t source::native_source() const {
@@ -242,39 +265,16 @@ const any* source::_data(){
     return dt_pt;
 }
 
+sourcetype* source::source_type () {
+    return d->type.get();
+}
+
 source& source::operator=(const source&){
     return *this;
 }
 
 
-
-// we need to do some tricks here when using native source
-// objects as they cannot be passed a custom argument to their handler function
-static std::map< dispatch_object_t, operation* > xdispatch_source_cancel_handlers;
-extern "C" void xdispatch_source_run_cancel_handler(void* data){
-
-    dispatch_object_t object = (dispatch_object_t)(data);
-    if( xdispatch_source_cancel_handlers.count(object) == 0 )
-        return;
-
-    operation* op = xdispatch_source_cancel_handlers.at( object );
-    xdispatch_source_cancel_handlers.erase( object );
-    if( !op )
-        return;
-
-    op->operator ()();
-    if( op->auto_delete() )
-        delete op;
-}
-
 void source::cancel_handler(operation * op) {
-
-    if( native() ) {
-        xdispatch_source_cancel_handlers[ native() ] = op;
-        dispatch_set_context( native(), native() );
-        dispatch_source_set_cancel_handler_f( native_source(), xdispatch_source_run_cancel_handler );
-        return;
-    }
 
     synchronize("xd_src_cancel") {
         if(d->cancel_handler && d->cancel_handler->auto_delete())
@@ -282,6 +282,7 @@ void source::cancel_handler(operation * op) {
 
         d->cancel_handler = op;
     }
+
 }
 
 
@@ -294,12 +295,6 @@ void source::cancel() {
 
     // notify the source type
     d->type->on_cancel();
-
-    // use the native mechanisms if any
-    if( native() ) {
-        dispatch_source_cancel( native_source() );
-        return;
-    }
 
     // execute any cancel handlers
     synchronize("xd_src_cancel") {

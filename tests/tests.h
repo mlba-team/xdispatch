@@ -106,7 +106,7 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_timer_bit63);
     MU_REGISTER_TEST(dispatch_drift);
     MU_REGISTER_TEST(dispatch_read);
-    MU_REGISTER_TEST(dispatch_proc);
+    //MU_REGISTER_TEST(dispatch_proc);
 #endif
 }
 

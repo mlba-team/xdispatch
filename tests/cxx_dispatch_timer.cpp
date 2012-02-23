@@ -86,7 +86,7 @@ public:
 
         // now test wether we can create a periodic timer
         MU_MESSAGE("Testing periodic timer");
-        tested_timer = new xdispatch::timer(2*NSEC_PER_SEC);
+        tested_timer = new xdispatch::timer(2*xdispatch::nsec_per_sec);
         MU_ASSERT_NOT_NULL(tested_timer);
         MU_ASSERT_NOT_NULL(tested_timer->native());
         tested_timer->handler(new test_periodic);

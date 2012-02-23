@@ -79,7 +79,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_free_lambda);
     MU_REGISTER_TEST(cxx_dispatch_fibo);
     MU_REGISTER_TEST(cxx_dispatch_read);
-    MU_REGISTER_TEST(cxx_dispatch_proc);    
+   // MU_REGISTER_TEST(cxx_dispatch_proc);
 #endif
 }
 

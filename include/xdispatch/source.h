@@ -75,6 +75,40 @@ class XDISPATCH_EXPORT sourcetype {
             resources before the cancel handler is called
             */
             virtual void on_cancel();
+            /**
+            Will be called whenever resume() is called on
+            the owning source.
+
+            The owning source will ensure on_resume() is
+            never called twice, i.e. without a call to to
+            on_cancel() in between. Make sure not to emit
+            any data while your sourcetype is suspended.
+            */
+            virtual void on_resume();
+            /**
+            Will be called whenever suspend() is called on
+            the owning source.
+
+            The owning source will ensure on_suspend() is
+            never called twice, i.e. without a call to to
+            on_resume() in between. Make sure not to emit
+            any data while your sourcetype is suspended.
+            */
+            virtual void on_suspend();
+            /**
+            Override this when your sourcetype is using a
+            native dispatch_source_t internally and return true.
+
+            This will cause all calls to target_queue()
+            of the source to be propagated to the dispatch_source_t
+            object returned by native(). The idea is that your source
+            will trigger and your custom handler is executed directly
+            on the target queue. Your custom handler does some preprocessing
+            within the sourcetype and calls ready(). Instead of dispatching
+            another operation on the targetqueue, the source object will execute
+            the user's handler directly, thus reducing the overhead.
+            */
+            virtual bool propagate_targetqueue() const { return false; }
 
     private:
             sourcetype(const sourcetype&){}
@@ -82,6 +116,9 @@ class XDISPATCH_EXPORT sourcetype {
             friend class source;
             source* cb;
 };
+
+
+class native_source_wrapper;
 
 /**
   Constructs a sourcetype using a dispatch_source_t
@@ -100,9 +137,20 @@ class XDISPATCH_EXPORT native_source : public sourcetype {
 
     protected:
         virtual dispatch_source_t native();
+        void on_resume ();
+        void on_suspend ();
+        void on_cancel ();
+        bool propagate_targetqueue () const;
+
+        /**
+          Will be called whenever the underlying dispatch_source_t
+          object is ready. By default directly calls ready() on
+          the sourcetype. Override to do some custom processing
+          */
+        virtual void on_source_ready();
 
     private:
-        dispatch_source_t _source;
+        pointer<native_source_wrapper>::shared _source;
 };
 
 
@@ -112,6 +160,13 @@ Provides a source implementation.
 A dispatch source will wait for a specific ressource or
 operation (as defined by the given type) to complete and
 dispatch a given handler on completion.
+
+Construct a new source using a specific sourcetype
+to define the events the source will fire at.
+
+@remark A new source is constructed in a suspended state
+    as such you will have to call resume() once
+    to activate it.
 */
 class XDISPATCH_EXPORT source : public object {
 
@@ -229,11 +284,13 @@ class XDISPATCH_EXPORT source : public object {
             source(const source&);
             source& operator=(const source&);
             class pdata;
-            pointer<pdata>::unique d;
+            pointer<pdata>::shared d;
 
             void notify(const any&);
+            sourcetype* source_type();
             static const any* _data();
             friend class sourcetype;
+            friend class timer;
 };
 
 __XDISPATCH_END_NAMESPACE
