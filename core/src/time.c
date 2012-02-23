@@ -32,12 +32,15 @@ _dispatch_get_nanoseconds(void)
 	return now.tv_sec * NSEC_PER_SEC + now.tv_usec * NSEC_PER_USEC;
 #else /* TARGET_OS_WIN32 */
 	// FILETIME is 100-nanosecond intervals since January 1, 1601 (UTC).
+    // As such multiply by 100 to get the nano seconds
 	FILETIME ft;
 	ULARGE_INTEGER li;
 	GetSystemTimeAsFileTime(&ft);
 	li.LowPart = ft.dwLowDateTime;
 	li.HighPart = ft.dwHighDateTime;
-	return li.QuadPart * 100ull;
+    // The Unix epoch starts on Jan 1 1970.  Need to subtract the difference
+    // in seconds from Jan 1 1601.
+    return li.QuadPart * 100ull - DELTA_EPOCH_IN_MICROSECS * 1000ull;
 #endif /* TARGET_OS_WIN32 */
 }
 

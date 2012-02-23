@@ -265,6 +265,7 @@ again:
 			DWORD msec;
 			nsec = _dispatch_timeout(timeout);
 			msec = (DWORD)(nsec / (uint64_t)1000000);
+            // TODO: This has msec res on windows, we really need nsec!
 			ret = WaitForSingleObject(dsema->dsema_handle, msec);
 		} while (ret != WAIT_OBJECT_0 && ret != WAIT_TIMEOUT);
 		if (ret != WAIT_TIMEOUT) {

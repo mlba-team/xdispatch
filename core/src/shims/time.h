@@ -41,14 +41,15 @@ uint64_t _dispatch_get_nanoseconds(void);
 // x86 currently implements mach time in nanoseconds; this is NOT likely to change
 #define _dispatch_time_mach2nano(x) (x)
 #define _dispatch_time_nano2mach(x) (x)
+
 #else
+
 typedef struct _dispatch_host_time_data_s {
 	long double frac;
 	bool ratio_1_to_1;
 	dispatch_once_t pred;
 #ifdef _WIN32
-	double win_time_factor;
-	dispatch_once_t win_pred;
+	long double win_time_factor;
 #endif
 } _dispatch_host_time_data_s;
 extern _dispatch_host_time_data_s _dispatch_host_time_data;
@@ -97,9 +98,15 @@ _dispatch_absolute_time(void)
 	return mach_absolute_time();
 #elif TARGET_OS_WIN32
 	LARGE_INTEGER now;
-	dispatch_once_f(&_dispatch_host_time_data.win_pred, NULL, _dispatch_get_factor_init);
+    struct timeval ts;
+	_dispatch_host_time_data_s *const data = &_dispatch_host_time_data;
+	dispatch_once_f(&data->pred, NULL, _dispatch_get_host_time_init);
+
 	if (!QueryPerformanceCounter(&now)) {
-		return 0;
+        _dispatch_debug("Failed to query perf counter");
+
+        dispatch_assert_zero( gettimeofday( &ts, NULL ) );
+        return ts.tv_usec * NSEC_PER_USEC + ts.tv_sec * NSEC_PER_SEC;
 	}
 	return (uint64_t)(now.QuadPart *_dispatch_host_time_data.win_time_factor);
 #else
@@ -111,7 +118,7 @@ _dispatch_absolute_time(void)
 #elif HAVE_DECL_CLOCK_MONOTONIC
 	ret = clock_gettime(CLOCK_MONOTONIC, &ts);
 #else
-#error "clock_gettime: no supported absolute time clock"
+# error "clock_gettime: no supported absolute time clock"
 #endif
 	(void)dispatch_assume_zero(ret);
 
