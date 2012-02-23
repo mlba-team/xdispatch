@@ -62,7 +62,7 @@ class XDISPATCH_EXPORT once {
          @returns the native dispatch object associated to
          the xdispatch object
          */
-        dispatch_once_t* native() const;
+        dispatch_once_t* native_once() const;
 
         /**
           Executes the given operation when the

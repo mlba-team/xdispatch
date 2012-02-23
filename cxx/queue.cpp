@@ -43,7 +43,7 @@ class queue::data {
 };
 
 queue::queue(dispatch_queue_t q) : d(new data){
-    assert(d);
+    assert( d.get () );
     dispatch_retain(q);
     d->native = q;
     assert(d->native);
@@ -51,11 +51,11 @@ queue::queue(dispatch_queue_t q) : d(new data){
 }
 
 queue::queue(const queue& other) : d(new data(*other.d)){
-    assert(d);
+    assert( d.get () );
 }
 
 queue::queue(const std::string & label) : d(new data){
-    assert(d);
+    assert( d.get () );
     d->native = dispatch_queue_create(label.c_str(),NULL);
     assert(d->native);
     d->label = label;
@@ -63,14 +63,14 @@ queue::queue(const std::string & label) : d(new data){
 
 queue::queue(const char* label) : d(new data){
     assert(label);
-    assert(d);
+    assert( d.get () );
     d->native = dispatch_queue_create(label,NULL);
     assert(d->native);
     d->label = std::string(label);
 }
 
 queue::~queue(){
-    delete d;
+
 }
 
 void queue::async(operation* op){
@@ -104,14 +104,6 @@ const std::string queue::label() const {
     return d->label;
 }
 
-void queue::suspend(){
-    dispatch_suspend(d->native);
-}
-
-void queue::resume(){
-    dispatch_resume(d->native);
-}
-
 dispatch_object_t queue::native() const {
     return d->native;
 }
@@ -120,16 +112,10 @@ dispatch_queue_t queue::native_queue() const {
     return d->native;
 }
 
-void queue::target_queue(const queue& q) {
-    dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
-}
-
 xdispatch::queue& queue::operator=(const queue& other){
     if(*this != other){
-        if(d)
-            delete d;
-        d = new data(*other.d);
-        assert(d);
+        d = pointer<data>::unique( new data(*other.d) );
+        assert( d.get () );
     }
     return *this;
 }

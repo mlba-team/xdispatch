@@ -105,7 +105,7 @@ class XDISPATCH_EXPORT semaphore {
             C++ object. Use this, if you need to use the plain C Interface
             of libdispatch.
         */
-        const dispatch_semaphore_t native() const;
+        const dispatch_semaphore_t native_semaphore() const;
 
         semaphore& operator=(const semaphore&);
         bool operator ==(const semaphore&);
@@ -115,7 +115,7 @@ class XDISPATCH_EXPORT semaphore {
 
     private:
         class data;
-        data* d;
+        pointer<data>::unique d;
 
 };
 

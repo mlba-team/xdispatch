@@ -49,6 +49,7 @@
 # define __XDISPATCH_END_NAMESPACE }
 
 # define __XDISPATCH_INDIRECT__
+# include "pointer.h"
 # include "synchronized.h"
 # include "lambda_blocks.h"
 # include "base.h"

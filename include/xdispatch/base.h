@@ -176,6 +176,8 @@ class block_iteration_operation : public iteration_operation {
 #endif
 
 
+class XDISPATCH_EXPORT queue;
+
 /**
  The base class of all xdispatch classes
  */
@@ -188,7 +190,7 @@ class XDISPATCH_EXPORT object {
          Resumes the invocation of operations
          or blocks assigned to the object
          */
-        virtual void resume() = 0;
+        virtual void resume();
         /**
          Suspends the invocation of operations or blocks
          assigned to the object. The object will be suspended
@@ -198,7 +200,14 @@ class XDISPATCH_EXPORT object {
          @remarks Calls to suspend() should be balanced with calls
           to resume() to continue an object
           */
-        virtual void suspend() = 0;
+        virtual void suspend();
+        /**
+         Sets the target queue of this object, i.e. the queue
+         all items concerning this object will be dispatched on in turn.
+
+         @remarks This has no effect on the global queues and the main queue.
+        */
+        virtual void target_queue(const queue&);
         /**
          @returns the native dispatch object associated to
          the xdispatch object

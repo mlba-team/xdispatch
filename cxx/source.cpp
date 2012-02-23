@@ -111,25 +111,32 @@ class src_notify_operation : public operation {
 
 class source::pdata {
     public:
-        pdata()
-            : target(global_queue()), handler(NULL), cancel_handler(NULL) {
+        pdata(sourcetype* src_t)
+            : suspend_ct(1), cancelled(0), type( src_t )
+                ,target(global_queue()), handler(NULL), cancel_handler(NULL) {
             dispatch_once_f(&init_data_tls, NULL, run_tls_initializer);
+            assert(src_t);
+        }
+
+        ~pdata() {
+
+            if( handler && handler->auto_delete() )
+                delete handler;
+            if( cancel_handler && cancel_handler->auto_delete() )
+                delete cancel_handler;
         }
 
         uintptr_t suspend_ct;
         uintptr_t cancelled;
-        sourcetype* type;
+        pointer<sourcetype>::unique type;
         queue target;
         operation* handler;
         operation* cancel_handler;
 };
 
-source::source(sourcetype* src_t) : d(new pdata()){
-    assert(d);
-    assert(src_t);
-    d->suspend_ct = 1;
-    d->cancelled = 0;
-    d->type = src_t;
+source::source(sourcetype* src_t) : d(new pdata(src_t)){
+    assert(d.get ());
+
     src_t->set_cb(this);
 }
 
@@ -138,14 +145,8 @@ source::source(const source&) {
 }
 
 source::~source(){
-    delete d->type;
 
-    if( d->handler && d->handler->auto_delete() )
-        delete d->handler;
-    if( d->cancel_handler && d->cancel_handler->auto_delete() )
-        delete d->cancel_handler;
 
-    delete d;
 }
 
 void source::suspend(){

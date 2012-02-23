@@ -114,33 +114,23 @@ class XDISPATCH_EXPORT group : public object {
         }
 #endif
         /**
-        Suspends the invocation of work items belonging to this group.
-
-        A suspended group will not invoke any blocks associated with it. The
-        suspension of a group will occur after any running work item associated with
-        the group completes.
-
-        Calls to suspend() must be balanced with calls to resume().
+        @returns The dispatch_object_t object associated with this
+        C++ object. Use this, if you need to use the plain C Interface
+        of libdispatch.
         */
-        virtual void suspend();
-        /**
-        Resumes the invocation of work items belonging to this group.
-
-        Calls to suspend() must be balanced with calls to resume().
-        */
-        virtual void resume();
+        virtual dispatch_object_t native() const;
         /**
         @returns The dispatch_group_t object associated with this
         C++ object. Use this, if you need to use the plain C Interface
         of libdispatch.
         */
-        virtual dispatch_object_t native() const;
+        dispatch_group_t native_group() const;
 
         group& operator=(const group&);
 
     private:
         class data;
-        data* d;
+        pointer<data>::unique d;
 };
 
 XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const group* );

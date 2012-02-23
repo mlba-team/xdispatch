@@ -39,6 +39,18 @@ object::~object() {
 
 }
 
+void object::resume () {
+    dispatch_resume ( native() );
+}
+
+void object::suspend () {
+    dispatch_suspend ( native() );
+}
+
+void object::target_queue (const queue & q) {
+    dispatch_set_target_queue( native(), q.native_queue() );
+}
+
 bool object::operator==(const object& other){
     return native() == other.native();
 }

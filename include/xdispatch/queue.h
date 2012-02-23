@@ -181,22 +181,6 @@ class XDISPATCH_EXPORT queue : public object {
         */
         const std::string label() const;
         /**
-        Suspends the invocation of work items on this queue.
-
-        A suspended queue will not invoke any blocks associated with it. The
-        suspension of a queue will occur after any running work item associated with
-        the queue completes.
-
-        Calls to suspend() must be balanced with calls to resume().
-        */
-        virtual void suspend();
-        /**
-        Resumes the invocation of work items on this queue.
-
-        Calls to suspend() must be balanced with calls to resume().
-        */
-        virtual void resume();
-        /**
         @returns The dispatch_queue_t object associated with this
         C++ object. Use this, if you need to use the plain C Interface
         of libdispatch.
@@ -210,19 +194,12 @@ class XDISPATCH_EXPORT queue : public object {
         @see native()
         */
         virtual dispatch_queue_t native_queue() const;
-        /**
-         Sets the target queue of this queue, i.e. the queue
-         all items of this queue will be dispatched on in turn.
-
-         @remarks This has no effect on the global queues and the main queue.
-        */
-        void target_queue(const queue&);
 
         queue& operator= (const queue&);
 
     private:
         class data;
-        data* d;
+        pointer<data>::unique d;
 
 };
 

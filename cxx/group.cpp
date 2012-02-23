@@ -39,25 +39,25 @@ class group::data {
 };
 
 group::group() : d(new data){
-    assert(d);
+    assert( d.get() );
     d->native = dispatch_group_create();
     assert(d->native);
 }
 
 group::group(dispatch_group_t g) : d(new data){
     assert(g);
-    assert(d);
+    assert( d.get() );
     dispatch_retain(g);
     d->native = g;
 }
 
 group::group(const group & other) : d(new data(*other.d)){
-    assert(d);
+    assert( d.get() );
     assert(d->native);
 }
 
 group::~group() {
-    delete d;
+
 }
 
 void group::async(operation* r, const queue& q){
@@ -84,20 +84,14 @@ dispatch_object_t group::native() const {
     return d->native;
 }
 
-void group::suspend() {
-    dispatch_suspend(d->native);
-}
-
-void group::resume() {
-    dispatch_resume(d->native);
+dispatch_group_t group::native_group () const {
+    return d->native;
 }
 
 group& group::operator=(const group& other){
     if(*this != other){
-        if(d)
-            delete d;
-        d = new data(*other.d);
-        assert(d);
+        d = pointer<data>::unique( new data(*other.d) );
+        assert(d.get ());
     }
     return *this;
 }

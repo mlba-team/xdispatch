@@ -27,83 +27,12 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
-#include <typeinfo>
+#include "any.h"
 
 __XDISPATCH_BEGIN_NAMESPACE
 
 class source;
 
-/**
-Used for transferring data from a sourcetype
-to source::data without loosing typesafety.
-
-Adapted from boost::any 
-(http://www.boost.org/doc/libs/1_46_1/doc/html/any.html)
-(c) 2001 Kevlin Henney
-Distributed under the Boost Software License, Version 1.0. (See http://www.boost.org/LICENSE_1_0.txt) 
-*/
-struct any {
-
-	any() : stored(0) {}
-	template<typename Type> any(const Type& val) : stored(new holder<Type>(val)) {}
-	any(const any& other) : stored(other.stored ? other.stored->clone() : 0 ) {}
-    virtual ~any() { delete stored; }
-
-	any & swap(any & v)
-	{
-		std::swap(stored, v.stored);
-		return *this;
-	}
-
-	template<typename OtherType>
-	any & operator=(const OtherType & v)
-	{
-		any(v).swap(*this);
-		return *this;
-	}
-
-	any & operator=(any v)
-	{
-		v.swap(*this);
-		return *this;
-	}
-
-	template<typename TargetType>
-	TargetType cast() const {
-		if(stored->type() == typeid(TargetType))
-			return static_cast< holder<TargetType>* >(stored)->value;
-		else
-			throw std::bad_cast();
-	}
-
-private:
-
-	struct place_holder {
-        virtual ~place_holder() {}
-		virtual place_holder * clone() const = 0;
-		virtual const std::type_info & type() const = 0;
-	};
-
-	template <typename Type>
-	struct holder : public place_holder {
-		holder (const Type& val) : value(val) {}
-
-		virtual place_holder * clone() const {
-			return new holder(value);
-		}
-
-		virtual const std::type_info & type() const {
-			return typeid(Type);
-		}
-
-		Type value;
-
-	private:
-		holder & operator=(const holder&);
-	};
-
-	place_holder* stored;
-};
 
 /**
 Declares an abstract source type.
@@ -115,9 +44,11 @@ you want to make available via source::data() to your handler
 */
 class XDISPATCH_EXPORT sourcetype {
 
+    public:
+            virtual ~sourcetype();
+
     protected:
             sourcetype();
-            virtual ~sourcetype();
 
             /**
             This method needs to be called every time
@@ -247,7 +178,7 @@ class XDISPATCH_EXPORT source : public object {
             This depends on the sourcetype used and will normally return NULL
             @see native()
             */
-            virtual dispatch_source_t native_source() const;
+            dispatch_source_t native_source() const;
             /**
             Asynchronously cancels the dispatch source, preventing any further
             invocation of its event handler block.
@@ -298,7 +229,7 @@ class XDISPATCH_EXPORT source : public object {
             source(const source&);
             source& operator=(const source&);
             class pdata;
-            pdata* d;
+            pointer<pdata>::unique d;
 
             void notify(const any&);
             static const any* _data();

@@ -39,25 +39,25 @@ class semaphore::data {
 };
 
 semaphore::semaphore(int val) : d(new data) {
-    assert(d);
+    assert(d.get ());
     d->native = dispatch_semaphore_create(val);
     assert(d->native);
 }
 
 semaphore::semaphore(dispatch_semaphore_t sem) : d(new data) {
     assert(sem);
-    assert(d);
+    assert(d.get ());
     d->native = sem;
     dispatch_retain(sem);
 }
 
 
 semaphore::semaphore(const semaphore& other) : d(new data(*other.d)) {
-    assert(d);
+    assert(d.get ());
 }
 
 semaphore::~semaphore() {
-    delete d;
+
 }
 
 int semaphore::release() {
@@ -76,16 +76,14 @@ bool semaphore::try_acquire(struct tm* time){
     return try_acquire( as_dispatch_time(time) );
 }
 
-const dispatch_semaphore_t semaphore::native() const {
+const dispatch_semaphore_t semaphore::native_semaphore() const {
     return d->native;
 }
 
 xdispatch::semaphore& semaphore::operator=(const semaphore& other){
     if(*this != other){
-        if(d)
-            delete d;
-        d = new data(*other.d);
-        assert(d);
+        d = pointer<data>::unique( new data(*other.d) );
+        assert(d.get ());
     }
     return *this;
 }

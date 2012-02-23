@@ -47,7 +47,7 @@ void once::operator ()(operation& op) {
     dispatch_once_f( _once, &op, _xdispatch_once_operation );
 }
 
-dispatch_once_t* once::native() const {
+dispatch_once_t* once::native_once() const {
     return _once;
 }
 

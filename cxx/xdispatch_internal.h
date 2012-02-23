@@ -46,6 +46,7 @@
 # define XDISPATCH_EXPORT __attribute__((visibility("default")))
 #endif
 
+#include "../include/xdispatch/pointer.h"
 #include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/lambda_blocks.h"
 #include "../include/xdispatch/base.h"
