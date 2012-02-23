@@ -28,7 +28,21 @@
 #include <assert.h>
 #include <spawn.h>
 #include <signal.h>
-#include <libkern/OSAtomic.h>
+
+#ifndef WIN32
+#	include <unistd.h>
+#	include <sys/time.h>
+#	include <sys/resource.h>
+#	include <sys/wait.h>
+#else
+#	include <process.h>
+#endif
+
+//#include <libkern/OSAtomic.h>
+
+#ifndef POSIX_SPAWN_START_SUSPENDED
+# define POSIX_SPAWN_START_SUSPENDED 0
+#endif
 
 #define PID_CNT 5
 
