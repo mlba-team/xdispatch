@@ -19,7 +19,6 @@
 */
 
 
-#include <assert.h>
 #include <iostream>
 #include <stdlib.h>
 #include "xdispatch_internal.h"
@@ -28,7 +27,7 @@ __XDISPATCH_USE_NAMESPACE
 
 iteration_wrap::iteration_wrap(iteration_operation* o, size_t ct)
     : op(o), ref(ct) {
-    assert(o);
+    XDISPATCH_ASSERT(o);
 }
 
 iteration_wrap::~iteration_wrap() {
@@ -50,9 +49,11 @@ bool iteration_wrap::deref(){
 
 extern "C"
 void _xdispatch_run_operation(void* dt){
-    assert(dt);
+    XDISPATCH_ASSERT(dt);
     operation* w = static_cast<operation*>(dt);
-    assert(w);
+    XDISPATCH_ASSERT(w);
+
+    printf("_xdispatch_run_operation\n");
 
     try {
         (*w)();
@@ -77,9 +78,9 @@ void _xdispatch_run_operation(void* dt){
 
 extern "C"
 void _xdispatch_run_iter_wrap(void* dt, size_t index){
-    assert(dt);
+    XDISPATCH_ASSERT(dt);
     iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
-    assert(wrap);
+    XDISPATCH_ASSERT(wrap);
 
     try {
         ( *(wrap->operation()) )(index);

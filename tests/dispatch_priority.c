@@ -146,7 +146,7 @@ void dispatch_priority2()
 	for(i = 0; i < PRIORITIES; i++) {
 		q[i] = dispatch_queue_create(labels[i], NULL);
 		MU_ASSERT_NOT_NULL(q[i]);
-		assert(q[i]);
+        MU_ASSERT_NULL(q[i]);
 		dispatch_set_target_queue(q[i], dispatch_get_global_queue(priorities[i], 0));
 		// TODO: do we need this?
 		//dispatch_queue_set_width(q[i], -2);

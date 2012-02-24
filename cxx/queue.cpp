@@ -30,7 +30,7 @@ class queue::data {
     data(){}
     data(const data& other)
         : native(other.native), label(other.label){
-        assert(native);
+        XDISPATCH_ASSERT(native);
         dispatch_retain(native);
     }
     ~data(){
@@ -44,32 +44,32 @@ class queue::data {
 
 queue::queue(dispatch_queue_t q)
     : object(), d(new data){
-    assert( d.get () );
+    XDISPATCH_ASSERT( d.get () );
     dispatch_retain(q);
     d->native = q;
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
     d->label = std::string(dispatch_queue_get_label(q));
 }
 
 queue::queue(const queue& other)
     : object(other), d(new data(*other.d)){
-    assert( d.get () );
+    XDISPATCH_ASSERT( d.get () );
 }
 
 queue::queue(const std::string & label)
     : object(), d(new data){
-    assert( d.get () );
+    XDISPATCH_ASSERT( d.get () );
     d->native = dispatch_queue_create(label.c_str(),NULL);
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
     d->label = label;
 }
 
 queue::queue(const char* label)
     : object(), d(new data){
-    assert(label);
-    assert( d.get () );
+    XDISPATCH_ASSERT(label);
+    XDISPATCH_ASSERT( d.get () );
     d->native = dispatch_queue_create(label,NULL);
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
     d->label = std::string(label);
 }
 
@@ -120,7 +120,7 @@ xdispatch::queue& queue::operator=(const queue& other){
     if(*this != other){
         object::operator = (other);
         d = pointer<data>::unique( new data(*other.d) );
-        assert( d.get () );
+        XDISPATCH_ASSERT( d.get () );
     }
     return *this;
 }

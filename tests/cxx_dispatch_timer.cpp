@@ -33,9 +33,13 @@ static struct timeval checked_time;
 class test_periodic : public xdispatch::operation {
 
 public:
-    test_periodic() : counter(0) {}
+    test_periodic() : counter(0) {
+        MU_MESSAGE("test_periodic created");
+    }
 
     void operator ()(){
+
+        MU_MESSAGE("test_periodic::operator ()()");
 
         // we should be executed on the main queue
         MU_ASSERT_EQUAL(xdispatch::current_queue().native(), dispatch_get_main_queue());

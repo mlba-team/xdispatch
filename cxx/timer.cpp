@@ -34,7 +34,7 @@ class timer_type : public native_source {
         timer_type(timer* parent, uint64_t interval, dispatch_time_t first, dispatch_queue_t q)
             : native_source( dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, q) ), _parent(parent), _interval(interval), _latency(0) {
 
-            assert(_parent);
+            XDISPATCH_ASSERT(_parent);
 
             dispatch_source_set_timer( native (), first, interval, 0);
         }

@@ -40,7 +40,7 @@ once::once()
 
 once::once(dispatch_once_t * dot)
     : _once_obj(0), _once(dot) {
-    assert(dot);
+    XDISPATCH_ASSERT(dot);
 }
 
 void once::operator ()(operation& op) {

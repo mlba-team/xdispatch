@@ -91,7 +91,9 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_apply_serialqueue);
 	MU_REGISTER_TEST(dispatch_after_function);
 	MU_REGISTER_TEST(test_queue_finalizer);
+#if !__linux__
 	MU_REGISTER_TEST(dispatch_starfish);
+#endif
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
 #ifdef TEST_BLOCKS

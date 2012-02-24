@@ -27,7 +27,7 @@ class group::data {
     public:
     data(){}
     data(const data& other) : native(other.native){
-        assert(native);
+        XDISPATCH_ASSERT(native);
         dispatch_retain(native);
     }
     ~data(){
@@ -40,23 +40,23 @@ class group::data {
 
 group::group()
     : object(), d(new data){
-    assert( d.get() );
+    XDISPATCH_ASSERT( d.get() );
     d->native = dispatch_group_create();
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
 }
 
 group::group(dispatch_group_t g)
     : object(), d(new data){
-    assert(g);
-    assert( d.get() );
+    XDISPATCH_ASSERT(g);
+    XDISPATCH_ASSERT( d.get() );
     dispatch_retain(g);
     d->native = g;
 }
 
 group::group(const group & other)
     : object(other), d(new data(*other.d)){
-    assert( d.get() );
-    assert(d->native);
+    XDISPATCH_ASSERT( d.get() );
+    XDISPATCH_ASSERT(d->native);
 }
 
 group::~group() {
@@ -65,7 +65,7 @@ group::~group() {
 
 void group::async(operation* r, const queue& q){
     dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
-    assert(nat_q);
+    XDISPATCH_ASSERT(nat_q);
     dispatch_group_async_f(d->native, nat_q, r, _xdispatch_run_operation);
 }
 
@@ -79,7 +79,7 @@ bool group::wait(struct tm* t){
 
 void group::notify(operation* r, const queue& q){
     dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
-    assert(nat_q);
+    XDISPATCH_ASSERT(nat_q);
     dispatch_group_notify_f(d->native, nat_q, r, _xdispatch_run_operation);
 }
 
@@ -95,7 +95,7 @@ group& group::operator=(const group& other){
     if(*this != other){
         object::operator = (other);
         d = pointer<data>::unique( new data(*other.d) );
-        assert(d.get ());
+        XDISPATCH_ASSERT(d.get ());
     }
     return *this;
 }

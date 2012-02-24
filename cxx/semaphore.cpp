@@ -27,7 +27,7 @@ class semaphore::data {
     public:
         data(){}
         data(const data& other) : native(other.native){
-            assert(native);
+            XDISPATCH_ASSERT(native);
             dispatch_retain(native);
         }
         ~data(){
@@ -39,21 +39,21 @@ class semaphore::data {
 };
 
 semaphore::semaphore(int val) : d(new data) {
-    assert(d.get ());
+    XDISPATCH_ASSERT(d.get ());
     d->native = dispatch_semaphore_create(val);
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
 }
 
 semaphore::semaphore(dispatch_semaphore_t sem) : d(new data) {
-    assert(sem);
-    assert(d.get ());
+    XDISPATCH_ASSERT(sem);
+    XDISPATCH_ASSERT(d.get ());
     d->native = sem;
     dispatch_retain(sem);
 }
 
 
 semaphore::semaphore(const semaphore& other) : d(new data(*other.d)) {
-    assert(d.get ());
+    XDISPATCH_ASSERT(d.get ());
 }
 
 semaphore::~semaphore() {
@@ -83,7 +83,7 @@ const dispatch_semaphore_t semaphore::native_semaphore() const {
 xdispatch::semaphore& semaphore::operator=(const semaphore& other){
     if(*this != other){
         d = pointer<data>::unique( new data(*other.d) );
-        assert(d.get ());
+        XDISPATCH_ASSERT(d.get ());
     }
     return *this;
 }

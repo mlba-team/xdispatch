@@ -53,7 +53,7 @@ extern "C" void dispatch_timer_bit63() {
 
     dispatch_source_t ds;
     ds = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainq);
-    assert(ds);
+    MU_ASSERT_NULL(ds);
     dispatch_source_set_event_handler(ds, ${
         MU_ASSERT_LESS_THAN(*i, 1);
         MU_MESSAGE("%d", (*i)++);

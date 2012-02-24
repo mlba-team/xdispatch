@@ -67,9 +67,9 @@ extern "C" void dispatch_proc(void)
 	
 	posix_spawnattr_t attr;
 	res = posix_spawnattr_init(&attr);
-	assert(res == 0);
+    MU_ASSERT_NULL(res == 0);
 	res = posix_spawnattr_setflags(&attr, POSIX_SPAWN_START_SUSPENDED);
-	assert(res == 0);
+    MU_ASSERT_NULL(res == 0);
 
 	char* args[] = {
         (char*)"/bin/sleep", (char*)"2", NULL
@@ -82,11 +82,11 @@ extern "C" void dispatch_proc(void)
 	}
 
 	res = posix_spawnattr_destroy(&attr);
-	assert(res == 0);
+    MU_ASSERT_NULL(res == 0);
 
 	dispatch_queue_t completion = dispatch_queue_create("completion", NULL);
 	
-	assert(pid > 0);
+    MU_ASSERT_NULL(pid > 0);
 
 	//
 	// Suspend the "completion" queue when each observer is created.
@@ -122,7 +122,7 @@ extern "C" void dispatch_proc(void)
     dispatch_async(completion, ${
 		int status;
 		int res2 = waitpid(pid, &status, 0);
-		assert(res2 != -1);
+        MU_ASSERT_NULL(res2 != -1);
         MU_DESC_ASSERT_EQUAL("Sub-process exited", WEXITSTATUS(status) | WTERMSIG(status), 0);
         MU_DESC_ASSERT_EQUAL("Event count", event_cnt, PID_CNT);
         MU_PASS("");

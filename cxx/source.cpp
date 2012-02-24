@@ -49,7 +49,7 @@ sourcetype::~sourcetype() {
 }
 
 void sourcetype::set_cb(source* s){
-    assert(s);
+    XDISPATCH_ASSERT(s);
 
     (void)dispatch_atomic_ptr_xchg( &cb, s );
 }
@@ -83,7 +83,7 @@ void sourcetype::on_cancel() {
 native_source::native_source( dispatch_source_t s )
     : sourcetype(), _source( native_source_wrapper::atomic_get(s) ) {
 
-    assert( s );
+    XDISPATCH_ASSERT( s );
     dispatch_retain( s );
 
     _source->event_operation(new ptr_operation<native_source>(this, &native_source::on_source_ready));
@@ -124,7 +124,7 @@ class src_notify_operation : public operation {
     public:
         src_notify_operation(const any& dt, operation* op)
             : op(op), dt(dt){
-            assert(op);
+            XDISPATCH_ASSERT(op);
         }
 
         void operator()(){
@@ -144,7 +144,7 @@ class source::pdata {
             : suspend_ct(/* suspended by default */ 0), cancelled(0), type( src_t )
                 ,target(global_queue()), handler(NULL), cancel_handler(NULL) {
             dispatch_once_f(&init_data_tls, NULL, run_tls_initializer);
-            assert(src_t);
+            XDISPATCH_ASSERT(src_t);
         }
 
         ~pdata() {
@@ -168,7 +168,7 @@ class source::pdata {
 };
 
 source::source(sourcetype* src_t) : d(new pdata(src_t)){
-    assert(d.get ());
+    XDISPATCH_ASSERT(d.get ());
 
     src_t->set_cb(this);
 }
@@ -216,7 +216,7 @@ queue source::target_queue() const {
 
 
 void source::handler(operation* op){
-    assert(op);
+    XDISPATCH_ASSERT(op);
 
     operation* old_op = (operation*)dispatch_atomic_ptr_xchg( &d->handler, op );
     if( old_op && old_op->auto_delete() )
@@ -271,7 +271,7 @@ source& source::operator=(const source& other){
 
 
 void source::cancel_handler(operation * op) {
-    assert(op);
+    XDISPATCH_ASSERT(op);
 
     operation* old_op = (operation*)dispatch_atomic_ptr_xchg( &d->cancel_handler, op );
     if( old_op && old_op->auto_delete() )

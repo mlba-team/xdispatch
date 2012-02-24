@@ -46,6 +46,10 @@
 # define XDISPATCH_EXPORT __attribute__((visibility("default")))
 #endif
 
+#include <assert.h>
+#include <stdexcept>
+#define XDISPATCH_ASSERT(X) {if(!(X)) throw std::runtime_error("Assertion failed: " #X);}
+
 #include "../include/xdispatch/pointer.h"
 #include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/lambda_blocks.h"

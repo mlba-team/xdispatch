@@ -22,21 +22,20 @@
 #include "xdispatch_internal.h"
 #include "source_internal.h"
 
-__XDISPATCH_BEGIN_NAMESPACE
 
-void _xdispatch_source_set_event_handler(dispatch_source_t src, operation* op){
+__XDISPATCH_USE_NAMESPACE
+
+void _xdispatch_source_set_event_handler(dispatch_source_t src, xdispatch::operation* op){
 
     pointer<native_source_wrapper>::shared wrapper = native_source_wrapper::atomic_get ( src );
     wrapper->event_operation( op );
 
 }
 
-void _xdispatch_source_set_cancel_handler(dispatch_source_t src, operation* op){
+void _xdispatch_source_set_cancel_handler(dispatch_source_t src, xdispatch::operation* op){
 
     pointer<native_source_wrapper>::shared wrapper = native_source_wrapper::atomic_get ( src );
     wrapper->cancel_operation( op );
 
 }
 
-
-__XDISPATCH_END_NAMESPACE

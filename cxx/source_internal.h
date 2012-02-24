@@ -40,12 +40,13 @@ class native_source_wrapper {
         native_source_wrapper(dispatch_source_t source)
             : _source(source), _op() {
 
-            assert(source);
+            XDISPATCH_ASSERT(source);
+            dispatch_retain( source );
         }
 
         native_source_wrapper(const native_source_wrapper& other)
             : _source(other._source), _op(other._op){
-            assert(_source);
+            XDISPATCH_ASSERT(_source);
 
             dispatch_retain ( _source );
         }
@@ -66,20 +67,52 @@ class native_source_wrapper {
             return get ();
         }
 
+        static void run_event_operation(void* dt) {
+            printf("Enter event op\n");
+            if( !dt )
+                return;
+
+            printf("Cast event op\n");
+            XDISPATCH_ASSERT(dt);
+            native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
+            XDISPATCH_ASSERT(wrap);
+
+            XDISPATCH_ASSERT(wrap->_op);
+            printf("Run event op\n");
+            _xdispatch_run_operation( wrap->_op.get() );
+            printf("Leave event op\n");
+        }
+
         void event_operation( operation* op ){
-            assert(op);
+            XDISPATCH_ASSERT(op);
             op->auto_delete (false);
 
             _op = pointer<operation>::shared(op);
 
-            dispatch_set_context ( _source, op );
-            dispatch_source_set_event_handler_f(_source, _xdispatch_run_operation);
+            dispatch_set_context ( _source, this );
+            dispatch_source_set_event_handler_f(_source, run_event_operation);
+            printf("Custom event op\n");
+        }
 
+        static void run_cancel_operation(void* dt) {
+            if( !dt )
+                return;
+
+            XDISPATCH_ASSERT(dt);
+            native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
+            XDISPATCH_ASSERT(wrap);
+
+            XDISPATCH_ASSERT(wrap->_cancel_op);
+            _xdispatch_run_operation( wrap->_cancel_op.get() );
+            printf("Custom cancel op\n");
         }
 
         void cancel_operation( operation* op ){
-            assert(op);
+            XDISPATCH_ASSERT(op);
             op->auto_delete (false);
+
+            dispatch_set_context ( _source, this );
+            dispatch_source_set_cancel_handler_f(_source, run_cancel_operation);
 
             _cancel_op = pointer<operation>::shared(op);
         }
