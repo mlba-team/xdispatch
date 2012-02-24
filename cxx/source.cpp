@@ -50,11 +50,8 @@ sourcetype::~sourcetype() {
 
 void sourcetype::set_cb(source* s){
     assert(s);
-    // TODO: Is this synchronization really needed?
-    //       Also check if maintaining an own object is faster
-    synchronize("xd_st_cb") {
-        cb = s;
-    }
+
+    (void)dispatch_atomic_ptr_xchg( &cb, s );
 }
 
 void sourcetype::on_resume (){
@@ -66,12 +63,10 @@ void sourcetype::on_suspend (){
 }
 
 void sourcetype::ready(const any& dt){
-    // TODO: Is this synchronization really needed?
-    //       Also check if maintaining an own object is faster
-    synchronize("xd_st_cb") {
-        if(cb)
-            cb->notify(dt);
-    }
+
+    source* callback = dispatch_atomic_ptr_xchg( &cb, cb );
+    if( callback )
+        callback->notify ( dt );
 }
 
 dispatch_source_t sourcetype::native(){
@@ -178,8 +173,9 @@ source::source(sourcetype* src_t) : d(new pdata(src_t)){
     src_t->set_cb(this);
 }
 
-source::source(const source&) {
- // TODO: implement me!!!
+source::source(const source& other)
+    : object(), d(other.d) {
+
 }
 
 source::~source(){
@@ -222,14 +218,9 @@ queue source::target_queue() const {
 void source::handler(operation* op){
     assert(op);
 
-    // TODO: Is this synchronization really needed?
-    //       Also check if maintaining an own object is faster
-    synchronize("xd_src_handle") {
-        if(d->handler && d->handler->auto_delete())
-            delete d->handler;
-
-        d->handler = op;
-    }
+    operation* old_op = (operation*)dispatch_atomic_ptr_xchg( &d->handler, op );
+    if( old_op && old_op->auto_delete() )
+        delete old_op;
 }
 
 
@@ -269,19 +260,22 @@ sourcetype* source::source_type () {
     return d->type.get();
 }
 
-source& source::operator=(const source&){
+source& source::operator=(const source& other){
+    if( (*this) != other ) {
+        object::operator = ( other );
+        d = other.d;
+    }
+
     return *this;
 }
 
 
 void source::cancel_handler(operation * op) {
+    assert(op);
 
-    synchronize("xd_src_cancel") {
-        if(d->cancel_handler && d->cancel_handler->auto_delete())
-            delete d->cancel_handler;
-
-        d->cancel_handler = op;
-    }
+    operation* old_op = (operation*)dispatch_atomic_ptr_xchg( &d->cancel_handler, op );
+    if( old_op && old_op->auto_delete() )
+        delete old_op;
 
 }
 
@@ -297,10 +291,7 @@ void source::cancel() {
     d->type->on_cancel();
 
     // execute any cancel handlers
-    synchronize("xd_src_cancel") {
-        if( d->cancel_handler ) {
-            target_queue().async( d->cancel_handler );
-            d->cancel_handler = NULL;
-        }
-    }
+    operation* c_op = (operation*)dispatch_atomic_ptr_xchg( &d->cancel_handler, NULL );
+    if( c_op )
+        target_queue().async( c_op );
 }
