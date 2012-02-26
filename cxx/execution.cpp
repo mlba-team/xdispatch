@@ -53,8 +53,6 @@ void _xdispatch_run_operation(void* dt){
     operation* w = static_cast<operation*>(dt);
     XDISPATCH_ASSERT(w);
 
-    printf("_xdispatch_run_operation\n");
-
     try {
         (*w)();
     } catch(const std::exception& e) {

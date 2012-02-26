@@ -68,19 +68,15 @@ class native_source_wrapper {
         }
 
         static void run_event_operation(void* dt) {
-            printf("Enter event op\n");
             if( !dt )
                 return;
 
-            printf("Cast event op\n");
             XDISPATCH_ASSERT(dt);
             native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
             XDISPATCH_ASSERT(wrap);
 
             XDISPATCH_ASSERT(wrap->_op);
-            printf("Run event op\n");
             _xdispatch_run_operation( wrap->_op.get() );
-            printf("Leave event op\n");
         }
 
         void event_operation( operation* op ){
@@ -91,7 +87,6 @@ class native_source_wrapper {
 
             dispatch_set_context ( _source, this );
             dispatch_source_set_event_handler_f(_source, run_event_operation);
-            printf("Custom event op\n");
         }
 
         static void run_cancel_operation(void* dt) {
@@ -104,7 +99,6 @@ class native_source_wrapper {
 
             XDISPATCH_ASSERT(wrap->_cancel_op);
             _xdispatch_run_operation( wrap->_cancel_op.get() );
-            printf("Custom cancel op\n");
         }
 
         void cancel_operation( operation* op ){
