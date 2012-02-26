@@ -26,6 +26,9 @@
 
 #include <map>
 
+extern "C" void native_source_wrapper__run_event_operation(void*);
+extern "C" void native_source_wrapper__run_cancel_operation(void*);
+
 __XDISPATCH_BEGIN_NAMESPACE
 
 /**
@@ -67,18 +70,6 @@ class native_source_wrapper {
             return get ();
         }
 
-        static void run_event_operation(void* dt) {
-            if( !dt )
-                return;
-
-            XDISPATCH_ASSERT(dt);
-            native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
-            XDISPATCH_ASSERT(wrap);
-
-            XDISPATCH_ASSERT(wrap->_op);
-            _xdispatch_run_operation( wrap->_op.get() );
-        }
-
         void event_operation( operation* op ){
             XDISPATCH_ASSERT(op);
             op->auto_delete (false);
@@ -86,19 +77,7 @@ class native_source_wrapper {
             _op = pointer<operation>::shared(op);
 
             dispatch_set_context ( _source, this );
-            dispatch_source_set_event_handler_f(_source, run_event_operation);
-        }
-
-        static void run_cancel_operation(void* dt) {
-            if( !dt )
-                return;
-
-            XDISPATCH_ASSERT(dt);
-            native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
-            XDISPATCH_ASSERT(wrap);
-
-            XDISPATCH_ASSERT(wrap->_cancel_op);
-            _xdispatch_run_operation( wrap->_cancel_op.get() );
+            dispatch_source_set_event_handler_f(_source, native_source_wrapper__run_event_operation);
         }
 
         void cancel_operation( operation* op ){
@@ -106,7 +85,7 @@ class native_source_wrapper {
             op->auto_delete (false);
 
             dispatch_set_context ( _source, this );
-            dispatch_source_set_cancel_handler_f(_source, run_cancel_operation);
+            dispatch_source_set_cancel_handler_f(_source, native_source_wrapper__run_cancel_operation);
 
             _cancel_op = pointer<operation>::shared(op);
         }
@@ -125,7 +104,6 @@ class native_source_wrapper {
             return xdispatch_source_wrappers.at( obj );
         }
 
-    private:
 
         dispatch_source_t _source;
         pointer<operation>::shared _op;
