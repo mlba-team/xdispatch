@@ -36,13 +36,14 @@ endif()
 # is the used compiler clang? if so we need blocks support
 if(MZ_IS_CLANG AND NOT APPLE)
     message("-- linking with the BlocksRuntime")
-    CHECK_INCLUDE_FILES (Block.h HAVE_BLOCK_H)
-    if(NOT HAVE_BLOCK_H)
-	mz_add_library(libblocksruntime libblocksruntime)
-	include_directories( libblocksruntime )
-    endif()
-    mz_add_flag(-fblocks)
-    set(LIBS ${LIBS} BlocksRuntime)
+    mz_find_include_library(BlocksRuntime 
+        SYS Block.h BlocksRuntime 
+        SRC libblocksruntime libblocksruntime BlocksRuntime
+    )
+
+    mz_add_flag(CLANG -fblocks)
+   	include_directories( ${BlocksRuntime_INCLUDE_DIR} )
+    set(LIBS ${LIBS} ${BlocksRuntime_LIBRARIES})
 endif()
 
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
@@ -62,12 +63,12 @@ endif()
 # currently there's a bug in mingw causing the
 # builtin atomic opts not to work without this
 if(MINGW AND MZ_32BIT)
-	mz_add_flag( -march=i486)
+	mz_add_flag(GCC -march=i486)
 endif()
 
 # we hide all unneeded symbols
 if(NOT WIN32)
-	mz_add_flag(-fvisibility=hidden)
+	mz_add_flag(GCC -fvisibility=hidden)
 endif()
 
 if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
