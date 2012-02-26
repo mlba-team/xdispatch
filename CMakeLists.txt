@@ -4,8 +4,8 @@ INCLUDE (CheckIncludeFiles)
 INCLUDE (CheckSymbolExists)
 
 # start new subproject
-set(XDISPATCH_VERSION 0.7.0devel)
 project(xdispatch)
+include(package/version.cmake)
 
 include(CTest)
 enable_testing()
@@ -127,7 +127,6 @@ if(XDISPATCH_DOCS)
 endif()
 
 # packaging
-include(package/version.cmake)
 
 if(APPLE)
 	include(package/osx/pkg.cmake)

@@ -1,4 +1,10 @@
 
+# obtain the version info using subversion
+find_package(Subversion)
+if(SUBVERSION_FOUND)
+    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} XDISPATCH)
+endif()
+
 # Variables referring to the system the packaging took place at
 if(MZ_64BIT)
     set( PACKAGE_ARCH 			"amd64")
@@ -9,19 +15,23 @@ if(MZ_IS_CLANG)
     set( PACKAGE_COMPILER 		"clang")
 else()
     if(MZ_IS_VS)
-        set( PACKAGE_COMPILER 	"msvc")
+        set( PACKAGE_COMPILER           "msvc")
     else()
-        set( PACKAGE_COMPILER 	"gcc")
+        set( PACKAGE_COMPILER           "gcc")
     endif()
 endif()
 
 # Variables describing the version and functionality of 
 # libxdispatch will be updated on each new version release
 
-set( XDISPATCH_VERSION_MAJOR 	0)
-set( XDISPATCH_VERSION_MINOR 	7)
-set( XDISPATCH_VERSION_PATCH 	0)
-set( XDISPATCH_VERSION_SUFFIX 	devel)
+set( XDISPATCH_VERSION_MAJOR            0)
+set( XDISPATCH_VERSION_MINOR            7)
+set( XDISPATCH_VERSION_PATCH            0)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
+else()
+    set( XDISPATCH_VERSION_SUFFIX       devel)
+endif()
 set( XDISPATCH_LIBRARY_NAME		xdispatch)
 set( XDISPATCH_SUMMARY			"Userspace implementation of grand central dispatch")
 set( XDISPATCH_MAINTAINER		"Marius Zwicker")
