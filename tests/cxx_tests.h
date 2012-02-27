@@ -78,7 +78,9 @@ static void register_cxx_tests(){
 	MU_REGISTER_TEST(cxx_dispatch_source);
     MU_REGISTER_TEST(cxx_free_lambda);
     MU_REGISTER_TEST(cxx_dispatch_fibo);
+#ifndef _WIN32
     MU_REGISTER_TEST(cxx_dispatch_read);
+#endif
    // MU_REGISTER_TEST(cxx_dispatch_proc);
 #endif
 }

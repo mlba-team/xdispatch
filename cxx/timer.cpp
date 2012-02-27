@@ -69,7 +69,7 @@ class timer_type : public native_source {
 
 
 
-timer::timer(uint64_t i, const xdispatch::queue& q, time first)
+timer::timer(uint64_t i, const xdispatch::queue& q, const xdispatch::time& first)
     : source( new timer_type(this, i, as_native_dispatch_time(first), q.native_queue () ) ) {
 
 }

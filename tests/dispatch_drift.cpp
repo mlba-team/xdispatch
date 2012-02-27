@@ -49,6 +49,16 @@
 // values. Skew between different clocks is to be expected.
 //
 
+
+#if _WIN32 // on windows we only have ms resolution
+    // TODO: Is there still a way to improve on this?
+# define MAX_JITTERSUM 0.01
+# define MAX_DRIFTSUM 0.01
+#else // unix ...
+# define MAX_JITTERSUM 0.0001
+# define MAX_DRIFTSUM 0.0001
+#endif
+
 extern "C"
 void dispatch_drift() {
 
@@ -92,8 +102,8 @@ void dispatch_drift() {
         MU_MESSAGE("%4d: jitter %f, drift %f", *count, jitter, drift);
 
         if (*count >= target) {
-            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average jitter", fabs(*jittersum) / (double)(*count), 0.0001);
-            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average drift", fabs(*driftsum) / (double)(*count), 0.0001);
+            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average jitter", fabs(*jittersum) / (double)(*count), MAX_JITTERSUM);
+            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average drift", fabs(*driftsum) / (double)(*count), MAX_DRIFTSUM);
             MU_PASS("");
         }
         *last_jitter = jitter;

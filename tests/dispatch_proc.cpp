@@ -22,6 +22,8 @@
 
 #include "tests.h"
 
+#ifndef _WIN32
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -137,3 +139,6 @@ extern "C" void dispatch_proc(void)
 }
 
 #endif
+
+
+#endif /* _WIN32 */

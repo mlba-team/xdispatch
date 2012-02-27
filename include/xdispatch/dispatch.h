@@ -35,6 +35,7 @@
 
 #ifndef XDISPATCH_EXPORT
 # ifdef _WIN32
+#  pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
 #  ifdef XDISPATCH_MAKEDLL
 #   define XDISPATCH_EXPORT __declspec(dllexport)
 #  else
@@ -65,5 +66,11 @@
 #undef XDISPATCH_EXPORT
 
 #endif /* defined(__cplusplus) */
+
+/*
+#ifdef _WIN32
+# pragma warning(default: 4251) // re-enable warning C4251 - we do not want to influence other code
+#endif
+*/
 
 #endif /* XDISPATCH_H_ */

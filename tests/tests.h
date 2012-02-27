@@ -107,7 +107,9 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_timer_bit31);
     MU_REGISTER_TEST(dispatch_timer_bit63);
     MU_REGISTER_TEST(dispatch_drift);
+# ifndef _WIN32
     MU_REGISTER_TEST(dispatch_read);
+# endif
     //MU_REGISTER_TEST(dispatch_proc);
 #endif
 }

@@ -22,6 +22,8 @@
 
 #include "tests.h"
 
+#ifndef _WIN32
+
 #include <sys/stat.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -95,3 +97,6 @@ extern "C" void cxx_dispatch_read()
     MU_FAIL("Should never reach this");
     MU_END_TEST;
 }
+
+
+#endif /* _WIN32 */

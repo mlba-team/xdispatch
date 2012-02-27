@@ -22,6 +22,8 @@
 
 #include "tests.h"
 
+#ifndef _WIN32
+
 #include <sys/stat.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -101,3 +103,6 @@ extern "C" void dispatch_read()
 
 
 #endif
+
+
+#endif /* _WIN32 */

@@ -43,7 +43,7 @@ __XDISPATCH_BEGIN_NAMESPACE
 template < typename _Type >
 struct pointer {
 
-    typedef ::std::unique_ptr< _Type > unique;
+    typedef ::std::auto_ptr< _Type > unique;
     typedef ::std::shared_ptr< _Type > shared;
     typedef ::std::weak_ptr< _Type > weak;
 

@@ -22,14 +22,15 @@
 
 #include "tests.h"
 
+#ifndef _WIN32
+
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <spawn.h>
 #include <signal.h>
 
-#ifndef WIN32
+#ifndef _WIN32
 #	include <unistd.h>
 #	include <sys/time.h>
 #	include <sys/resource.h>
@@ -133,3 +134,6 @@ extern "C" void cxx_dispatch_proc(void)
     MU_FAIL("Should never reach this");
     MU_END_TEST;
 }
+
+
+#endif /* _WIN32 */

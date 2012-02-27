@@ -41,6 +41,7 @@
 #endif
 
 #ifdef _WIN32
+# pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
 # define XDISPATCH_EXPORT __declspec(dllexport)
 #else
 # define XDISPATCH_EXPORT __attribute__((visibility("default")))
@@ -48,7 +49,9 @@
 
 #include <assert.h>
 #include <stdexcept>
-#define XDISPATCH_ASSERT(X) {if(!(X)) throw std::runtime_error("Assertion failed: " #X);}
+#define XDISPATCH_ASSERT(X) { if(!(X)) { \
+    std::cerr << "Assertion failed: " #X; \
+    std::terminate(); } }
 
 #include "../include/xdispatch/pointer.h"
 #include "../include/xdispatch/synchronized.h"

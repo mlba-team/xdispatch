@@ -48,7 +48,7 @@ class XDISPATCH_EXPORT timer : public source {
         @param target The queue to execute the timer on, defaults to the global_queue
         @param starting The time at which the timer will fire for the first time
         */
-        timer(uint64_t interval, const xdispatch::queue& target = global_queue(), time starting = time_now);
+        timer(uint64_t interval, const xdispatch::queue& target = global_queue(), const time& starting = time_now);
         timer(const timer&);
         ~timer();
 

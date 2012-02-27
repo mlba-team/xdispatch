@@ -64,7 +64,7 @@ void sourcetype::on_suspend (){
 
 void sourcetype::ready(const any& dt){
 
-    source* callback = dispatch_atomic_ptr_xchg( &cb, cb );
+    source* callback = (source*)dispatch_atomic_ptr_xchg( &cb, cb );
     if( callback )
         callback->notify ( dt );
 }
