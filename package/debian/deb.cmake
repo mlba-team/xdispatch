@@ -11,5 +11,5 @@ set( CPACK_DEBIAN_COMPONENT_INSTALL ON) # enable me as soon as component based d
 add_custom_target(debian ./package/debian/package.sh xdispatch-${XDISPATCH_VERSION}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 	
-message("-- Configured generator 'DEB'")
+message("-- Configured generator 'DEB (Debian)'")
 set( XDISPATCH_CPACK ${XDISPATCH_CPACK} DEB )

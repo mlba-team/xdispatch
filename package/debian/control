@@ -4,7 +4,7 @@ Section: devel
 Maintainer: Marius Zwicker <xdispatch@mlba-team.de>
 Build-Depends: debhelper (>= 7.0.50~), quilt (>= 0.46-7~), cmake,
  libc6, libgcc1, clang, libqt4-core, libqt4-gui,
- libqt4-network, libqt4-dev
+ libqt4-network, libqt4-dev, libblocksruntime-dev
 Standards-Version: 3.9.1
 Vcs-Svn: https://opensource.mlba-team.de/svn/xdispatch
 Vcs-Browser: http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch
@@ -14,14 +14,11 @@ Package: libdispatch
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Replaces: libdispatch0, libblocksruntime0
-Provides: libblocksruntime0
-Conflicts: libdispatch0, libblocksruntime0
+Replaces: libdispatch0
+Conflicts: libdispatch0
 Description: Userspace implementation of grand central dispatch API
  Provides the Grand Central Dispatch API introduced by Apple in Mac OS X 
  10.5 as userspace implementation.
- .
- Includes the BlocksRuntime needed to using block syntax in conjunction with clang
 
 Package: libdispatch-dev
 Section: libdevel
@@ -32,9 +29,6 @@ Description: development files for libdispatch
  .
  Provides the Grand Central Dispatch API introduced by Apple in Mac OS X 
  10.5 as userspace implementation.
- .
- Includes the BlocksRuntime needed to using block syntax in conjunction 
- with clang
 
 Package: libxdispatch
 Section: libs
