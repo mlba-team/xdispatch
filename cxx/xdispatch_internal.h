@@ -50,7 +50,7 @@
 #include <assert.h>
 #include <stdexcept>
 #define XDISPATCH_ASSERT(X) { if(!(X)) { \
-    std::cerr << "Assertion failed: " #X; \
+    std::cerr << "Assertion failed: " #X " (at " << __FILE__ ":" << __LINE__ << ")" << std::endl; \
     std::terminate(); } }
 
 #include "../include/xdispatch/pointer.h"

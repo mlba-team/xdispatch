@@ -52,6 +52,7 @@ void sourcetype::set_cb(source* s){
     XDISPATCH_ASSERT(s);
 
     (void)dispatch_atomic_ptr_xchg( &cb, s );
+    XDISPATCH_ASSERT( cb );
 }
 
 void sourcetype::on_resume (){
@@ -65,8 +66,9 @@ void sourcetype::on_suspend (){
 void sourcetype::ready(const any& dt){
 
     source* callback = (source*)dispatch_atomic_ptr_xchg( &cb, cb );
-    if( callback )
-        callback->notify ( dt );
+    XDISPATCH_ASSERT( callback );
+    callback->notify ( dt );
+
 }
 
 dispatch_source_t sourcetype::native(){
@@ -233,9 +235,10 @@ void source::notify(const any& dt){
     if( !d->handler || dispatch_atomic_cmpxchg( &d->cancelled, 1, 1) != 0 )
         return;
 
-    if( d->fast_dispatch() )
-        src_notify_operation(dt, d->handler).operator () ();
-    else
+    if( d->fast_dispatch() ) {
+        src_notify_operation temp_op(dt, d->handler);
+        temp_op();
+    } else
         target_queue().async(new src_notify_operation(dt, d->handler));
 }
 

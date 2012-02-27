@@ -44,7 +44,7 @@
 #  define dispatch_atomic_xchg(p, n)	((typeof(*(p)))__sync_lock_test_and_set((p), (n)))
 # endif
 # define dispatch_atomic_cmpxchg(p, o, n)	__sync_bool_compare_and_swap((p), (o), (n))
-# define dispatch_atomic_ptr_xchg(p, n) dispatch_atomic_xchg(p, n)
+# define dispatch_atomic_ptr_xchg(p, n) ((typeof(*(p)))__sync_lock_test_and_set((p), (n)))
 # define dispatch_atomic_ptr_cmpxchg(p, o, n) dispatch_atomic_cmpxchg(p, o, n)
 # define dispatch_atomic_inc(p)	__sync_add_and_fetch((p), 1)
 # define dispatch_atomic_dec(p)	__sync_sub_and_fetch((p), 1)
