@@ -1,0 +1,11 @@
+xdispatch (${XDISPATCH_VERSION}-0ubuntu1) oneiric; urgency=low
+
+  * Unstable build of trunk revision ${XDISPATCH_WC_REVISION}
+
+ -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
+
+xdispatch (0.7.0~devel-0ubuntu1) oneiric; urgency=low
+
+  * Initial release. Testing deb deployment.
+   
+ -- Marius Zwicker <marius@mlba-team.de>  Sun, 11 Dec 2011 12:07:00 +0200

@@ -3,6 +3,9 @@
 find_package(Subversion)
 if(SUBVERSION_FOUND)
     Subversion_WC_INFO(${PROJECT_SOURCE_DIR} XDISPATCH)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package/revision.in ${CMAKE_CURRENT_SOURCE_DIR}/package/revision)
+else() # use (hopefully) cached version
+    file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/package/revision XDISPATCH_WC_REVISION LIMIT_COUNT 1)
 endif()
 
 # Variables referring to the system the packaging took place at
@@ -29,6 +32,7 @@ set( XDISPATCH_VERSION_MINOR            7)
 set( XDISPATCH_VERSION_PATCH            0)
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
+    message("-- Configuring release version")
 else()
     set( XDISPATCH_VERSION_SUFFIX       devel)
 endif()

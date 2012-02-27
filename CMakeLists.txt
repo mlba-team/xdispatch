@@ -52,8 +52,8 @@ CHECK_INCLUDE_FILES (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    set(STATIC_KQUEUE ON)
-    mz_add_definition(MAKE_STATIC)
+    option(STATIC_KQUEUE "" ON)
+    mz_add_definition(MAKE_STATIC=1 STATIC_KQUEUE=1)
     mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
@@ -72,8 +72,8 @@ if(NOT WIN32)
 endif()
 
 if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    set(STATIC_WORKQUEUE ON)
-    mz_add_definition(MAKE_STATIC)
+    option(STATIC_WORKQUEUE "" ON)
+    mz_add_definition(MAKE_STATIC=1 STATIC_WORKQUEUE=1)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
     include_directories(
     	libpthread_workqueue/include
@@ -134,6 +134,7 @@ if(APPLE)
 elseif(UNIX)
 	include(package/rpm/rpm.cmake)
 	include(package/debian/deb.cmake)	
+        include(package/ubuntu/deb.cmake)
 else() # Windows ...
 	include(package/windows/zip.cmake)
 endif()

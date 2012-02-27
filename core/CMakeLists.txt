@@ -11,9 +11,14 @@ project(${NAME} C)
 # do we have kernel support for pthread_workqueues?
 CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
 if(HAVE_PTHREAD_WORKQUEUE_H)
-    message("   >> found native pthread_workqueue implementation, using it")
+    if(LINUX)
+        message("   >> found libpthread_workqueue installation, using it")
+        set(LIBS ${LIBS} pthread_workqueue)
+    else()
+        message("   >> found native pthread_workqueue implementation, using it")
+    endif()
 else()
-	set(LIBS ${LIBS} pthread_workqueue)
+    set(LIBS ${LIBS} pthread_workqueue)
 endif()
 
 # do we have kqueues?
