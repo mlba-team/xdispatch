@@ -104,11 +104,11 @@ extern "C" void cxx_dispatch_group() {
     group = create_group(3, 7);
     MU_ASSERT_NOT_NULL(group);
 
-    res = group->wait(dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC));
+    res = group->wait(dispatch_time(xdispatch::time_now, 5ull * NSEC_PER_SEC));
     MU_ASSERT_EQUAL(res, false);
 
     // retry after timeout (this time succeed)
-    res = group->wait(dispatch_time(DISPATCH_TIME_NOW, 5ull * NSEC_PER_SEC));
+    res = group->wait(dispatch_time(xdispatch::time_now, 5ull * NSEC_PER_SEC));
     MU_ASSERT_EQUAL(res, true);
 
     delete group;

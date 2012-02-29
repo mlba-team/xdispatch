@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QScopedPointer>
 #include "qdispatchglobal.h"
-
+#include "qblockrunnable.h"
 
 
 QT_BEGIN_HEADER
@@ -50,96 +50,98 @@ See also Apple's Documentation of Dispatch Groups
 
 class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group {
 
-	Q_OBJECT
+        Q_OBJECT
 
-public:
-	/**
-	Creates a new QDispatchGroup.
-	*/
-	QDispatchGroup();
-    QDispatchGroup(dispatch_group_t);
-    QDispatchGroup(const QDispatchGroup&);
-    QDispatchGroup(const xdispatch::group&);
-	~QDispatchGroup();
+    public:
+        /**
+        Creates a new QDispatchGroup.
+        */
+        QDispatchGroup();
+        QDispatchGroup(dispatch_group_t);
+        QDispatchGroup(const QDispatchGroup&);
+        QDispatchGroup(const xdispatch::group&);
+        ~QDispatchGroup();
 
-	/**
-	Dispatches a Runnable on the given Queue
-	@param r The QRunnable to be dispatched
-	@param q The Queue to use. If no Queue is given, the system default queue will be used
-	*/
-    void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
-    using xdispatch::group::async;
-	/**
-	Waits until the given time has passed
-	or all dispatched runnables in the group were executed
-	@param timeout give a timeout here or a QTime of zero to wait until all runnables are done
-	@return false if the timeout occured or true if all runnables were executed
-	*/
-	bool wait(const QTime& t);
-    using xdispatch::group::wait;
-	/**
-	This function schedules a notification runnable to be submitted to the specified
-	queue once all runnables associated with the dispatch group have completed.
+        /**
+        Dispatches a Runnable on the given Queue
+        @param r The QRunnable to be dispatched
+        @param q The Queue to use. If no Queue is given, the system default queue will be used
+        */
+        void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
+        using xdispatch::group::async;
+        /**
+        Waits until the given time has passed
+        or all dispatched runnables in the group were executed
+        @param timeout give a timeout here or a QTime of zero to wait until all runnables are done
+        @return false if the timeout occured or true if all runnables were executed
+        */
+        bool wait(const QTime& t);
+        using xdispatch::group::wait;
+        /**
+        This function schedules a notification runnable to be submitted to the specified
+        queue once all runnables associated with the dispatch group have completed.
 
-	If no runnables are associated with the dispatch group (i.e. the group is empty)
-	then the notification runnable will be submitted immediately.
+        If no runnables are associated with the dispatch group (i.e. the group is empty)
+        then the notification runnable will be submitted immediately.
 
-	The runnable will be empty at the time the notification block is submitted to
-	the target queue. The group may either be deleted
-	or reused for additional operations.
-	@see dispatch() for more information.
-	*/
-    void notify(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
-    /**
-     @see notify(QRunnable* r, const xdispatch::queue&);
-     */
-    void notify(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
+        The runnable will be empty at the time the notification block is submitted to
+        the target queue. The group may either be deleted
+        or reused for additional operations.
+        @see dispatch() for more information.
+        */
+        void notify(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
+        /**
+         @see notify(QRunnable* r, const xdispatch::queue&);
+         */
+        void notify(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
 #ifdef XDISPATCH_HAS_BLOCKS
-    /**
-     @see notify(QRunnable* r, const xdispatch::queue&);
-     */
-    void notify(dispatch_block_t, const xdispatch::queue& = xdispatch::global_queue());
+        /**
+         @see notify(QRunnable* r, const xdispatch::queue&);
+         */
+        inline void notify(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
+            notify( new QBlockRunnable(b), q );
+        }
 #endif
-    /**
-      Activates the allFinished() signal or this QDispatchGroup. Needs to
-      be called everytime all scheduled work on the group finished and new work
-      was submitted which was not finished yet.
+        /**
+          Activates the allFinished() signal or this QDispatchGroup. Needs to
+          be called everytime all scheduled work on the group finished and new work
+          was submitted which was not finished yet.
 
-      Note: All installed notification handlers will be disabled
-            and all other QDispatchGroup objects working on the same group
-            will stop to emit the signal, i.e. only one QDispatchGroup object
-            can emit the signal at a time.
+          Note: All installed notification handlers will be disabled
+                and all other QDispatchGroup objects working on the same group
+                will stop to emit the signal, i.e. only one QDispatchGroup object
+                can emit the signal at a time.
 
-      Note2: When assigning a new notification handler by using notify()
-             the signal of this object will be enabled by default
+          Note2: When assigning a new notification handler by using notify()
+                 the signal of this object will be enabled by default
 
-     */
-    void enableAllFinishedSignal();
+         */
+        void enableAllFinishedSignal();
 
-public slots:
-	void resume();
-	void suspend();
+    public slots:
+        void resume();
+        void suspend();
 
-signals:
-	/**
-	This will be emitted additionally to any function
-	or block submitted via notify().
+    signals:
+        /**
+        This will be emitted additionally to any function
+        or block submitted via notify().
 
-	Every time the all work dispatched to the group (i.e.
-	the group is empty) this signal will be emitted.
+        Every time the all work dispatched to the group (i.e.
+        the group is empty) this signal will be emitted.
 
-    @see enableAllFinishedSignal()
-	*/
-    void allFinished();
+        @see enableAllFinishedSignal()
+        */
+        void allFinished();
 
-private:
+    private:
 
-    class Emitter;
-    friend class Emitter;
-	friend Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);
-    
-	class Private;
-    QScopedPointer<Private> d;
+        class Emitter;
+        friend class Emitter;
+        friend Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);
+
+        class Private;
+        QScopedPointer<Private> d;
 };
 
 Q_DECL_EXPORT QDebug operator<<(QDebug, const QDispatchGroup&);

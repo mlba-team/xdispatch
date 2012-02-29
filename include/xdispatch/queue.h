@@ -44,163 +44,162 @@ queues.
 */
 class XDISPATCH_EXPORT queue : public object {
 
-public:
-    /**
-      Creates a new queue using the given
-      dispatch_queue_t object
-      */
-    queue(dispatch_queue_t);
-    /**
-      Creates a new serial queue featuring
-      the given label
-      */
-    queue(const char* label);
-    queue(const std::string&);
-    queue(const queue&);
-    ~queue();
+    public:
+        /**
+          Creates a new queue using the given
+          dispatch_queue_t object
+          */
+        queue(dispatch_queue_t);
+        /**
+          Creates a new serial queue featuring
+          the given label
+          */
+        queue(const char* label);
+        queue(const std::string&);
+        queue(const queue&);
+        ~queue();
 
-    /**
-      Will dispatch the given operation for
-      async execution on the queue and return
-      immediately.
+        /**
+          Will dispatch the given operation for
+          async execution on the queue and return
+          immediately.
 
-      The operation will be deleted as soon
-      as it was executed. To change this behaviour,
-      set the auto_delete flag of the operation.
-      @see operation::auto_delete()
-      */
-    virtual void async(operation*);
-#ifdef XDISPATCH_HAS_BLOCKS
-    /**
-    Same as async(operation*).
-    Will put the given block on the queue.
-    */
-    virtual void async(dispatch_block_t);
-#endif
-    /**
-    Applies the given iteration_operation for async execution
-    in this queue and returns immediately.
+          The operation will be deleted as soon
+          as it was executed. To change this behaviour,
+          set the auto_delete flag of the operation.
+          @see operation::auto_delete()
+          */
+        void async(operation*);
+    #ifdef XDISPATCH_HAS_BLOCKS
+        /**
+        Same as async(operation*).
+        Will put the given block on the queue.
 
-      The operation will be deleted as soon
-      as it was executed the requested number of times.
-      To change this behaviour, set the auto_delete flag
-      of the operation.
-      @see operation::auto_delete()
+        @see async(operation*)
+        */
+        inline void async(dispatch_block_t b) {
+            async( new block_operation(b) );
+        }
+    #endif
+        /**
+        Applies the given iteration_operation for async execution
+        in this queue and returns immediately.
 
-    @param times The number of times the operation will be executed
-    */
-    virtual void apply(iteration_operation*, size_t times);
-#ifdef XDISPATCH_HAS_BLOCKS
-    /**
-    Same as apply(iteration_operation*, size_t times).
+          The operation will be deleted as soon
+          as it was executed the requested number of times.
+          To change this behaviour, set the auto_delete flag
+          of the operation.
+          @see operation::auto_delete()
 
-    Will wrap the given block in an operation and put it on the
-    queue.
+        @param times The number of times the operation will be executed
+        */
+        void apply(iteration_operation*, size_t times);
+    #ifdef XDISPATCH_HAS_BLOCKS
+        /**
+        Same as apply(iteration_operation*, size_t times).
 
-    @see apply(iteration_operation*, size_t times)
-    */
-    virtual void apply(dispatch_iteration_block_t, size_t times);
-#endif
-    /**
-    Applies the given operation for async execution
-    in this queue after the given time and returns immediately.
-    The queue will take possession of the
-    operation and handle the deletion. To change this behaviour,
-    set the auto_delete flag of the operation.
-    @see operation::auto_delete();
+        Will wrap the given block in an operation and put it on the
+        queue.
 
-    @param time The time to wait until the operation is applied to
-    the queue.
-    */
-    virtual void after(operation*, struct tm* time);
-    virtual void after(operation*, dispatch_time_t time);
-#ifdef XDISPATCH_HAS_BLOCKS
-    /**
-    Same as dispatch_after(operation*, time_t).
-    Will wrap the given block in an operation and put it on the
-    queue.
-    */
-    virtual void after(dispatch_block_t, struct tm* time);
-    virtual void after(dispatch_block_t, dispatch_time_t time);
-#endif
-    /**
-    Applies the given operation for execution
-    in this queue and blocks until the operation
-    was executed. The queue will take possession of the
-    operation and handle the deletion. To change this behaviour,
-    set the auto_delete flag of the operation.
-    @see operation::auto_delete();
-    */
-    virtual void sync(operation*);
-#ifdef XDISPATCH_HAS_BLOCKS
-    /**
-    Same as dispatch_sync(operation*).
-    Will wrap the given block in an operation and put it on the
-    queue.
-    */
-    virtual void sync(dispatch_block_t);
-#endif
-    /**
-    Sets the given operation as finalizer for this
-    queue. A finalizer is called before destroying
-    a queue, i.e. if all queue objects
-    representing the queue were deleted and all
-    pending work on a queue was dispatched. The queue will take possession of the
-    operation and handle the deletion. To change this behaviour,
-    set the auto_delete flag of the operation.
-    @see operation::auto_delete();
+        @see apply(iteration_operation*, size_t times)
+        */
+        inline void apply(dispatch_iteration_block_t b, size_t times) {
+            apply( new block_iteration_operation(b), times );
+        }
+    #endif
+        /**
+        Applies the given operation for async execution
+        in this queue after the given time and returns immediately.
+        The queue will take possession of the
+        operation and handle the deletion. To change this behaviour,
+        set the auto_delete flag of the operation.
+        @see operation::auto_delete();
 
-    When not passing a queue, the finalizer operation
-    will be executed on the queue itself.
-    */
-    virtual void finalizer(operation*, const queue& = global_queue());
-#ifdef XDISPATCH_HAS_BLOCKS
-    /**
-    Same as set_finalizer(operation*, queue*).
-    Will wrap the given block in an operation and store
-    it as finalizer.
-    */
-    virtual void finalizer(dispatch_block_t, const queue& = global_queue());
-#endif
-    /**
-    @return The label of the queue that was used while creating it
-    */
-    virtual const std::string label() const;
-    /**
-    Suspends the invocation of work items on this queue.
+        @param time The time to wait until the operation is applied to
+        the queue.
+        */
+        void after(operation*, struct tm* time);
+        void after(operation*, dispatch_time_t time);
+    #ifdef XDISPATCH_HAS_BLOCKS
+        /**
+        Same as dispatch_after(operation*, time_t).
+        Will wrap the given block in an operation and put it on the
+        queue.
+        */
+        inline void after(dispatch_block_t b, struct tm* time) {
+            after( new block_operation(b), time );
+        }
+        inline void after(dispatch_block_t b, dispatch_time_t time) {
+            after( new block_operation(b), time );
+        }
+    #endif
+        /**
+        Applies the given operation for execution
+        in this queue and blocks until the operation
+        was executed. The queue will take possession of the
+        operation and handle the deletion. To change this behaviour,
+        set the auto_delete flag of the operation.
+        @see operation::auto_delete();
+        */
+        void sync(operation*);
+    #ifdef XDISPATCH_HAS_BLOCKS
+        /**
+        Same as dispatch_sync(operation*).
+        Will wrap the given block in an operation and put it on the
+        queue.
+        */
+        inline void sync(dispatch_block_t b) {
+            sync( new block_operation(b) );
+        }
+    #endif
+        /**
+        Sets the given operation as finalizer for this
+        queue. A finalizer is called before destroying
+        a queue, i.e. if all queue objects
+        representing the queue were deleted and all
+        pending work on a queue was dispatched. The queue will take possession of the
+        operation and handle the deletion. To change this behaviour,
+        set the auto_delete flag of the operation.
+        @see operation::auto_delete();
 
-    A suspended queue will not invoke any blocks associated with it. The
-    suspension of a queue will occur after any running work item associated with
-    the queue completes.
+        When not passing a queue, the finalizer operation
+        will be executed on the queue itself.
+        */
+        void finalizer(operation*, const queue& = global_queue());
+    #ifdef XDISPATCH_HAS_BLOCKS
+        /**
+        Same as set_finalizer(operation*, queue*).
+        Will wrap the given block in an operation and store
+        it as finalizer.
+        */
+        inline void finalizer(dispatch_block_t b, const queue& q = global_queue()) {
+            finalizer( new block_operation(b), q );
+        }
+    #endif
+        /**
+        @return The label of the queue that was used while creating it
+        */
+        const std::string& label() const;
+        /**
+        @returns The dispatch_queue_t object associated with this
+        C++ object. Use this, if you need to use the plain C Interface
+        of libdispatch.
+        @see native_queue()
+        */
+        virtual dispatch_object_t native() const;
+        /**
+        @returns The dispatch_queue_t object associated with this
+        C++ object. Use this, if you need to use the plain C Interface
+        of libdispatch.
+        @see native()
+        */
+        virtual dispatch_queue_t native_queue() const;
 
-    Calls to suspend() must be balanced with calls to resume().
-    */
-    virtual void suspend();
-    /**
-    Resumes the invocation of work items on this queue.
+        queue& operator= (const queue&);
 
-    Calls to suspend() must be balanced with calls to resume().
-    */
-    virtual void resume();
-    /**
-    @returns The dispatch_queue_t object associated with this
-    C++ object. Use this, if you need to use the plain C Interface
-    of libdispatch.
-    */
-    virtual dispatch_object_t native() const;
-    /**
-     Sets the target queue of this queue, i.e. the queue
-     all items of this queue will be dispatched on in turn.
-     
-     @remarks This has no effect on the global queues and the main queue.
-    */
-    virtual void target_queue(const queue&);
-
-	queue& operator= (const queue&);
-    
-private:
-    class data;
-    data* d;
+    private:
+        class data;
+        pointer<data>::unique d;
 
 };
 

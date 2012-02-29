@@ -83,12 +83,6 @@ void QDispatchQueue::setFinalizer(xdispatch::operation* op, const xdispatch::que
     finalizer(op, q);
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-void QDispatchQueue::setFinalizer(dispatch_block_t b, const xdispatch::queue& q){
-    finalizer(b, q);
-}
-#endif
-
 void QDispatchQueue::setFinalizer(QRunnable* r, const xdispatch::queue& dq){
     Q_ASSERT(r);
 
@@ -106,12 +100,6 @@ void QDispatchQueue::suspend(){
 void QDispatchQueue::resume(){
 	xdispatch::queue::resume();
 }
-
-#ifdef XDISPATCH_HAS_BLOCKS
-void QDispatchQueue::after(dispatch_block_t block, const QTime& t){
-    after(block, QDispatch::asDispatchTime(t));
-}
-#endif
 
 QDispatchQueue& QDispatchQueue::operator=(const QDispatchQueue& other){
 	if(this != &other){

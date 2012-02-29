@@ -52,7 +52,7 @@
 #endif
 
 #ifndef __DISPATCH_BUILDING_DISPATCH__
-#include "../../include/libdispatch/dispatch.h"
+#include "../../include/dispatch/dispatch.h"
 
 // Workaround <rdar://problem/6597365/>
 #ifndef __DISPATCH_PUBLIC__
@@ -63,7 +63,7 @@
 #define __DISPATCH_INDIRECT__
 #endif
 
-#include "../../include/libdispatch/benchmark.h"
+#include "../../include/dispatch/benchmark.h"
 #include "queue_private.h"
 #include "source_private.h"
 

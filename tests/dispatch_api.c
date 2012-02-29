@@ -28,7 +28,7 @@
  queues is actually working
  */
 
-void pass(void* dt){
+static void pass(void* dt){
     MU_PASS("Core API is working");
 }
 

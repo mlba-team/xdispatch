@@ -64,7 +64,6 @@ the xdispatch binary). Below you can find a list of all provided classes and fun
  - xdispatch::group
  - xdispatch::semaphore
  - xdispatch::synclock
- - xdispatch::timer
  - xdispatch::source
  - xdispatch::sourcetype
  - xdispatch/base.h

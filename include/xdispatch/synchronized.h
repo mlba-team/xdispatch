@@ -27,6 +27,8 @@
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
+#include <string>
+
 __XDISPATCH_BEGIN_NAMESPACE
 
 /**
@@ -42,6 +44,7 @@ class XDISPATCH_EXPORT synclock;
   @see synchronized
   */
 XDISPATCH_EXPORT synclock get_lock_for_key(unsigned int key);
+XDISPATCH_EXPORT synclock get_lock_for_key(const std::string& key);
 
 /**
   Provides an easy locking mechanism used to
@@ -67,12 +70,22 @@ private:
 
     synclock& operator= (synclock);
 
+    friend XDISPATCH_EXPORT synclock get_lock_for_key(const std::string&);
     friend XDISPATCH_EXPORT synclock get_lock_for_key(unsigned int);
     synclock(dispatch_semaphore_t);
 };
 
+/**
+  Returns the synclock used to protect the area
+  identified by the synclock object.
+
+  @see synchronize( lock )
+  */
+inline synclock get_lock_for_key(synclock& s){ return s; }
+
 # define XDISPATCH_CONCAT(A,B) A ## B
 # define XDISPATCH_LOCK_VAR(X) XDISPATCH_CONCAT(xd_synclock_, X)
+# define XDISPATCH_SYNC_HEADER( lock ) for( xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)(lock) ; XDISPATCH_LOCK_VAR(__LINE__) ; XDISPATCH_LOCK_VAR(__LINE__).unlock() )
 
 /**
    Same as synchronize( lock )
@@ -82,7 +95,7 @@ private:
 
    @see synchronize( lock )
    */
-#  define XDISPATCH_SYNCHRONIZE( lock ) for(xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)(lock) ; XDISPATCH_LOCK_VAR(__LINE__) ; XDISPATCH_LOCK_VAR(__LINE__).unlock() )
+#  define XDISPATCH_SYNCHRONIZE( lock ) XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( lock ) )
 
 /**
    Same as synchronized( lock )
@@ -92,7 +105,7 @@ private:
 
    @see synchronized( lock )
    */
-#  define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNCHRONIZE(xdispatch::get_lock_for_key(__COUNTER__))
+#  define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( __COUNTER__ ) )
 
 /**
   @def synchronize( lock )
@@ -163,6 +176,12 @@ private:
 
   In contrast to synchronized you need to
   manage the lifetime of the lock object yourself.
+
+  @remarks Starting with version 0.7.0 of xdispatch you can also use
+   a unique string for identifying the lock. This way you do not need
+   to manage an object all the time but can rather work using string
+   constants, i.e. all you have to write is synchronize("age_lock"){ ... }
+   xdispatch will handle all object managing stuff for you.
 
   @see synchronized
   */

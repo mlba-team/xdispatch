@@ -116,7 +116,7 @@ QDispatchSource::QDispatchSource(QDispatchSourceType* t) : d(new Private){
 }
 
 QDispatchSource::~QDispatchSource(){
-	delete d;
+
 }
 
 void QDispatchSource::setTargetQueue(const QDispatchQueue& q){
@@ -131,12 +131,6 @@ void QDispatchSource::setHandler(QRunnable* r){
 	Q_ASSERT(r);
 	d->handler = r;
 }
-
-#ifdef XDISPATCH_HAS_BLOCKS
-void QDispatchSource::setHandler(dispatch_block_t b){
-	setHandler(new QBlockRunnable(b));
-}
-#endif
 
 QObject* QDispatchSource::_data(){
 	return Private::storage.localData();

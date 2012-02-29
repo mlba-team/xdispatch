@@ -188,12 +188,12 @@ int run_suite(const char* bin, bool keep_going){
                 return EXIT_FAILURE;
             }
         } else if(keep_going) {
-            if (execlp(bin, bin, STR_KEEP_RUNNING, NULL) < 0) {
+            if (execlp(bin, bin, STR_KEEP_RUNNING, NULL) != 0) {
                 printf("Error running suite: %s\n", strerror(errno));
                 return EXIT_FAILURE;
             }
         } else {
-            if (execlp(bin, bin, NULL) < 0) {
+            if (execlp(bin, bin, NULL) != 0) {
                 printf("Error running suite: %s\n", strerror(errno));
                 return EXIT_FAILURE;
             }

@@ -30,7 +30,7 @@ class queue::data {
     data(){}
     data(const data& other)
         : native(other.native), label(other.label){
-        assert(native);
+        XDISPATCH_ASSERT(native);
         dispatch_retain(native);
     }
     ~data(){
@@ -42,43 +42,48 @@ class queue::data {
     std::string label;
 };
 
-queue::queue(dispatch_queue_t q) : d(new data){
-    assert(d);
+queue::queue(dispatch_queue_t q)
+    : object(), d(new data){
+    XDISPATCH_ASSERT( d.get () );
     dispatch_retain(q);
     d->native = q;
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
     d->label = std::string(dispatch_queue_get_label(q));
 }
 
-queue::queue(const queue& other) : d(new data(*other.d)){
-    assert(d);
+queue::queue(const queue& other)
+    : object(other), d(new data(*other.d)){
+    XDISPATCH_ASSERT( d.get () );
 }
 
-queue::queue(const std::string & label) : d(new data){
-    assert(d);
+queue::queue(const std::string & label)
+    : object(), d(new data){
+    XDISPATCH_ASSERT( d.get () );
     d->native = dispatch_queue_create(label.c_str(),NULL);
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
     d->label = label;
 }
 
-queue::queue(const char* label) : d(new data){
-    assert(label);
-    assert(d);
+queue::queue(const char* label)
+    : object(), d(new data){
+    XDISPATCH_ASSERT(label);
+    XDISPATCH_ASSERT( d.get () );
     d->native = dispatch_queue_create(label,NULL);
-    assert(d->native);
+    XDISPATCH_ASSERT(d->native);
     d->label = std::string(label);
 }
 
 queue::~queue(){
-    delete d;
+
 }
 
 void queue::async(operation* op){
-    dispatch_async_f(d->native, op, run_operation);
+    dispatch_async_f(d->native, op, _xdispatch_run_operation);
 }
 
 void queue::apply(iteration_operation* op, size_t times){
-    dispatch_apply_f(times, d->native, new iteration_wrap(op, times), run_iter_wrap);
+    iteration_wrap wrap( op, times );
+    dispatch_apply_f(times, d->native, &wrap, _xdispatch_run_iter_wrap);
 }
 
 void queue::after(operation* op, struct tm* time){
@@ -86,73 +91,36 @@ void queue::after(operation* op, struct tm* time){
 }
 
 void queue::after(operation* op, dispatch_time_t time){
-    dispatch_after_f(time, d->native, op, run_operation);
+    dispatch_after_f(time, d->native, op, _xdispatch_run_operation);
 }
 
 void queue::sync(operation* op){
-    dispatch_sync_f(d->native, op, run_operation);
+    dispatch_sync_f(d->native, op, _xdispatch_run_operation);
 }
 
 void queue::finalizer(operation* op, const queue& q){
-    dispatch_set_finalizer_f(d->native, run_operation);
+    dispatch_set_finalizer_f(d->native, _xdispatch_run_operation);
     dispatch_set_context(d->native, op);
     dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
 }
 
-const std::string queue::label() const {
+const std::string &queue::label() const {
     return d->label;
-}
-
-void queue::suspend(){
-    dispatch_suspend(d->native);
-}
-
-void queue::resume(){
-    dispatch_resume(d->native);
 }
 
 dispatch_object_t queue::native() const {
     return d->native;
 }
 
-void queue::target_queue(const queue& q) {
-    dispatch_set_target_queue(d->native, (dispatch_queue_t)q.native());
+dispatch_queue_t queue::native_queue() const {
+    return d->native;
 }
-
-#ifdef XDISPATCH_HAS_BLOCKS
-
-void queue::async(dispatch_block_t b){
-    dispatch_async(d->native, b);
-}
-
-void queue::apply(dispatch_iteration_block_t b, size_t times){
-    dispatch_apply(times, d->native, b);
-}
-
-void queue::after(dispatch_block_t b, struct tm* time){
-    dispatch_after(as_dispatch_time(time), d->native, b);
-}
-
-void queue::after(dispatch_block_t b, dispatch_time_t time){
-    dispatch_after(time, d->native, b);
-}
-
-void queue::sync(dispatch_block_t b){
-    dispatch_sync(d->native, b);
-}
-
-void queue::finalizer(dispatch_block_t b, const queue& q){
-    finalizer(new block_operation(b), q);
-}
-
-#endif
 
 xdispatch::queue& queue::operator=(const queue& other){
     if(*this != other){
-        if(d)
-            delete d;
-        d = new data(*other.d);
-        assert(d);
+        object::operator = (other);
+        d = pointer<data>::unique( new data(*other.d) );
+        XDISPATCH_ASSERT( d.get () );
     }
     return *this;
 }

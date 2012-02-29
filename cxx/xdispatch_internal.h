@@ -26,7 +26,7 @@
 #  include <dispatch/dispatch.h>
 #  define NSEC_PER_MSEC 1000000ll
 # else
-#  include "../include/libdispatch/dispatch.h"
+#  include "../include/dispatch/dispatch.h"
 # endif
 
 #include <assert.h>
@@ -41,22 +41,33 @@
 #endif
 
 #ifdef _WIN32
+# pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
 # define XDISPATCH_EXPORT __declspec(dllexport)
 #else
 # define XDISPATCH_EXPORT __attribute__((visibility("default")))
 #endif
 
-#include "../include/xdispatch/lambda_blocks.h"
+#include <assert.h>
+#include <stdexcept>
+#define XDISPATCH_ASSERT(X) { if(!(X)) { \
+    std::cerr << "Assertion failed: " #X " (at " << __FILE__ ":" << __LINE__ << ")" << std::endl; \
+    std::terminate(); } }
+
+#include "../include/xdispatch/pointer.h"
 #include "../include/xdispatch/synchronized.h"
+#include "../include/xdispatch/lambda_blocks.h"
 #include "../include/xdispatch/base.h"
+#include "../include/xdispatch/once.h"
 #include "../include/xdispatch/queue.h"
 #include "../include/xdispatch/group.h"
 #include "../include/xdispatch/semaphore.h"
-#include "../include/xdispatch/timer.h"
 #include "../include/xdispatch/source.h"
+#include "../include/xdispatch/timer.h"
+#include "../include/xdispatch/lambda_dispatch.h"
 
 #include "../core/platform/platform.h"
 #include "../core/src/shims/hardware.h"
+
 #include "execution.h"
 
 #undef __XDISPATCH_INDIRECT__

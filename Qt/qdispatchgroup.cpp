@@ -149,14 +149,6 @@ void QDispatchGroup::resume(){
 	xdispatch::group::resume();
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
-void QDispatchGroup::notify(dispatch_block_t b, const xdispatch::queue& q){
-    notify(new QBlockRunnable(b), q);
-}
-
-#endif
-
 QDebug operator<<(QDebug dbg, const QDispatchGroup& g)
 {	
     dbg.nospace() << "QDispatchGroup (no details available)";

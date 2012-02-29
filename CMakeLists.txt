@@ -4,8 +4,8 @@ INCLUDE (CheckIncludeFiles)
 INCLUDE (CheckSymbolExists)
 
 # start new subproject
-set(NAME xdispatch)
-project(${NAME})
+project(xdispatch)
+include(package/version.cmake)
 
 include(CTest)
 enable_testing()
@@ -34,15 +34,16 @@ if(NOT HAS_MZ_GLOBAL)
 endif()
 
 # is the used compiler clang? if so we need blocks support
-if(MZ_IS_CLANG)
+if(MZ_IS_CLANG AND NOT APPLE)
     message("-- linking with the BlocksRuntime")
-    CHECK_INCLUDE_FILES (Block.h HAVE_BLOCK_H)
-    if(NOT HAVE_BLOCK_H)
-	mz_add_library(libblocksruntime libblocksruntime)
-	include_directories( libblocksruntime )
-    endif()
-    mz_add_flag(-fblocks)
-    set(LIBS ${LIBS} BlocksRuntime)
+    mz_find_include_library(BlocksRuntime 
+        SYS Block.h BlocksRuntime 
+        SRC libblocksruntime libblocksruntime BlocksRuntime
+    )
+
+    mz_add_flag(CLANG -fblocks)
+   	include_directories( ${BlocksRuntime_INCLUDE_DIR} )
+    set(LIBS ${LIBS} ${BlocksRuntime_LIBRARIES})
 endif()
 
 CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
@@ -51,8 +52,8 @@ CHECK_INCLUDE_FILES (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
 CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    set(STATIC_KQUEUE ON)
-    mz_add_definition(MAKE_STATIC)
+    option(STATIC_KQUEUE "" ON)
+    mz_add_definition(MAKE_STATIC=1 STATIC_KQUEUE=1)
     mz_add_library(libkqueue libkqueue)
     include_directories(
     	libkqueue/include
@@ -62,17 +63,17 @@ endif()
 # currently there's a bug in mingw causing the
 # builtin atomic opts not to work without this
 if(MINGW AND MZ_32BIT)
-	mz_add_flag( -march=i486)
+	mz_add_flag(GCC -march=i486)
 endif()
 
 # we hide all unneeded symbols
 if(NOT WIN32)
-	mz_add_flag(-fvisibility=hidden)
+	mz_add_flag(GCC -fvisibility=hidden)
 endif()
 
 if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
-    set(STATIC_WORKQUEUE ON)
-    mz_add_definition(MAKE_STATIC)
+    option(STATIC_WORKQUEUE "" ON)
+    mz_add_definition(MAKE_STATIC=1 STATIC_WORKQUEUE=1)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
     include_directories(
     	libpthread_workqueue/include
@@ -126,18 +127,17 @@ if(XDISPATCH_DOCS)
 	include(docs/docgen.cmake)
 endif()
 
-# install target
-install(DIRECTORY include DESTINATION . PATTERN "*.svn" EXCLUDE)
-install(FILES README.dox CHANGELOG.dox LICENSE NOTICE TODO.txt DESTINATION .)
+# packaging
 
-# package target
-include(InstallRequiredSystemLibraries)
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "My funky project")
-SET(CPACK_PACKAGE_VENDOR "MLBA Opensource")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.dox")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-SET(CPACK_PACKAGE_VERSION_MAJOR "0")
-SET(CPACK_PACKAGE_VERSION_MINOR "6")
-SET(CPACK_PACKAGE_VERSION_PATCH "1")
-SET(CPACK_PACKAGE_FILE_NAME "xdispatch_${CPACK_PACKAGE_VERSION_MAJOR}_${CPACK_PACKAGE_VERSION_MINOR}_${CPACK_PACKAGE_VERSION_PATCH}__${CMAKE_SYSTEM_NAME}_${CMAKE_GENERATOR}")
+if(APPLE)
+	include(package/osx/pkg.cmake)
+elseif(UNIX)
+	include(package/rpm/rpm.cmake)
+	include(package/debian/deb.cmake)	
+        include(package/ubuntu/deb.cmake)
+else() # Windows ...
+	include(package/windows/zip.cmake)
+endif()
+	
+
 include(CPack)

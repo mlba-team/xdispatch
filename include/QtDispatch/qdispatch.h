@@ -48,50 +48,77 @@ also see Apple's documentation on libDispatch.
 */
 class Q_DISPATCH_EXPORT QDispatch {
 
-public:
-    
-	/**
-	Three priority classes used for the three standard
-	global queues
-	*/
-    enum Priority { HIGH, DEFAULT, LOW };
+    public:
 
-	/**
-	Returns the main queue. This is the queue running
-	within the Qt Event Loop. Thus only items put
-	on this queue can change the GUI.
-	*/
-    static QDispatchQueue mainQueue();
-	/**
-	Returns the global queue associated to the given
-	Priority p.
+        /**
+          A constant representing a time that will
+          be elapsed immediately
+          */
+        static const xdispatch::time TimeNow = xdispatch::time_now;
+        /**
+          A constant representing infinite time,
+          i.e. a timeout passed this value will never go by
+          */
+        static const xdispatch::time TimeForever = xdispatch::time_forever;
+        /**
+          The number of nanoseconds per second
+          */
+        static const uint64_t NSecPerSec = xdispatch::nsec_per_sec;
+        /**
+          The number of nanoseconds per millisecond
+          */
+        static const uint64_t NSecPerMSec = xdispatch::nsec_per_msec;
+        /**
+          The number of nanoseconds per microsecond
+          */
+        static const uint64_t NSecPerUSec = xdispatch::nsec_per_usec;
+        /**
+          The number of microseconds per second
+          */
+        static const uint64_t USecPerSec = xdispatch::usec_per_sec;
 
-	Runnables submitted to these global concurrent queues
-	may be executed concurrently with respect to
-    each other.
-	*/
-    static QDispatchQueue globalQueue(Priority p = DEFAULT);
-	/**
-    @return The queue the currently active
-        runnable (or block) is executed in.
-	*/
-    static QDispatchQueue currentQueue();
-	/**
-	@return The given QTime converted to a dispatch_time_t
-	*/
-    static dispatch_time_t asDispatchTime(const QTime&);
-	/**
-	@remarks Please be careful when using this converter as
-	a QTime is tracking 24 hours max, whereas a
-	dispatch_time_t can hold way more. This additional
-	time will be cropped while converting.
+            /**
+        Three priority classes used for the three standard
+        global queues
+        */
+        enum Priority { HIGH, DEFAULT, LOW };
 
-	@return The given dispatch_time_t as QTime
-	*/
-    static QTime asQTime(dispatch_time_t t);
+            /**
+        Returns the main queue. This is the queue running
+        within the Qt Event Loop. Thus only items put
+        on this queue can change the GUI.
+        */
+        static QDispatchQueue mainQueue();
+            /**
+        Returns the global queue associated to the given
+        Priority p.
 
-private:
-	QDispatch();
+        Runnables submitted to these global concurrent queues
+        may be executed concurrently with respect to
+        each other.
+        */
+        static QDispatchQueue globalQueue(Priority p = DEFAULT);
+            /**
+        @return The queue the currently active
+            runnable (or block) is executed in.
+        */
+        static QDispatchQueue currentQueue();
+            /**
+        @return The given QTime converted to a dispatch_time_t
+        */
+        static xdispatch::time asDispatchTime(const QTime&);
+            /**
+        @remarks Please be careful when using this converter as
+        a QTime is tracking 24 hours max, whereas a
+        dispatch_time_t can hold way more. This additional
+        time will be cropped while converting.
+
+        @return The given dispatch_time_t as QTime
+        */
+        static QTime asQTime(const xdispatch::time& t);
+
+    private:
+        QDispatch();
 
 };
 

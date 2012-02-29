@@ -32,7 +32,7 @@
 struct TestType : public xdispatch::sourcetype {
 
 	static TestType* instance;
-	TestType(){
+    TestType() : xdispatch::sourcetype() {
 		instance = this;
 	}
 
@@ -47,11 +47,14 @@ extern "C" void cxx_dispatch_source() {
     MU_BEGIN_TEST(cxx_dispatch_source);
 
     xdispatch::source src(new TestType);
+    MU_ASSERT_NULL( src.native() );
     src.target_queue(xdispatch::main_queue());
 	src.handler(${
 		MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
 		MU_PASS("");
 	});
+
+    src.resume();
 
 	TestType::instance->signalFinished(std::string("any working"));
 	xdispatch::exec();

@@ -32,7 +32,7 @@ struct synclock::data {
     bool lock;
 
     data(dispatch_semaphore_t s) : sem(s), lock(false) {
-        assert(s);
+        XDISPATCH_ASSERT(s);
         dispatch_retain(s);
     }
 
@@ -42,19 +42,19 @@ struct synclock::data {
 };
 
 synclock::synclock() : _d( new data(dispatch_semaphore_create(1)) ) {
-    assert(_d);
+    XDISPATCH_ASSERT(_d);
 }
 
 synclock::synclock(dispatch_semaphore_t s) : _d( new data(s) ) {
-    assert(_d);
+    XDISPATCH_ASSERT(_d);
     _d->lock = true;
 
-    assert(s);
+    XDISPATCH_ASSERT(s);
     dispatch_semaphore_wait(_d->sem,DISPATCH_TIME_FOREVER);
 }
 
 synclock::synclock(const synclock &other) : _d( new data(other._d->sem) )  {
-    assert(_d);
+    XDISPATCH_ASSERT(_d);
     _d->lock = true;
 
     dispatch_semaphore_wait(_d->sem,DISPATCH_TIME_FOREVER);
@@ -85,13 +85,35 @@ synclock xdispatch::get_lock_for_key(unsigned int key){
     if (lock_semaphores.count(key) != 0)
         sem = lock_semaphores[key];
     else {
-        dispatch_semaphore_wait(rw_lock,DISPATCH_TIME_FOREVER);
+        dispatch_semaphore_wait(rw_lock, time_forever);
         if(lock_semaphores.count(key) != 0)
             sem = lock_semaphores[key];
         else {
             sem = dispatch_semaphore_create(1);
-            assert(sem);
+            XDISPATCH_ASSERT(sem);
             lock_semaphores.insert( std::pair<unsigned int, dispatch_semaphore_t>(key,sem) );
+        }
+        dispatch_semaphore_signal(rw_lock);
+    }
+
+    return synclock(sem);
+}
+
+static std::map<std::string, dispatch_semaphore_t> user_lock_semaphores;
+
+synclock xdispatch::get_lock_for_key(const std::string& key){
+    dispatch_semaphore_t sem = NULL;
+
+    if (user_lock_semaphores.count(key) != 0)
+        sem = user_lock_semaphores.at(key);
+    else {
+        dispatch_semaphore_wait(rw_lock, time_forever);
+        if(user_lock_semaphores.count(key) != 0)
+            sem = user_lock_semaphores.at(key);
+        else {
+            sem = dispatch_semaphore_create(1);
+            XDISPATCH_ASSERT(sem);
+            user_lock_semaphores.insert( std::pair<std::string, dispatch_semaphore_t>(key,sem) );
         }
         dispatch_semaphore_signal(rw_lock);
     }

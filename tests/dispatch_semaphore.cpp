@@ -38,7 +38,7 @@ extern "C" void dispatch_semaphore()
 	MU_BEGIN_TEST(dispatch_semaphore);
 
 	dsema = dispatch_semaphore_create(1);
-	assert(dsema);
+    MU_ASSERT_NOT_NULL(dsema);
 
 	dispatch_apply(LAPS, dispatch_queue_create(0,0), $(size_t idx) {
 		dispatch_semaphore_wait(dsema, DISPATCH_TIME_FOREVER);

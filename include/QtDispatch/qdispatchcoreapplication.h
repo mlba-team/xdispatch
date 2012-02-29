@@ -43,20 +43,20 @@ QT_MODULE(Dispatch)
 #ifdef Q_OS_MAC
 class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QDispatchApplication {
 
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    QDispatchCoreApplication(int& argc, char** argv);
+    public:
+        QDispatchCoreApplication(int& argc, char** argv);
 
 };
 #else
 class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QCoreApplication {
 
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    QDispatchCoreApplication(int& argc, char** argv);
-	~QDispatchCoreApplication();
+    public:
+        QDispatchCoreApplication(int& argc, char** argv);
+        ~QDispatchCoreApplication();
 
 };
 #endif

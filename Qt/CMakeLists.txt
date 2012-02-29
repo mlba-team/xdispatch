@@ -29,8 +29,24 @@ add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H
 target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 mz_target_props(QtDispatch)
+set_property(TARGET QtDispatch PROPERTY VERSION ${XDISPATCH_VERSION})
+set_property(TARGET QtDispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
 
-install(TARGETS QtDispatch 
-	LIBRARY DESTINATION lib
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION lib)
+if(APPLE)
+    set_property(TARGET QtDispatch PROPERTY FRAMEWORK TRUE)
+    set_property(TARGET QtDispatch PROPERTY PUBLIC_HEADER ${QINCLUDE_H})
+
+    install(TARGETS QtDispatch
+                COMPONENT libQtDispatch
+                FRAMEWORK DESTINATION "Library/Frameworks")
+else()
+    install(TARGETS QtDispatch
+                COMPONENT libQtDispatch
+                LIBRARY DESTINATION lib
+                RUNTIME DESTINATION bin
+                ARCHIVE DESTINATION lib)
+    install(DIRECTORY ../include/QtDispatch
+                DESTINATION include
+                COMPONENT libQtDispatch-dev
+                PATTERN "*.svn" EXCLUDE)
+endif()

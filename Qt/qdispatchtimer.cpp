@@ -67,12 +67,6 @@ void QDispatchTimer::setHandler(QRunnable* r){
     timer::handler(new RunnableOperation(r));
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-void QDispatchTimer::setHandler(dispatch_block_t b){
-    timer::handler(b);
-}
-#endif
-
 void QDispatchTimer::setLatency(int usec){
     timer::latency(NSEC_PER_USEC* usec);
 }
@@ -85,15 +79,6 @@ void QDispatchTimer::singleShot(const QTime& t, const xdispatch::queue& q, QRunn
     xdispatch::timer::single_shot(QDispatch::asDispatchTime(t), q, new RunnableOperation(r));
 }
 
-#ifdef XDISPATCH_HAS_BLOCKS
-void QDispatchTimer::singleShot(dispatch_time_t t, const xdispatch::queue& q, dispatch_block_t b){
-    xdispatch::timer::single_shot(t, q, b);
-}
-
-void QDispatchTimer::singleShot(const QTime& t, const xdispatch::queue& q, dispatch_block_t b){
-    xdispatch::timer::single_shot(QDispatch::asDispatchTime(t), q, b);
-}
-#endif
 
 QDispatchTimer* QDispatchTimer::current(){
     timer* curr = timer::current();

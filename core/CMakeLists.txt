@@ -11,9 +11,14 @@ project(${NAME} C)
 # do we have kernel support for pthread_workqueues?
 CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
 if(HAVE_PTHREAD_WORKQUEUE_H)
-    message("   >> found native pthread_workqueue implementation, using it")
+    if(LINUX)
+        message("   >> found libpthread_workqueue installation, using it")
+        set(LIBS ${LIBS} pthread_workqueue)
+    else()
+        message("   >> found native pthread_workqueue implementation, using it")
+    endif()
 else()
-	set(LIBS ${LIBS} pthread_workqueue)
+    set(LIBS ${LIBS} pthread_workqueue)
 endif()
 
 # do we have kqueues?
@@ -41,7 +46,7 @@ CHECK_SYMBOL_EXISTS( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 CHECK_FUNCTION_EXISTS( sysconf HAVE_SYSCONF)
 
 if(LINUX)
-    set(LIBS ${LIBS} rt)
+    set(LIBS ${LIBS} rt m)
 endif()
 
 if(NOT WIN32)
@@ -67,7 +72,7 @@ file(GLOB PLATFORM platform/*.h platform/*.c)
 source_group(platform FILES ${PLATFORM})
 
 # core lib
-file(GLOB INCL ../include/libdispatch/*.h)
+file(GLOB INCL ../include/dispatch/*.h)
 file(GLOB CORE src/*.c src/*.h config/*.in)
 file(GLOB SHIM src/shims/*.c src/shims/*.h)
 source_group(dispatch FILES ${INCL})
@@ -85,13 +90,31 @@ message("-- linking dispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})
 set_target_properties(${NAME} PROPERTIES DEBUG_POSTFIX "D")
 
+set_property(TARGET dispatch PROPERTY VERSION ${XDISPATCH_VERSION})
+set_property(TARGET dispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
+
 # finally create the config.h
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-install(TARGETS ${NAME} 
-	LIBRARY DESTINATION lib
-	RUNTIME DESTINATION bin
-	ARCHIVE DESTINATION lib)
+
+if(APPLE)
+    set_property(TARGET dispatch PROPERTY FRAMEWORK TRUE)
+    set_property(TARGET dispatch PROPERTY PUBLIC_HEADER ${INCL})
+
+    install(TARGETS dispatch
+                COMPONENT libdispatch
+                FRAMEWORK DESTINATION "Library/Frameworks")
+else()
+    install(TARGETS dispatch
+                COMPONENT libdispatch
+                LIBRARY DESTINATION lib
+                RUNTIME DESTINATION bin
+                ARCHIVE DESTINATION lib)
+    install(DIRECTORY ../include/dispatch
+                DESTINATION include
+                COMPONENT libdispatch-dev
+                PATTERN "*.svn" EXCLUDE)
+endif()

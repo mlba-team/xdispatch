@@ -59,6 +59,7 @@ void dispatch_starfish();
 void dispatch_memory_use();
 void dispatch_test_sync();
 void dispatch_group_function();
+void test_dispatch_once();
 #ifdef TEST_BLOCKS
 void cross_blocks();
 void dispatch_plusplus();
@@ -70,11 +71,14 @@ void dispatch_semaphore();
 void dispatch_timer_bit31();
 void dispatch_timer_bit63();
 void dispatch_drift();
+void dispatch_read();
+void dispatch_proc();
 #endif
 
 static void register_tests(){
 	MU_REGISTER_TEST(atomic_operations);
 	MU_REGISTER_TEST(pthread_api);
+    MU_REGISTER_TEST(test_dispatch_once);
 	//MU_REGISTER_TEST(posix_api); (Test was not implemented yet)
 	MU_REGISTER_TEST(dispatch_api);
 	MU_REGISTER_TEST(dispatch_simpleFunction);
@@ -87,7 +91,9 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_apply_serialqueue);
 	MU_REGISTER_TEST(dispatch_after_function);
 	MU_REGISTER_TEST(test_queue_finalizer);
+#if !__linux__
 	MU_REGISTER_TEST(dispatch_starfish);
+#endif
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
 #ifdef TEST_BLOCKS
@@ -101,6 +107,10 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_timer_bit31);
     MU_REGISTER_TEST(dispatch_timer_bit63);
     MU_REGISTER_TEST(dispatch_drift);
+# ifndef _WIN32
+    MU_REGISTER_TEST(dispatch_read);
+# endif
+    //MU_REGISTER_TEST(dispatch_proc);
 #endif
 }
 

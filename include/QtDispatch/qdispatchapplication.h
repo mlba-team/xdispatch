@@ -39,11 +39,11 @@ QT_MODULE(Dispatch)
  */
 class Q_DISPATCH_EXPORT QDispatchApplication : public QApplication {
 
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    QDispatchApplication(int& argc, char** argv);
-	~QDispatchApplication();
+    public:
+        QDispatchApplication(int& argc, char** argv);
+        ~QDispatchApplication();
 
 };
 

@@ -57,17 +57,19 @@ QDispatchQueue QDispatch::mainQueue(){
     return QDispatchQueue(xdispatch::main_queue());
 }
 
-QTime QDispatch::asQTime(dispatch_time_t t){
-    int hours = (int)t / (NSEC_PER_SEC*3600);
-    t %= (NSEC_PER_SEC*3600);
-    int min = (int)t / (NSEC_PER_SEC*60);
-    t %= (NSEC_PER_SEC*60);
-    int sec = (int)t / (NSEC_PER_SEC);
-    t %= (NSEC_PER_SEC);
-    return QTime(hours, min, sec, t/NSEC_PER_MSEC);
+QTime QDispatch::asQTime(const xdispatch::time &t){
+    xdispatch::time xdt = t;
+
+    int hours = (int)xdt / (NSEC_PER_SEC*3600);
+    xdt %= (NSEC_PER_SEC*3600);
+    int min = (int)xdt / (NSEC_PER_SEC*60);
+    xdt %= (NSEC_PER_SEC*60);
+    int sec = (int)xdt / (NSEC_PER_SEC);
+    xdt %= (NSEC_PER_SEC);
+    return QTime(hours, min, sec, xdt/NSEC_PER_MSEC);
 }
 
-dispatch_time_t QDispatch::asDispatchTime(const QTime & t){
+xdispatch::time QDispatch::asDispatchTime(const QTime & t){
     return dispatch_time(DISPATCH_TIME_NOW, QTime::currentTime().msecsTo(t)*NSEC_PER_MSEC);
 }
 

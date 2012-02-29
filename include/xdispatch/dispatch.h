@@ -24,15 +24,18 @@
 
 # ifdef HAVE_NATIVE_DISPATCH_H
 #  include <dispatch/dispatch.h>
-#  define NSEC_PER_MSEC 1000000ll
+#  ifndef NSEC_PER_MSEC
+#   define NSEC_PER_MSEC 1000000ll
+#  endif
 # else
-#  include "../libdispatch/dispatch.h"
+#  include "../dispatch/dispatch.h"
 # endif
 
 #if defined(__cplusplus)
 
 #ifndef XDISPATCH_EXPORT
 # ifdef _WIN32
+#  pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
 #  ifdef XDISPATCH_MAKEDLL
 #   define XDISPATCH_EXPORT __declspec(dllexport)
 #  else
@@ -47,18 +50,27 @@
 # define __XDISPATCH_END_NAMESPACE }
 
 # define __XDISPATCH_INDIRECT__
+# include "pointer.h"
 # include "synchronized.h"
 # include "lambda_blocks.h"
 # include "base.h"
+# include "once.h"
 # include "queue.h"
 # include "group.h"
 # include "semaphore.h"
-# include "timer.h"
 # include "source.h"
+# include "timer.h"
+# include "lambda_dispatch.h"
 # undef __XDISPATCH_INDIRECT__
 
 #undef XDISPATCH_EXPORT
 
 #endif /* defined(__cplusplus) */
+
+/*
+#ifdef _WIN32
+# pragma warning(default: 4251) // re-enable warning C4251 - we do not want to influence other code
+#endif
+*/
 
 #endif /* XDISPATCH_H_ */

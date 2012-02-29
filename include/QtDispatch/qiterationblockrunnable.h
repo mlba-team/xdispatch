@@ -43,23 +43,26 @@ functionality of the autoDelete flags as well.
 */
 class Q_DISPATCH_EXPORT QIterationBlockRunnable : public QIterationRunnable {
 
-public:
-	/**
-	Constructs a new QBlockRunnable using the given block, e.g.
+    public:
+        /**
+        Constructs a new QBlockRunnable using the given block, e.g.
 
-	@code
-	QIterationBlockRunnable task($(size_t index){cout << "Hello World at" << index << "\n";}, 3);
-	@endcode
-	*/
-    QIterationBlockRunnable(dispatch_iteration_block_t b);
-    QIterationBlockRunnable(dispatch_iteration_block_t b, size_t index);
-    QIterationBlockRunnable(const QIterationBlockRunnable&);
-    virtual ~QIterationBlockRunnable();
-	virtual void run(size_t);
+        @code
+        QIterationBlockRunnable task($(size_t index){cout << "Hello World at" << index << "\n";}, 3);
+        @endcode
+        */
+        QIterationBlockRunnable(dispatch_iteration_block_t b)
+            : QIterationRunnable(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+        QIterationBlockRunnable(const QIterationBlockRunnable& other)
+            : QIterationRunnable(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
+        virtual ~QIterationBlockRunnable() { XDISPATCH_BLOCK_DELETE(block); }
 
-private:
-	class Private;
-	Private* d;
+        virtual inline void run(size_t index){
+            XDISPATCH_BLOCK_EXEC(block)(index);
+        };
+
+    private:
+        dispatch_iteration_block_store block;
 
 };
 
