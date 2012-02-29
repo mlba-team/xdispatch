@@ -23,6 +23,7 @@
 #define QDISPATCH_SOURCE_H_
 
 #include <qobject.h>
+#include <qscopedpointer.h>
 
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
@@ -76,7 +77,8 @@ class Q_DISPATCH_EXPORT QDispatchSourceType : public QObject {
 /**
  Uses a signal emitted by a QObject as source and will dispatch
  the sources handler each time the signal is emitted. This source
- type does not provide any useful data when calling QDispatchSource::data()
+ type does not provide any useful data when calling QDispatchSource::data(),
+ i.e. is always returning NULL.
 
  Make sure to delete the object used in here when deleting the source.
  */
@@ -97,10 +99,10 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeSignal : public QDispatchSourceType {
 /**
  Provides a source dispatching the handler each time the QIODevice has new
  data to be read. QDispatchSource::data() will return a pointer to the QIODevice
- that has new data to b read, normally this is the device you passed upon creating
- this type
+ that has new data to be read, normally this is the device you passed upon creating
+ this type. Consequently DO NEVER delete the QIODevice returend by QDispatchSource::data()!
  
- Deletion of the QIODevice is your own responsibility
+ Deletion of the QIODevice after usage is your own responsibility
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeIODevice : public QDispatchSourceType {
 
@@ -127,7 +129,7 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeIODevice : public QDispatchSourceType
  This is equal to the QDispatchSourceTypeIODevice type and is provided as
  counterpart to QDispatchSourceTypeIODeviceWrite only.
  
- Deletion of the QIODevice is your own responsibility
+ @see QDispatchSourceTypeIODevice
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceRead : public QDispatchSourceTypeIODevice {
 
@@ -144,9 +146,9 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceRead : public QDispatchSource
  Provides a source dispatching the handler each time the QIODevice has finished
  to write data. QDispatchSource::data() will return a pointer to the QIODevice
  that has written the data, normally this is the device you passed upon creating
- this type
- 
- Deletion of the QIODevice is your own responsibility
+ this type. Consequently DO NEVER delete the QIODevice returend by QDispatchSource::data()!
+
+ Deletion of the QIODevice after usage is your own responsibility
  */
 class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceWrite : public QDispatchSourceType {
 
@@ -207,6 +209,10 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeNetworkManager : public QDispatchSour
     - QDispatchSourceTypeNetworkManager
 
  You can easily add your own by subclassing QDispatchSourceType
+
+ Please note that this class is quite rudimentary currently. When
+ needing sophisticated sources for dispatching, it is recommended
+ to use xdispatch::source instead.
  */
 class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
 
@@ -260,12 +266,25 @@ class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
          Call this to obtain data from within a handler while executing.
          Calling this method from somewhere else than an executing handler
          is undefined.
+
+         @remarks Make sure to carefully read the docs of the
+            used sourcetype to know wether it is you own duty
+            to release the data or not.
          */
         template <typename T> static T* data(){
             return qobject_cast<T*>(_data());
         }
 
     public slots:
+        /**
+          Suspends the source, i.e. it will stop
+          dispatching the handler. Calls to resume()
+          and suspend() should be balanced.
+
+          @remarks Please note that objects passed
+            to QDispatchSourceType::ready() might
+            not geht released while the source is suspended
+          */
         void resume();
         void suspend();
 
@@ -275,7 +294,7 @@ class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
     private:
         Q_DISABLE_COPY(QDispatchSource)
         class Private;
-        Private* d;
+        QScopedPointer<Private> d;
 
         static QObject* _data();
 

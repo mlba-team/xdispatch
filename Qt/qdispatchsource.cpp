@@ -116,7 +116,7 @@ QDispatchSource::QDispatchSource(QDispatchSourceType* t) : d(new Private){
 }
 
 QDispatchSource::~QDispatchSource(){
-	delete d;
+
 }
 
 void QDispatchSource::setTargetQueue(const QDispatchQueue& q){
