@@ -33,10 +33,9 @@ if(NOT HAS_MZ_GLOBAL)
 	endif()
 endif()
 
-# does the user want to have clang with blocks support?
-OPTION(CLANG_BLOCKS "Enable to use blocks with clang" OFF)
-if(CLANG_BLOCKS)
-    message("-- Linking with the BlocksRuntime")
+# is the used compiler clang? if so we need blocks support
+if(MZ_IS_CLANG)
+    message("-- linking with the BlocksRuntime")
     CHECK_INCLUDE_FILES (Block.h HAVE_BLOCK_H)
     if(NOT HAVE_BLOCK_H)
 	mz_add_library(libblocksruntime libblocksruntime)

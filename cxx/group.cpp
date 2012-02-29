@@ -24,16 +24,16 @@
 __XDISPATCH_USE_NAMESPACE
 
 class group::data {
-public:
-	data(){}
-	data(const data& other) : native(other.native){
-		assert(native);
-		dispatch_retain(native);
-	}
-	~data(){
-		if(native)
-			dispatch_release(native);
-	}
+    public:
+    data(){}
+    data(const data& other) : native(other.native){
+        assert(native);
+        dispatch_retain(native);
+    }
+    ~data(){
+        if(native)
+            dispatch_release(native);
+    }
 
     dispatch_group_t native;
 };
@@ -53,7 +53,7 @@ group::group(dispatch_group_t g) : d(new data){
 
 group::group(const group & other) : d(new data(*other.d)){
     assert(d);
-	assert(d->native);
+    assert(d->native);
 }
 
 group::~group() {
@@ -85,11 +85,11 @@ dispatch_object_t group::native() const {
 }
 
 void group::suspend() {
-	dispatch_suspend(d->native);
+    dispatch_suspend(d->native);
 }
 
 void group::resume() {
-	dispatch_resume(d->native);
+    dispatch_resume(d->native);
 }
 
 #ifdef XDISPATCH_HAS_BLOCKS
@@ -108,13 +108,13 @@ void group::notify(dispatch_block_t b, const queue& q){
 #endif
 
 group& group::operator=(const group& other){
-	if(*this != other){
-		if(d)
-			delete d;
-		d = new data(*other.d);
-		assert(d);
-	}
-	return *this;
+    if(*this != other){
+        if(d)
+            delete d;
+        d = new data(*other.d);
+        assert(d);
+    }
+    return *this;
 }
 
 std::ostream& xdispatch::operator<<(std::ostream& stream, const group* q){

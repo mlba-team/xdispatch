@@ -13,6 +13,11 @@ INCLUDE_DIRECTORIES(
 # tell qt we're building a dll
 mz_add_definition(QT_MAKEDLL)
 
+# assume an installation
+include_directories(
+    ../include
+)
+
 # moc qt files
 mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
 qt4_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)

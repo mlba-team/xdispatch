@@ -25,7 +25,6 @@
 
 #include <QRunnable>
 #include "qdispatchglobal.h"
-#include "../xdispatch/dispatch.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS
 

@@ -22,7 +22,7 @@
 #ifndef QDISPATCH_GLOBAL_H_
 #define QDISPATCH_GLOBAL_H_
 
-#include "../xdispatch/dispatch.h"
+#include <xdispatch/dispatch.h>
 
 #include <QtCore/qglobal.h>
 

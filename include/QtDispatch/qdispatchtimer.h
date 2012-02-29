@@ -23,7 +23,7 @@
 #define QDISPATCH_TIMER_H_
 
 #include "qdispatchglobal.h"
-#include "../xdispatch/dispatch.h"
+
 #include <qobject.h>
 
 QT_BEGIN_HEADER
