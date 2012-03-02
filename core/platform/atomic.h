@@ -86,14 +86,25 @@
 # define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd64((p), ((LONG)(v)*(-1))) - (v))
 # define dispatch_atomic_and(p, v)	InterlockedAnd64((p), (v))
 #else
-# define dispatch_atomic_or(p, v)	_InterlockedOr((p), (v))
-# define dispatch_atomic_inc(p)	InterlockedIncrement((p))
-# define dispatch_atomic_dec(p)	InterlockedDecrement((p))
-# define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((p), (n), (o)) == (o) )
-# define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
-# define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd((p), (v)) + (v))
-# define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd((p), ((LONG)(v)*(-1))) - (v))
-# define dispatch_atomic_and(p, v)	_InterlockedAnd((p), (v))
+# if defined(__cplusplus) && _MSC_VER <= 1500
+#  define dispatch_atomic_or(p, v)	_InterlockedOr((p), (v))
+#  define dispatch_atomic_inc(p)	InterlockedIncrement((LONG*)(p))
+#  define dispatch_atomic_dec(p)	InterlockedDecrement((LONG*)(p))
+#  define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((LONG*)(p), (n), (o)) == (o) )
+#  define dispatch_atomic_xchg(p, n)	InterlockedExchange((LONG*)(p),(n))
+#  define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd((p), (v)) + (v))
+#  define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd((p), ((LONG)(v)*(-1))) - (v))
+#  define dispatch_atomic_and(p, v)	_InterlockedAnd((p), (v))
+# else
+#  define dispatch_atomic_or(p, v)	_InterlockedOr((p), (v))
+#  define dispatch_atomic_inc(p)	InterlockedIncrement((p))
+#  define dispatch_atomic_dec(p)	InterlockedDecrement((p))
+#  define dispatch_atomic_cmpxchg(p, o, n)	( InterlockedCompareExchange((p), (n), (o)) == (o) )
+#  define dispatch_atomic_xchg(p, n)	InterlockedExchange((p),(n))
+#  define dispatch_atomic_add(p, v)	(InterlockedExchangeAdd((p), (v)) + (v))
+#  define dispatch_atomic_sub(p, v)	(InterlockedExchangeAdd((p), ((LONG)(v)*(-1))) - (v))
+#  define dispatch_atomic_and(p, v)	_InterlockedAnd((p), (v))
+# endif
 #endif
 # define dispatch_atomic_barrier()	MemoryBarrier()
 

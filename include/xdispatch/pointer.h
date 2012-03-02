@@ -62,8 +62,8 @@ template < typename _Type >
 struct pointer {
 
     typedef ::std::auto_ptr< _Type > unique;
-    typedef ::std::shared_ptr< _Type > shared;
-    typedef ::std::weak_ptr< _Type > weak;
+	typedef ::std::tr1::shared_ptr< _Type > shared;
+    typedef ::std::tr1::weak_ptr< _Type > weak;
 
 };
 
