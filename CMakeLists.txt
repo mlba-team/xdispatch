@@ -129,14 +129,17 @@ endif()
 
 # packaging
 
-if(APPLE)
+option(XDISPATCH_PACKAGE "Enable to configure package targets" OFF)
+if( XDISPATCH_PACKAGE )
+  if(APPLE)
 	include(package/osx/pkg.cmake)
-elseif(UNIX)
+  elseif(UNIX)
 	include(package/rpm/rpm.cmake)
 	include(package/debian/deb.cmake)	
         include(package/ubuntu/deb.cmake)
-else() # Windows ...
+  else() # Windows ...
 	include(package/windows/zip.cmake)
+  endif()
 endif()
 	
 
