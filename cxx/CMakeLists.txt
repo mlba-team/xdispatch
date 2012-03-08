@@ -9,7 +9,7 @@ set(NAME xdispatch)
 project(${NAME})
 
 # core lib
-file(GLOB CXX_INCL ../include/xdispatch/*.h)
+file(GLOB CXX_INCL ../include/xdispatch/*.h ../include/xdispatch/dispatch)
 file(GLOB CXX *.cpp *.h)
 source_group(xdispatch FILES ${CXX_INCL})
 source_group(cxx FILES ${CXX})

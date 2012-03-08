@@ -22,14 +22,10 @@
 #ifndef XDISPATCH_H_
 #define XDISPATCH_H_
 
-# ifdef HAVE_NATIVE_DISPATCH_H
-#  include <dispatch/dispatch.h>
-#  ifndef NSEC_PER_MSEC
-#   define NSEC_PER_MSEC 1000000ll
-#  endif
-# else
-#  include "../dispatch/dispatch.h"
-# endif
+#include <dispatch/dispatch.h>
+#ifndef NSEC_PER_MSEC
+# define NSEC_PER_MSEC 1000000ll
+#endif
 
 #if defined(__cplusplus)
 
