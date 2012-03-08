@@ -1,7 +1,21 @@
 
 file(GLOB QSRC *.h *.cpp)
 file(GLOB QHEADER *.h)
-file(GLOB QINCLUDE_H ../include/QtDispatch/*.h)
+file(GLOB QINCLUDE_H
+    ../include/QtDispatch/*.h
+    ../include/QtDispatch/QBlockRunnable
+    ../include/QtDispatch/QDispatch
+    ../include/QtDispatch/QDispatchApplication
+    ../include/QtDispatch/QDispatchCoreApplication
+    ../include/QtDispatch/QDispatchGroup
+    ../include/QtDispatch/QDispatchQueue
+    ../include/QtDispatch/QDispatchSemaphore
+    ../include/QtDispatch/QDispatchSource
+    ../include/QtDispatch/QDispatchTimer
+    ../include/QtDispatch/QIterationBlockRunnable
+    ../include/QtDispatch/QIterationRunnable
+    ../include/QtDispatch/QtDispatch
+)
 file(GLOB QINCLUDE ../include/QtDispatch/Q*)
 
 # include qt headers (if found)	
