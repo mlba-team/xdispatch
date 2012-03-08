@@ -1,3 +1,4 @@
+
 /*
 * Copyright (c) 2012 MLBA. All rights reserved.
 *
@@ -101,7 +102,7 @@ class native_source_wrapper {
                     xdispatch_source_wrappers[obj] = pointer<native_source_wrapper>::shared( new native_source_wrapper( obj ) );
             }
 
-            return xdispatch_source_wrappers.at( obj );
+            return xdispatch_source_wrappers[ obj ];
         }
 
 

@@ -18,7 +18,7 @@ to test it yet. The officially supported development environments and/or toolcha
  - Clang 2.0
  - XCode 4 (using the clang backend)
  - GCC 4.2+ – to use lambdas we recommend GCC 4.5.1+
- - MSVC as shipped with Visual Studio 2008
+ - Visual Studio 2008 SP1 - tested for 32bit, might also work with 64bit
  - Visual Studio 2010, building both 32bit and 64bit binaries
  - MinGW (shipping gcc 4.5.x)
  

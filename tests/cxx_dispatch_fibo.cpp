@@ -20,9 +20,6 @@
 */
 
 
-#include <QRunnable>
-#include <QTime>
-
 #include "../include/xdispatch/dispatch"
 #include "cxx_tests.h"
 
