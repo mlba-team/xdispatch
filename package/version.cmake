@@ -4,8 +4,10 @@ find_package(Subversion)
 if(SUBVERSION_FOUND)
     Subversion_WC_INFO(${PROJECT_SOURCE_DIR} XDISPATCH)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package/revision.in ${CMAKE_CURRENT_SOURCE_DIR}/package/revision)
-else() # use (hopefully) cached version
+elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/package/revision) # use (hopefully) cached version
     file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/package/revision XDISPATCH_WC_REVISION LIMIT_COUNT 1)
+else()
+	set(XDISPATCH_WC_REVISION "")
 endif()
 
 # Variables referring to the system the packaging took place at
