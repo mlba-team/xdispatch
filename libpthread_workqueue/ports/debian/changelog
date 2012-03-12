@@ -1,0 +1,14 @@
+libpthread-workqueue (0.5.1-1) unstable; urgency=low
+
+  * New upstream version.
+  * Update control file with new Standards-Version.
+  * Remove -m64 from CFLAGS (Closes: #622798)
+  * Limit architecture to linux-any (Closes: #622799)
+
+ -- Mark Heily <mark@heily.com>  Sat, 07 May 2011 11:57:22 -0400
+
+libpthread-workqueue (0.4.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #616704)
+
+ -- Mark Heily <mark@heily.com>  Sun, 13 Mar 2011 16:22:30 -0500
