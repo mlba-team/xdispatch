@@ -22,15 +22,9 @@ if(NOT HAS_MZ_GLOBAL)
 	include(${QT_USE_FILE})
 	
 	# We need to ouput everything into the same directory
-	if(WIN32)
-		set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin CACHE PATH "Library output path")
-		set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin CACHE PATH "Executable output path")
-		message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/Bin")
-	else()
-		set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE} CACHE PATH "Library output path")
-		set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE} CACHE PATH "Executable output path")
-		message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/Bin/${CMAKE_BUILD_TYPE}")
-	endif()
+        set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
+        set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
+        message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
 endif()
 
 # is the used compiler clang? if so we need blocks support
