@@ -51,7 +51,7 @@ sourcetype::~sourcetype() {
 void sourcetype::set_cb(source* s){
     XDISPATCH_ASSERT(s);
 
-    (void)dispatch_atomic_ptr_xchg( &cb, s );
+    (void)dispatch_atomic_ptr_xchg( (void**)&cb, s );
     XDISPATCH_ASSERT( cb );
 }
 
@@ -65,7 +65,7 @@ void sourcetype::on_suspend (){
 
 void sourcetype::ready(const any& dt){
 
-    source* callback = (source*)dispatch_atomic_ptr_xchg( &cb, cb );
+    source* callback = (source*)dispatch_atomic_ptr_xchg( (void**)&cb, cb );
     XDISPATCH_ASSERT( callback );
     callback->notify ( dt );
 
@@ -220,7 +220,7 @@ queue source::target_queue() const {
 void source::handler(operation* op){
     XDISPATCH_ASSERT(op);
 
-    operation* old_op = (operation*)dispatch_atomic_ptr_xchg( &d->handler, op );
+    operation* old_op = (operation*)dispatch_atomic_ptr_xchg( (void**)&d->handler, op );
     if( old_op && old_op->auto_delete() )
         delete old_op;
 }
@@ -276,7 +276,7 @@ source& source::operator=(const source& other){
 void source::cancel_handler(operation * op) {
     XDISPATCH_ASSERT(op);
 
-    operation* old_op = (operation*)dispatch_atomic_ptr_xchg( &d->cancel_handler, op );
+    operation* old_op = (operation*)dispatch_atomic_ptr_xchg( (void**)&d->cancel_handler, op );
     if( old_op && old_op->auto_delete() )
         delete old_op;
 
@@ -294,7 +294,7 @@ void source::cancel() {
     d->type->on_cancel();
 
     // execute any cancel handlers
-    operation* c_op = (operation*)dispatch_atomic_ptr_xchg( &d->cancel_handler, NULL );
+    operation* c_op = (operation*)dispatch_atomic_ptr_xchg( (void**)&d->cancel_handler, NULL );
     if( c_op )
         target_queue().async( c_op );
 }
