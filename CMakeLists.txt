@@ -7,9 +7,6 @@ INCLUDE (CheckSymbolExists)
 project(xdispatch)
 include(package/version.cmake)
 
-include(CTest)
-enable_testing()
-
 # check if mz_tools is available
 if(NOT HAS_MZ_GLOBAL)
 

@@ -5,6 +5,9 @@ mz_add_library(munit munit)
 option(BUILD_XDISPATCH_TESTS "Enable to build the xdispatch test suite" OFF)
 if( BUILD_XDISPATCH_TESTS)
 
+	include(CTest)
+	enable_testing()
+
     # define file groups
     file(GLOB TESTSRCS *.c *.h cxx_*.cpp dispatch_*.cpp cross_blocks.cpp)
     file(GLOB SHIMS shims/*.c shims/*.h)
