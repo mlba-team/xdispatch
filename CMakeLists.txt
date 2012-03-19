@@ -96,17 +96,17 @@ else()
     set(LIBS ${LIBS} dispatch)
 endif()
 
-# the xdispatch target
-mz_add_library(xdispatch cxx)
-
 # tell everybody we have libdispatch support here, perhaps even native by the OS
 if(HAVE_NATIVE_DISPATCH_H)
     if(PARENT_SCOPE)
-        mz_add_definition("HAVE_NATIVE_DISPATCH_H" PARENT_SCOPE)
+        mz_add_definition("HAVE_NATIVE_DISPATCH_H=1" PARENT_SCOPE)
     else()
-        mz_add_definition("HAVE_NATIVE_DISPATCH_H")
+        mz_add_definition("HAVE_NATIVE_DISPATCH_H=1")
     endif()
 endif()
+
+# the xdispatch target
+mz_add_library(xdispatch cxx)
 
 # Use HAS_LIBDISPATCH to query it in other projects
 if(PARENT_SCOPE)
@@ -124,6 +124,19 @@ endif()
 
 if(XDISPATCH_QT_SUPPORT)
 	mz_add_library(QtDispatch Qt)
+endif()
+
+# copy the includes to a specific folder
+# to mimic a proper installation. This is
+# due to us needing different headers on different
+# platforms (especially Darwin)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/xdispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+if(XDISPATCH_QT_SUPPORT)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/QtDispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+endif()
+if(NOT HAVE_NATIVE_DISPATCH_H)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/dispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif()
 
 # custom test framework for xdispatch

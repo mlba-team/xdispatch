@@ -37,9 +37,9 @@ static size_t bytes_read;
 
 #ifdef XDISPATCH_HAS_BLOCKS
 
-extern "C" void dispatch_read()
+extern "C" void test_dispatch_read()
 {
-    MU_BEGIN_TEST(dispatch_read);
+    MU_BEGIN_TEST(test_dispatch_read);
 
 	const char *path = "/usr/share/dict/words";
 	struct stat sb;
