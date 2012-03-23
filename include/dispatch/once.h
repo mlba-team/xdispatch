@@ -29,18 +29,12 @@
 __DISPATCH_BEGIN_DECLS
 
 /*!
- * @typedef dispatch_once_t
- *
- * @abstract
  * A predicate for use with dispatch_once(). It must be initialized to zero.
  * Note: static and global variables default to zero.
  */
 typedef intptr_t dispatch_once_t;
 
 /*!
- * @function dispatch_once
- *
- * @abstract
  * Execute a block once and only once.
  *
  * @param predicate
@@ -50,7 +44,6 @@ typedef intptr_t dispatch_once_t;
  * @param block
  * The block to execute once.
  *
- * @discussion
  * Always call dispatch_once() before using or testing any variables that are
  * initialized by the block.
  */

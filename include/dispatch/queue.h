@@ -27,8 +27,6 @@
 #endif
 
 /*!
- * @header
- *
  * Dispatch is an abstract model for expressing concurrency via simple but
  * powerful API. 
  *
@@ -44,14 +42,10 @@
  */
 
 /*!
- * @typedef dispatch_queue_t
- *
- * @abstract
  * Dispatch queues invoke blocks submitted to them serially in FIFO order. A
  * queue will only invoke one block at a time, but independent queues may each
  * invoke their blocks concurrently with respect to each other.
  *
- * @discussion
  * Dispatch queues are lightweight objects to which blocks may be submitted.
  * The system manages a pool of threads which process dispatch queues and
  * invoke blocks submitted to them.
@@ -67,21 +61,14 @@
 DISPATCH_DECL(dispatch_queue);
 
 /*!
- * @typedef dispatch_queue_attr_t
- *
- * @abstract
  * Attribute and policy extensions for dispatch queues.
  */
 DISPATCH_DECL(dispatch_queue_attr);
 
 /*!
- * @typedef dispatch_block_t
- *
- * @abstract
  * The prototype of blocks submitted to dispatch queues, which take no
  * arguments and have no return value.
  *
- * @discussion
  * The declaration of a block allocates storage on the stack. Therefore, this
  * is an invalid construct:
  *
@@ -114,12 +101,8 @@ typedef void (^dispatch_block_t)(void);
 __DISPATCH_BEGIN_DECLS
 
 /*!
- * @function dispatch_async
- *
- * @abstract
  * Submits a block for asynchronous execution on a dispatch queue.
  *
- * @discussion
  * The dispatch_async() function is the fundamental mechanism for submitting
  * blocks to a dispatch queue.
  *
@@ -149,12 +132,8 @@ dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
 #endif
 
 /*!
- * @function dispatch_async_f
- *
- * @abstract
  * Submits a function for asynchronous execution on a dispatch queue.
  *
- * @discussion
  * See dispatch_async() for details.
  * 
  * @param queue
@@ -180,12 +159,8 @@ dispatch_async_f(dispatch_queue_t queue,
 	dispatch_function_t work);
 
 /*!
- * @function dispatch_sync
- *
- * @abstract
  * Submits a block for synchronous execution on a dispatch queue.
  *
- * @discussion
  * Submits a block to a dispatch queue like dispatch_async(), however
  * dispatch_sync() will not return until the block has finished.
  *
@@ -217,12 +192,8 @@ dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);
 #endif
 
 /*!
- * @function dispatch_sync_f
- *
- * @abstract
  * Submits a function for synchronous execution on a dispatch queue.
  *
- * @discussion
  * See dispatch_sync() for details.
  *
  * @param queue
@@ -246,12 +217,8 @@ dispatch_sync_f(dispatch_queue_t queue,
 	dispatch_function_t work);
 
 /*!
- * @function dispatch_apply
- *
- * @abstract
  * Submits a block to a dispatch queue for multiple invocations.
  *
- * @discussion
  * Submits a block to a dispatch queue for multiple invocations. This function
  * waits for the task block to complete before returning. If the target queue
  * is a concurrent queue returned by dispatch_get_concurrent_queue(), the block
@@ -278,13 +245,9 @@ dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t))
 #endif
 
 /*!
- * @function dispatch_apply_f
- *
- * @abstract
  * Submits a function to a dispatch queue for multiple invocations.
  *
- * @discussion
- * See dispatch_apply() for details.
+ * @see dispatch_apply
  *
  * @param iterations
  * The number of iterations to perform.
@@ -311,12 +274,8 @@ dispatch_apply_f(size_t iterations, dispatch_queue_t queue,
 	void (*work)(void *, size_t));
 
 /*!
- * @function dispatch_get_current_queue
- *
- * @abstract
  * Returns the queue on which the currently executing block is running.
  * 
- * @discussion
  * Returns the queue on which the currently executing block is running.
  *
  * When dispatch_get_current_queue() is called outside of the context of a
@@ -331,12 +290,8 @@ dispatch_queue_t
 dispatch_get_current_queue(void);
 
 /*!
- * @function dispatch_get_main_queue
- *
- * @abstract
  * Returns the default queue that is bound to the main thread.
  *
- * @discussion
  * In order to invoke blocks submitted to the main queue, the application must
  * call dispatch_main(), NSApplicationMain(), or use a CFRunLoop on the main
  * thread.
@@ -349,38 +304,31 @@ __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
 DISPATCH_EXPORT dispatch_queue_t dispatch_get_main_queue();
 
 /*!
- * @enum dispatch_queue_priority_t
  *
- * @constant DISPATCH_QUEUE_PRIORITY_HIGH
- * Items dispatched to the queue will run at high priority,
- * i.e. the queue will be scheduled for execution before
- * any default priority or low priority queue.
- *
- * @constant DISPATCH_QUEUE_PRIORITY_DEFAULT
- * Items dispatched to the queue will run at the default
- * priority, i.e. the queue will be scheduled for execution
- * after all high priority queues have been scheduled, but
- * before any low priority queues have been scheduled.
- *
- * @constant DISPATCH_QUEUE_PRIORITY_LOW
- * Items dispatched to the queue will run at low priority,
- * i.e. the queue will be scheduled for execution after all
- * default priority and high priority queues have been
- * scheduled.
  */
 enum {
-	DISPATCH_QUEUE_PRIORITY_HIGH = 2,
-	DISPATCH_QUEUE_PRIORITY_DEFAULT = 0,
-	DISPATCH_QUEUE_PRIORITY_LOW = -2,
+    DISPATCH_QUEUE_PRIORITY_HIGH = 2, /**<
+        * Items dispatched to the queue will run at high priority,
+        * i.e. the queue will be scheduled for execution before
+        * any default priority or low priority queue.
+        */
+    DISPATCH_QUEUE_PRIORITY_DEFAULT = 0, /**<
+        * Items dispatched to the queue will run at the default
+        * priority, i.e. the queue will be scheduled for execution
+        * after all high priority queues have been scheduled, but
+        * before any low priority queues have been scheduled.
+        */
+    DISPATCH_QUEUE_PRIORITY_LOW = -2, /**<
+        * Items dispatched to the queue will run at low priority,
+        * i.e. the queue will be scheduled for execution after all
+        * default priority and high priority queues have been
+        * scheduled.
+        */
 };
 
 /*!
- * @function dispatch_get_global_queue
- *
- * @abstract
  * Returns a well-known global concurrent queue of a given priority level.
  *
- * @discussion
  * The well-known global concurrent queues may not be modified. Calls to
  * dispatch_suspend(), dispatch_resume(), dispatch_set_context(), etc., will
  * have no effect when used with queues returned by this function.
@@ -392,7 +340,7 @@ enum {
  * Reserved for future use. Passing any value other than zero may result in
  * a NULL return value.
  *
- * @result
+ * @return
  * Returns the requested global queue.
  */
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
@@ -401,12 +349,8 @@ dispatch_queue_t
 dispatch_get_global_queue(long priority, unsigned long flags);
 
 /*!
- * @function dispatch_queue_create
- *
- * @abstract
  * Creates a new dispatch queue to which blocks may be submitted.
  *
- * @discussion
  * Dispatch queues invoke blocks serially in FIFO order.
  *
  * When the dispatch queue is no longer needed, it should be released
@@ -421,7 +365,7 @@ dispatch_get_global_queue(long priority, unsigned long flags);
  * @param attr
  * Unused. Pass NULL for now.
  *
- * @result
+ * @return
  * The newly created dispatch queue.
  */
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
@@ -430,16 +374,13 @@ dispatch_queue_t
 dispatch_queue_create(const char *label, dispatch_queue_attr_t attr);
 
 /*!
- * @function dispatch_queue_get_label
- *
- * @abstract
  * Returns the label of the queue that was specified when the
  * queue was created.
  *
  * @param queue
  * The result of passing NULL in this parameter is undefined.
  *
- * @result
+ * @return
  * The label of the queue. The result may be NULL.
  */
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
@@ -448,12 +389,8 @@ const char *
 dispatch_queue_get_label(dispatch_queue_t queue);
 
 /*!
- * @function dispatch_set_target_queue
- *
- * @abstract
  * Sets the target queue for the given object.
  *
- * @discussion
  * An object's target queue is responsible for processing the object.
  *
  * A dispatch queue's priority is inherited by its target queue. Use the
@@ -481,12 +418,9 @@ void
 dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
 
 /*!
- * @function dispatch_main
- *
- * @abstract
  * Execute blocks submitted to the main queue.
  *
- * @discussion
+
  * This function "parks" the main thread and waits for blocks to be submitted
  * to the main queue. This function never returns.
  *
@@ -499,12 +433,8 @@ void
 dispatch_main(void);
 
 /*!
- * @function dispatch_after
- *
- * @abstract
  * Schedule a block for execution on a given queue at a specified time.
  *
- * @discussion
  * Passing DISPATCH_TIME_NOW as the "when" parameter is supported, but not as
  * optimal as calling dispatch_async() instead. Passing DISPATCH_TIME_FOREVER
  * is undefined.
@@ -530,12 +460,8 @@ dispatch_after(dispatch_time_t when,
 #endif
 
 /*!
- * @function dispatch_after_f
- *
- * @abstract
  * Schedule a function for execution on a given queue at a specified time.
  *
- * @discussion
  * See dispatch_after() for details.
  *
  * @param when

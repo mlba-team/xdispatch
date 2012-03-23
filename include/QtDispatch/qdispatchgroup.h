@@ -67,12 +67,12 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
         @param r The QRunnable to be dispatched
         @param q The Queue to use. If no Queue is given, the system default queue will be used
         */
-        void async(QRunnable* r, const xdispatch::queue& = xdispatch::global_queue());
+        void async(QRunnable* r, const xdispatch::queue& q = xdispatch::global_queue());
         using xdispatch::group::async;
         /**
         Waits until the given time has passed
         or all dispatched runnables in the group were executed
-        @param timeout give a timeout here or a QTime of zero to wait until all runnables are done
+        @param t give a timeout here or a QTime of zero to wait until all runnables are done
         @return false if the timeout occured or true if all runnables were executed
         */
         bool wait(const QTime& t);

@@ -62,7 +62,7 @@ typedef void (*dispatch_function_t)(void *);
 #if defined(__cplusplus) && !defined(_MSC_VER)
 #define DISPATCH_DECL(name) typedef struct name##_s : public dispatch_object_s {} *name##_t
 #else
-/*! @parseOnly */
+/*! parseOnly */
 #define DISPATCH_DECL(name) typedef struct name##_s *name##_t
 #endif
 
@@ -90,35 +90,35 @@ typedef void (*dispatch_function_t)(void *);
 # define DISPATCH_MALLOC __attribute__((__malloc__))
 # define DISPATCH_FORMAT(...) __attribute__((__format__(__VA_ARGS__)))
 #else
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NORETURN
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NOTHROW
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL1
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL2
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL3
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL4
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL5
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL6
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL7
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_NONNULL_ALL
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_SENTINEL
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_PURE
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_WARN_RESULT
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_MALLOC
-/*! @parseOnly */
+/*! parseOnly */
 # define DISPATCH_FORMAT(...)
 #endif
 

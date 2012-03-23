@@ -86,7 +86,7 @@ if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
 endif()
 
 # do we have native dispatch support on this platform?
-if(NOT HAVE_NATIVE_DISPATCH_H)
+if(HAVE_NATIVE_DISPATCH_H)
     message("   >> found native libDispatch implementation, using it")
 else()
     mz_add_library(libdispatch core)

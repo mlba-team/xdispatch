@@ -27,7 +27,6 @@
 #endif
 
 /*!
- * @header
  * The dispatch framework provides a suite of interfaces for monitoring low-
  * level system objects (file descriptors, Mach ports, signals, VFS nodes, etc.)
  * for activity and automatically submitting event handler blocks to dispatch
@@ -37,18 +36,12 @@
  */
 
 /*!
- * @typedef dispatch_source_t
- *
- * @abstract
  * Dispatch sources are used to automatically submit event handler blocks to
  * dispatch queues in response to external events.
  */
 DISPATCH_DECL(dispatch_source);
 
 /*!
- * @typedef dispatch_source_type_t
- *
- * @abstract
  * Constants of this type represent the class of low-level system object that
  * is being monitored by the dispatch source. Constants of this type are
  * passed as a parameter to dispatch_source_create() and determine how the
@@ -61,8 +54,7 @@ typedef const struct dispatch_source_type_s *dispatch_source_type_t;
 __DISPATCH_BEGIN_DECLS
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_DATA_ADD
- * @discussion A dispatch source that coalesces data obtained via calls to
+ * A dispatch source that coalesces data obtained via calls to
  * dispatch_source_merge_data(). An ADD is used to coalesce the data.
  * The handle is unused (pass zero for now).
  * The mask is unused (pass zero for now).
@@ -73,8 +65,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_data_add;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_DATA_OR
- * @discussion A dispatch source that coalesces data obtained via calls to
+ * A dispatch source that coalesces data obtained via calls to
  * dispatch_source_merge_data(). A logical OR is used to coalesce the data.
  * The handle is unused (pass zero for now).
  * The mask is used to perform a logical AND with the value passed to
@@ -86,8 +77,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_data_or;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_MACH_SEND
- * @discussion A dispatch source that monitors a Mach port for dead name
+ * A dispatch source that monitors a Mach port for dead name
  * notifications (send right no longer has any corresponding receive right).
  * The handle is a Mach port with a send or send-once right (mach_port_t).
  * The mask is a mask of desired events from dispatch_source_mach_send_flags_t.
@@ -98,8 +88,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_mach_send;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_MACH_RECV
- * @discussion A dispatch source that monitors a Mach port for pending messages.
+ * A dispatch source that monitors a Mach port for pending messages.
  * The handle is a Mach port with a receive right (mach_port_t).
  * The mask is unused (pass zero for now).
  */
@@ -109,8 +98,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_PROC
- * @discussion A dispatch source that monitors an external process for events
+ * A dispatch source that monitors an external process for events
  * defined by dispatch_source_proc_flags_t.
  * The handle is a process identifier (pid_t).
  * The mask is a mask of desired events from dispatch_source_proc_flags_t.
@@ -121,8 +109,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_proc;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_READ
- * @discussion A dispatch source that monitors a file descriptor for pending
+ * A dispatch source that monitors a file descriptor for pending
  * bytes available to be read.
  * The handle is a file descriptor (int).
  * The mask is unused (pass zero for now).
@@ -133,8 +120,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_read;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_SIGNAL
- * @discussion A dispatch source that monitors the current process for signals.
+ * A dispatch source that monitors the current process for signals.
  * The handle is a signal number (int).
  * The mask is unused (pass zero for now).
  */
@@ -144,8 +130,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_signal;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_TIMER
- * @discussion A dispatch source that submits the event handler block based
+ * A dispatch source that submits the event handler block based
  * on a timer.
  * The handle is unused (pass zero for now).
  * The mask is unused (pass zero for now).
@@ -156,8 +141,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_timer;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_VNODE
- * @discussion A dispatch source that monitors a file descriptor for events
+ * A dispatch source that monitors a file descriptor for events
  * defined by dispatch_source_vnode_flags_t.
  * The handle is a file descriptor (int).
  * The mask is a mask of desired events from dispatch_source_vnode_flags_t.
@@ -168,8 +152,7 @@ extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_vnode;
 
 /*!
- * @const DISPATCH_SOURCE_TYPE_WRITE
- * @discussion A dispatch source that monitors a file descriptor for available
+ * A dispatch source that monitors a file descriptor for available
  * buffer space to write bytes.
  * The handle is a file descriptor (int).
  * The mask is unused (pass zero for now).
@@ -182,82 +165,41 @@ const struct dispatch_source_type_s _dispatch_source_type_write;
 __DISPATCH_END_DECLS
 
 /*!
- * @enum dispatch_source_mach_send_flags_t
  *
- * @constant DISPATCH_MACH_SEND_DEAD
- * The receive right corresponding to the given send right was destroyed.
  */
 enum {
-	DISPATCH_MACH_SEND_DEAD = 0x1,
+    DISPATCH_MACH_SEND_DEAD = 0x1, /**< The receive right corresponding to the given send right was destroyed. */
 };
 
 /*!
- * @enum dispatch_source_proc_flags_t
  *
- * @constant DISPATCH_PROC_EXIT
- * The process has exited (perhaps cleanly, perhaps not).
- *
- * @constant DISPATCH_PROC_FORK
- * The process has created one or more child processes.
- *
- * @constant DISPATCH_PROC_EXEC
- * The process has become another executable image via
- * exec*() or posix_spawn*().
- *
- * @constant DISPATCH_PROC_SIGNAL
- * A Unix signal was delivered to the process.
  */
 enum {
-	DISPATCH_PROC_EXIT = 0x80000000,
-	DISPATCH_PROC_FORK = 0x40000000,
-	DISPATCH_PROC_EXEC = 0x20000000,
-	DISPATCH_PROC_SIGNAL = 0x08000000,
+    DISPATCH_PROC_EXIT = 0x80000000, /**< The process has exited (perhaps cleanly, perhaps not). */
+    DISPATCH_PROC_FORK = 0x40000000, /**< The process has created one or more child processes. */
+    DISPATCH_PROC_EXEC = 0x20000000, /**< The process has become another executable image via exec*() or posix_spawn*(). */
+    DISPATCH_PROC_SIGNAL = 0x08000000, /**< A Unix signal was delivered to the process. */
 };
 
 /*!
- * @enum dispatch_source_vnode_flags_t
  *
- * @constant DISPATCH_VNODE_DELETE
- * The filesystem object was deleted from the namespace.
- *
- * @constant DISPATCH_VNODE_WRITE
- * The filesystem object data changed.
- *
- * @constant DISPATCH_VNODE_EXTEND
- * The filesystem object changed in size.
- *
- * @constant DISPATCH_VNODE_ATTRIB
- * The filesystem object metadata changed.
- *
- * @constant DISPATCH_VNODE_LINK
- * The filesystem object link count changed.
- *
- * @constant DISPATCH_VNODE_RENAME
- * The filesystem object was renamed in the namespace.
- *
- * @constant DISPATCH_VNODE_REVOKE
- * The filesystem object was revoked.
  */
 enum {
-	DISPATCH_VNODE_DELETE = 0x1,
-	DISPATCH_VNODE_WRITE = 0x2,
-	DISPATCH_VNODE_EXTEND = 0x4,
-	DISPATCH_VNODE_ATTRIB = 0x8,
-	DISPATCH_VNODE_LINK	= 0x10,
-	DISPATCH_VNODE_RENAME = 0x20,
-	DISPATCH_VNODE_REVOKE = 0x40,
+    DISPATCH_VNODE_DELETE = 0x1, /**< The filesystem object was deleted from the namespace. */
+    DISPATCH_VNODE_WRITE = 0x2, /**< The filesystem object data changed. */
+    DISPATCH_VNODE_EXTEND = 0x4, /**< The filesystem object changed in size. */
+    DISPATCH_VNODE_ATTRIB = 0x8, /**< The filesystem object metadata changed. */
+    DISPATCH_VNODE_LINK	= 0x10, /**< The filesystem object link count changed. */
+    DISPATCH_VNODE_RENAME = 0x20, /**< The filesystem object was renamed in the namespace. */
+    DISPATCH_VNODE_REVOKE = 0x40, /**< The filesystem object was revoked. */
 };
 
 __DISPATCH_BEGIN_DECLS
 
 /*!
- * @function dispatch_source_create
- *
- * @abstract
  * Creates a new dispatch source to monitor low-level system objects and auto-
  * matically submit a handler block to a dispatch queue in response to events.
  *
- * @discussion
  * Dispatch sources are not reentrant. Any events received while the dispatch
  * source is suspended or while the event handler block is currently executing
  * will be coalesced and delivered after the dispatch source is resumed or the
@@ -288,9 +230,6 @@ dispatch_source_create(dispatch_source_type_t type,
 	dispatch_queue_t queue);
 
 /*!
- * @function dispatch_source_set_event_handler
- *
- * @abstract
  * Sets the event handler block for the given dispatch source.
  *
  * @param source
@@ -309,9 +248,6 @@ dispatch_source_set_event_handler(dispatch_source_t source,
 #endif /* __BLOCKS__ */
 
 /*!
- * @function dispatch_source_set_event_handler_f
- *
- * @abstract
  * Sets the event handler function for the given dispatch source.
  *
  * @param source
@@ -331,18 +267,14 @@ dispatch_source_set_event_handler_f(dispatch_source_t source,
 	dispatch_function_t handler);
 
 /*!
- * @function dispatch_source_set_cancel_handler
- *
- * @abstract
  * Sets the cancellation handler block for the given dispatch source.
  *
- * @discussion
  * The cancellation handler (if specified) will be submitted to the source's
  * target queue in response to a call to dispatch_source_cancel() once the
  * system has released all references to the source's underlying handle and
  * the source's event handler block has returned.
  *
- * IMPORTANT:
+ * @remarks
  * A cancellation handler is required for file descriptor and mach port based
  * sources in order to safely close the descriptor or destroy the port. Closing
  * the descriptor or port before the cancellation handler may result in a race
@@ -354,7 +286,7 @@ dispatch_source_set_event_handler_f(dispatch_source_t source,
  * The dispatch source to modify.
  * The result of passing NULL in this parameter is undefined.
  * 
- * @param handler
+ * @param cancel_handler
  * The cancellation handler block to submit to the source's target queue.
  */
 #ifdef __BLOCKS__
@@ -366,19 +298,15 @@ dispatch_source_set_cancel_handler(dispatch_source_t source,
 #endif /* __BLOCKS__ */
 
 /*!
- * @function dispatch_source_set_cancel_handler_f
- *
- * @abstract
  * Sets the cancellation handler function for the given dispatch source.
  *
- * @discussion
  * See dispatch_source_set_cancel_handler() for more details.
  *
  * @param source
  * The dispatch source to modify.
  * The result of passing NULL in this parameter is undefined.
  *
- * @param handler
+ * @param cancel_handler
  * The cancellation handler function to submit to the source's target queue.
  * The context parameter passed to the event handler function is the current
  * context of the dispatch source at the time the handler call is made.
@@ -390,13 +318,9 @@ dispatch_source_set_cancel_handler_f(dispatch_source_t source,
 	dispatch_function_t cancel_handler);
 
 /*!
- * @function dispatch_source_cancel
- *
- * @abstract
  * Asynchronously cancel the dispatch source, preventing any further invocation
  * of its event handler block.
  *
- * @discussion
  * Cancellation prevents any further invocation of the event handler block for
  * the specified dispatch source, but does not interrupt an event handler
  * block that is already in progress.
@@ -417,16 +341,13 @@ void
 dispatch_source_cancel(dispatch_source_t source);
 
 /*!
- * @function dispatch_source_testcancel
- *
- * @abstract
  * Tests whether the given dispatch source has been canceled.
  *
  * @param source
  * The dispatch source to be tested.
  * The result of passing NULL in this parameter is undefined.
  *
- * @result
+ * @return
  * Non-zero if canceled and zero if not canceled.
  */
 __OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
@@ -435,15 +356,12 @@ long
 dispatch_source_testcancel(dispatch_source_t source);
 
 /*!
- * @function dispatch_source_get_handle
- *
- * @abstract
  * Returns the underlying system handle associated with this dispatch source.
  *
  * @param source
  * The result of passing NULL in this parameter is undefined.
  *
- * @result
+ * @return
  * The return value should be interpreted according to the type of the dispatch
  * source, and may be one of the following handles:
  *
@@ -464,15 +382,12 @@ uintptr_t
 dispatch_source_get_handle(dispatch_source_t source);
 
 /*!
- * @function dispatch_source_get_mask
- *
- * @abstract
  * Returns the mask of events monitored by the dispatch source.
  *
  * @param source
  * The result of passing NULL in this parameter is undefined.
  *
- * @result
+ * @return
  * The return value should be interpreted according to the type of the dispatch
  * source, and may be one of the following flag sets:
  *
@@ -493,12 +408,8 @@ unsigned long
 dispatch_source_get_mask(dispatch_source_t source);
 
 /*!
- * @function dispatch_source_get_data
- *
- * @abstract
  * Returns pending data for the dispatch source.
  *
- * @discussion
  * This function is intended to be called from within the event handler block.
  * The result of calling this function outside of the event handler callback is
  * undefined.
@@ -506,7 +417,7 @@ dispatch_source_get_mask(dispatch_source_t source);
  * @param source
  * The result of passing NULL in this parameter is undefined.
  *
- * @result
+ * @return
  * The return value should be interpreted according to the type of the dispatch
  * source, and may be one of the following:
  *
@@ -529,9 +440,6 @@ unsigned long
 dispatch_source_get_data(dispatch_source_t source);
 
 /*!
- * @function dispatch_source_merge_data
- *
- * @abstract
  * Merges data into a dispatch source of type DISPATCH_SOURCE_TYPE_DATA_ADD or
  * DISPATCH_SOURCE_TYPE_DATA_OR and submits its event handler block to its
  * target queue.
@@ -550,12 +458,8 @@ void
 dispatch_source_merge_data(dispatch_source_t source, unsigned long value);
 
 /*!
- * @function dispatch_source_set_timer
- *
- * @abstract
  * Sets a start time, interval, and leeway value for a timer source.
  *
- * @discussion
  * Calling this function has no effect if the timer source has already been
  * canceled.
  * 

@@ -27,7 +27,7 @@
 
 #include "Qt_tests.h"
 
-#ifdef HAS_BLOCKS
+#ifdef TEST_BLOCKS
 
 /*
  Verify that jobs dispatched before creation

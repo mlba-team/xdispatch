@@ -29,7 +29,6 @@
 /*!
  * @typedef dispatch_semaphore_t
  *
- * @abstract
  * A counting semaphore.
  */
 DISPATCH_DECL(dispatch_semaphore);
@@ -37,12 +36,8 @@ DISPATCH_DECL(dispatch_semaphore);
 __DISPATCH_BEGIN_DECLS
 
 /*!
- * @function dispatch_semaphore_create
- *
- * @abstract
  * Creates new counting semaphore with an initial value.
  *
- * @discussion
  * Passing zero for the value is useful for when two threads need to reconcile
  * the completion of a particular event. Passing a value greather than zero is
  * useful for managing a finite pool of resources, where the pool size is equal
@@ -61,12 +56,8 @@ dispatch_semaphore_t
 dispatch_semaphore_create(long value);
 
 /*!
- * @function dispatch_semaphore_wait
- *
- * @abstract
  * Wait (decrement) for a semaphore.
  *
- * @discussion
  * Decrement the counting semaphore. If the resulting value is less than zero,
  * this function waits in FIFO order for a signal to occur before returning.
  *
@@ -86,12 +77,8 @@ long
 dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
 
 /*!
- * @function dispatch_semaphore_signal
- *
- * @abstract
  * Signal (increment) a semaphore.
  *
- * @discussion
  * Increment the counting semaphore. If the previous value was less than zero,
  * this function wakes a waiting thread before returning.
  *

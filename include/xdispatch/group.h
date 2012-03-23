@@ -75,14 +75,14 @@ class XDISPATCH_EXPORT group : public object {
         @param t give a time here or a DISPATCH_TIME_FOREVER to wait until all operations are done
         @return false if the timeout occured or true if all operations were executed
         */
-        bool wait(dispatch_time_t = DISPATCH_TIME_FOREVER);
+        bool wait(dispatch_time_t t = DISPATCH_TIME_FOREVER);
         /**
         Waits until the given time has passed
         or all dispatched operations in the group were executed
         @param timeout give a timeout here
         @return false if the timeout occured or true if all operations were executed
         */
-        bool wait(struct tm* t);
+        bool wait(struct tm* timeout);
         /**
         This function schedules a notification operation to be submitted to the specified
         queue once all operations associated with the dispatch group have completed.
