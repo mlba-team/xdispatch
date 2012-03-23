@@ -22,11 +22,11 @@
 #define __DISPATCH_QUEUE__
 
 #ifndef __DISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+#error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
 #endif
 
-/*!
+/**
  * Dispatch is an abstract model for expressing concurrency via simple but
  * powerful API. 
  *
@@ -41,7 +41,7 @@
  * queues become empty, these threads are automatically released.
  */
 
-/*!
+/**
  * Dispatch queues invoke blocks submitted to them serially in FIFO order. A
  * queue will only invoke one block at a time, but independent queues may each
  * invoke their blocks concurrently with respect to each other.
@@ -60,12 +60,12 @@
  */
 DISPATCH_DECL(dispatch_queue);
 
-/*!
+/**
  * Attribute and policy extensions for dispatch queues.
  */
 DISPATCH_DECL(dispatch_queue_attr);
 
-/*!
+/**
  * The prototype of blocks submitted to dispatch queues, which take no
  * arguments and have no return value.
  *
@@ -100,7 +100,7 @@ typedef void (^dispatch_block_t)(void);
 
 __DISPATCH_BEGIN_DECLS
 
-/*!
+/**
  * Submits a block for asynchronous execution on a dispatch queue.
  *
  * The dispatch_async() function is the fundamental mechanism for submitting
@@ -125,13 +125,13 @@ __DISPATCH_BEGIN_DECLS
  * The result of passing NULL in this parameter is undefined.
  */
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
 #endif
 
-/*!
+/**
  * Submits a function for asynchronous execution on a dispatch queue.
  *
  * See dispatch_async() for details.
@@ -151,14 +151,14 @@ dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
  * dispatch_async_f().
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_async_f(dispatch_queue_t queue,
 	void *context,
 	dispatch_function_t work);
 
-/*!
+/**
  * Submits a block for synchronous execution on a dispatch queue.
  *
  * Submits a block to a dispatch queue like dispatch_async(), however
@@ -185,13 +185,13 @@ dispatch_async_f(dispatch_queue_t queue,
  * The result of passing NULL in this parameter is undefined.
  */
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);
 #endif
 
-/*!
+/**
  * Submits a function for synchronous execution on a dispatch queue.
  *
  * See dispatch_sync() for details.
@@ -209,14 +209,14 @@ dispatch_sync(dispatch_queue_t queue, dispatch_block_t block);
  * dispatch_sync_f().
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_sync_f(dispatch_queue_t queue,
 	void *context,
 	dispatch_function_t work);
 
-/*!
+/**
  * Submits a block to a dispatch queue for multiple invocations.
  *
  * Submits a block to a dispatch queue for multiple invocations. This function
@@ -238,13 +238,13 @@ dispatch_sync_f(dispatch_queue_t queue,
  * The result of passing NULL in this parameter is undefined.
  */
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t));
 #endif
 
-/*!
+/**
  * Submits a function to a dispatch queue for multiple invocations.
  *
  * @see dispatch_apply
@@ -266,14 +266,14 @@ dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t))
  * current index of iteration.
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NONNULL4 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_apply_f(size_t iterations, dispatch_queue_t queue,
 	void *context,
 	void (*work)(void *, size_t));
 
-/*!
+/**
  * Returns the queue on which the currently executing block is running.
  * 
  * Returns the queue on which the currently executing block is running.
@@ -284,12 +284,12 @@ dispatch_apply_f(size_t iterations, dispatch_queue_t queue,
  * @result
  * Returns the current queue.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_PURE DISPATCH_WARN_RESULT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 dispatch_queue_t
 dispatch_get_current_queue(void);
 
-/*!
+/**
  * Returns the default queue that is bound to the main thread.
  *
  * In order to invoke blocks submitted to the main queue, the application must
@@ -300,10 +300,10 @@ dispatch_get_current_queue(void);
  * Returns the main queue. This queue is created automatically on behalf of
  * the main thread before main() is called.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 DISPATCH_EXPORT dispatch_queue_t dispatch_get_main_queue();
 
-/*!
+/**
  *
  */
 enum {
@@ -326,7 +326,7 @@ enum {
         */
 };
 
-/*!
+/**
  * Returns a well-known global concurrent queue of a given priority level.
  *
  * The well-known global concurrent queues may not be modified. Calls to
@@ -343,12 +343,12 @@ enum {
  * @return
  * Returns the requested global queue.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_PURE DISPATCH_WARN_RESULT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 dispatch_queue_t
 dispatch_get_global_queue(long priority, unsigned long flags);
 
-/*!
+/**
  * Creates a new dispatch queue to which blocks may be submitted.
  *
  * Dispatch queues invoke blocks serially in FIFO order.
@@ -368,12 +368,12 @@ dispatch_get_global_queue(long priority, unsigned long flags);
  * @return
  * The newly created dispatch queue.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_MALLOC DISPATCH_WARN_RESULT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 dispatch_queue_t
 dispatch_queue_create(const char *label, dispatch_queue_attr_t attr);
 
-/*!
+/**
  * Returns the label of the queue that was specified when the
  * queue was created.
  *
@@ -383,12 +383,12 @@ dispatch_queue_create(const char *label, dispatch_queue_attr_t attr);
  * @return
  * The label of the queue. The result may be NULL.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_PURE DISPATCH_WARN_RESULT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT    
 const char *
 dispatch_queue_get_label(dispatch_queue_t queue);
 
-/*!
+/**
  * Sets the target queue for the given object.
  *
  * An object's target queue is responsible for processing the object.
@@ -412,12 +412,12 @@ dispatch_queue_get_label(dispatch_queue_t queue);
  * previous one, if any, is released.
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
 
-/*!
+/**
  * Execute blocks submitted to the main queue.
  *
 
@@ -427,12 +427,12 @@ dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
  * Applications that call NSApplicationMain() or CFRunLoopRun() on the
  * main thread do not need to call dispatch_main().
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW DISPATCH_NORETURN
+
+DISPATCH_EXPORT  
 void
 dispatch_main(void);
 
-/*!
+/**
  * Schedule a block for execution on a given queue at a specified time.
  *
  * Passing DISPATCH_TIME_NOW as the "when" parameter is supported, but not as
@@ -451,15 +451,15 @@ dispatch_main(void);
  * The result of passing NULL in this parameter is undefined.
  */
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_after(dispatch_time_t when,
 	dispatch_queue_t queue,
 	dispatch_block_t block);
 #endif
 
-/*!
+/**
  * Schedule a function for execution on a given queue at a specified time.
  *
  * See dispatch_after() for details.
@@ -480,8 +480,8 @@ dispatch_after(dispatch_time_t when,
  * dispatch_after_f().
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NONNULL4 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_after_f(dispatch_time_t when,
 	dispatch_queue_t queue,

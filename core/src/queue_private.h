@@ -35,7 +35,7 @@
 __DISPATCH_BEGIN_DECLS
 
 
-/*!
+/**
  * @enum dispatch_queue_flags_t
  *
  * @constant DISPATCH_QUEUE_OVERCOMMIT
@@ -49,30 +49,30 @@ enum {
 #define DISPATCH_QUEUE_FLAGS_MASK	(DISPATCH_QUEUE_OVERCOMMIT)
 
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_barrier_sync(dispatch_queue_t queue, dispatch_block_t block);
 #endif
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_barrier_sync_f(dispatch_queue_t dq, void *context, dispatch_function_t work);
 
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_barrier_async(dispatch_queue_t queue, dispatch_block_t block);
 #endif
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL1 DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT   
 void
 dispatch_barrier_async_f(dispatch_queue_t dq, void *context, dispatch_function_t work);
 
-/*!
+/**
  * @function dispatch_queue_set_width
  *
  * @abstract
@@ -93,14 +93,14 @@ dispatch_barrier_async_f(dispatch_queue_t dq, void *context, dispatch_function_t
 #define DISPATCH_QUEUE_WIDTH_MAX_PHYSICAL_CPUS	-2
 #define DISPATCH_QUEUE_WIDTH_MAX_LOGICAL_CPUS	-3
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_queue_set_width(dispatch_queue_t dq, long width);
 
 
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 extern const struct dispatch_queue_offsets_s {
 	// always add new fields at the end
 	const uint16_t dqo_version;

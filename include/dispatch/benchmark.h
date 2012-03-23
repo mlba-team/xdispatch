@@ -34,7 +34,7 @@
 
 __DISPATCH_BEGIN_DECLS
 
-/*!
+/**
  * Count the average number of cycles a given block takes to execute.
  *
  * This function is for debugging and performance analysis work. For the best
@@ -63,14 +63,14 @@ __DISPATCH_BEGIN_DECLS
  * The approximate number of cycles the block takes to execute.
  */
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 uint64_t
 dispatch_benchmark(size_t count, void (^block)(void));
 #endif
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 uint64_t
 dispatch_benchmark_f(size_t count, void *ctxt, void (*func)(void *));
 

@@ -80,7 +80,7 @@
 
 __DISPATCH_BEGIN_DECLS
 
-DISPATCH_EXPORT DISPATCH_NOTHROW
+DISPATCH_EXPORT 
 void
 #if USE_LIBDISPATCH_INIT_CONSTRUCTOR
 libdispatch_init(void) __attribute__ ((constructor));
@@ -92,29 +92,29 @@ libdispatch_init(void);
 #define DISPATCH_COCOA_COMPAT 1
 #if DISPATCH_COCOA_COMPAT
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT 
 mach_port_t
 _dispatch_get_main_queue_port_4CF(void);
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT 
 void
 _dispatch_main_queue_callback_4CF(mach_msg_header_t *msg);
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 DISPATCH_EXPORT
 void (*dispatch_begin_thread_4GC)(void);
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 DISPATCH_EXPORT
 void (*dispatch_end_thread_4GC)(void);
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 DISPATCH_EXPORT
 void *(*_dispatch_begin_NSAutoReleasePool)(void);
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 DISPATCH_EXPORT
 void (*_dispatch_end_NSAutoReleasePool)(void *);
 
@@ -139,16 +139,16 @@ void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT);
 
 /* pthreads magic */
 
-DISPATCH_NOTHROW void dispatch_atfork_prepare(void);
-DISPATCH_NOTHROW void dispatch_atfork_parent(void);
-DISPATCH_NOTHROW void dispatch_atfork_child(void);
-DISPATCH_NOTHROW void dispatch_init_pthread(pthread_t);
+ void dispatch_atfork_prepare(void);
+ void dispatch_atfork_parent(void);
+ void dispatch_atfork_child(void);
+ void dispatch_init_pthread(pthread_t);
 
 #if HAVE_MACH
 /*
  * Extract the context pointer from a mach message trailer.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
+
 void *
 dispatch_mach_msg_get_context(mach_msg_header_t *msg);
 #endif

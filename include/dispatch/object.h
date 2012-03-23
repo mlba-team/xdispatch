@@ -22,7 +22,7 @@
 #define __DISPATCH_OBJECT__
 
 #ifndef __DISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+#error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
 #endif
 
@@ -30,7 +30,7 @@
 
 __DISPATCH_BEGIN_DECLS
 
-/*!
+/**
  * Programmatically log debug information about a dispatch object.
  *
  * @param object
@@ -39,17 +39,17 @@ __DISPATCH_BEGIN_DECLS
  * @param message
  * The message to log above and beyond the introspection.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NOTHROW DISPATCH_FORMAT(printf,2,3)
+
+DISPATCH_EXPORT   
 void
 dispatch_debug(dispatch_object_t object, const char *message, ...);
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NOTHROW DISPATCH_FORMAT(printf,2,0)
+
+DISPATCH_EXPORT   
 void
 dispatch_debugv(dispatch_object_t object, const char *message, va_list ap);
 
-/*!
+/**
  * Increment the reference count of a dispatch object.
  *
  * Calls to dispatch_retain() must be balanced with calls to
@@ -59,12 +59,12 @@ dispatch_debugv(dispatch_object_t object, const char *message, va_list ap);
  * The object to retain.
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_retain(dispatch_object_t object);
 
-/*!
+/**
  * Decrement the reference count of a dispatch object.
  *
  * A dispatch object is asynchronously deallocated once all references are
@@ -76,12 +76,12 @@ dispatch_retain(dispatch_object_t object);
  * The object to release.
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_release(dispatch_object_t object);
 
-/*!
+/**
  * Returns the application defined context of the object.
  *
  * The result of passing NULL in this parameter is undefined.
@@ -89,12 +89,12 @@ dispatch_release(dispatch_object_t object);
  * @return
  * The context of the object; may be NULL.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_PURE DISPATCH_WARN_RESULT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT    
 void *
 dispatch_get_context(dispatch_object_t object);
 
-/*!
+/**
  * Associates an application defined context with the object.
  *
  * @param object
@@ -104,12 +104,12 @@ dispatch_get_context(dispatch_object_t object);
  * The new client defined context for the object. This may be NULL.
  *
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW //DISPATCH_NONNULL1
+
+DISPATCH_EXPORT  //
 void
 dispatch_set_context(dispatch_object_t object, void *context);
 
-/*!
+/**
  * Set the finalizer function for a dispatch object.
  *
  * A dispatch object's finalizer will be invoked on the object's target queue
@@ -126,13 +126,13 @@ dispatch_set_context(dispatch_object_t object, void *context);
  * @param finalizer
  * The finalizer function pointer.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW //DISPATCH_NONNULL1
+
+DISPATCH_EXPORT  //
 void
 dispatch_set_finalizer_f(dispatch_object_t object,
 	dispatch_function_t finalizer);
 
-/*!
+/**
  * Suspends the invocation of blocks on a dispatch object.
  *
  * A suspended object will not invoke any blocks associated with it. The
@@ -146,20 +146,20 @@ dispatch_set_finalizer_f(dispatch_object_t object,
  * The object to be suspended.
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_suspend(dispatch_object_t object);
 
-/*!
+/**
  * Resumes the invocation of blocks on a dispatch object.
  *
  * @param	object
  * The object to be resumed.
  * The result of passing NULL in this parameter is undefined.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 void
 dispatch_resume(dispatch_object_t object);
 

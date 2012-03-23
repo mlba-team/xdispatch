@@ -31,7 +31,7 @@ PROJECT_NAME           = libXDispatch
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 0.6.1
+PROJECT_NUMBER         = 0.7.0
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -102,14 +102,14 @@ ABBREVIATE_BRIEF       = "The $name class" \
 # Doxygen will generate a detailed section even if there is only a brief 
 # description.
 
-ALWAYS_DETAILED_SEC    = NO
+ALWAYS_DETAILED_SEC    = YES
 
 # If the INLINE_INHERITED_MEMB tag is set to YES, doxygen will show all 
 # inherited members of a class in the documentation of that class as if those 
 # members were ordinary class members. Constructors, destructors and assignment 
 # operators of the base classes will not be shown.
 
-INLINE_INHERITED_MEMB  = NO
+INLINE_INHERITED_MEMB  = YES
 
 # If the FULL_PATH_NAMES tag is set to YES then Doxygen will prepend the full 
 # path before files name in the file list and in the header files. If set 
@@ -155,7 +155,7 @@ JAVADOC_AUTOBRIEF      = YES
 # will behave just like regular Qt-style comments (thus requiring 
 # an explicit \brief command for a brief description.)
 
-QT_AUTOBRIEF           = NO
+QT_AUTOBRIEF           = YES
 
 # The MULTILINE_CPP_IS_BRIEF tag can be set to YES to make Doxygen 
 # treat a multi-line C++ special comment block (i.e. a block of //! or /// 
@@ -346,7 +346,7 @@ EXTRACT_ANON_NSPACES   = YES
 # various overviews, but no documentation section is generated. 
 # This option has no effect if EXTRACT_ALL is enabled.
 
-HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_MEMBERS     = NO
 
 # If the HIDE_UNDOC_CLASSES tag is set to YES, Doxygen will hide all 
 # undocumented classes that are normally visible in the class hierarchy. 
@@ -480,7 +480,7 @@ SHOW_USED_FILES        = YES
 # then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy 
 # in the documentation. The default is NO.
 
-SHOW_DIRECTORIES       = NO
+SHOW_DIRECTORIES       = YES
 
 # Set the SHOW_FILES tag to NO to disable the generation of the Files page. 
 # This will remove the Files entry from the Quick Index and from the 
@@ -1279,24 +1279,15 @@ INCLUDE_FILE_PATTERNS  =
 # instead of the = operator.
 
 PREDEFINED             = XDISPATCH_HAS_BLOCKS \
-						 __XDISPATCH_BEGIN_NAMESPACE="namespace xdispatch {" \
-						 __XDISPATCH_END_NAMESPACE="}" \
-						 XDISPATCH_EXPORT \
-						 __DISPATCH_BEGIN_DECLS \
-						 __DISPATCH_END_DECLS \
-						 __OSX_AVAILABLE_STARTING(X,Y) \
-						 DISPATCH_EXPORT \
-						 DISPATCH_NONNULL1 \
-						 DISPATCH_NONNULL2 \
-						 DISPATCH_NONNULL4 \
-						 DISPATCH_NONNULL_ALL \
-						 DISPATCH_WARN_RESULT \
-						 DISPATCH_NOTHROW \
-						 DISPATCH_MALLOC \
-						 __BLOCKS__ \
-						 $ \
-						 DOXYGEN_RUN=1 \
-						 DISPATCH_FORMAT(X,Y,Z)
+                        __XDISPATCH_BEGIN_NAMESPACE="namespace xdispatch {" \
+                        __XDISPATCH_END_NAMESPACE="}" \
+                        XDISPATCH_EXPORT \
+                        __DISPATCH_BEGIN_DECLS \
+                        __DISPATCH_END_DECLS \
+                        DISPATCH_EXPORT \
+                        __BLOCKS__ \
+                        XDISPATCH_DOXYGEN_RUN=1 \
+                        "DISPATCH_DECL(name)=typedef struct name##_s *name##_t"
 						 
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then 

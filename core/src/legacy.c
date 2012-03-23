@@ -29,13 +29,13 @@
  */
 
 #ifdef __BLOCKS__
-DISPATCH_PUBLIC_API DISPATCH_NONNULL1 DISPATCH_NONNULL2
+DISPATCH_PUBLIC_API  
 dispatch_item_t
 LEGACY_dispatch_call(dispatch_queue_t, dispatch_legacy_block_t work, dispatch_legacy_block_t completion)
 __asm__("_dispatch_call2");
 #endif
 
-DISPATCH_PUBLIC_API DISPATCH_PURE DISPATCH_WARN_RESULT
+DISPATCH_PUBLIC_API  
 dispatch_queue_t
 LEGACY_dispatch_queue_get_current(void)
 __asm__("_dispatch_queue_get_current");
