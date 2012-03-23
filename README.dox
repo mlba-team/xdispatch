@@ -18,18 +18,21 @@ See the \ref change_log or the <a href="http://opensource.mlba-team.de/xdispatch
 
 @subsection x1 Original (plain C) Interface
 
-Except the source functions, the entire libdispatch interface is available and can be found in the following files
-(all headers located at include/libdispatch, symbols included in xdispatch binary):
+The entire libdispatch interface is available and can be found in the following files:
 
- - libdispatch/queue.h
- - libdispatch/group.h
- - libdispatch/time.h
- - libdispatch/object.h
- - libdispatch/semaphore.h
+ - <a href="queue_8h.html">dispatch/queue.h</a>
+ - <a href="group_8h.html">dispatch/group.h</a>
+ - <a href="time_8h.html">dispatch/time.h</a>
+ - <a href="object_8h.html">dispatch/object.h</a>
+ - <a href="semaphore_8h.html">dispatch/semaphore.h</a>
+ - <a href="source_8h.html">dispatch/source.h</a>
+ 
+Please note that including <dispatch/dispatch.h> is entirely sufficient and will
+automatically include all other headers as well.
  
 @subsection x11 C++ Interface
 
-As a first level of abstraction we created a plain C++ interface providing a more OO way of programming. Detailed
+As a first level of abstraction we created a plain C++ interface providing a more object-oriented way of programming. Detailed
 information can be found at the related page \ref XDispatch.
 
 @subsection x2 Qt Interface
@@ -44,7 +47,7 @@ is lambdas (sometimes called closures as well). They allow an easier way to util
 Clang or the gcc 4.2 that's shipped with Apple's current Developer Tools.
 
 On compilers implementing the block syntax, it is fully functional when using this port. However we support way
-more compilers when using the C++ interface \ref libXDispatch. Please see the documentation found over there for
+more compilers when using the C++ interface \ref XDispatch. Please see the documentation found over there for
 extended details.
  
 @section x4 Requirements
@@ -64,7 +67,7 @@ svn co http://opensource.mlba-team.de/svn/xdispatch/trunk
 @endcode
 
 Please be aware that this is a project still in progress. As such we might introduce interface
-changes and new functionality until reaching version 1.0 - have a look at the CHANGELOG.dox
+changes and new functionality until reaching version 1.0 - have a look at the CHANGELOG
 for details and the current progress. When using this library within a project we recommend to use
 one of the tagged versions or the stable branch available by using subversion:
 

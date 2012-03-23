@@ -8,7 +8,7 @@
 
 QtDispatch is an additional Qt Module building on QtCore and providing a custom Qt adapted interface
 to use libDispatch. This interface is fully compatible with the generic C++ interface provided by
-\ref libXDispatch.
+\ref XDispatch.
 
 As integration into Qt, it is possible to dispatch QRunnables onto groups and queues as well.
 For integrating the main queue into your Qt Application we created a (currently experimental) QDispatchCoreApplication

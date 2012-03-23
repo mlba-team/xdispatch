@@ -75,13 +75,13 @@ div.navtab {
 /* @group Link Styling */
 
 a {
-	color: #0E5E27;
+	color: #255eac;
 	font-weight: normal;
 	text-decoration: none;
 }
 
 .contents a:visited {
-	color: #52AA6F;
+	color: #255eac;
 }
 
 a:hover {
@@ -340,9 +340,9 @@ hr {
 
 .memproto {
 	padding: 4px;
-    padding-left: 40px;
+    padding-left: 25px;
 	font-weight: bold;
-    background: #f0f0f0 URL(puzzle.png) 0px 2px no-repeat;
+    background: #f0f0f0 URL(function.png) 8px 10px no-repeat;
 }
 
 .memdoc {
@@ -603,9 +603,9 @@ div.custom_header {
 }
 
 code {
-    padding: 10px;
-    padding-left: 40px;
-    background: URL(sticky.png) no-repeat;
+    padding: 2px;
+    padding-left: 30px;
+    background: URL(header.png) no-repeat;
 }
 
 table code {
@@ -614,9 +614,9 @@ table code {
 }
 
 .dynheader {
-    padding: 12px;
-    padding-left: 40px;
-    background: URL(inherit.png) no-repeat;
+    padding: 2px;
+    padding-left: 25px;
+    background: URL(inheritance.png) no-repeat;
 }
 
 .tablist > a {
@@ -640,7 +640,7 @@ div.header div {
 div.header a {
 	text-align: left;
 	font-size: 100%;
-    color: #7FE9AD;
+    color: #95AAEE;
     text-shadow: #054420 0px -1px 2px;
 }
 
@@ -653,7 +653,7 @@ div.summary + div.headertitle {
 }
 
 div.header * div.title {
-    color: #7FE9AD;
+    color: #95aaee;
     font-size: 150%;
     margin: 0;
     padding: 0;
@@ -662,33 +662,34 @@ div.header * div.title {
     font-weight: bold;
 }
 
+
 /* table styles */
 
-            .t1 {
-                width: 20%;
-                font-family: Lucida Console, Courier New;
-            }
-            
-            .t2 {
-                width: 20%;
-                font-family: Lucida Console, Courier New;
-            }
-            
-            .t3 {
-                width: 50%;
-            }
-            
-            .doxtable {
-                font-size: 8pt;
-                border: 1px solid #888;
-                border-collapse: collapse;
-                padding: 0px;
-            }
-            
-            .t1, .t2, .t3 {
-                border: 1px solid #888;
-                padding: 3px;
-            }
+.t1 {
+	width: 20%;
+	font-family: Lucida Console, Courier New;
+}
+
+.t2 {
+	width: 20%;
+	font-family: Lucida Console, Courier New;
+}
+
+.t3 {
+	width: 50%;
+}
+
+.doxtable {
+	font-size: 8pt;
+	border: 1px solid #888;
+	border-collapse: collapse;
+	padding: 0px;
+}
+
+.t1, .t2, .t3 {
+	border: 1px solid #888;
+	padding: 3px;
+}
 
 div#global_nav {
 	margin: 20px;
@@ -711,4 +712,15 @@ div.global_nav_item {
 
 div.global_nav_item span {
 	font-size: 15pt;
+}
+
+/* search box */
+#MSearchBox span.left, #MSearchBox span.right {
+	padding: 0;
+}
+
+#MSearchBox {
+	top: 24px;
+	right: 15px; 
+	margin-top: 0px;
 }
