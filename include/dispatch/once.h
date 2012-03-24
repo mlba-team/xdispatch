@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_ONCE__
 #define __DISPATCH_ONCE__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
@@ -66,5 +71,7 @@ dispatch_once_f(dispatch_once_t *predicate, void *context, void (*function)(void
 #endif
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif

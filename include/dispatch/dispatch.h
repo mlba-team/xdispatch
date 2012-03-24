@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_PUBLIC__
 #define __DISPATCH_PUBLIC__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifdef __APPLE__
 #include <Availability.h>
 #include <TargetConditionals.h>
@@ -63,5 +68,6 @@
 
 #undef __DISPATCH_INDIRECT__
 
+/** @} */
 
 #endif

@@ -28,6 +28,11 @@
 #ifndef XDISPATCH_LAMBDA_BLOCKS_H_
 #define XDISPATCH_LAMBDA_BLOCKS_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -87,6 +92,8 @@
 
   @see XDISPATCH_BLOCK
   */
+
+#ifndef XDISPATCH_DOXYGEN_RUN
 
 // clang 2.0, gcc 4.3 from mac os 10.6
 #ifdef __BLOCKS__
@@ -151,8 +158,12 @@
 
 #endif
 
+#endif /* XDISPATCH_DOXYGEN_RUN */
+
 #ifdef XDISPATCH_DOXYGEN_RUN
 # define $ [=]
 #endif
+
+/** @} */
 
 #endif /* XDISPATCH_LAMBDA_BLOCKS_H_ */

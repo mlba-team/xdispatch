@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_ONCE_H_
 #define XDISPATCH_ONCE_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -121,5 +126,7 @@ XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once* );
 XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once& );
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* XDISPATCH_ONCE_H_ */

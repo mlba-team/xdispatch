@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_BASE__
 #define __DISPATCH_BASE__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #endif
@@ -86,14 +91,8 @@ typedef void (*dispatch_function_t)(void *);
 # endif
 #endif
 
-#ifndef DISPATCH_PTR
-# ifdef _WIN32
-#  define DISPATCH_PTR *
-# else
-#  define DISPATCH_PTR
-# endif
-#endif
 
+/** @} */
 
 #endif
 

@@ -27,6 +27,8 @@
 #ifndef __DISPATCH_BENCHMARK__
 #define __DISPATCH_BENCHMARK__
 
+#ifndef XDISPATCH_DOYGEN_RUN
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include <dispatch/base.h> // for HeaderDoc
@@ -75,5 +77,7 @@ uint64_t
 dispatch_benchmark_f(size_t count, void *ctxt, void (*func)(void *));
 
 __DISPATCH_END_DECLS
+
+#endif /* XDISPATCH_DOXYGEN_RUN */
 
 #endif

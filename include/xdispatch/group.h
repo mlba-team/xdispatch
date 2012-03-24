@@ -22,6 +22,11 @@
 #ifndef XDISPATCH_GROUP_H_
 #define XDISPATCH_GROUP_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -137,5 +142,7 @@ XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const group* );
 XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const group& );
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* XDISPATCH_GROUP_H_ */

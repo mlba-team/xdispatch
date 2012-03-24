@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_SEMAPHORE_H_
 #define XDISPATCH_SEMAPHORE_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -126,5 +131,7 @@ XDISPATCH_EXPORT bool operator ==(const dispatch_semaphore_t&, const semaphore&)
 XDISPATCH_EXPORT bool operator !=(const dispatch_semaphore_t&, const semaphore&);
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* XDISPATCH_SEMAPHORE_H_ */

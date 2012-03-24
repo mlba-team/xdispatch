@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_TIME__
 #define __DISPATCH_TIME__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
@@ -108,5 +113,7 @@ dispatch_time_t
 dispatch_walltime(const struct timespec *when, int64_t delta);
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif

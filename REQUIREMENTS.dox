@@ -1,53 +1,32 @@
 /**
-@page requirements REQUIREMENTS
-@author Marius Zwicker / MLBA
+@page requirements Requirements
 
 @section supp Supported Environments
 
-libXDispatch was tested on and currently run's on the following operating systems:
+XDispatch was tested on and currently run's on the following operating systems:
 
- - Mac OS 10.6
- - Windows XP SP3 and Windows 7 32bit/64bit
+ - Mac OS 10.6 'Snow Leopard', 10.7 'Lion'
+ - Windows XP SP3 32bit and Windows 7 32bit/64bit
  - Debian 6.0
- - openSUSE 11.4
- - Ubuntu 10.10
+ - openSUSE 11.4 64bit
+ - Ubuntu 10.10 and 11.10, both 32bit and 64bit
  
 We expect it to run on various other flavors of Linux as well, however we had no chance
 to test it yet. The officially supported development environments and/or toolchains include:
 
- - Clang 2.0
- - XCode 4 (using the clang backend)
- - GCC 4.2+ – to use lambdas we recommend GCC 4.5.1+
+ - Clang 2.0, 3.0 and 3.1
+ - XCode 4 (using the Clang backend)
+ - GCC 4.2+ – to use lambdas we recommend GCC 4.6.x
  - Visual Studio 2008 SP1 - tested for 32bit, might also work with 64bit
  - Visual Studio 2010, building both 32bit and 64bit binaries
  - MinGW (shipping gcc 4.5.x)
- 
-libXDispatch is coming as ready-to-use, i.e. we include all dependencies (except Qt) within our
-source tree. Of course you do not need to use our versions of the third party libraries, but use
-your own. To do so, you should have the following libraries installed and have them reachable by
-compiler and linker:
-<ul>
- <li>
-	libkqueue (at least version 0.5, for full platform support we are shipping with the trunk revision 523)
-	The sources and further information can be found at http://mark.heily.com/project/libkqueue
- </li>
- <li>
-	libpthread_workqueue (trunk revision 119 recommended and tested)
-	More information about this library is available at http://mark.heily.com/libpthreadworkqueue
- </li>
-</ul>
-Please note that both libraries are available as debian packages using apt or aptitude as well. Our
-build scripts will automatically detect any pre-installed versions.
- 
-Of course we welcome any news on sucessful builds on other operating systems / toolchains currently not declared as
-officially supported. Please contact us to report any success stories.
 
 @section dev Developing with libXDispatch
 
 When intending to develop with libXDispatch please ensure you are using one of the supported
 environments. Afterwards go to the <a href="http://opensource.mlba-team.de/xdispatch/files">downloads page</a> and select the appropriate binary package. Included
-are the necessary headers and library files you have to link with. Normally linking with xdispatch should
-be sufficient. When using the Qt interface, you have to link with QtDispatch as well. Please note that you 
+are the necessary headers and library files you have to link with. Normally linking with xdispatch or dispatch should
+be sufficient, see the appropriate documentation for details. When using the Qt interface, you have to link with qtdispatch as well. Please note that you
 have to link with the Qt additionally in case you want to use the QtDispatch library.
 
 Another possible approach is to include the sources directly into your own source tree, e.g. by using svn:externals and referring to our stable branch. This is the
@@ -55,14 +34,35 @@ recommended way when already using CMake. When doing so, all you need to do is t
 global includes to our include/ directory and linking your own targets with the targets xdispatch and/or QtDispatch.
 
 For examples and demonstrations of xdispatch and the Grand Central Dispatch approach, we recommend to have a look at \ref tutorial and refer to Apple's Online Documentation
-mentioned in the README.dox file.
+mentioned in the @ref into_sec.
 
 @section build Building libXDispatch
 
 Building libXDispatch means you either intend to build your own copy or want to directly integrate the
-libXDispatch sources with your project (easily done when using CMake) 
+libXDispatch sources with your project (easily done when using CMake).
 
-Additionally to a supported toolchain / operating system you need CMake 2.8+ installed and reachable in your 
+libXDispatch is coming as ready-to-use, i.e. we include all dependencies (except Qt) within our
+source tree. Of course you do not need to use our versions of the third party libraries, but use
+your own. To do so, you should have the following libraries and their development files installed and have them reachable by
+compiler and linker:
+<ul>
+ <li>
+        libkqueue (at least version 0.5, for full platform support we are shipping with the trunk revision 523)
+        The sources and further information can be found at http://mark.heily.com/project/libkqueue
+ </li>
+ <li>
+        libpthread_workqueue (trunk revision 119 recommended and tested)
+        More information about this library is available at http://mark.heily.com/libpthreadworkqueue
+ </li>
+ <li>
+        libblocks-runtime (when using Clang as a target compiler)
+        More information about this library is available at http://mackyle.github.com/blocksruntime/
+</ul>
+Please note that all those libraries are available as debian packages using apt or aptitude as well. Our
+build scripts will automatically detect any pre-installed versions.
+
+
+Additionally to a supported toolchain / operating system you need CMake 2.8+ installed and reachable in your
 path. If you want to build QtDispatch, please ensure that you have a SDK for Qt 4.7.0+ installed and
 qmake is reachable in your path as well.
 If all this is satisfied, get your copy of the current sources (see \ref m1), enter the root directory (where
@@ -72,8 +72,8 @@ you find the README.dox) and run (depending on you platform):
 @code
 cmake
 @endcode
-Afterwards you should find a solution file in your xdispatch folder. Build it and the binaries can be 
-found within the 'Bin' directory.
+Afterwards you should find a solution file in your xdispatch folder. Build it and the binaries can be
+found within the 'bin' directory.
 
 @subsection x42 On Linux (Makefiles)
 @code
@@ -86,10 +86,21 @@ When finished, all binaries can be found within the 'Bin' directory.
 @code
 cmake -G "XCode"
 @endcode
-You should find an xcodeproject in your xdispatch folder. Upon build completion, all binaries 
-can be found in the 'Bin' directory as well.
+You should find an xcodeproject in your xdispatch folder. Upon build completion, all binaries
+can be found in the 'bin' directory as well.
 
-Other generators are available as well, please consult the CMake documentation at 
+@subsection x44 CMake
+Alternatively you can simply include the sources from with a CMakeLists.txt configuration to be built along with your complete project:
+@code
+add_subdirectory(xdispatch)
+@endcode
+
+Other generators are available as well, please consult the CMake documentation at
 http://www.cmake.org for more detailed information.
+
+@section story Success Stories
+
+Of course we welcome any news on sucessful builds on other operating systems / toolchains currently not declared as
+officially supported. Please contact us to report any success stories.
    
 */

@@ -28,6 +28,11 @@
 #ifndef XDISPATCH_LAMBDA_DISPATCH_H_
 #define XDISPATCH_LAMBDA_DISPATCH_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -82,5 +87,7 @@ inline void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block){
 }
 
 #endif
+
+/** @} */
 
 #endif /* XDISPATCH_LAMBDA_DISPATCH_H_ */

@@ -22,6 +22,11 @@
 #ifndef XDISPATCH_H_
 #define XDISPATCH_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #include <dispatch/dispatch.h>
 #ifndef NSEC_PER_MSEC
 # define NSEC_PER_MSEC 1000000ll
@@ -68,5 +73,7 @@
 # pragma warning(default: 4251) // re-enable warning C4251 - we do not want to influence other code
 #endif
 */
+
+/** @} */
 
 #endif /* XDISPATCH_H_ */

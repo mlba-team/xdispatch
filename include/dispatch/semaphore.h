@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_SEMAPHORE__
 #define __DISPATCH_SEMAPHORE__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include <dispatch/base.h> // for HeaderDoc
@@ -95,5 +100,7 @@ long
 dispatch_semaphore_signal(dispatch_semaphore_t dsema);
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif /* __DISPATCH_SEMAPHORE__ */

@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_OBJECT__
 #define __DISPATCH_OBJECT__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
@@ -164,5 +169,7 @@ void
 dispatch_resume(dispatch_object_t object);
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif

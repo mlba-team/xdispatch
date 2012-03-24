@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_SOURCE__
 #define __DISPATCH_SOURCE__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h"  // for HeaderDoc
@@ -493,5 +498,7 @@ dispatch_source_set_timer(dispatch_source_t source,
 	uint64_t leeway);
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif

@@ -23,6 +23,11 @@
 #ifndef SYNCHRONIZED_H_
 #define SYNCHRONIZED_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -267,5 +272,7 @@ inline synclock get_lock_for_key(synclock& s){ return s; }
 #endif
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* SYNCHRONIZED_H_ */
