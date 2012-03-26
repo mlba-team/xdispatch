@@ -71,8 +71,8 @@ void dispatch_semaphore();
 void dispatch_timer_bit31();
 void dispatch_timer_bit63();
 void dispatch_drift();
-void dispatch_read();
-void dispatch_proc();
+void test_dispatch_read();
+void test_dispatch_proc();
 #endif
 
 static void register_tests(){
@@ -108,9 +108,9 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_timer_bit63);
     MU_REGISTER_TEST(dispatch_drift);
 # ifndef _WIN32
-    MU_REGISTER_TEST(dispatch_read);
+    MU_REGISTER_TEST(test_dispatch_read);
 # endif
-    //MU_REGISTER_TEST(dispatch_proc);
+    //MU_REGISTER_TEST(test_dispatch_proc);
 #endif
 }
 

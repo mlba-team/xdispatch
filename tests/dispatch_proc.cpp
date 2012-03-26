@@ -52,13 +52,13 @@
 
 static long event_cnt;
 
-extern "C" void dispatch_proc(void)
+extern "C" void test_dispatch_proc(void)
 {
 	dispatch_source_t proc;
 	int res;
 	pid_t pid;
 
-    MU_BEGIN_TEST(dispatch_proc);
+    MU_BEGIN_TEST(test_dispatch_proc);
 	
 	// Creates a process and register multiple observers.  Send a signal,
 	// exit the process, etc., and verify all observers were notified.

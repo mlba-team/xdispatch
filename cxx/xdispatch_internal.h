@@ -24,10 +24,13 @@
 
 # ifdef HAVE_NATIVE_DISPATCH_H
 #  include <dispatch/dispatch.h>
-#  define NSEC_PER_MSEC 1000000ll
 # else
 #  include "../include/dispatch/dispatch.h"
 # endif
+
+#ifndef NSEC_PER_MSEC
+# define NSEC_PER_MSEC 1000000ll
+#endif
 
 #include <assert.h>
 #include <string>

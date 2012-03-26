@@ -39,7 +39,7 @@ if( BUILD_XDISPATCH_TESTS)
 	    ${QT_QTCORE_INCLUDE_DIR}
      	${QT_QTTEST_INCLUDE_DIR}
      	${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../include
+        ${CMAKE_CURRENT_BINARY_DIR}/../include
     )
 
     if(MINGW)
