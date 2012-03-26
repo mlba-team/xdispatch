@@ -27,6 +27,7 @@
 
 #include "Qt_tests.h"
 
+#ifdef HAS_BLOCKS
 
 /*
  Verify that jobs dispatched before creation
@@ -63,5 +64,6 @@ extern "C" void Qt_early_dispatch2(){
     MU_END_TEST;
 }
 
+#endif
 
 #endif
