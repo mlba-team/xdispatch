@@ -1,10 +1,6 @@
 # tests for xdispatch
 mz_add_library(munit munit)
 
-# xdispatch tests are opt-in
-include(CTest)
-enable_testing()
-
 # define file groups
 file(GLOB TESTSRCS *.c *.h cxx_*.cpp dispatch_*.cpp cross_blocks.cpp)
 file(GLOB SHIMS shims/*.c shims/*.h)

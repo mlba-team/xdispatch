@@ -7,6 +7,11 @@ INCLUDE (CheckSymbolExists)
 project(xdispatch)
 include(package/version.cmake)
 
+# ctest config
+option(BUILD_XDISPATCH_TESTS "Enable to build the xdispatch test suite" OFF)
+include(CTest)
+enable_testing()
+
 # check if mz_tools is available
 if(NOT HAS_MZ_GLOBAL)
 
@@ -131,7 +136,6 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
 endif()
 
 # custom test framework for xdispatch
-option(BUILD_XDISPATCH_TESTS "Enable to build the xdispatch test suite" OFF)
 if( BUILD_XDISPATCH_TESTS)
 	mz_add_executable(tests tests)
 endif()
