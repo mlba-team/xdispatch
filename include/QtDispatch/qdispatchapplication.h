@@ -26,6 +26,11 @@
 #include <QApplication>
 #include "qdispatchglobal.h"
 
+/**
+ * @addtogroup qtdispatch
+ * @{
+ */
+
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
@@ -49,5 +54,7 @@ class Q_DISPATCH_EXPORT QDispatchApplication : public QApplication {
 
 QT_END_NAMESPACE
 QT_END_HEADER
+
+/** @} */
 
 #endif /* QDISPATCH_APPLICATION_H_ */

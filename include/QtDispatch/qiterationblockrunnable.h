@@ -27,6 +27,11 @@
 
 #include "qdispatchglobal.h"
 
+/**
+ * @addtogroup qtdispatch
+ * @{
+ */
+
 #ifdef XDISPATCH_HAS_BLOCKS
 
 QT_BEGIN_HEADER
@@ -70,5 +75,7 @@ QT_END_NAMESPACE
 QT_END_HEADER
 
 #endif
+
+/** @} */
 
 #endif /* QITERATIONBLOCKRUNNABLE_H_ */

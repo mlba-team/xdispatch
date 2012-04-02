@@ -28,6 +28,11 @@
 
 #include <qcoreapplication.h>
 
+/**
+ * @addtogroup qtdispatch
+ * @{
+ */
+
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
@@ -63,5 +68,7 @@ class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QCoreApplication {
 
 QT_END_NAMESPACE
 QT_END_HEADER
+
+/** @} */
 
 #endif /* QDISPATCH_EVENTDISPATCHER_H_ */

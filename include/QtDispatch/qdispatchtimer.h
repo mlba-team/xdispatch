@@ -27,6 +27,11 @@
 
 #include <qobject.h>
 
+/**
+ * @addtogroup qtdispatch
+ * @{
+ */
+
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
@@ -139,5 +144,7 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
 
 QT_END_NAMESPACE
 QT_END_HEADER
+
+/** @} */
 
 #endif /* QDISPATCH_SEMAPHORE_H_ */
