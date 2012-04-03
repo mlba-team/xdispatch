@@ -1,0 +1,39 @@
+
+#include <windows.h>
+
+#define VER_FILEVERSION             ${XDISPATCH_DLL_VERSION}
+#define VER_FILEVERSION_STR         "${XDISPATCH_VERSION}\0"
+
+#define VER_PRODUCTVERSION          ${XDISPATCH_DLL_VERSION}
+#define VER_PRODUCTVERSION_STR      "${XDISPATCH_VERSION}\0"
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	VER_FILEVERSION
+PRODUCTVERSION 	VER_PRODUCTVERSION
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+FILEFLAGS      	VS_FF_PRERELEASE
+FILEOS         	VOS__WINDOWS32
+FILETYPE       	VFT_DLL
+FILESUBTYPE    	VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+		BEGIN
+			VALUE "CompanyName", "${XDISPATCH_MAINTAINER} \251 2010-2012,  Apple Inc. \251 2008-2009\0"
+			VALUE "FileDescription", "libQtDispatch Qt Compatibility Layer\0"
+			VALUE "FileVersion", VER_FILEVERSION_STR
+			VALUE "InternalName", "libQtDispatch\0"
+			VALUE "LegalCopyright", "${XDISPATCH_MAINTAINER} \251 2010-2012,  Apple Inc. \251 2008-2009\0"
+			VALUE "OriginalFilename", "libQtDispatch.dll\0"
+			VALUE "ProductName", "${XDISPATCH_SUMMARY}\0"
+			VALUE "ProductVersion", VER_PRODUCTVERSION_STR
+		END
+	END 
+END
