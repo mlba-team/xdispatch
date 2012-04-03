@@ -44,7 +44,9 @@
 #endif
 
 #ifdef _WIN32
-# pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
+# ifndef __GNUC__
+#  pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
+# endif
 # define XDISPATCH_EXPORT __declspec(dllexport)
 #else
 # define XDISPATCH_EXPORT __attribute__((visibility("default")))

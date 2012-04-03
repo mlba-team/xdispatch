@@ -294,7 +294,7 @@ XDISPATCH_EXPORT time as_dispatch_time(struct tm*);
 /**
     @return The given time converted to a dispatch time
     */
-inline XDISPATCH_EXPORT dispatch_time_t as_native_dispatch_time(const time& t) {
+inline dispatch_time_t as_native_dispatch_time(const time& t) {
     return t;
 }
 

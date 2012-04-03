@@ -12,6 +12,7 @@ static int pthread_rwlockattr_destroy(pthread_rwlockattr_t *a)
 static int pthread_rwlockattr_init(pthread_rwlockattr_t *a)
 {
 	*a = 0;
+    return 0;
 }
 
 static int pthread_rwlockattr_getpshared(pthread_rwlockattr_t *a, int *s)

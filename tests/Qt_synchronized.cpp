@@ -32,7 +32,7 @@
 static bool flag = false;
 static size_t counter = 0;
 static xdispatch::synclock lock;
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex;
 
 class MutexRun : public QIterationRunnable {
 
@@ -113,6 +113,8 @@ extern "C" void Qt_synchronized() {
     QDispatchQueue q = QDispatch::globalQueue();
 
     MU_BEGIN_TEST(Qt_synchronized);
+
+    pthread_mutex_init( &mutex, NULL );
 
     // test 1 1/2
     MU_MESSAGE("Testing 'synchronized' keyword (apply)");

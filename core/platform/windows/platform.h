@@ -38,7 +38,7 @@
 #include "threads.h"
 #include "queue.h"
 
-#if _MSC_VER < 1600
+#if !defined(__GNUC__) && _MSC_VER < 1600
 # include "stdint.h"
 #else
 # include <stdint.h>
