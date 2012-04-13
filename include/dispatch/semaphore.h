@@ -22,14 +22,13 @@
 #define __DISPATCH_SEMAPHORE__
 
 #ifndef __DISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+#error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include <dispatch/base.h> // for HeaderDoc
 #endif
 
-/*!
+/** @file dispatch/semaphore.h
  * @typedef dispatch_semaphore_t
  *
- * @abstract
  * A counting semaphore.
  */
 DISPATCH_DECL(dispatch_semaphore);
@@ -37,12 +36,8 @@ DISPATCH_DECL(dispatch_semaphore);
 __DISPATCH_BEGIN_DECLS
 
 /*!
- * @function dispatch_semaphore_create
- *
- * @abstract
  * Creates new counting semaphore with an initial value.
  *
- * @discussion
  * Passing zero for the value is useful for when two threads need to reconcile
  * the completion of a particular event. Passing a value greather than zero is
  * useful for managing a finite pool of resources, where the pool size is equal
@@ -55,18 +50,14 @@ __DISPATCH_BEGIN_DECLS
  * @result
  * The newly created semaphore, or NULL on failure.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_MALLOC DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 dispatch_semaphore_t
 dispatch_semaphore_create(long value);
 
 /*!
- * @function dispatch_semaphore_wait
- *
- * @abstract
  * Wait (decrement) for a semaphore.
  *
- * @discussion
  * Decrement the counting semaphore. If the resulting value is less than zero,
  * this function waits in FIFO order for a signal to occur before returning.
  *
@@ -80,18 +71,14 @@ dispatch_semaphore_create(long value);
  * @result
  * Returns zero on success, or non-zero if the timeout occurred.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 long
 dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
 
 /*!
- * @function dispatch_semaphore_signal
- *
- * @abstract
  * Signal (increment) a semaphore.
  *
- * @discussion
  * Increment the counting semaphore. If the previous value was less than zero,
  * this function wakes a waiting thread before returning.
  *
@@ -102,8 +89,8 @@ dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout);
  * This function returns non-zero if a thread is woken. Otherwise, zero is
  * returned.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 long
 dispatch_semaphore_signal(dispatch_semaphore_t dsema);
 

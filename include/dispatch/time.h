@@ -22,7 +22,7 @@
 #define __DISPATCH_TIME__
 
 #ifndef __DISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+#error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
 #endif
 
@@ -54,10 +54,9 @@ struct timespec;
 #define USEC_PER_SEC (uint64_t)1000000
 #define NSEC_PER_USEC (uint64_t)1000
 
-/*!
+/**
  * @typedef dispatch_time_t
  *
- * @abstract
  * An somewhat abstract representation of time; where zero means "now" and
  * DISPATCH_TIME_FOREVER means "infinity" and every value in between is an
  * opaque encoding.
@@ -67,14 +66,10 @@ typedef uint64_t dispatch_time_t;
 #define DISPATCH_TIME_NOW 0ull
 #define DISPATCH_TIME_FOREVER (~0ull)
 
-/*!
- * @function dispatch_time
- *
- * @abstract
+/**
  * Create dispatch_time_t relative to the default clock or modify an existing
  * dispatch_time_t.
  *
- * @discussion
  * On Mac OS X the default clock is based on mach_absolute_time().
  *
  * @param when
@@ -87,18 +82,14 @@ typedef uint64_t dispatch_time_t;
  * @result
  * A new dispatch_time_t.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT 
 dispatch_time_t
 dispatch_time(dispatch_time_t when, int64_t delta);
 
-/*!
- * @function dispatch_walltime
- *
- * @abstract
+/**
  * Create a dispatch_time_t using the wall clock.
  *
- * @discussion
  * On Mac OS X the wall clock is based on gettimeofday(3).
  *
  * @param when
@@ -111,8 +102,8 @@ dispatch_time(dispatch_time_t when, int64_t delta);
  * @result
  * A new dispatch_time_t.
  */
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NOTHROW
+
+DISPATCH_EXPORT 
 dispatch_time_t
 dispatch_walltime(const struct timespec *when, int64_t delta);
 

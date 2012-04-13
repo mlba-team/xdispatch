@@ -151,6 +151,8 @@
 
 #endif
 
-
+#ifdef XDISPATCH_DOXYGEN_RUN
+# define $ [=]
+#endif
 
 #endif /* XDISPATCH_LAMBDA_BLOCKS_H_ */

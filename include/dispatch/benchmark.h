@@ -34,22 +34,9 @@
 
 __DISPATCH_BEGIN_DECLS
 
-/*!
- * @function dispatch_benchmark
- *
- * @abstract
+/**
  * Count the average number of cycles a given block takes to execute.
  *
- * @param count
- * The number of times to serially execute the given block.
- *
- * @param block
- * The block to execute.
- *
- * @result
- * The approximate number of cycles the block takes to execute.
- *
- * @discussion
  * This function is for debugging and performance analysis work. For the best
  * results, pass a high count value to dispatch_benchmark(). When benchmarking
  * concurrent code, please compare the serial version of the code against the
@@ -65,16 +52,25 @@ __DISPATCH_BEGIN_DECLS
  *    performance as concurrency is increased.
  * 3a) Intentional: locks, mutexes, and condition variables.
  * 3b) Accidental: unrelated and frequently modified data on the same cache-line.
+ *
+ * @param count
+ * The number of times to serially execute the given block.
+ *
+ * @param block
+ * The block to execute.
+ *
+ * @return
+ * The approximate number of cycles the block takes to execute.
  */
 #ifdef __BLOCKS__
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL2 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 uint64_t
 dispatch_benchmark(size_t count, void (^block)(void));
 #endif
 
-__OSX_AVAILABLE_STARTING(__MAC_10_6,__IPHONE_4_0)
-DISPATCH_EXPORT DISPATCH_NONNULL3 DISPATCH_NOTHROW
+
+DISPATCH_EXPORT  
 uint64_t
 dispatch_benchmark_f(size_t count, void *ctxt, void (*func)(void *));
 

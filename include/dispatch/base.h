@@ -62,64 +62,8 @@ typedef void (*dispatch_function_t)(void *);
 #if defined(__cplusplus) && !defined(_MSC_VER)
 #define DISPATCH_DECL(name) typedef struct name##_s : public dispatch_object_s {} *name##_t
 #else
-/*! @parseOnly */
+/** parseOnly */
 #define DISPATCH_DECL(name) typedef struct name##_s *name##_t
-#endif
-
-#ifdef __GNUC__
-# ifndef DISPATCH_NORETURN
-#  define DISPATCH_NORETURN __attribute__((__noreturn__))
-# endif
-# define DISPATCH_NOTHROW __attribute__((__nothrow__))
-# define DISPATCH_NONNULL1 __attribute__((__nonnull__(1)))
-# define DISPATCH_NONNULL2 __attribute__((__nonnull__(2)))
-# define DISPATCH_NONNULL3 __attribute__((__nonnull__(3)))
-# define DISPATCH_NONNULL4 __attribute__((__nonnull__(4)))
-# define DISPATCH_NONNULL5 __attribute__((__nonnull__(5)))
-# define DISPATCH_NONNULL6 __attribute__((__nonnull__(6)))
-# define DISPATCH_NONNULL7 __attribute__((__nonnull__(7)))
-# if __clang__
-// rdar://problem/6857843
-#  define DISPATCH_NONNULL_ALL
-# else
-#  define DISPATCH_NONNULL_ALL __attribute__((__nonnull__))
-# endif
-# define DISPATCH_SENTINEL __attribute__((__sentinel__))
-# define DISPATCH_PURE __attribute__((__pure__))
-# define DISPATCH_WARN_RESULT __attribute__((__warn_unused_result__))
-# define DISPATCH_MALLOC __attribute__((__malloc__))
-# define DISPATCH_FORMAT(...) __attribute__((__format__(__VA_ARGS__)))
-#else
-/*! @parseOnly */
-# define DISPATCH_NORETURN
-/*! @parseOnly */
-# define DISPATCH_NOTHROW
-/*! @parseOnly */
-# define DISPATCH_NONNULL1
-/*! @parseOnly */
-# define DISPATCH_NONNULL2
-/*! @parseOnly */
-# define DISPATCH_NONNULL3
-/*! @parseOnly */
-# define DISPATCH_NONNULL4
-/*! @parseOnly */
-# define DISPATCH_NONNULL5
-/*! @parseOnly */
-# define DISPATCH_NONNULL6
-/*! @parseOnly */
-# define DISPATCH_NONNULL7
-/*! @parseOnly */
-# define DISPATCH_NONNULL_ALL
-/*! @parseOnly */
-# define DISPATCH_SENTINEL
-/*! @parseOnly */
-# define DISPATCH_PURE
-/*! @parseOnly */
-# define DISPATCH_WARN_RESULT
-/*! @parseOnly */
-# define DISPATCH_MALLOC
-/*! @parseOnly */
-# define DISPATCH_FORMAT(...)
 #endif
 
 #ifndef DISPATCH_EXPORT
@@ -150,9 +94,6 @@ typedef void (*dispatch_function_t)(void *);
 # endif
 #endif
 
-#ifndef __OSX_AVAILABLE_STARTING
-# define __OSX_AVAILABLE_STARTING(...)
-#endif
 
 #endif
 
