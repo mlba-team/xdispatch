@@ -119,8 +119,9 @@ class XDISPATCH_EXPORT timer : public source {
 
 };
 
-/** @} */
-
 __XDISPATCH_END_NAMESPACE
+
+
+/** @} */
 
 #endif /* XDISPATCH_TIMER_H_ */
