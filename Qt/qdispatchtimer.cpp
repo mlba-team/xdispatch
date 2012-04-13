@@ -29,13 +29,6 @@
 
 QT_BEGIN_NAMESPACE
 
-/*class QDispatchTimer::Private {
-public:
-    Private(int ms) : t(ms* NSEC_PER_MSEC) {}
-    Private(const xdispatch::timer& other) : t(other) {}
-
-    xdispatch::timer t;
-};*/
 
 using namespace xdispatch;
 

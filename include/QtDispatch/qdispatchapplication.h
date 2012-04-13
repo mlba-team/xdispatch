@@ -50,6 +50,9 @@ class Q_DISPATCH_EXPORT QDispatchApplication : public QApplication {
         QDispatchApplication(int& argc, char** argv);
         ~QDispatchApplication();
 
+    private:
+        Q_DISABLE_COPY(QDispatchApplication)
+
 };
 
 QT_END_NAMESPACE
