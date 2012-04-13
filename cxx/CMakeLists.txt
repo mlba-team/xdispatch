@@ -14,9 +14,15 @@ file(GLOB CXX *.cpp *.h)
 source_group(xdispatch FILES ${CXX_INCL})
 source_group(cxx FILES ${CXX})
   
+# res file
+if(WIN32)
+	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+endif()
+  
 # add new target xdispatch
 mz_add_definition(XDISPATCH_MAKEDLL)
-add_library(${NAME} SHARED ${CXX_INCL} ${CXX})
+add_library(${NAME} SHARED ${CXX_INCL} ${CXX} ${RES_FILE})
   
 # link this target with all needed libraries
 message("-- linking xdispatch with: ${LIBS}")

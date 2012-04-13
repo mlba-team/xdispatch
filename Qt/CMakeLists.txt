@@ -39,7 +39,13 @@ qt4_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgro
 source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
 
-add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+# res file
+if(WIN32)
+	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+endif()
+
+add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc ${RES_FILE})
 target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 mz_target_props(QtDispatch)

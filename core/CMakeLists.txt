@@ -79,11 +79,16 @@ source_group(dispatch FILES ${INCL})
 source_group(core FILES ${CORE})
 source_group(core\\shims FILES ${SHIM})
 
+# res file
+if(WIN32)
+	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+endif()
   
 # add new target
 add_definitions(-DDISPATCH_MAKEDLL)
 add_definitions(-D_GNU_SOURCE)
-add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM_OS} ${PLATFORM})
+add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM_OS} ${PLATFORM} ${RES_FILE})
   
 # link this target with all needed libraries
 message("-- linking dispatch with: ${LIBS}")
