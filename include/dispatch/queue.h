@@ -21,25 +21,16 @@
 #ifndef __DISPATCH_QUEUE__
 #define __DISPATCH_QUEUE__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
 #endif
 
-/**
- * Dispatch is an abstract model for expressing concurrency via simple but
- * powerful API. 
- *
- * At the core, dispatch provides serial FIFO queues to which blocks may be
- * submitted. Blocks submitted to these dispatch queues are invoked on a pool
- * of threads fully managed by the system. No guarantee is made regarding
- * which thread a block will be invoked on; however, it is guaranteed that only
- * one block submitted to the FIFO dispatch queue will be invoked at a time.
- *
- * When multiple queues have blocks to be processed, the system is free to
- * allocate additional threads to invoke the blocks concurrently. When the
- * queues become empty, these threads are automatically released.
- */
 
 /**
  * Dispatch queues invoke blocks submitted to them serially in FIFO order. A
@@ -489,5 +480,7 @@ dispatch_after_f(dispatch_time_t when,
 	dispatch_function_t work);
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif

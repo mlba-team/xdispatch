@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_BASE_H_
 #define XDISPATCH_BASE_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -317,5 +322,7 @@ XDISPATCH_EXPORT time as_delayed_time(uint64_t delay, time base = time_now);
 XDISPATCH_EXPORT void exec();
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* XDISPATCH_BASE_H_ */

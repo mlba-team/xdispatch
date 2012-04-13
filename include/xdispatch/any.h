@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_ANY_STRUCT_H_
 #define XDISPATCH_ANY_STRUCT_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -106,4 +111,7 @@ private:
 
 __XDISPATCH_END_NAMESPACE
 
+/** @} */
+
 #endif /* XDISPATCH_ANY_STRUCT_H_ */
+

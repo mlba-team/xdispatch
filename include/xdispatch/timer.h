@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_TIMER_H_
 #define XDISPATCH_TIMER_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -113,6 +118,8 @@ class XDISPATCH_EXPORT timer : public source {
         timer& operator =(const timer&);
 
 };
+
+/** @} */
 
 __XDISPATCH_END_NAMESPACE
 

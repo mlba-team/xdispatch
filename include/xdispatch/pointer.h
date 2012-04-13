@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_SCOPED_PTER_H_
 #define XDISPATCH_SCOPED_PTER_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -109,6 +114,8 @@ struct pointer {
 __XDISPATCH_END_NAMESPACE
 
 #endif
+
+/** @} */
 
 #endif /* XDISPATCH_SCOPED_PTER_H_ */
 

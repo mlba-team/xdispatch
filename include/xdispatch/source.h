@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_SOURCE_H_
 #define XDISPATCH_SOURCE_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -294,5 +299,7 @@ class XDISPATCH_EXPORT source : public object {
 };
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* XDISPATCH_SOURCE_H_ */

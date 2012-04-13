@@ -21,6 +21,11 @@
 #ifndef __DISPATCH_GROUP__
 #define __DISPATCH_GROUP__
 
+/**
+ * @addtogroup dispatch
+ * @{
+ */
+
 #ifndef __DISPATCH_INDIRECT__
 #error "Please #include <dispatch/dispatch.h> instead of this file directly."
 #include "base.h" // for HeaderDoc
@@ -235,5 +240,7 @@ void
 dispatch_group_leave(dispatch_group_t group);
 
 __DISPATCH_END_DECLS
+
+/** @} */
 
 #endif

@@ -23,6 +23,11 @@
 #ifndef XDISPATCH_QUEUE_H_
 #define XDISPATCH_QUEUE_H_
 
+/**
+ * @addtogroup xdispatch
+ * @{
+ */
+
 #ifndef __XDISPATCH_INDIRECT__
 #error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
@@ -207,5 +212,7 @@ XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const queue*);
 XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const queue&);
 
 __XDISPATCH_END_NAMESPACE
+
+/** @} */
 
 #endif /* XDISPATCH_QUEUE_H_ */
