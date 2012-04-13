@@ -1,27 +1,19 @@
 /**
-\addtogroup QtDispatch
+@defgroup qtdispatch libQtDispatch
 
-@author Marius Zwicker / MLBA
-@date 28.03.2011
+QtDispatch is an additional Qt Module building on QtCore and providing a custom Qt adapted interface to use \ref dispatch.
 
-@section qt_about Overview
+This interface is fully compatible with the generic C++ interface provided by
+\ref xdispatch.
 
-QtDispatch is an additional Qt Module building on QtCore and providing a custom Qt adapted interface
-to use libDispatch. This interface is fully compatible with the generic C++ interface provided by
-\ref XDispatch.
-
-As integration into Qt, it is possible to dispatch QRunnables onto groups and queues as well.
-For integrating the main queue into your Qt Application we created a (currently experimental) QDispatchCoreApplication
-and QDispatchApplication using the dispatch mechanisms for handling all incoming events and thus
-using the dispatch main loop. To simplify the use of blocks within your Qt code as well, we added
+As integration into Qt, it is possible to dispatch QRunnables onto groups and queues the same way as when executing them on a QThreadPool. Going along with that we added
 QBlockRunnable, a simple QRunnable created by passing an individual block.
+
+For integrating the main queue into your Qt Application there is a QDispatchApplication which can be used as a drop-in replacement to QApplication. It will call xdispatch::exec() internally and ensure that all work dispatched to the main queue is executed on the main/gui thread. That way it is very easy to send gui updates to the main thread. All other functionality is equal to that of QApplication.
 
 @section qt_use Usage
 
-You can use QtDispach (in case you have Qt > 4.6 available on your system) by including QtDispatch or
-one of the individual modules (all found within include/QtDispatch, link with the QtDispatch lib). 
-This will automatically include  all other needed headers as well. Below you find a list of the available classes:
-
+You can use QtDispach (in case you have Qt > 4.6 available on your system) by including the QtDispatch header or one of the individual modules - this will automatically include  all other needed headers as well. Below you find a list of the available classes.
  - QDispatch
  - QDispatchQueue
  - QDispatchGroup
@@ -33,5 +25,11 @@ This will automatically include  all other needed headers as well. Below you fin
  - QDispatchApplication
  - QDispatchSource
  - QDispatchSourceType
-   
+
+The corresponding headers have the same name and can be included all by once using
+@code
+#include <QtDispatch/QtDispatch>
+@endcode
+
+Please link your program with qtdispatch and xdispatch.
 */

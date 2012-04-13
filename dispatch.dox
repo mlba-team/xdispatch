@@ -1,0 +1,24 @@
+/**
+@defgroup dispatch libdispatch
+
+The library libdispatch is an abstract model for expressing concurrency via simple but powerful API.
+
+At the core, libdispatch provides serial FIFO queues to which blocks may be
+submitted. Blocks submitted to these dispatch queues are invoked on a pool
+of threads fully managed by the system. No guarantee is made regarding
+which thread a block will be invoked on; however, it is guaranteed that only
+one block submitted to the FIFO dispatch queue will be invoked at a time.
+
+When multiple queues have blocks to be processed, the system is free to
+allocate additional threads to invoke the blocks concurrently. When the
+queues become empty, these threads are automatically released.
+
+@section d_use Usage
+
+All header files needed for using libdispatch can be included by typing
+@code
+#include <dispatch/dispatch.h>
+@endcode
+You will need to link against the dispatch library.
+   
+*/

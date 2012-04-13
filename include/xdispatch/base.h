@@ -318,6 +318,10 @@ XDISPATCH_EXPORT time as_delayed_time(uint64_t delay, time base = time_now);
     Call this somewhere within the main thread to enable
     dispatching operations to the main queue. Will never
     return.
+
+    @remarks Applications that call dispatch_main(), NSApplicationMain(), NSApplicationMain()
+    or call exec() on a QDispatchApplication object do not need to call this.
+    @see dispatch_main()
     */
 XDISPATCH_EXPORT void exec();
 

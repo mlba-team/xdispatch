@@ -415,8 +415,9 @@ dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);
  * This function "parks" the main thread and waits for blocks to be submitted
  * to the main queue. This function never returns.
  *
- * Applications that call NSApplicationMain() or CFRunLoopRun() on the
- * main thread do not need to call dispatch_main().
+ * @remarks Applications that call NSApplicationMain() or CFRunLoopRun() on the
+ * main thread, call xdispatch::exec() or exec() on a QDispatchApplication object
+ * do not need to call dispatch_main().
  */
 
 DISPATCH_EXPORT  

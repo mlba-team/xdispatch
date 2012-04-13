@@ -26,6 +26,11 @@
 
 #include <QtCore/qglobal.h>
 
+/**
+ * @addtogroup qtdispatch
+ * @{
+ */
+
 #ifndef QT_MODULE
 # define QT_MODULE(X)
 # define QT_LICENSED_MODULE(X)
@@ -61,5 +66,7 @@ typedef xdispatch::synclock QDispatchSynclock;
 
 QT_END_NAMESPACE
 QT_END_HEADER
+
+/** @} */
 
 #endif /* QDISPATCH_GLOBAL_H_ */
