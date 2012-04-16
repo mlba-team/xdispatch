@@ -31,7 +31,7 @@
  */
 
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef TEST_BLOCKS
 
 #define JOBS_NO 20
 

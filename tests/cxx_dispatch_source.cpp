@@ -27,7 +27,7 @@
 #include "../core/platform/atomic.h"
 #include "tests.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef TEST_BLOCKS
 
 struct TestType : public xdispatch::sourcetype {
 
