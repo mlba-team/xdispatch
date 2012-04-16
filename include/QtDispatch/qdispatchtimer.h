@@ -136,10 +136,6 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
           */
         void stop();
 
-    private:
-        class Private;
-        Private* d;
-
 };
 
 QT_END_NAMESPACE

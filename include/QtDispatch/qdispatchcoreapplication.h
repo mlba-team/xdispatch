@@ -53,6 +53,9 @@ class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QDispatchApplication {
     public:
         QDispatchCoreApplication(int& argc, char** argv);
 
+    private:
+        Q_DISABLE_COPY(QDispatchCoreApplication)
+
 };
 #else
 class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QCoreApplication {
@@ -63,6 +66,8 @@ class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QCoreApplication {
         QDispatchCoreApplication(int& argc, char** argv);
         ~QDispatchCoreApplication();
 
+    private:
+        Q_DISABLE_COPY(QDispatchCoreApplication)
 };
 #endif
 
