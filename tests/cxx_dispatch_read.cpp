@@ -22,6 +22,7 @@
 
 #include "tests.h"
 
+#ifdef TEST_BLOCKS
 #ifndef _WIN32
 
 #include <sys/stat.h>
@@ -100,3 +101,4 @@ extern "C" void cxx_dispatch_read()
 
 
 #endif /* _WIN32 */
+#endif /* TEST_BLOCKS */

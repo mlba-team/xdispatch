@@ -32,7 +32,7 @@
  to the underlying C Api
  */
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef TEST_BLOCKS
 
 extern "C" void cxx_dispatch_mainqueue(){
     MU_BEGIN_TEST(cxx_dispatch_mainqueue);

@@ -22,6 +22,8 @@
 
 #include "tests.h"
 
+#ifdef TEST_BLOCKS
+
 #ifndef _WIN32
 
 #include <stdio.h>
@@ -137,3 +139,4 @@ extern "C" void cxx_dispatch_proc(void)
 
 
 #endif /* _WIN32 */
+#endif /* TEST_BLOCKS */

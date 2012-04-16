@@ -26,7 +26,7 @@
 #include <iostream>
 
 #define RUN_TIMES 20
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef TEST_BLOCKS
 
 /*
  Little tests mainly checking the correct mapping of the Qt api

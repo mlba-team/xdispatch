@@ -23,7 +23,7 @@
 #include "../include/xdispatch/dispatch"
 #include "cxx_tests.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#ifdef TEST_BLOCKS
 
 /*
 Little tests mainly checking the correct mapping of the c++ api

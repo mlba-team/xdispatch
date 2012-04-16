@@ -32,10 +32,11 @@
 #include <unistd.h>
 #include <errno.h>
 
+
+#ifdef TEST_BLOCKS
+
 static size_t bytes_total;
 static size_t bytes_read;
-
-#ifdef XDISPATCH_HAS_BLOCKS
 
 extern "C" void test_dispatch_read()
 {
@@ -102,7 +103,6 @@ extern "C" void test_dispatch_read()
 }
 
 
-#endif
 
-
+#endif /* TEST_BLOCKS */
 #endif /* _WIN32 */
