@@ -1,6 +1,7 @@
 #ifndef DISPATCH_WIN_TIMES_
 #define DISPATCH_WIN_TIMES_
 
+#include <stdlib.h>
 #include <time.h>
 
 // some date functions
@@ -32,7 +33,7 @@ static int gettimeofday(struct timeval *tv, struct timezone *tz)
 
     // Initialize the present time to 0 and the timezone to UTC
     ULARGE_INTEGER tmpres;
-    static int tzflag = 0;
+    //static int tzflag = 0;
 
     if (NULL != tv)
     {

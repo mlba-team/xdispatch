@@ -3,7 +3,10 @@
 
 #define PROVIDE_LEGACY_XP_SUPPORT 1
 #define _CRT_SECURE_NO_WARNINGS
-#pragma warning(disable : 4996)
+
+#ifndef __GNUC__
+# pragma warning(disable : 4996)
+#endif
 
 #ifdef PROVIDE_LEGACY_XP_SUPPORT
 # define _WIN32_WINNT 0x0500
@@ -11,6 +14,10 @@
 # define _WIN32_WINNT 0x0610
 #endif
 #define WIN32_LEAN_AND_MEAN
+
+#ifndef __MSVCRT_VERSION__
+# define __MSVCRT_VERSION__ 0x0601
+#endif
 
 #include <windows.h>
 #include <string.h>

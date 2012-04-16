@@ -40,11 +40,20 @@
 
 static unsigned long long _pthread_time_in_ms(void)
 {
-	struct __timeb64 tb;
+#ifdef __GNUC__
+
+    struct _timeb tb;
 	
-	_ftime64(&tb);
+    _ftime(&tb);
 	
 	return tb.time * 1000 + tb.millitm;
+#else
+    struct __timeb64 tb;
+
+    _ftime64(&tb);
+
+    return tb.time * 1000 + tb.millitm;
+#endif
 }
 
 static unsigned long long _pthread_time_in_ms_from_timespec(const struct timespec *ts)

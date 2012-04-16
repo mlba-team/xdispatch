@@ -60,7 +60,7 @@ void _fail(const char *msg, const char *file, int line){
 	exit(EXIT_FAILURE);
 }
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 # define inline _inline
 #endif
 
@@ -75,7 +75,7 @@ static inline void _assert_eval(const char* msg, char cond, const char* file, in
 
 void _assert_true_long(long a, long b, char cond, const char* cond_desc, const char* file, int line){
     char msg[512];
-#ifndef _WIN32
+#ifndef _MSC_VER
     sprintf(msg,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
 #else
     sprintf_s(msg, 500,"Assert %s \n\t- is %li, %li",cond_desc, a, b);
@@ -85,7 +85,7 @@ void _assert_true_long(long a, long b, char cond, const char* cond_desc, const c
 
 void _assert_true_hex(long a, long b, char cond, const char* cond_desc, const char* file, int line){
     char msg[512];
-#ifndef _WIN32
+#ifndef _MSC_VER
     sprintf(msg,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
 #else
     sprintf_s(msg, 500,"Assert %s \n\t- is 0x%lo, 0x%lo",cond_desc, a, b);
@@ -95,7 +95,7 @@ void _assert_true_hex(long a, long b, char cond, const char* cond_desc, const ch
 
 void _assert_true_double(double a, double b, char cond, const char* cond_desc, const char* file, int line){
     char msg[512];
-#ifndef _WIN32
+#ifndef _MSC_VER
     sprintf(msg,"Assert %s \n\t- is %f, %f", cond_desc, a, b);
 #else
     sprintf_s(msg, 500,"Assert %s \n\t- is %f, %f", cond_desc, a, b);

@@ -190,7 +190,7 @@ manager_peek(const char *key)
         dbg_puts("TODO");
         abort();
     } else {
-        dbg_printf("invalid key: ", key);
+        dbg_printf("invalid key: %s", key);
         abort();
     }
 

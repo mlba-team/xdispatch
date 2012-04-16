@@ -42,7 +42,7 @@
 #endif
 
 #include <stddef.h>
-#if defined(_WIN32) && _MSC_VER < 1600
+#if !defined(__GNUC__) && defined(_WIN32) && _MSC_VER < 1600
 # include "../../core/platform/windows/stdint.h"
 #else
 # include <stdint.h>

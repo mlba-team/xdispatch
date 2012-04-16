@@ -36,7 +36,7 @@
 #define intptr_t long
 #else
 #include <sys/types.h> 
-#if defined(_WIN32) && _MSC_VER < 1600
+#if defined(_WIN32) && !defined(__GNUC__) && _MSC_VER < 1600
 # include "../../src/windows/stdint.h"
 #else
 # include <stdint.h>
@@ -44,7 +44,10 @@
 #define LIBKQUEUE       1
 #endif
 
+#ifndef _TIMESPEC_DEFINED
+# define _TIMESPEC_DEFINED
 struct timespec;
+#endif
 
 #define EVFILT_READ		(-1)
 #define EVFILT_WRITE		(-2)

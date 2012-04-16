@@ -36,7 +36,9 @@
 
 #ifndef XDISPATCH_EXPORT
 # ifdef _WIN32
-#  pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
+#  ifndef __GNUC__
+#   pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
+#  endif
 #  ifdef XDISPATCH_MAKEDLL
 #   define XDISPATCH_EXPORT __declspec(dllexport)
 #  else

@@ -38,7 +38,24 @@
 
 #include <setjmp.h>
 #include <errno.h>
-#include <intrin.h>
+#include <stdlib.h>
+
+#ifndef __GNUC__
+# include <intrin.h>
+# define __PTHREAD_PROC_YIELD() YieldProcessor()
+# define __PTHREAD_READ_WRITE_BARRIER _ReadWriteBarrier
+# define __PTHREAD_INTERLOCKED_COMP_EX(dest,n,cond) _InterlockedCompareExchange(dest,n,cond)
+# define __PTHERAD_INTERLOCKED_EX(dest,n) _InterlockedExchange(dest,n)
+# define __PTHREAD_INTERLOCKED_DEC(p) _InterlockedDecrement(p)
+# define __PTHREAD_INTERLOCKED_INC(p) _InterlockedIncrement(p)
+#else
+# define __PTHREAD_PROC_YIELD() asm("pause")
+# define __PTHREAD_READ_WRITE_BARRIER __sync_synchronize
+# define __PTHREAD_INTERLOCKED_COMP_EX(dest,n,cond) __sync_val_compare_and_swap(dest,cond,n)
+# define __PTHERAD_INTERLOCKED_EX(dest,n) __sync_lock_test_and_set(dest,n)
+# define __PTHREAD_INTERLOCKED_DEC(p) __sync_sub_and_fetch((p), 1)
+# define __PTHREAD_INTERLOCKED_INC(p) __sync_add_and_fetch((p), 1)
+#endif
 
 #ifndef ETIMEDOUT
 # define ETIMEDOUT	110
@@ -125,11 +142,15 @@ typedef void *pthread_barrierattr_t;
 typedef long pthread_spinlock_t;
 
 #ifndef WIN_PTHREAD_EXPORT
+# ifdef __GNUC__
+#  define WIN_PTHREAD_EXPORT __declspec(dllexport)
+# else
 #  ifdef DISPATCH_MAKEDLL
 #   define WIN_PTHREAD_EXPORT __declspec(dllexport)
 #  else
 #   define WIN_PTHREAD_EXPORT __declspec(dllimport)
 #  endif
+# endif
 #endif
 
 /* These variables need to be declared somewhere,
@@ -157,9 +178,9 @@ WIN_PTHREAD_EXPORT extern void (**_pthread_key_dest)(void *);
 #define pthread_cleanup_push(F, A)\
 {\
 	const _pthread_cleanup _pthread_cup = {(F), (A), pthread_self()->clean};\
-	_ReadWriteBarrier();\
+    __PTHREAD_READ_WRITE_BARRIER();\
 	pthread_self()->clean = (_pthread_cleanup *) &_pthread_cup;\
-	_ReadWriteBarrier()
+    __PTHREAD_READ_WRITE_BARRIER()
 	
 /* Note that if async cancelling is used, then there is a race here */
 #define pthread_cleanup_pop(E)\
@@ -175,13 +196,13 @@ static int pthread_once(pthread_once_t *o, void (*func)(void))
 {
 	long state = *o;
 
-	_ReadWriteBarrier();
+    __PTHREAD_READ_WRITE_BARRIER();
 	
 	while (state != 1)
 	{
 		if (!state)
 		{
-			if (!_InterlockedCompareExchange(o, 2, 0))
+            if (!__PTHREAD_INTERLOCKED_COMP_EX(o, 2, 0))
 			{
 				/* Success */
 				pthread_cleanup_push(_pthread_once_cleanup, o);
@@ -195,9 +216,8 @@ static int pthread_once(pthread_once_t *o, void (*func)(void))
 			}
 		}
 		
-		YieldProcessor();
-		
-		_ReadWriteBarrier();
+        __PTHREAD_PROC_YIELD();
+        __PTHREAD_READ_WRITE_BARRIER();
 		
 		state = *o;
 	}
@@ -211,13 +231,13 @@ static int _pthread_once_raw(pthread_once_t *o, void (*func)(void))
 {
 	long state = *o;
 
-	_ReadWriteBarrier();
+    __PTHREAD_READ_WRITE_BARRIER();
 	
 	while (state != 1)
 	{
 		if (!state)
 		{
-			if (!_InterlockedCompareExchange(o, 2, 0))
+            if (!__PTHREAD_INTERLOCKED_COMP_EX(o, 2, 0))
 			{
 				/* Success */
 				func();
@@ -229,9 +249,9 @@ static int _pthread_once_raw(pthread_once_t *o, void (*func)(void))
 			}
 		}
 		
-		YieldProcessor();
-		
-		_ReadWriteBarrier();
+        __PTHREAD_PROC_YIELD();
+
+        __PTHREAD_READ_WRITE_BARRIER();
 		
 		state = *o;
 	}
@@ -332,7 +352,7 @@ static void _pthread_invoke_cancel(void)
 {
 	_pthread_cleanup *pcup;
 	
-	_InterlockedDecrement(&_pthread_cancelling);
+    __PTHREAD_INTERLOCKED_DEC(&_pthread_cancelling);
 	
 	/* Call cancel queue */
 	for (pcup = pthread_self()->clean; pcup; pcup = pcup->next)
@@ -382,7 +402,7 @@ static int pthread_cancel(pthread_t t)
 		t->cancelled = 1;
 	
 		/* Notify everyone to look */
-		_InterlockedIncrement(&_pthread_cancelling);
+        __PTHREAD_INTERLOCKED_INC(&_pthread_cancelling);
 		
 		ResumeThread(t->h);
 	}
@@ -392,7 +412,7 @@ static int pthread_cancel(pthread_t t)
 		t->cancelled = 1;
 	
 		/* Notify everyone to look */
-		_InterlockedIncrement(&_pthread_cancelling);
+        __PTHREAD_INTERLOCKED_INC(&_pthread_cancelling);
 	}
 	
 	return 0;
@@ -537,8 +557,8 @@ static unsigned int WINAPI pthread_create_wrapper(void *args)
 	/* If we exit too early, then we can race with create */
 	while (tv->h == (HANDLE) -1)
 	{
-		YieldProcessor();
-		_ReadWriteBarrier();
+        __PTHREAD_PROC_YIELD();
+        __PTHREAD_READ_WRITE_BARRIER();
 	}
 	
 	/* Make sure we free ourselves if we are detached */
@@ -573,7 +593,7 @@ static int pthread_create(pthread_t *th, pthread_attr_t *attr, void *(* func)(vo
 	}
 	
 	/* Make sure tv->h has value of -1 */
-	_ReadWriteBarrier();
+    __PTHREAD_READ_WRITE_BARRIER();
 
 	tv->h = (HANDLE) _beginthreadex(NULL, (unsigned int)ssize, pthread_create_wrapper, tv, 0, NULL);
 	
@@ -584,7 +604,7 @@ static int pthread_create(pthread_t *th, pthread_attr_t *attr, void *(* func)(vo
 	if (tv->p_state & PTHREAD_CREATE_DETACHED)
 	{
 		CloseHandle(tv->h);
-		_ReadWriteBarrier();
+        __PTHREAD_READ_WRITE_BARRIER();
 		tv->h = 0;
 	}
 
@@ -618,7 +638,7 @@ static int pthread_detach(pthread_t t)
 	 */
 	
 	CloseHandle(tv->h);
-	_ReadWriteBarrier();
+    __PTHREAD_READ_WRITE_BARRIER();
 	tv->h = 0;
 	
 	return 0;
@@ -641,15 +661,15 @@ static int pthread_spin_destroy(pthread_spinlock_t *l)
 /* No-fair spinlock due to lack of knowledge of thread number */
 static int pthread_spin_lock(pthread_spinlock_t *l)
 {
-	while (_InterlockedExchange(l, EBUSY))
+    while (__PTHERAD_INTERLOCKED_EX(l, EBUSY))
 	{
 		/* Don't lock the bus whilst waiting */
 		while (*l)
 		{
-			YieldProcessor();
+            __PTHREAD_PROC_YIELD();
 			
 			/* Compiler barrier.  Prevent caching of *l */
-			_ReadWriteBarrier();
+            __PTHREAD_READ_WRITE_BARRIER();
 		}
 	}
 	
@@ -664,7 +684,7 @@ static int pthread_spin_trylock(pthread_spinlock_t *l)
 static int pthread_spin_unlock(pthread_spinlock_t *l)
 {
 	/* Compiler barrier.  The store below acts with release symmantics */
-	_ReadWriteBarrier();
+    __PTHREAD_READ_WRITE_BARRIER();
 	
 	*l = 0;
 	

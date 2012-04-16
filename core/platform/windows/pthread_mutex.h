@@ -40,11 +40,20 @@
 
 static unsigned long long _pthread_time_in_ms(void)
 {
-	struct __timeb64 tb;
-	
-	_ftime64(&tb);
-	
-	return tb.time * 1000 + tb.millitm;
+#ifdef __GNUC__
+
+    struct _timeb tb;
+
+    _ftime(&tb);
+
+    return tb.time * 1000 + tb.millitm;
+#else
+    struct __timeb64 tb;
+
+    _ftime64(&tb);
+
+    return tb.time * 1000 + tb.millitm;
+#endif
 }
 
 static unsigned long long _pthread_time_in_ms_from_timespec(const struct timespec *ts)
@@ -99,7 +108,11 @@ static int pthread_mutex_destroy(pthread_mutex_t *m)
 	return 0;
 }
 
-#define PTHREAD_MUTEX_INITIALIZER {(PRTL_CRITICAL_SECTION_DEBUG)-1,-1,0,0,0,0}
+#if __GNUC__
+# define PTHREAD_MUTEX_INITIALIZER { .DebugInfo = (void*)(-1), .LockCount = (LONG)-1 }
+#else
+# define PTHREAD_MUTEX_INITIALIZER {(PRTL_CRITICAL_SECTION_DEBUG)-1,(LONG)-1,(LONG)0,(HANDLE)0,(HANDLE)0,(DWORD)0}
+#endif
 #define PTHREAD_MUTEX_NORMAL 0
 #define PTHREAD_MUTEX_ERRORCHECK 1
 #define PTHREAD_MUTEX_RECURSIVE 2

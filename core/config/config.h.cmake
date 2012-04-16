@@ -107,4 +107,7 @@
 /* std headers */
 #cmakedefine HAVE_STDINT_H 1
 
+/* pthread support */
+#cmakedefine HAVE_PTHREAD_H 1
+
 #endif /* CONFIG_H_ */

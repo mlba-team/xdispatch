@@ -38,7 +38,24 @@
 
 #include <setjmp.h>
 #include <errno.h>
-#include <intrin.h>
+#include <stdlib.h>
+
+#ifndef __GNUC__
+# include <intrin.h>
+# define __PTHREAD_PROC_YIELD() YieldProcessor()
+# define __PTHREAD_READ_WRITE_BARRIER _ReadWriteBarrier
+# define __PTHREAD_INTERLOCKED_COMP_EX(dest,n,cond) _InterlockedCompareExchange(dest,n,cond)
+# define __PTHERAD_INTERLOCKED_EX(dest,n) _InterlockedExchange(dest,n)
+# define __PTHREAD_INTERLOCKED_DEC(p) _InterlockedDecrement(p)
+# define __PTHREAD_INTERLOCKED_INC(p) _InterlockedIncrement(p)
+#else
+# define __PTHREAD_PROC_YIELD() asm("pause")
+# define __PTHREAD_READ_WRITE_BARRIER __sync_synchronize
+# define __PTHREAD_INTERLOCKED_COMP_EX(dest,n,cond) __sync_val_compare_and_swap(dest,cond,n)
+# define __PTHERAD_INTERLOCKED_EX(dest,n) __sync_lock_test_and_set(dest,n)
+# define __PTHREAD_INTERLOCKED_DEC(p) __sync_sub_and_fetch((p), 1)
+# define __PTHREAD_INTERLOCKED_INC(p) __sync_add_and_fetch((p), 1)
+#endif
 
 #ifndef ETIMEDOUT
 # define ETIMEDOUT	110
@@ -125,11 +142,15 @@ typedef void *pthread_barrierattr_t;
 typedef long pthread_spinlock_t;
 
 #ifndef WIN_PTHREAD_EXPORT
+# ifdef __GNUC__
+#  define WIN_PTHREAD_EXPORT __declspec(dllexport)
+# else
 #  ifdef DISPATCH_MAKEDLL
 #   define WIN_PTHREAD_EXPORT __declspec(dllexport)
 #  else
 #   define WIN_PTHREAD_EXPORT __declspec(dllimport)
 #  endif
+# endif
 #endif
 
 /* These variables need to be declared somewhere,
@@ -156,88 +177,87 @@ WIN_PTHREAD_EXPORT extern void (**_pthread_key_dest)(void *);
 
 #define pthread_cleanup_push(F, A)\
 {\
-	const _pthread_cleanup _pthread_cup = {(F), (A), pthread_self()->clean};\
-	_ReadWriteBarrier();\
-	pthread_self()->clean = (_pthread_cleanup *) &_pthread_cup;\
-	_ReadWriteBarrier()
-	
+    const _pthread_cleanup _pthread_cup = {(F), (A), pthread_self()->clean};\
+    __PTHREAD_READ_WRITE_BARRIER();\
+    pthread_self()->clean = (_pthread_cleanup *) &_pthread_cup;\
+    __PTHREAD_READ_WRITE_BARRIER()
+
 /* Note that if async cancelling is used, then there is a race here */
 #define pthread_cleanup_pop(E)\
-	(pthread_self()->clean = _pthread_cup.next, (E?_pthread_cup.func(_pthread_cup.arg):0));}
+    (pthread_self()->clean = _pthread_cup.next, (E?_pthread_cup.func(_pthread_cup.arg):(void)0));}
 
 static void _pthread_once_cleanup(void *o)
 {
-	*(pthread_once_t*)o = 0;
+    *(pthread_once_t*)o = 0;
 }
 
 static pthread_t pthread_self(void);
 static int pthread_once(pthread_once_t *o, void (*func)(void))
 {
-	long state = *o;
+    long state = *o;
 
-	_ReadWriteBarrier();
-	
-	while (state != 1)
-	{
-		if (!state)
-		{
-			if (!_InterlockedCompareExchange(o, 2, 0))
-			{
-				/* Success */
-				pthread_cleanup_push(_pthread_once_cleanup, o);
-				func();
-				pthread_cleanup_pop(0);
-				
-				/* Mark as done */
-				*o = 1;
-				
-				return 0;
-			}
-		}
-		
-		YieldProcessor();
-		
-		_ReadWriteBarrier();
-		
-		state = *o;
-	}
-	
-	/* Done */
-	return 0;
-	
+    __PTHREAD_READ_WRITE_BARRIER();
+
+    while (state != 1)
+    {
+        if (!state)
+        {
+            if (!__PTHREAD_INTERLOCKED_COMP_EX(o, 2, 0))
+            {
+                /* Success */
+                pthread_cleanup_push(_pthread_once_cleanup, o);
+                func();
+                pthread_cleanup_pop(0);
+
+                /* Mark as done */
+                *o = 1;
+
+                return 0;
+            }
+        }
+
+        __PTHREAD_PROC_YIELD();
+        __PTHREAD_READ_WRITE_BARRIER();
+
+        state = *o;
+    }
+
+    /* Done */
+    return 0;
+
 }
 
 static int _pthread_once_raw(pthread_once_t *o, void (*func)(void))
 {
-	long state = *o;
+    long state = *o;
 
-	_ReadWriteBarrier();
-	
-	while (state != 1)
-	{
-		if (!state)
-		{
-			if (!_InterlockedCompareExchange(o, 2, 0))
-			{
-				/* Success */
-				func();
-				
-				/* Mark as done */
-				*o = 1;
-				
-				return 0;
-			}
-		}
-		
-		YieldProcessor();
-		
-		_ReadWriteBarrier();
-		
-		state = *o;
-	}
-	
-	/* Done */
-	return 0;
+    __PTHREAD_READ_WRITE_BARRIER();
+
+    while (state != 1)
+    {
+        if (!state)
+        {
+            if (!__PTHREAD_INTERLOCKED_COMP_EX(o, 2, 0))
+            {
+                /* Success */
+                func();
+
+                /* Mark as done */
+                *o = 1;
+
+                return 0;
+            }
+        }
+
+        __PTHREAD_PROC_YIELD();
+
+        __PTHREAD_READ_WRITE_BARRIER();
+
+        state = *o;
+    }
+
+    /* Done */
+    return 0;
 }
 
 #define pthread_mutex_getprioceiling(M, P) ENOTSUP
@@ -245,71 +265,71 @@ static int _pthread_once_raw(pthread_once_t *o, void (*func)(void))
 
 static int pthread_equal(pthread_t t1, pthread_t t2)
 {
-	return t1 == t2;
+    return t1 == t2;
 }
 
 
 static void pthread_tls_init(void)
 {
-	_pthread_tls = TlsAlloc();
-	
-	/* Cannot continue if out of indexes */
-	if (_pthread_tls == TLS_OUT_OF_INDEXES) abort();
+    _pthread_tls = TlsAlloc();
+
+    /* Cannot continue if out of indexes */
+    if (_pthread_tls == TLS_OUT_OF_INDEXES) abort();
 }
 
 static void _pthread_cleanup_dest(pthread_t t);
 
 static pthread_t pthread_self(void)
 {
-	pthread_t t;
-	
-	_pthread_once_raw(&_pthread_tls_once, pthread_tls_init);
-	
-	t = (pthread_t)TlsGetValue(_pthread_tls);
-	
-	/* Main thread? */
-	if (!t)
-	{
-		t = (pthread_t)malloc(sizeof(struct _pthread_v));
-		
-		/* If cannot initialize main thread, then the only thing we can do is abort */
-		if (!t) abort();
-	
-		t->ret_arg = NULL;
-		t->func = NULL;
-		t->clean = NULL;
-		t->cancelled = 0;
-		t->p_state = PTHREAD_DEFAULT_ATTR;
-		t->keymax = 0;
-		t->keyval = NULL;
-		t->h = GetCurrentThread();
-		
-		/* Save for later */
-		TlsSetValue(_pthread_tls, t);
-		
-		if (setjmp(t->jb))
-		{
-			/* Make sure we free ourselves if we are detached */
-			if (!t->h) free(t);
-			
-			/* Time to die */
-			_endthreadex(0);
-		}
-	}
-	
-	return t;
+    pthread_t t;
+
+    _pthread_once_raw(&_pthread_tls_once, pthread_tls_init);
+
+    t = (pthread_t)TlsGetValue(_pthread_tls);
+
+    /* Main thread? */
+    if (!t)
+    {
+        t = (pthread_t)malloc(sizeof(struct _pthread_v));
+
+        /* If cannot initialize main thread, then the only thing we can do is abort */
+        if (!t) abort();
+
+        t->ret_arg = NULL;
+        t->func = NULL;
+        t->clean = NULL;
+        t->cancelled = 0;
+        t->p_state = PTHREAD_DEFAULT_ATTR;
+        t->keymax = 0;
+        t->keyval = NULL;
+        t->h = GetCurrentThread();
+
+        /* Save for later */
+        TlsSetValue(_pthread_tls, t);
+
+        if (setjmp(t->jb))
+        {
+            /* Make sure we free ourselves if we are detached */
+            if (!t->h) free(t);
+
+            /* Time to die */
+            _endthreadex(0);
+        }
+    }
+
+    return t;
 }
-	
+
 static int pthread_getconcurrency(int *val)
 {
-	*val = _pthread_concur;
-	return 0;
+    *val = _pthread_concur;
+    return 0;
 }
 
 static int pthread_setconcurrency(int val)
 {
-	_pthread_concur = val;
-	return 0;
+    _pthread_concur = val;
+    return 0;
 }
 
 #define pthread_getschedparam(T, P, S) ENOTSUP
@@ -318,170 +338,170 @@ static int pthread_setconcurrency(int val)
 
 static int pthread_exit(void *res)
 {
-	pthread_t t = pthread_self();
+    pthread_t t = pthread_self();
 
-	t->ret_arg = res;
-	
-	_pthread_cleanup_dest(t);
-	
-	longjmp(t->jb, 1);
+    t->ret_arg = res;
+
+    _pthread_cleanup_dest(t);
+
+    longjmp(t->jb, 1);
 }
 
 
 static void _pthread_invoke_cancel(void)
 {
-	_pthread_cleanup *pcup;
-	
-	_InterlockedDecrement(&_pthread_cancelling);
-	
-	/* Call cancel queue */
-	for (pcup = pthread_self()->clean; pcup; pcup = pcup->next)
-	{
-		pcup->func(pcup->arg);
-	}
-		
-	pthread_exit(PTHREAD_CANCELED);
+    _pthread_cleanup *pcup;
+
+    __PTHREAD_INTERLOCKED_DEC(&_pthread_cancelling);
+
+    /* Call cancel queue */
+    for (pcup = pthread_self()->clean; pcup; pcup = pcup->next)
+    {
+        pcup->func(pcup->arg);
+    }
+
+    pthread_exit(PTHREAD_CANCELED);
 }
 
 static void pthread_testcancel(void)
 {
-	if (_pthread_cancelling)
-	{
-		pthread_t t = pthread_self();
-		
-		if (t->cancelled && (t->p_state & PTHREAD_CANCEL_ENABLE))
-		{
-			_pthread_invoke_cancel();
-		}
-	}
+    if (_pthread_cancelling)
+    {
+        pthread_t t = pthread_self();
+
+        if (t->cancelled && (t->p_state & PTHREAD_CANCEL_ENABLE))
+        {
+            _pthread_invoke_cancel();
+        }
+    }
 }
 
 
 static int pthread_cancel(pthread_t t)
 {
-	if (t->p_state & PTHREAD_CANCEL_ASYNCHRONOUS)
-	{
-		/* Dangerous asynchronous cancelling */
-		CONTEXT ctxt;
-		
-		/* Already done? */
-		if (t->cancelled) return ESRCH;
-		
-		ctxt.ContextFlags = CONTEXT_CONTROL;
-		
-		SuspendThread(t->h);
-		GetThreadContext(t->h, &ctxt);
+    if (t->p_state & PTHREAD_CANCEL_ASYNCHRONOUS)
+    {
+        /* Dangerous asynchronous cancelling */
+        CONTEXT ctxt;
+
+        /* Already done? */
+        if (t->cancelled) return ESRCH;
+
+        ctxt.ContextFlags = CONTEXT_CONTROL;
+
+        SuspendThread(t->h);
+        GetThreadContext(t->h, &ctxt);
 #ifdef _M_X64
-		ctxt.Rip = (uintptr_t) _pthread_invoke_cancel;
+        ctxt.Rip = (uintptr_t) _pthread_invoke_cancel;
 #else
-		ctxt.Eip = (uintptr_t) _pthread_invoke_cancel;
+        ctxt.Eip = (uintptr_t) _pthread_invoke_cancel;
 #endif
-		SetThreadContext(t->h, &ctxt);
-		
-		/* Also try deferred Cancelling */
-		t->cancelled = 1;
-	
-		/* Notify everyone to look */
-		_InterlockedIncrement(&_pthread_cancelling);
-		
-		ResumeThread(t->h);
-	}
-	else
-	{
-		/* Safe deferred Cancelling */
-		t->cancelled = 1;
-	
-		/* Notify everyone to look */
-		_InterlockedIncrement(&_pthread_cancelling);
-	}
-	
-	return 0;
+        SetThreadContext(t->h, &ctxt);
+
+        /* Also try deferred Cancelling */
+        t->cancelled = 1;
+
+        /* Notify everyone to look */
+        __PTHREAD_INTERLOCKED_INC(&_pthread_cancelling);
+
+        ResumeThread(t->h);
+    }
+    else
+    {
+        /* Safe deferred Cancelling */
+        t->cancelled = 1;
+
+        /* Notify everyone to look */
+        __PTHREAD_INTERLOCKED_INC(&_pthread_cancelling);
+    }
+
+    return 0;
 }
 
 static unsigned _pthread_get_state(pthread_attr_t *attr, unsigned flag)
 {
-	return attr->p_state & flag;
+    return attr->p_state & flag;
 }
 
 static int _pthread_set_state(pthread_attr_t *attr, unsigned flag, unsigned val)
 {
-	if (~flag & val) return EINVAL;
-	attr->p_state &= ~flag;
-	attr->p_state |= val;
-	
-	return 0;
+    if (~flag & val) return EINVAL;
+    attr->p_state &= ~flag;
+    attr->p_state |= val;
+
+    return 0;
 }
 
 static int pthread_attr_init(pthread_attr_t *attr)
 {
-	attr->p_state = PTHREAD_DEFAULT_ATTR;
-	attr->stack = NULL;
-	attr->s_size = 0;
-	return 0;
+    attr->p_state = PTHREAD_DEFAULT_ATTR;
+    attr->stack = NULL;
+    attr->s_size = 0;
+    return 0;
 }
 
 static int pthread_attr_destroy(pthread_attr_t *attr)
 {
-	/* No need to do anything */
-	return 0;
+    /* No need to do anything */
+    return 0;
 }
 
 
 static int pthread_attr_setdetachstate(pthread_attr_t *a, int flag)
 {
-	return _pthread_set_state(a, PTHREAD_CREATE_DETACHED, flag);
+    return _pthread_set_state(a, PTHREAD_CREATE_DETACHED, flag);
 }
 
 static int pthread_attr_getdetachstate(pthread_attr_t *a, int *flag)
 {
-	*flag = _pthread_get_state(a, PTHREAD_CREATE_DETACHED);
-	return 0;
+    *flag = _pthread_get_state(a, PTHREAD_CREATE_DETACHED);
+    return 0;
 }
 
 static int pthread_attr_setinheritsched(pthread_attr_t *a, int flag)
 {
-	return _pthread_set_state(a, PTHREAD_INHERIT_SCHED, flag);
+    return _pthread_set_state(a, PTHREAD_INHERIT_SCHED, flag);
 }
 
 static int pthread_attr_getinheritsched(pthread_attr_t *a, int *flag)
 {
-	*flag = _pthread_get_state(a, PTHREAD_INHERIT_SCHED);
-	return 0;
+    *flag = _pthread_get_state(a, PTHREAD_INHERIT_SCHED);
+    return 0;
 }
 
 static int pthread_attr_setscope(pthread_attr_t *a, int flag)
 {
-	return _pthread_set_state(a, PTHREAD_SCOPE_SYSTEM, flag);
+    return _pthread_set_state(a, PTHREAD_SCOPE_SYSTEM, flag);
 }
 
 static int pthread_attr_getscope(pthread_attr_t *a, int *flag)
 {
-	*flag = _pthread_get_state(a, PTHREAD_SCOPE_SYSTEM);
-	return 0;
+    *flag = _pthread_get_state(a, PTHREAD_SCOPE_SYSTEM);
+    return 0;
 }
 
 static int pthread_attr_getstackaddr(pthread_attr_t *attr, void **stack)
 {
-	*stack = attr->stack;
-	return 0;
+    *stack = attr->stack;
+    return 0;
 }
 
 static int pthread_attr_setstackaddr(pthread_attr_t *attr, void *stack)
 {
-	attr->stack = stack;
-	return 0;
+    attr->stack = stack;
+    return 0;
 }
 
 static int pthread_attr_getstacksize(pthread_attr_t *attr, size_t *size)
 {
-	*size = attr->s_size;
-	return 0;
+    *size = attr->s_size;
+    return 0;
 }
 
 static int pthread_attr_setstacksize(pthread_attr_t *attr, size_t size)
 {
-	attr->s_size = size;
-	return 0;
+    attr->s_size = size;
+    return 0;
 }
 
 #define pthread_attr_getguardsize(A, S) ENOTSUP
@@ -494,181 +514,181 @@ static int pthread_attr_setstacksize(pthread_attr_t *attr, size_t size)
 
 static int pthread_setcancelstate(int state, int *oldstate)
 {
-	pthread_t t = pthread_self();
-	
-	if ((state & PTHREAD_CANCEL_ENABLE) != state) return EINVAL;
-	if (oldstate) *oldstate = t->p_state & PTHREAD_CANCEL_ENABLE;
-	t->p_state &= ~PTHREAD_CANCEL_ENABLE;
-	t->p_state |= state;
-	
-	return 0;
+    pthread_t t = pthread_self();
+
+    if ((state & PTHREAD_CANCEL_ENABLE) != state) return EINVAL;
+    if (oldstate) *oldstate = t->p_state & PTHREAD_CANCEL_ENABLE;
+    t->p_state &= ~PTHREAD_CANCEL_ENABLE;
+    t->p_state |= state;
+
+    return 0;
 }
 
 static int pthread_setcanceltype(int type, int *oldtype)
 {
-	pthread_t t = pthread_self();
-	
-	if ((type & PTHREAD_CANCEL_ASYNCHRONOUS) != type) return EINVAL;
-	if (oldtype) *oldtype = t->p_state & PTHREAD_CANCEL_ASYNCHRONOUS;
-	t->p_state &= ~PTHREAD_CANCEL_ASYNCHRONOUS;
-	t->p_state |= type;
-	
-	return 0;
+    pthread_t t = pthread_self();
+
+    if ((type & PTHREAD_CANCEL_ASYNCHRONOUS) != type) return EINVAL;
+    if (oldtype) *oldtype = t->p_state & PTHREAD_CANCEL_ASYNCHRONOUS;
+    t->p_state &= ~PTHREAD_CANCEL_ASYNCHRONOUS;
+    t->p_state |= type;
+
+    return 0;
 }
 
 static unsigned int WINAPI pthread_create_wrapper(void *args)
 {
-	struct _pthread_v *tv = (struct _pthread_v *)args;
+    struct _pthread_v *tv = (struct _pthread_v *)args;
 //	int i, j;
-	
-	_pthread_once_raw(&_pthread_tls_once, pthread_tls_init);
-	
-	TlsSetValue(_pthread_tls, tv);
-		
-	if (!setjmp(tv->jb))
-	{
-		/* Call function and save return value */
-		tv->ret_arg = tv->func(tv->ret_arg);
-		
-		/* Clean up destructors */
-		_pthread_cleanup_dest(tv);
-	}
-	
-	/* If we exit too early, then we can race with create */
-	while (tv->h == (HANDLE) -1)
-	{
-		YieldProcessor();
-		_ReadWriteBarrier();
-	}
-	
-	/* Make sure we free ourselves if we are detached */
-	if (!tv->h) free(tv);
-	
-	return 0;
+
+    _pthread_once_raw(&_pthread_tls_once, pthread_tls_init);
+
+    TlsSetValue(_pthread_tls, tv);
+
+    if (!setjmp(tv->jb))
+    {
+        /* Call function and save return value */
+        tv->ret_arg = tv->func(tv->ret_arg);
+
+        /* Clean up destructors */
+        _pthread_cleanup_dest(tv);
+    }
+
+    /* If we exit too early, then we can race with create */
+    while (tv->h == (HANDLE) -1)
+    {
+        __PTHREAD_PROC_YIELD();
+        __PTHREAD_READ_WRITE_BARRIER();
+    }
+
+    /* Make sure we free ourselves if we are detached */
+    if (!tv->h) free(tv);
+
+    return 0;
 }
 
 static int pthread_create(pthread_t *th, pthread_attr_t *attr, void *(* func)(void *), void *arg)
 {
-	struct _pthread_v *tv = (struct _pthread_v *)malloc(sizeof(struct _pthread_v));
-	size_t ssize = 0;
-	
-	if (!tv) return 1;
-	
-	*th = tv;
-	
-	/* Save data in pthread_t */
-	tv->ret_arg = arg;
-	tv->func = func;
-	tv->clean = NULL;
-	tv->cancelled = 0;
-	tv->p_state = PTHREAD_DEFAULT_ATTR;
-	tv->keymax = 0;
-	tv->keyval = NULL;
-	tv->h = (HANDLE) -1;
-	
-	if (attr)
-	{
-		tv->p_state = attr->p_state;
-		ssize = attr->s_size;
-	}
-	
-	/* Make sure tv->h has value of -1 */
-	_ReadWriteBarrier();
+    struct _pthread_v *tv = (struct _pthread_v *)malloc(sizeof(struct _pthread_v));
+    size_t ssize = 0;
 
-	tv->h = (HANDLE) _beginthreadex(NULL, (unsigned int)ssize, pthread_create_wrapper, tv, 0, NULL);
-	
-	/* Failed */
-	if (!tv->h) return 1;
-	
-	
-	if (tv->p_state & PTHREAD_CREATE_DETACHED)
-	{
-		CloseHandle(tv->h);
-		_ReadWriteBarrier();
-		tv->h = 0;
-	}
+    if (!tv) return 1;
 
-	return 0;
+    *th = tv;
+
+    /* Save data in pthread_t */
+    tv->ret_arg = arg;
+    tv->func = func;
+    tv->clean = NULL;
+    tv->cancelled = 0;
+    tv->p_state = PTHREAD_DEFAULT_ATTR;
+    tv->keymax = 0;
+    tv->keyval = NULL;
+    tv->h = (HANDLE) -1;
+
+    if (attr)
+    {
+        tv->p_state = attr->p_state;
+        ssize = attr->s_size;
+    }
+
+    /* Make sure tv->h has value of -1 */
+    __PTHREAD_READ_WRITE_BARRIER();
+
+    tv->h = (HANDLE) _beginthreadex(NULL, (unsigned int)ssize, pthread_create_wrapper, tv, 0, NULL);
+
+    /* Failed */
+    if (!tv->h) return 1;
+
+
+    if (tv->p_state & PTHREAD_CREATE_DETACHED)
+    {
+        CloseHandle(tv->h);
+        __PTHREAD_READ_WRITE_BARRIER();
+        tv->h = 0;
+    }
+
+    return 0;
 }
 
 static int pthread_join(pthread_t t, void **res)
 {
-	struct _pthread_v *tv = t;
-	
-	pthread_testcancel();
-	
-	WaitForSingleObject(tv->h, INFINITE);
-	CloseHandle(tv->h);
-	
-	/* Obtain return value */
-	if (res) *res = tv->ret_arg;
-	
-	free(tv);
+    struct _pthread_v *tv = t;
 
-	return 0;
+    pthread_testcancel();
+
+    WaitForSingleObject(tv->h, INFINITE);
+    CloseHandle(tv->h);
+
+    /* Obtain return value */
+    if (res) *res = tv->ret_arg;
+
+    free(tv);
+
+    return 0;
 }
 
 static int pthread_detach(pthread_t t)
 {
-	struct _pthread_v *tv = t;
-	
-	/*
-	 * This can't race with thread exit because
-	 * our call would be undefined if called on a dead thread.
-	 */
-	
-	CloseHandle(tv->h);
-	_ReadWriteBarrier();
-	tv->h = 0;
-	
-	return 0;
+    struct _pthread_v *tv = t;
+
+    /*
+     * This can't race with thread exit because
+     * our call would be undefined if called on a dead thread.
+     */
+
+    CloseHandle(tv->h);
+    __PTHREAD_READ_WRITE_BARRIER();
+    tv->h = 0;
+
+    return 0;
 }
 
 static int pthread_spin_init(pthread_spinlock_t *l, int pshared)
 {
-	(void) pshared;
-	
-	*l = 0;
-	return 0;
+    (void) pshared;
+
+    *l = 0;
+    return 0;
 }
 
 static int pthread_spin_destroy(pthread_spinlock_t *l)
 {
-	(void) l;
-	return 0;
+    (void) l;
+    return 0;
 }
 
 /* No-fair spinlock due to lack of knowledge of thread number */
 static int pthread_spin_lock(pthread_spinlock_t *l)
 {
-	while (_InterlockedExchange(l, EBUSY))
-	{
-		/* Don't lock the bus whilst waiting */
-		while (*l)
-		{
-			YieldProcessor();
-			
-			/* Compiler barrier.  Prevent caching of *l */
-			_ReadWriteBarrier();
-		}
-	}
-	
-	return 0;
+    while (__PTHERAD_INTERLOCKED_EX(l, EBUSY))
+    {
+        /* Don't lock the bus whilst waiting */
+        while (*l)
+        {
+            __PTHREAD_PROC_YIELD();
+
+            /* Compiler barrier.  Prevent caching of *l */
+            __PTHREAD_READ_WRITE_BARRIER();
+        }
+    }
+
+    return 0;
 }
 
 static int pthread_spin_trylock(pthread_spinlock_t *l)
 {
-	return InterlockedExchange(l, EBUSY);
+    return InterlockedExchange(l, EBUSY);
 }
 
 static int pthread_spin_unlock(pthread_spinlock_t *l)
 {
-	/* Compiler barrier.  The store below acts with release symmantics */
-	_ReadWriteBarrier();
-	
-	*l = 0;
-	
-	return 0;
+    /* Compiler barrier.  The store below acts with release symmantics */
+    __PTHREAD_READ_WRITE_BARRIER();
+
+    *l = 0;
+
+    return 0;
 }
 
 
