@@ -333,7 +333,7 @@ hr {
 }
 
 .memproto, .memdoc {
-	border: 1px solid #888;	
+	/* border: 1px solid #888;	 */
     margin: 0px;
     border-bottom: 1px solid #fff;
 }
@@ -343,6 +343,7 @@ hr {
     padding-left: 25px;
 	font-weight: bold;
     background: #f0f0f0 URL(function.png) 8px 10px no-repeat;
+    border-radius: 5px;
 }
 
 .memdoc {
@@ -723,4 +724,56 @@ div.global_nav_item span {
 	top: 24px;
 	right: 15px; 
 	margin-top: 0px;
+}
+
+/* custom icons */
+
+dl.see dt, dl.remark dt, dl.return dt, dl.params dt, dl.exception dt {
+	padding-left: 17px;
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	font-weight: 600;	
+}
+
+dl.see dt {
+	background-image: URL(seealso.png);
+}
+
+dl.see {
+	border: 1px solid #d44646;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+dl.remark dt {
+	background-image: URL(remarks.png);
+}
+
+dl.remark {
+	border: 1px solid #ddd533;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+dl.return dt {
+	background-image: URL(returns.png);
+}
+
+dl.params dt {
+	background-image: URL(params.png);
+}
+
+dl.exception dt {
+	background-image: URL(throws.png);
+}
+
+td.paramname {
+	font-style: italic;
+	padding-right: 10px;
+}
+
+.contents hr {
+	width: 100%;
+	left: -20px;
+	position: relative;
 }

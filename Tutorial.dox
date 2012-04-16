@@ -4,46 +4,63 @@
 
 @section tut_intro Introduction
 
-This page will give you a short introduction concerning the concepts enforced throughout libXDispatch and also help you getting started by first integrating libXDispatch into your project and writing the first lines of code afterwards. libXDispatch aims to provide an environment within which you can write parallelized code using the concepts of Grand Central Dispatch while keeping cross-platfrom compatibility and thus leaves it up to you, which operating systems you intend to target.
+This page will give you a short introduction concerning the concepts enforced throughout XDispatch and also help you getting started by first integrating libxdispatch into your project and writing the first lines of code afterwards. libxdispatch aims to provide an environment within which you can write parallelized code using the concepts of Grand Central Dispatch while keeping cross-platfrom compatibility and thus leaves it up to you, which operating systems you intend to target.
 
 @section tut_conf Configuring your environment
 
-Although libXDispatch is provided as <a href="http://opensource.mlba-team.de/xdispatch/files">ready-to-use library</a> as well, the recommended approach is to include the sources into your own development files. This will enable you to use this source tree without needing to have libXDispatch pre-installed on every development platform.
+The quickest way for getting started is obtaining a binary suitable for your development environment by going to the <a href="http://opensource.mlba-team.de/xdispatch/files">download section</a>. There you can find binaries for Linux, Windows and Mac OS X. Download the appropriate archive and install it on your system. 
 
-@subsection tut_conf_1 Going the CMake way
+@subsection tut_conf_mac Mac OS X
 
-In the following we assume, that we have a project we are currently working on. This project is managed using the subversion software and <a href="http://www.cmake.org">CMake</a> and has the following structure:
+On Mac OS you will only have to execute the provided package installer. It will automatically copy xdispatch.framework and (if selected) QtDispatch.framework to the '/Library' directory. Afterwards you can use the libraries by including one of the headers
 
+@code
+#include <dispatch/dispatch.h>
+#include <xdispatch/dispatch>
+@endcode
+
+As with any other framework you will need to link your executable against the framework, so either pass '-framework xdispatch' when invoking gcc or configure your IDE to link against the xdispatch framework.
+
+@remarks As Grand Central Dispatch is an operating system component on Mac OS you will NOT have to link against libdispatch by hand. This will happen completely automatically.
+
+@subsection tut_conf_win Windows
+
+Extract the archive and copy it to some place on the disk. The provided archives contain three directories:
 <ul>
-	<li><i>src</i> - The sources of our project, producing an executable called dispatch_demo</li>
-	<li><i>libconfig</i> - Let's assume, this is some library you depend on and have already included</li>
-	<li><i>CMakeLists.txt</i> - The file you configured your CMake build within</li>
+    <li><i>include</i> - Location of the header files</li>
+    <li><i>lib</i> - Location of the lib files you will have to link against</li>
+    <li><i>bin</i> - Location of the dll files.</li>
 </ul>
-
-All commands shown will assume your are located within the directory containing the <i>src</i> and <i>libconfig</i> folders as shown above.
-
-So to get started, you could either <a href="http://opensource.mlba-team.de/xdispatch/files">download</a> the latest sources and copy them within your source tree or simply include the stable branch using the svn:external property:
-@code
-svn propset svn:external "http://opensource.mlba-team.de/svn/xdispatch/branches/stable libxdispatch .
-@endcode
-
-Please make sure not to copy the sources in a directory called <i>xdispatch</i> as this will result in build errors. Now edit your <i>CMakeLists.txt</i> to contain the following lines before adding your executable from the <i>src</i> folder:
+To use xdispatch, make sure the three directories listed above are listed in the INCLUDE, LIB and PATH (for the bin directory) environment variables. When using Visual Studio you might also want to change the include and linker directories within your project configuration. Afterwards you can use the libraries by including one of the headers
 
 @code
-add_subdirectory(libxdispatch)
-include_directories(libxdispatch/include)
+#include <dispatch/dispatch.h>
+#include <xdispatch/dispatch>
 @endcode
 
-This will ensure your project knows about and builds libXDispatch. The second line will tell your compiler where to search for the headers of libXDispatch. To finish your preparations we finally need to link our executable with libXDispatch:
+Configure your project to link against the xdispatch and dispatch libs.
+
+@subsection tut_conf_linux Linux
+
+The recommended way on Linux is to use the provided packages by subscribing the <a href="https://launchpad.net/~mlba-team/+archive/stable">PPA on Launchpad</a>:
+@code
+sudo apt-add-repository ppa:mlba_team/stable
+sudo apt-get update
+sudo apt-get install libxdispatch-dev libdispatch-dev
+@endcode
+
+Packages for debian and RPM packages for openSUSE & Co will be released in the future.
+
+In the meantime when not using Ubuntu, download the provided binary tarball according to your architecture and extract the headers and libraries to their corresponding places. Afterwards you can use the libraries by including one of the headers
 
 @code
-add_executable(dispatch_demo ${SRC})
-target_link_libraries(dispatch_demo xdispatch)
+#include <dispatch/dispatch.h>
+#include <xdispatch/dispatch>
 @endcode
 
-@subsection tut_conf_2 Going the other way
+As with any other shared library you will need to link your executable against them, so either pass '-lxdispatch -ldispatch' when invoking gcc or configure your IDE to link against the xdispatch framework.
 
-In case you do not intend to use CMake you can of course still download the binaries and configure your environment to link agains libxdispatch.so on Linux, xdispatch.dylib on Mac OS and xdispatch.lib on Windows. Also make sure to add the libXDispatch include folder to your compiler's search path. This will have the same effect as the afore mentioned CMake scripts. Windows will force you to copy the xdispatch.dll and dispatch.dll files to the same directory as your executable as well.
+@remarks When using clang and lambdas, you will also have to link against the <a href="http://mackyle.github.com/blocksruntime/">BlocksRuntime</a>. It will be installed as a depedency on Ubuntu by default and is included in the tarball for all other Linux distributions. You will have to call clang with the parameters '-lxdispatch -ldispatch -lBlocksRuntime -fblocks'.
 
 @section tut_first First Steps
 
