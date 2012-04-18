@@ -49,7 +49,8 @@ void print_header() {
 	printf("   (c) 2011 MLBA\n\n");
 }
 
-void MU_initFramework(){
+void MU_initFramework(MU_messageHandler handler){
+    msg_handler = handler;
 	suite = createList();
 	suite->data=NULL;
 }

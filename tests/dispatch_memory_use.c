@@ -40,7 +40,7 @@
 
 #if TARGET_OS_EMBEDDED
 #define COUNT	300ul
-#define LAPS	4ul
+#define QUEUES	4ul
 #else
 #define COUNT	30000ul
 #define QUEUES	100ul

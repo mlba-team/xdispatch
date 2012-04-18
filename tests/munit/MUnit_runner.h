@@ -59,6 +59,12 @@ int MU_runAllTests(const char* bin, char keep_running);
   */
 void MU_printTests();
 
-void MU_initFramework();
+typedef void (*MU_messageHandler)(const char*);
+
+/**
+ * Will initialize the framework and install the given handler
+ * for printing messages
+ */
+void MU_initFramework(MU_messageHandler);
 
 #endif /* MUNIT_RUNNER_H_ */

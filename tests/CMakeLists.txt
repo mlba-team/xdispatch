@@ -2,7 +2,22 @@
 mz_add_library(munit munit)
 
 # define file groups
-file(GLOB TESTSRCS *.c *.h cxx_*.cpp dispatch_*.cpp cross_blocks.cpp)
+
+file(GLOB TEST_DISPATCH
+	dispatch_*.c
+	dispatch_*.cpp
+	tests.h 
+	atomic_operations.c
+	posix_api.c
+	pthread_api.c
+	queue_finalizer.c
+)
+file(GLOB TEST_XDISPATCH 
+	cxx_*.cpp
+	cxx_tests.h
+	cross_blocks.cpp
+)
+
 file(GLOB SHIMS shims/*.c shims/*.h)
 
 # grouping
@@ -11,7 +26,7 @@ source_group(shims FILES ${SHIMS})
 
 if(XDISPATCH_QT_SUPPORT)
 	# test cases for Qt Interface
-	file(GLOB QTESTHEADER Qt_*.cpp)
+	file(GLOB TEST_QTDISPATCH Qt_*.cpp)
 	
 	mz_add_definition(XDISPATCH_QT_SUPPORT=1)
 
@@ -25,7 +40,7 @@ if(XDISPATCH_QT_SUPPORT)
 				#${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc
 	)
 
-	#message("### COOL ${QTESTHEADER}")
+	#message("### COOL ${TEST_QTDISPATCH}")
 
 	set(TEST_LIB ${TEST_LIB} ${QT_LIBRARIES} QtDispatch)
 	
@@ -50,7 +65,11 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
 endif()
 
 # add new exec target
-add_executable(xdispatch_tests ${TESTSRCS} ${SHIMS} ${TESTMOC} ${QTESTHEADER} ${RES_FILES})
+if( IOS )
+	add_library(xdispatch_tests STATIC main_ios.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QTDISPATCH} ${RES_FILES})
+else()
+	add_executable(xdispatch_tests main.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QTDISPATCH} ${RES_FILES})
+endif()
 
 # manifest (somehow we need one when using mingw - but only for this binary !?
 if(MINGW)
@@ -63,7 +82,7 @@ if(MINGW)
 						COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
 						WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	)
-		set(RES_OBJECT ${CMAKE_CURRENT_BINARY_DIR}/tests.res)
+	set(RES_OBJECT ${CMAKE_CURRENT_BINARY_DIR}/tests.res)
 endif()
 
 # link this target with all needed libraries

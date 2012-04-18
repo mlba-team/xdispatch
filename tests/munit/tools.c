@@ -25,6 +25,7 @@
 #include "private.h"
 
 item_t* suite;
+MU_messageHandler msg_handler;
 
 void _begin_test(const char *name){
 #ifndef _WIN32
