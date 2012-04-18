@@ -22,7 +22,13 @@ endif()
   
 # add new target xdispatch
 mz_add_definition(XDISPATCH_MAKEDLL)
-add_library(${NAME} SHARED ${CXX_INCL} ${CXX} ${RES_FILE})
+if( IOS )
+	set( XDISPATCH_BUILD_TYPE STATIC )
+else()
+	set( XDISPATCH_BUILD_TYPE SHARED )
+endif()
+
+add_library(${NAME} ${XDISPATCH_BUILD_TYPE} ${CXX_INCL} ${CXX} ${RES_FILE})
   
 # link this target with all needed libraries
 message("-- linking xdispatch with: ${LIBS}")
@@ -32,7 +38,16 @@ mz_target_props(${NAME})
 set_property(TARGET xdispatch PROPERTY VERSION ${XDISPATCH_VERSION})
 set_property(TARGET xdispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
 
-if(APPLE)
+if(IOS)
+    install(TARGETS xdispatch
+                LIBRARY DESTINATION lib
+                RUNTIME DESTINATION bin
+                ARCHIVE DESTINATION lib)
+    install(DIRECTORY ../include/xdispatch
+                DESTINATION include
+                PATTERN "*.svn" EXCLUDE)                
+		
+elseif(APPLE)
     set_property(TARGET xdispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET xdispatch PROPERTY PUBLIC_HEADER ${CXX_INCL})
 

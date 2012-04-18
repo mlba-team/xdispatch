@@ -28,12 +28,15 @@ if(XDISPATCH_QT_SUPPORT)
 	#message("### COOL ${QTESTHEADER}")
 
 	set(TEST_LIB ${TEST_LIB} ${QT_LIBRARIES} QtDispatch)
+	
+	include_directories(
+		${QT_QTCORE_INCLUDE_DIR}
+		${QT_QTTEST_INCLUDE_DIR}
+	)
 endif()
 
 # includes
-INCLUDE_DIRECTORIES(
-	${QT_QTCORE_INCLUDE_DIR}
-	${QT_QTTEST_INCLUDE_DIR}
+include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}/../include
 )
