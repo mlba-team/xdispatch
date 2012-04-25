@@ -1,7 +1,7 @@
 Source: xdispatch
 Priority: optional
 Section: devel
-Maintainer: Marius Zwicker <xdispatch@mlba-team.de>
+Maintainer: Marius Zwicker <marius@mlba-team.de>
 Build-Depends: debhelper (>= 7.0.50~), quilt (>= 0.46-7~), cmake,
  libc6, libgcc1, clang, libqt4-core, libqt4-gui,
  libqt4-network, libqt4-dev, libblocksruntime-dev, doxygen
