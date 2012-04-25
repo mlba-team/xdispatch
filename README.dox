@@ -21,7 +21,7 @@ The entire Grand Central Dispatch interface is available and can be found in \re
 Please note that including <dispatch/dispatch.h> is entirely sufficient and will
 automatically include all other headers as well.
 
-@subsubsection @section x111 Use of system provided implementations
+@subsubsection x111 Use of system provided implementations
 
 On some platforms (namely Mac OS) a version of the libdispatch library is installed by default.
 Consequently on each platform xdispatch is built on, the build system will automatically search for existing dispatch implementations  (possibly integrated
@@ -68,7 +68,7 @@ svn co http://opensource.mlba-team.de/svn/xdispatch/trunk
 @endcode
 
 Please be aware that this is a project still in progress. As such we might introduce interface
-changes and new functionality until reaching version 1.0 - have a look at the \ref changelog
+changes and new functionality until reaching version 1.0 - have a look at the \ref change_log
 for details and the current progress. When using this library within a project we recommend to use
 one of the tagged versions or the stable branch available by using subversion:
 

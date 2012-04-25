@@ -57,9 +57,9 @@ if(APPLE)
     set( CPACK_COMPONENTS_ALL libxdispatch libQtDispatch )
 else()
     if(UNIX AND NOT APPLE)
-        set( CPACK_COMPONENTS_ALL libdispatch libdispatch-dev libxdispatch libxdispatch-dev libQtDispatch libQtDispatch-dev )
+        set( CPACK_COMPONENTS_ALL libdispatch libdispatch-dev libxdispatch libxdispatch-dev libQtDispatch libQtDispatch-dev xdispatch-doc )
     else()
-        set( CPACK_COMPONENTS_ALL libdispatch libxdispatch libQtDispatch )
+        set( CPACK_COMPONENTS_ALL libdispatch libxdispatch libQtDispatch xdispatch-doc )
     endif()
 endif()
 
@@ -85,6 +85,9 @@ set( CPACK_COMPONENT_LIBQTDISPATCH_DEPENDS libxdispatch)
 set( CPACK_COMPONENT_LIBQTDISPATCH-DEV_DISPLAY_NAME "QtDispatch - Development Files")
 set( CPACK_COMPONENT_LIBQTDISPATCH-DEV_DESCRIPTION "Provides integration of Grand Central Dispatch into the Qt Event-Loop. Additionally a QThreadPool compatible API to Grand Central Dispatch is provided")
 set( CPACK_COMPONENT_LIBQTDISPATCH-DEV_DEPENDS libQtDispatch)
+set( CPACK_COMPONENT_XDISPATCH_DOC_DISPLAY_NAME "API Documentation")
+set( CPACK_COMPONENT_XDISPATCH_DOC_DESCRIPTION "Documentation for libxdispatch, libdispatch and libqtdispatch. API Reference, tutorials and further information")
+set( CPACK_COMPONENT_XDISPATCH_DOC_DEPENDS libxdispatch-dev)
 
 
 

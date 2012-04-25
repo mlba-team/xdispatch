@@ -140,7 +140,11 @@ if( BUILD_XDISPATCH_TESTS)
 endif()
 
 # documentation
-option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
+if( MZ_IS_RELEASE )
+    option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" ON)
+else()
+    option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
+endif()
 if(XDISPATCH_DOCS)
 	include(docs/docgen.cmake)
 endif()

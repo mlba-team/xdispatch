@@ -4,11 +4,18 @@ Section: devel
 Maintainer: Marius Zwicker <xdispatch@mlba-team.de>
 Build-Depends: debhelper (>= 7.0.50~), quilt (>= 0.46-7~), cmake,
  libc6, libgcc1, clang, libqt4-core, libqt4-gui,
- libqt4-network, libqt4-dev, libblocksruntime-dev
+ libqt4-network, libqt4-dev, libblocksruntime-dev, doxygen
 Standards-Version: 3.9.1
 Vcs-Svn: https://opensource.mlba-team.de/svn/xdispatch
 Vcs-Browser: http://opensource.mlba-team.de/websvn/listing.php?repname=libXDispatch
 Homepage: http://opensource.mlba-team.de/xdispatch
+
+Package: xdispatch-doc
+Section: universe/doc
+Architecture: all
+Depends: libdispatch-dev (= ${binary:Version}), libxdispatch-dev (= ${binary:Version})
+Description: Userspace implementation of grand central dispatch (API Docs)
+ Documentation files for libdispatch, libxdispatch and libqtdispatch
 
 Package: libdispatch
 Section: libs
@@ -24,6 +31,7 @@ Package: libdispatch-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, libdispatch (= ${binary:Version}), pkg-config
+Suggests: xdispatch-doc
 Description: development files for libdispatch
  Userspace implementation of grand central dispatch API - Development Files
  .
@@ -50,6 +58,7 @@ Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, libxdispatch (= ${binary:Version}), pkg-config,
   libdispatch-dev
+Suggests: xdispatch-doc
 Description: development files for libxdispatch
  C++ API for Grand Central Dispatch - Development Files
  .
@@ -78,6 +87,7 @@ Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, libqtdispatch (= ${binary:Version}), 
  pkg-config, libqt4-dev, libdispatch-dev, libxdispatch-dev
+Suggests: xdispatch-doc
 Description: development files for libQtDispatch
  Qt compatible API wrapper for Grand Central Dispatch - Development Files
  .
