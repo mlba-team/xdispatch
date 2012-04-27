@@ -1,0 +1,69 @@
+FIND_PATH(
+	XDISPATCH_INCLUDE_DIRS
+	NAMES
+	xdispatch/dispatch.h
+	HINTS
+	/Library/Frameworks
+	$ENV{HOME}/include
+	/usr/local/include
+	/usr/include
+	/opt/local/include
+	$ENV{SystemDrive}/xdispatch/include
+	$ENV{ProgramFiles}/xdispatch/include
+)
+
+set(CMAKE_FIND_FRAMEWORK LAST)
+
+FIND_LIBRARY(
+	XDISPATCH_LIBRARY_DEBUG
+	NAMES
+	xdispatchD libxdispatchD
+	HINTS
+	/Library/Frameworks
+	$ENV{HOME}/lib
+	/usr/local/lib
+	/usr/lib
+	/opt/local/lib	
+	$ENV{SystemDrive}/xdispatch/lib
+	$ENV{ProgramFiles}/xdispatch/lib
+)
+
+FIND_LIBRARY(
+	XDISPATCH_LIBRARY_RELEASE
+	NAMES
+	xdispatch libxdispatch
+	HINTS
+	/Library/Frameworks
+	$ENV{HOME}/lib
+	/usr/local/lib
+	/usr/lib
+	/opt/local/lib	
+	$ENV{SystemDrive}/xdispatch/lib
+	$ENV{ProgramFiles}/xdispatch/lib
+)
+
+IF (XDISPATCH_LIBRARY_DEBUG AND NOT XDISPATCH_LIBRARY_RELEASE)
+	SET(XDISPATCH_LIBRARIES ${XDISPATCH_LIBRARY_DEBUG})
+ENDIF ()
+
+IF (XDISPATCH_LIBRARY_RELEASE AND NOT XDISPATCH_LIBRARY_DEBUG)
+	SET(XDISPATCH_LIBRARIES ${XDISPATCH_LIBRARY_RELEASE})
+ENDIF ()
+
+IF (XDISPATCH_LIBRARY_DEBUG AND XDISPATCH_LIBRARY_RELEASE)
+	SET(XDISPATCH_LIBRARIES debug ${XDISPATCH_LIBRARY_DEBUG} optimized ${XDISPATCH_LIBRARY_RELEASE})
+ENDIF ()
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(
+	xdispatch
+	DEFAULT_MSG
+	XDISPATCH_INCLUDE_DIRS
+	XDISPATCH_LIBRARIES
+)
+
+MARK_AS_ADVANCED(
+	XDISPATCH_INCLUDE_DIRS
+	XDISPATCH_LIBRARIES
+	XDISPATCH_LIBRARY_DEBUG
+	XDISPATCH_LIBRARY_RELEASE
+) 
