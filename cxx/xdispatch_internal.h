@@ -48,8 +48,10 @@
 #  pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
 # endif
 # define XDISPATCH_EXPORT __declspec(dllexport)
+# define XDISPATCH_DEPRECATED(F) __declspec(deprecated) F
 #else
 # define XDISPATCH_EXPORT __attribute__((visibility("default")))
+# define XDISPATCH_DEPRECATED(F) F __attribute__ ((deprecated))
 #endif
 
 #include <assert.h>

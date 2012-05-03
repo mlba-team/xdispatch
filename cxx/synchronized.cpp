@@ -76,30 +76,18 @@ void synclock::unlock(){
     }
 }
 
-static dispatch_semaphore_t rw_lock = dispatch_semaphore_create(1);
-static std::map<unsigned int, dispatch_semaphore_t> lock_semaphores;
 
-synclock xdispatch::get_lock_for_key(unsigned int key){
-    dispatch_semaphore_t sem = NULL;
+void xdispatch::init_semaphore_for_synclock(void* dt){
+    XDISPATCH_ASSERT( dt );
+    dispatch_semaphore_t* sem_ptr = (dispatch_semaphore_t*)(dt);
+    XDISPATCH_ASSERT( sem_ptr );
 
-    if (lock_semaphores.count(key) != 0)
-        sem = lock_semaphores[key];
-    else {
-        dispatch_semaphore_wait(rw_lock, time_forever);
-        if(lock_semaphores.count(key) != 0)
-            sem = lock_semaphores[key];
-        else {
-            sem = dispatch_semaphore_create(1);
-            XDISPATCH_ASSERT(sem);
-            lock_semaphores.insert( std::pair<unsigned int, dispatch_semaphore_t>(key,sem) );
-        }
-        dispatch_semaphore_signal(rw_lock);
-    }
-
-    return synclock(sem);
+    (*sem_ptr) = dispatch_semaphore_create(1);
+    XDISPATCH_ASSERT( *sem_ptr );
 }
 
 static std::map<std::string, dispatch_semaphore_t> user_lock_semaphores;
+static dispatch_semaphore_t rw_lock = dispatch_semaphore_create(1);
 
 synclock xdispatch::get_lock_for_key(const std::string& key){
     dispatch_semaphore_t sem = NULL;

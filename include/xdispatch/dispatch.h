@@ -44,10 +44,13 @@
 #  else
 #   define XDISPATCH_EXPORT __declspec(dllimport)
 #  endif
+#  define XDISPATCH_DEPRECATED(F) __declspec(deprecated) F
 # else
 #  define XDISPATCH_EXPORT __attribute__((visibility("default")))
+#  define XDISPATCH_DEPRECATED(F) F __attribute__ ((deprecated))
 # endif
 #endif
+
 
 # define __XDISPATCH_BEGIN_NAMESPACE	namespace xdispatch {
 # define __XDISPATCH_END_NAMESPACE }
