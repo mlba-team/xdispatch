@@ -21,7 +21,7 @@
 
 #ifdef QT_CORE_LIB
 
-#include "../include/QtDispatch/QtDispatch"
+#include <QtDispatch/QtDispatch>
 #include "Qt_tests.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS

@@ -19,11 +19,13 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
+#ifdef QT_CORE_LIB
 
-#include <QRunnable>
-#include <QTime>
+#include <QtCore/QRunnable>
+#include <QtCore/QTime>
 
-#include "../include/QtDispatch/QtDispatch"
+#include <QtDispatch/QtDispatch>
+
 #include "Qt_tests.h"
 
 class OperationFibo : public QRunnable {
@@ -84,3 +86,5 @@ extern "C" void Qt_dispatch_fibo(){
     MU_PASS("");
     MU_END_TEST;
 }
+
+#endif /* #ifdef QT_CORE_LIB */

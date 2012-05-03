@@ -23,7 +23,7 @@
 #ifndef QDISPATCH_APPLICATION_H_
 #define QDISPATCH_APPLICATION_H_
 
-#include <QApplication>
+#include <QtGui/qapplication.h>
 #include "qdispatchglobal.h"
 
 /**

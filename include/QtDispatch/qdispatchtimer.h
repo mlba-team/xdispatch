@@ -25,7 +25,7 @@
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
 
-#include <qobject.h>
+#include <QtCore/qobject.h>
 
 /**
  * @addtogroup qtdispatch

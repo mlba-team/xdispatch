@@ -21,7 +21,7 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QTime>
+#include <QtCore/QTime>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"

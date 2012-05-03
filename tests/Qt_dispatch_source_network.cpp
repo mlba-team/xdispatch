@@ -21,11 +21,11 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QTime>
+#include <QtCore/QTime>
+#include <QtCore/QDebug>
 #include <QtDispatch/QtDispatch>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QDebug>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
 
 #include "Qt_tests.h"
 
