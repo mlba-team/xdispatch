@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2012 MLBA. All rights reserved.
+* Copyright (c) 2012 MLBA-Team. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
 *

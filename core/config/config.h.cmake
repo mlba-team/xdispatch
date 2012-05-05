@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2011 MLBA. All rights reserved.
+* Copyright (c) 2011-2012 MLBA-Team. All rights reserved.
 *
 *
 *
