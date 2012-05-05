@@ -1,5 +1,7 @@
 
 cmake_minimum_required(VERSION 2.8)
+INCLUDE (CheckIncludeFiles)
+INCLUDE (CheckSymbolExists)
 
 # start new subproject
 project(xdispatch)
@@ -22,23 +24,22 @@ if(NOT HAS_MZ_GLOBAL)
 	include(${QT_USE_FILE})
 	
 	# We need to ouput everything into the same directory
-	set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
-	set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
-	message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
+        set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
+        set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
+        message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
 endif()
-
 
 # is the used compiler clang? if so we need blocks support
 if(MZ_IS_CLANG AND NOT APPLE)
     message("-- linking with the BlocksRuntime")
     mz_find_include_library(BlocksRuntime 
-        SYS Block.h BlocksRuntime 
+        SYS 0 
         SRC libblocksruntime libblocksruntime BlocksRuntime
     )
 
     mz_add_flag(CLANG -fblocks)
-   	include_directories( ${BlocksRuntime_INCLUDE_DIR} )
-    set(LIBS ${LIBS} ${BlocksRuntime_LIBRARIES})
+   	include_directories( ${BLOCKSRUNTIME_INCLUDE_DIRS} )
+    set(LIBS ${LIBS} ${BLOCKSRUNTIME_LIBRARIES})
 endif()
 
 # are we running on mac os and want to build universal binaries?
@@ -49,10 +50,10 @@ if(APPLE)
 		mz_add_flag(GCC -arch i386 -arch x86_64)
 	endif()
 endif()
-mz_check_include_files (sys/event.h FOUND_KQUEUE_IMPL)
-mz_check_include_files (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
-mz_check_include_files (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
-mz_check_include_files (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
+CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
+CHECK_INCLUDE_FILES (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
+CHECK_INCLUDE_FILES (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
+CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
 if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
     option(STATIC_KQUEUE "" ON)
@@ -140,28 +141,21 @@ if( BUILD_XDISPATCH_TESTS)
 endif()
 
 # documentation
-if( MZ_IS_RELEASE )
-    option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" ON)
-else()
-    option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
-endif()
+option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
 if(XDISPATCH_DOCS)
 	include(docs/docgen.cmake)
 endif()
 
 # packaging
 
-option(XDISPATCH_PACKAGE "Enable to configure package targets" OFF)
-if( XDISPATCH_PACKAGE )
-  if(APPLE)
+if(APPLE)
 	include(package/osx/pkg.cmake)
-  elseif(UNIX)
+elseif(UNIX)
 	include(package/rpm/rpm.cmake)
 	include(package/debian/deb.cmake)	
         include(package/ubuntu/deb.cmake)
-  else() # Windows ...
+else() # Windows ...
 	include(package/windows/zip.cmake)
-  endif()
 endif()
 	
 

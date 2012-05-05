@@ -49,7 +49,7 @@ else()
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
-    install(FILES Block.h
+    install(FILES Block.h Block_private.h
             DESTINATION include
             COMPONENT libxdispatch)
 endif()            
