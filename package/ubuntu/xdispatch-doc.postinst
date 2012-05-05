@@ -1,0 +1,4 @@
+#!/bin/bash
+ln -s /usr/share/doc/xdispatch-doc/html /usr/share/doc/libdispatch
+ln -s /usr/share/doc/xdispatch-doc/html /usr/share/doc/libxdispatch
+ln -s /usr/share/doc/xdispatch-doc/html /usr/share/doc/libqtdispatch

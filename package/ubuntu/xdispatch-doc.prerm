@@ -1,0 +1,4 @@
+#!/bin/bash
+rm -f /usr/share/doc/libdispatch/html
+rm -f /usr/share/doc/libxdispatch/html
+rm -f /usr/share/doc/libqtdispatch/html
