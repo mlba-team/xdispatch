@@ -91,9 +91,7 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_apply_serialqueue);
 	MU_REGISTER_TEST(dispatch_after_function);
 	MU_REGISTER_TEST(test_queue_finalizer);
-#if !__linux__
-	MU_REGISTER_TEST(dispatch_starfish);
-#endif
+//	MU_REGISTER_TEST(dispatch_starfish);
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
 #ifdef TEST_BLOCKS
@@ -107,10 +105,8 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_timer_bit31);
     MU_REGISTER_TEST(dispatch_timer_bit63);
     MU_REGISTER_TEST(dispatch_drift);
-# ifndef _WIN32
-    MU_REGISTER_TEST(test_dispatch_read);
-# endif
-    //MU_REGISTER_TEST(test_dispatch_proc);
+//    MU_REGISTER_TEST(test_dispatch_read);
+//    MU_REGISTER_TEST(test_dispatch_proc);
 #endif
 }
 
