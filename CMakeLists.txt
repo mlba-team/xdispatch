@@ -32,13 +32,13 @@ endif()
 if(MZ_IS_CLANG AND NOT APPLE)
     message("-- linking with the BlocksRuntime")
     mz_find_include_library(BlocksRuntime 
-        SYS Block.h BlocksRuntime 
+        SYS 0 
         SRC libblocksruntime libblocksruntime BlocksRuntime
     )
 
     mz_add_flag(CLANG -fblocks)
-   	include_directories( ${BlocksRuntime_INCLUDE_DIR} )
-    set(LIBS ${LIBS} ${BlocksRuntime_LIBRARIES})
+   	include_directories( ${BLOCKSRUNTIME_INCLUDE_DIRS} )
+    set(LIBS ${LIBS} ${BLOCKSRUNTIME_LIBRARIES})
 endif()
 
 # are we running on mac os and want to build universal binaries?
