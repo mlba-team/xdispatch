@@ -42,14 +42,6 @@ __XDISPATCH_BEGIN_NAMESPACE
 
 class XDISPATCH_EXPORT synclock;
 
-/**
-  Returns the synclock used to protect the area
-  identified by the given key.
-
-  @see synchronized
-  */
-XDISPATCH_EXPORT synclock get_lock_for_key(unsigned int key);
-XDISPATCH_EXPORT synclock get_lock_for_key(const std::string& key);
 
 /**
   Provides an easy locking mechanism used to
@@ -76,27 +68,48 @@ private:
     synclock& operator= (synclock);
 
     friend XDISPATCH_EXPORT synclock get_lock_for_key(const std::string&);
-    friend XDISPATCH_EXPORT synclock get_lock_for_key(unsigned int);
+    friend XDISPATCH_EXPORT synclock get_lock_for_key( dispatch_semaphore_t );
     synclock(dispatch_semaphore_t);
 };
 
-/**
-  Returns the synclock used to protect the area
-  identified by the synclock object.
 
-  @see synchronize( lock )
+/**
+ @see synchronized
+ */
+XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
+/**
+ This function will be removed in future versions.
+
+ @deprecated Please manage your synclock manually instead or use synchronized
+ @see synchronized
   */
-inline synclock get_lock_for_key(synclock& s){ return s; }
+XDISPATCH_EXPORT XDISPATCH_DEPRECATED( synclock get_lock_for_key(const std::string& key) );
+/**
+ @see synchronized
+  */
+inline synclock get_lock_for_key( dispatch_semaphore_t sem ){ return synclock(sem); }
+/**
+ @see synchronized
+  */
+inline synclock get_lock_for_key( synclock& s ){ return s; }
+
 
 # define XDISPATCH_CONCAT(A,B) A ## B
 # define XDISPATCH_LOCK_VAR(X) XDISPATCH_CONCAT(xd_synclock_, X)
+# define XDISPATCH_LOCK_VAR_SEM(X) XDISPATCH_CONCAT( __xd_synclock_sem_, X)
+# define XDISPATCH_LOCK_VAR_ONCE(X) XDISPATCH_CONCAT( __xd_synclock_once_, X)
 # define XDISPATCH_SYNC_HEADER( lock ) for( xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)(lock) ; XDISPATCH_LOCK_VAR(__LINE__) ; XDISPATCH_LOCK_VAR(__LINE__).unlock() )
+# define XDISPATCH_SYNC_DECL( id ) \
+    static dispatch_semaphore_t XDISPATCH_LOCK_VAR_SEM( id ); \
+    static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ); \
+    dispatch_once_f( &XDISPATCH_LOCK_VAR_ONCE( id ), &XDISPATCH_LOCK_VAR_SEM( id ), xdispatch::init_semaphore_for_synclock ); \
+    XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( XDISPATCH_LOCK_VAR_SEM( id ) ) )
 
 /**
    Same as synchronize( lock )
 
-   This macro is available even when XDISPATCH_NO_KEYWORDS was
-   specified.
+   This macro is available as an alternative when XDISPATCH_NO_KEYWORDS
+   was specified.
 
    @see synchronize( lock )
    */
@@ -105,12 +118,12 @@ inline synclock get_lock_for_key(synclock& s){ return s; }
 /**
    Same as synchronized( lock )
 
-   This macro is available even when XDISPATCH_NO_KEYWORDS was
-   specified.
+   This macro is available as an alternative when XDISPATCH_NO_KEYWORDS
+   was specified.
 
    @see synchronized( lock )
    */
-#  define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( __COUNTER__ ) )
+#  define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNC_DECL( __COUNTER__ )
 
 /**
   @def synchronize( lock )
