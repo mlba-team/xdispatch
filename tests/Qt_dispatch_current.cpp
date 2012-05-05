@@ -22,9 +22,9 @@
 #ifdef QT_CORE_LIB
 
 #include <QTest>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtDispatch/QtDispatch>
 
-#include "../include/QtDispatch/QtDispatch"
 #include "Qt_tests.h"
 
 #ifdef XDISPATCH_HAS_BLOCKS

@@ -21,7 +21,7 @@
 
 #ifdef QT_CORE_LIB
 
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"

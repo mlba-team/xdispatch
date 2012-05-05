@@ -23,8 +23,9 @@
 #ifndef QDISPATCH_GROUP_H_
 #define QDISPATCH_GROUP_H_
 
-#include <QObject>
-#include <QScopedPointer>
+#include <QtCore/qobject.h>
+#include <QtCore/qscopedpointer.h>
+
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
 

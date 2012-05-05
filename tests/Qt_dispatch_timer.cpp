@@ -22,8 +22,8 @@
 #ifdef QT_CORE_LIB
 
 #include <QtDispatch/QtDispatch>
-#include <QTime>
-#include <QRunnable>
+#include <QtCore/QTime>
+#include <QtCore/QRunnable>
 
 #include "../core/platform/atomic.h"
 #include "Qt_tests.h"

@@ -22,8 +22,8 @@
 #ifndef QDISPATCH_SOURCE_H_
 #define QDISPATCH_SOURCE_H_
 
-#include <qobject.h>
-#include <qscopedpointer.h>
+#include <QtCore/qobject.h>
+#include <QtCore/qscopedpointer.h>
 
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
