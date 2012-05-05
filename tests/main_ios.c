@@ -23,23 +23,26 @@
 #include "cxx_tests.h"
 #include "Qt_tests.h"
 
-void print_log(const char* msg) {
-    printf("%s", msg);
-    fflush(stdout);
+void null_printer(const char* _unused_){
+    
 }
 
 /*
- The test program for testing the dispatch
- framework. The difficult task in here is
- that all functions dispatched can be started
- at any time. Thus each test has to run as own
- process, end when all functions were executed
- an be supervised by the test application
+ The test library for testing the dispatch
+ framework. See also main.c
  */
 
-int main(int argc, char* argv[]) {
+// call this function from within your
+// ios program to run all tests.
+// Pass a message handler to print all messages
+int run_dispatch_tests(int argc, char* argv[], MU_messageHandler handler) {
 	int ret = 0;
-    MU_initFramework( print_log );
+    
+    if( handler == NULL )
+        handler = null_printer;
+    
+	MU_initFramework( handler );
+    
     register_tests();
     register_cxx_tests();
     register_qt_tests();

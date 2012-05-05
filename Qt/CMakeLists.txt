@@ -45,14 +45,29 @@ if(WIN32)
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
 
-add_library(QtDispatch SHARED ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc ${RES_FILE})
+if( IOS )
+	set( QTDISPATCH_BUILD_TYPE STATIC )
+else()
+	set( QTDISPATCH_BUILD_TYPE SHARED )
+endif()
+
+add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc ${RES_FILE})
 target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 mz_target_props(QtDispatch)
 set_property(TARGET QtDispatch PROPERTY VERSION ${XDISPATCH_VERSION})
 set_property(TARGET QtDispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
 
-if(APPLE)
+if(IOS)
+    install(TARGETS QtDispatch
+                LIBRARY DESTINATION lib
+                RUNTIME DESTINATION bin
+                ARCHIVE DESTINATION lib)
+    install(DIRECTORY ../include/QtDispatch
+                DESTINATION include
+                PATTERN "*.svn" EXCLUDE)
+                
+elseif(APPLE)
     set_property(TARGET QtDispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET QtDispatch PROPERTY PUBLIC_HEADER ${QINCLUDE_H})
 

@@ -35,10 +35,12 @@
 #endif
 
 #include "list.h"
+#include "MUnit_runner.h"
 
 typedef void(*mu_test_func)();
 
 extern item_t* suite;
+extern MU_messageHandler msg_handler;
 
 #define MU_REGISTER_TEST(NAME) _register_suite(NAME,#NAME)
 void _register_suite(mu_test_func function, const char* name);
@@ -48,14 +50,14 @@ void _begin_test(const char* name);
 
 #define MU_END_TEST
 
-#define MU_MESSAGE(format,...) _print_message(format, ## __VA_ARGS__)
+#define MU_MESSAGE(format,...) _print_message("\t-> " format "\n", ## __VA_ARGS__)
 static void _print_message(const char* format, ...){
 		static char was_called = 0;
 		va_list params;
 		char tmp[512];
 		if(!was_called){
 			was_called = 1;
-			printf("\n");
+            msg_handler("\n");
 		}
 		va_start(params, format);
 #ifdef WIN32_VS
@@ -64,8 +66,7 @@ static void _print_message(const char* format, ...){
 		vsprintf(tmp,format,params);
 #endif
 		va_end(params);
-		printf("\t-> %s\n",tmp);
-		fflush(stdout);
+        msg_handler(tmp);
 }
 
 #endif /* MUNIT_TOOLS_H_ */
