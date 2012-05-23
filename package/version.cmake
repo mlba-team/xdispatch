@@ -1,4 +1,13 @@
 
+##
+## Used to switch between devel and release
+##
+set( IS_A_RELEASE ON )
+
+##
+## Create all version info
+##
+
 # obtain the version info using subversion
 find_package(Subversion)
 if(SUBVERSION_FOUND)
@@ -32,19 +41,26 @@ endif()
 set( XDISPATCH_VERSION_MAJOR            0)
 set( XDISPATCH_VERSION_MINOR            7)
 set( XDISPATCH_VERSION_PATCH            0)
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+if( NOT IS_A_RELEASE )
+  if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
     message("-- Configuring release version")
-else()
+  else()
     set( XDISPATCH_VERSION_SUFFIX       devel)
+  endif()
 endif()
 set( XDISPATCH_LIBRARY_NAME		xdispatch)
 set( XDISPATCH_SUMMARY			"Userspace implementation of grand central dispatch")
 set( XDISPATCH_MAINTAINER		"Marius Zwicker")
 set( XDISPATCH_LICENSE			"Apache License, Version 2.0")
 set( XDISPATCH_DESCRIPTION		"Provides an userspace implementation of the grand central dispatch api introduced with Mac OS X 10.6. Additionally a platform independent C++ interface is included")
-set( XDISPATCH_VERSION 			${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH}~${XDISPATCH_VERSION_SUFFIX})
-set( XDISPATCH_DLL_VERSION 		${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_WC_REVISION} )
+if( NOT IS_A_RELEASE )
+  set( XDISPATCH_VERSION 			${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH}~${XDISPATCH_VERSION_SUFFIX})
+  set( XDISPATCH_DLL_VERSION 		${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_WC_REVISION} )
+else()
+  set( XDISPATCH_VERSION 			${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH})
+  set( XDISPATCH_DLL_VERSION 		${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH})
+endif()
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "userspace implementation of grand central dispatch")
 set( CPACK_PACKAGE_VENDOR 		"www.mlba-team.de")
 set( CPACK_RESOURCE_FILE_LICENSE 	"${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
