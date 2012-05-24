@@ -30,12 +30,16 @@ if(DOXYGEN_FOUND)
         add_custom_target(xdispatch_docs ${DOCS_DEFAULT_TARGET}
 		# delete old docs
 			${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/docs/
-		# run doxygen
 			COMMAND ${DOXYGEN_EXECUTABLE}
-		# copy additional files into the new directories
-			COMMAND cp -f ${PNG} ${CMAKE_CURRENT_BINARY_DIR}/docs/html
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
+		# copy additional files into the new directories
+		foreach(_png ${PNG})
+			add_custom_command( TARGET xdispatch_docs POST_BUILD
+				COMMAND ${CMAKE_COMMAND}
+				ARGS -E copy ${_png} ${CMAKE_CURRENT_BINARY_DIR}/docs/html
+			)
+		endforeach(_png)
 
         # the install target for the docs
         if(APPLE)
