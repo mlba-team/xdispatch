@@ -11,7 +11,7 @@ else()
 endif()
 
 # Variables referring to the system the packaging took place at
-if(MZ_64BIT)
+if(MZ_64BIT OR APPLE)
     set( PACKAGE_ARCH 			"amd64")
 else()
     set( PACKAGE_ARCH 			"i386")

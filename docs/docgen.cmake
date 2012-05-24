@@ -36,13 +36,6 @@ if(DOXYGEN_FOUND)
 			COMMAND cp -f ${PNG} ${CMAKE_CURRENT_BINARY_DIR}/docs/html
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
-		
-		# create a Qt Assistant Docset
-		add_custom_command(TARGET lemon_docs POST_BUILD
-			COMMAND ${QT_BINARY_DIR}/qhelpgenerator index.qhp -o ${EXECUTABLE_OUTPUT_PATH}/de.mlba-team.xdispatch.qch
-			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
-			COMMENT "Creating QT Docset"
-        )
 
         # the install target for the docs
         if(APPLE)
