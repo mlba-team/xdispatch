@@ -2,7 +2,7 @@
 ##
 ## Used to switch between devel and release
 ##
-set( IS_A_RELEASE ON )
+#set( IS_A_RELEASE ON )
 
 ##
 ## Create all version info
@@ -20,19 +20,17 @@ else()
 endif()
 
 # Variables referring to the system the packaging took place at
-if(MZ_64BIT OR APPLE)
+if(MZ_64BIT)
     set( PACKAGE_ARCH 			"amd64")
 else()
     set( PACKAGE_ARCH 			"i386")
 endif()
 if(MZ_IS_CLANG)
     set( PACKAGE_COMPILER 		"clang")
+elseif(MZ_IS_VS)
+	set( PACKAGE_COMPILER           "msvc")
 else()
-    if(MZ_IS_VS)
-        set( PACKAGE_COMPILER           "msvc")
-    else()
-        set( PACKAGE_COMPILER           "gcc")
-    endif()
+	set( PACKAGE_COMPILER           "gcc")
 endif()
 
 # Variables describing the version and functionality of 
@@ -40,7 +38,7 @@ endif()
 
 set( XDISPATCH_VERSION_MAJOR            0)
 set( XDISPATCH_VERSION_MINOR            7)
-set( XDISPATCH_VERSION_PATCH            0)
+set( XDISPATCH_VERSION_PATCH            1)
 if( NOT IS_A_RELEASE )
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
@@ -104,6 +102,21 @@ set( CPACK_COMPONENT_LIBQTDISPATCH-DEV_DEPENDS libQtDispatch)
 set( CPACK_COMPONENT_XDISPATCH-DOC_DISPLAY_NAME "API Documentation")
 set( CPACK_COMPONENT_XDISPATCH-DOC_DESCRIPTION "Documentation for libxdispatch, libdispatch and libqtdispatch. API Reference, tutorials and further information. Will be installed to /Library/Documentation on Mac OS and to /usr/share/doc on other Unix platforms")
 
+# variables modifying the package name
+if( WIN32 )
+	if( MINGW )
+		set( PACKAGE_NAME "mingw" )
+	else()
+		set( PACKAGE_NAME "${CMAKE_GENERATOR}" )
+	endif()
+elseif( APPLE )
+	set( PACKAGE_NAME "${CMAKE_SYSTEM}" )
+else()
+	set( PACKAGE_NAME "${CMAKE_SYSTEM_NAME}" )
+endif()
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+	set( PACKAGE_NAME "${PACKAGE_NAME}_Debug" )
+endif()
 
 
 # CPack constants built from the other variables
@@ -111,7 +124,7 @@ set( CPACK_PACKAGE_VERSION_MAJOR 	"${XDISPATCH_VERSION_MAJOR}")
 set( CPACK_PACKAGE_VERSION_MINOR 	"${XDISPATCH_VERSION_MINOR}")
 set( CPACK_PACKAGE_VERSION_PATCH 	"${XDISPATCH_VERSION_PATCH}")
 set( CPACK_PACKAGE_VERSION 		"${XDISPATCH_VERSION}")
-set( CPACK_PACKAGE_FILE_NAME 		"${XDISPATCH_LIBRARY_NAME}_${CPACK_PACKAGE_VERSION}_${CMAKE_SYSTEM_NAME}_${PACKAGE_ARCH}")
+set( CPACK_PACKAGE_FILE_NAME 		"${XDISPATCH_LIBRARY_NAME}_${CPACK_PACKAGE_VERSION}_${PACKAGE_NAME}_${PACKAGE_ARCH}")
 
 
 # some debugging output

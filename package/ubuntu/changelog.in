@@ -1,5 +1,11 @@
 xdispatch (${XDISPATCH_VERSION}-0ubuntu1) oneiric; urgency=low
 
+  * Unstable build of trunk revision ${XDISPATCH_WC_REVISION}
+
+ -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
+
+xdispatch (${XDISPATCH_VERSION}-0ubuntu1) oneiric; urgency=low
+
   * Introduced a xdispatch::once api as a correspondence to the
     dispatch_once C interface (#379)
   * Removed the dependency of QtDispatch on QtNetwork (#389)
