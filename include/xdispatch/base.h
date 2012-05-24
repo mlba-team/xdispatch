@@ -124,6 +124,7 @@ template <class T>  class ptr_operation : public operation
 template <class T> class  ptr_iteration_operation : public iteration_operation
 {
     public:
+
         ptr_iteration_operation(T* object, void(T::*function)(size_t))
             : obj(object), func(function) {}
         virtual void operator()(size_t index) {
@@ -136,7 +137,7 @@ template <class T> class  ptr_iteration_operation : public iteration_operation
 };
 
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#if XDISPATCH_HAS_BLOCKS
 /**
   A simple operation for wrapping the given
   block as an xdispatch::operation
@@ -144,19 +145,19 @@ template <class T> class  ptr_iteration_operation : public iteration_operation
 class block_operation : public operation {
     public:
         block_operation(dispatch_block_t b)
-            : operation(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+            : operation(), _block(Block_copy(b)) {}
         block_operation(const block_operation& other)
-            : operation(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
+            : operation(other), _block(Block_copy(other._block)) {}
         ~block_operation() {
-            XDISPATCH_BLOCK_DELETE(block);
+            Block_release(_block);
         }
 
         void operator ()(){
-            XDISPATCH_BLOCK_EXEC(block)();
+            _block();
         };
 
     private:
-        dispatch_block_store block;
+        dispatch_block_t _block;
 };
 
 /**
@@ -166,19 +167,59 @@ class block_operation : public operation {
 class block_iteration_operation : public iteration_operation {
     public:
         block_iteration_operation(dispatch_iteration_block_t b)
-            : iteration_operation(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+            : iteration_operation(), _block(Block_copy(b)) {}
         block_iteration_operation(const block_iteration_operation& other)
-            : iteration_operation(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
-        ~block_iteration_operation() { XDISPATCH_BLOCK_DELETE(block); }
+            : iteration_operation(other), _block(Block_copy(other._block)) {}
+        ~block_iteration_operation() { Block_release(_block); }
 
         void operator ()(size_t index){
-            XDISPATCH_BLOCK_EXEC(block)(index);
+            _block(index);
         };
 
     private:
-        dispatch_iteration_block_store block;
+        dispatch_iteration_block_t _block;
 };
-#endif
+#endif // XDISPATCH_HAS_BLOCKS
+
+/**
+  A simple operation for wrapping the given
+  function as an xdispatch::operation
+  */
+class function_operation : public operation {
+    public:
+        function_operation(const lambda_function& b)
+            : operation(), _function(b) {}
+        function_operation(const function_operation& other)
+            : operation(other), _function(other._function) {}
+        ~function_operation() {}
+
+        void operator ()(){
+           _function();
+        };
+
+    private:
+        lambda_function _function;
+};
+
+/**
+  A simple iteration operation needed when
+  applying a function object several times
+  */
+class function_iteration_operation : public iteration_operation {
+    public:
+        function_iteration_operation(const iteration_lambda_function b)
+            : iteration_operation(), _function(b) {}
+        function_iteration_operation(const function_iteration_operation& other)
+            : iteration_operation(other), _function(other._function) {}
+        ~function_iteration_operation() {}
+
+        void operator ()(size_t index){
+            _function(index);
+        };
+
+    private:
+        iteration_lambda_function _function;
+};
 
 
 class XDISPATCH_EXPORT queue;

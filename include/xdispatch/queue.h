@@ -87,6 +87,15 @@ class XDISPATCH_EXPORT queue : public object {
         }
     #endif
         /**
+        Same as async(operation*).
+        Will put the given function on the queue.
+
+        @see async(operation*)
+        */
+        inline void async(const lambda_function& b) {
+            async( new function_operation(b) );
+        }
+        /**
         Applies the given iteration_operation for async execution
         in this queue and returns immediately.
 
@@ -112,6 +121,17 @@ class XDISPATCH_EXPORT queue : public object {
             apply( new block_iteration_operation(b), times );
         }
     #endif
+        /**
+        Same as apply(iteration_operation*, size_t times).
+
+        Will wrap the given function in an operation and put it on the
+        queue.
+
+        @see apply(iteration_operation*, size_t times)
+        */
+        inline void apply(const iteration_lambda_function& b, size_t times) {
+            apply( new function_iteration_operation(b), times );
+        }
         /**
         Applies the given operation for async execution
         in this queue after the given time and returns immediately.
@@ -139,6 +159,17 @@ class XDISPATCH_EXPORT queue : public object {
         }
     #endif
         /**
+        Same as dispatch_after(operation*, time_t).
+        Will wrap the given function in an operation and put it on the
+        queue.
+        */
+        inline void after(const lambda_function& b, struct tm* time) {
+            after( new function_operation(b), time );
+        }
+        inline void after(const lambda_function& b, dispatch_time_t time) {
+            after( new function_operation(b), time );
+        }
+        /**
         Applies the given operation for execution
         in this queue and blocks until the operation
         was executed. The queue will take possession of the
@@ -157,6 +188,14 @@ class XDISPATCH_EXPORT queue : public object {
             sync( new block_operation(b) );
         }
     #endif
+        /**
+        Same as dispatch_sync(operation*).
+        Will wrap the given function in an operation and put it on the
+        queue.
+        */
+        inline void sync(const lambda_function& b) {
+            sync( new function_operation(b) );
+        }
         /**
         Sets the given operation as finalizer for this
         queue. A finalizer is called before destroying
@@ -179,6 +218,16 @@ class XDISPATCH_EXPORT queue : public object {
         */
         inline void finalizer(dispatch_block_t b, const queue& q = global_queue()) {
             finalizer( new block_operation(b), q );
+        }
+    #endif
+    #ifdef XDISPATCH_HAS_BLOCKS
+        /**
+        Same as set_finalizer(operation*, queue*).
+        Will wrap the given function in an operation and store
+        it as finalizer.
+        */
+        inline void finalizer(const lambda_function& b, const queue& q = global_queue()) {
+            finalizer( new function_operation(b), q );
         }
     #endif
         /**

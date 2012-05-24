@@ -204,6 +204,15 @@ class XDISPATCH_EXPORT source : public object {
             }
     #endif
             /**
+            Sets the handler to dispatch each time the source
+            becomes ready. You can use data() to obtain a pointer
+            to data provided by the source and possibly being the
+            reason for the handler to be dispatched.
+            */
+            virtual inline void handler(const lambda_function& b) {
+                handler( new function_operation(b) );
+            }
+            /**
             Sets the queue the handler will be executed on
             */
             void target_queue(const xdispatch::queue&);
@@ -284,6 +293,17 @@ class XDISPATCH_EXPORT source : public object {
                 cancel_handler( new block_operation(b) );
             }
     #endif
+            /**
+            Sets the cancellation handler function for the given dispatch source.
+
+            The cancellation handler (if specified) is submitted to the source's
+            target queue in response to a call to dispatch_source_cancel when the
+            system has released all references to the source's underlying handle
+            and the source's event handler block has returned.
+            */
+            virtual inline void cancel_handler(const lambda_function& b) {
+                cancel_handler( new function_operation(b) );
+            }
 
     private:
             source(const source&);

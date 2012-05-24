@@ -47,41 +47,41 @@ void XDISPATCH_EXPORT _xdispatch_source_set_cancel_handler(dispatch_source_t, xd
 
 #endif
 
-#if defined(XDISPATCH_HAS_BLOCKS) && !defined(__BLOCKS__)
+#if defined(XDISPATCH_HAS_LAMBDAS) && !defined(XDISPATCH_HAS_BLOCKS)
 
-inline void dispatch_async(dispatch_queue_t queue, dispatch_block_t block){
+inline void dispatch_async(dispatch_queue_t queue, const xdispatch::lambda_function& block){
     xdispatch::queue( queue ).async( block );
 }
 
-inline void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block){
+inline void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, const xdispatch::lambda_function& block){
     xdispatch::queue( queue ).after( block, when );
 }
 
-inline void dispatch_sync(dispatch_queue_t queue, dispatch_block_t block){
+inline void dispatch_sync(dispatch_queue_t queue, const xdispatch::lambda_function& block){
     xdispatch::queue( queue ).sync( block );
 }
 
-inline void dispatch_apply(size_t iterations, dispatch_queue_t queue, dispatch_iteration_block_t block){
+inline void dispatch_apply(size_t iterations, dispatch_queue_t queue, const xdispatch::iteration_lambda_function& block){
     xdispatch::queue( queue ).apply( block, iterations );
 }
 
-inline void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
+inline void dispatch_group_async(dispatch_group_t group, dispatch_queue_t queue, const xdispatch::lambda_function& block){
     xdispatch::group( group ).async( block, queue );
 }
 
-inline void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, dispatch_block_t block){
+inline void dispatch_group_notify(dispatch_group_t group, dispatch_queue_t queue, const xdispatch::lambda_function& block){
     xdispatch::group( group ).notify( block, queue );
 }
 
-inline void dispatch_source_set_event_handler(dispatch_source_t source, dispatch_block_t handler){
-    _xdispatch_source_set_event_handler( source, new xdispatch::block_operation(handler) );
+inline void dispatch_source_set_event_handler(dispatch_source_t source, const xdispatch::lambda_function& handler){
+    _xdispatch_source_set_event_handler( source, new xdispatch::function_operation(handler) );
 }
 
-inline void dispatch_source_set_cancel_handler(dispatch_source_t source, dispatch_block_t cancel_handler){
-    _xdispatch_source_set_cancel_handler( source, new xdispatch::block_operation(cancel_handler) );
+inline void dispatch_source_set_cancel_handler(dispatch_source_t source, const xdispatch::lambda_function& cancel_handler){
+    _xdispatch_source_set_cancel_handler( source, new xdispatch::function_operation(cancel_handler) );
 }
 
-inline void dispatch_once(dispatch_once_t *predicate, dispatch_block_t block){
+inline void dispatch_once(dispatch_once_t *predicate, const xdispatch::lambda_function& block){
     xdispatch::once o( predicate );
     o( block );
 }

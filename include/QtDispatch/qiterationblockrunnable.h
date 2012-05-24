@@ -57,17 +57,17 @@ class Q_DISPATCH_EXPORT QIterationBlockRunnable : public QIterationRunnable {
         @endcode
         */
         QIterationBlockRunnable(dispatch_iteration_block_t b)
-            : QIterationRunnable(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+            : QIterationRunnable(), _block(Block_copy(b)) {}
         QIterationBlockRunnable(const QIterationBlockRunnable& other)
-            : QIterationRunnable(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
-        virtual ~QIterationBlockRunnable() { XDISPATCH_BLOCK_DELETE(block); }
+            : QIterationRunnable(other), _block(Block_copy(other._block)) {}
+        virtual ~QIterationBlockRunnable() { Block_release(_block); }
 
         virtual inline void run(size_t index){
-            XDISPATCH_BLOCK_EXEC(block)(index);
+            _block(index);
         };
 
     private:
-        dispatch_iteration_block_store block;
+        dispatch_iteration_block_t _block;
 
 };
 

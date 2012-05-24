@@ -95,6 +95,18 @@ class XDISPATCH_EXPORT once {
             operator()( op );
         }
 #endif
+        /**
+          Similar to operator()(operation&)
+
+          Will wrap the given function as operation
+          and try to execute it on the once object
+
+          @see operator()(operation&)
+          */
+        inline void operator()(const lambda_function& b) {
+            once_function op(b);
+            operator()( op );
+        }
 
     private:
         dispatch_once_t _once_obj;
@@ -108,16 +120,32 @@ class XDISPATCH_EXPORT once {
         class once_block : public operation {
             public:
                 once_block(dispatch_block_t b)
-                    : operation(), block( b ) {}
+                    : operation(), _block( b ) {}
 
                 void operator()() {
-                    XDISPATCH_BLOCK_EXEC(block)();
+                    _block();
                 }
 
             private:
-                dispatch_block_t block;
+                dispatch_block_t _block;
         };
 #endif
+        // we define our own function class
+        // as the function_operation does a
+        // copy of the stored block, something
+        // we do not need in here
+        class once_function : public operation {
+            public:
+                once_function(const lambda_function& b)
+                    : operation(), _function( b ) {}
+
+                void operator()() {
+                    _function();
+                }
+
+            private:
+                const lambda_function& _function;
+        };
 
         friend XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once& );
 };

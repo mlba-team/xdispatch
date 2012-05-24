@@ -56,19 +56,19 @@ class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
           @endcode
           */
         QBlockRunnable(dispatch_block_t b)
-            : QRunnable(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+            : QRunnable(), _block(Block_copy(b)) {}
         QBlockRunnable(const QBlockRunnable& other)
-            : QRunnable(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
+            : QRunnable(other), _block(Block_copy(other._block)) {}
         virtual ~QBlockRunnable() {
-            XDISPATCH_BLOCK_DELETE(block);
+            Block_release(_block);
         }
 
         virtual void run(){
-            XDISPATCH_BLOCK_EXEC(block)();
+            _block();
         };
 
     private:
-        dispatch_block_store block;
+        dispatch_block_t _block;
 
 };
 

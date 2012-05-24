@@ -102,59 +102,70 @@
 # define XDISPATCH_BLOCK ^
 # ifndef XDISPATCH_NO_KEYWORDS
 #  define $ ^
-# endif
-# define XDISPATCH_BLOCK_PERSIST(A) Block_copy(A)
-# define XDISPATCH_BLOCK_COPY(A) Block_copy(A)
-# define XDISPATCH_BLOCK_DELETE(A) Block_release(A)
-# define XDISPATCH_BLOCK_EXEC(A) (A)
+# endif // XDISPATCH_NO_KEYWORDS
   //typedef void (^dispatch_block_t)(void);
  typedef void (^dispatch_iteration_block_t)(size_t);
- typedef dispatch_block_t dispatch_block_store;
- typedef dispatch_iteration_block_t dispatch_iteration_block_store;
-# define XDISPATCH_HAS_BLOCKS
+# define XDISPATCH_HAS_BLOCKS 1
 # if defined(__cplusplus) && !defined(__clang__)
 #  warning "Sadly blocks are currently broken in C++ on this platform, we recommend using gcc 4.5.1 or clang 2.0 instead"
 # endif
+#endif // __BLOCKS__
 
 // visual studio 2010
-#elif _MSC_VER >= 1600
+#if _MSC_VER >= 1600
 
 # include <functional>
 # define XDISPATCH_BLOCK [=]
 # ifndef XDISPATCH_NO_KEYWORDS
 #  define $ [=]
 # endif
-# define XDISPATCH_BLOCK_PERSIST(A) (A)
-# define XDISPATCH_BLOCK_COPY(A) (A)
-# define XDISPATCH_BLOCK_DELETE(A) {}
-# define XDISPATCH_BLOCK_EXEC(A) (A)
- typedef const std::tr1::function< void (void) >& dispatch_block_t;
- typedef const std::tr1::function< void (size_t) >& dispatch_iteration_block_t;
- typedef std::tr1::function< void (void) > dispatch_block_store;
- typedef std::tr1::function< void (size_t) > dispatch_iteration_block_store;
-# define XDISPATCH_HAS_BLOCKS
+
+__XDISPATCH_BEGIN_NAMESPACE
+ typedef ::std::tr1::function< void (void) > lambda_function;
+ typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+__XDISPATCH_END_NAMESPACE
+
+# define XDISPATCH_HAS_LAMBDAS 1
+# define XDISPATCH_HAS_FUNCTION 1
+
+// visual studio 2008
+#elif _MSC_VER >= 1500
+
+# include <functional>
+
+__XDISPATCH_BEGIN_NAMESPACE
+ typedef ::std::tr1::function< void (void) > lambda_function;
+ typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+__XDISPATCH_END_NAMESPACE
+
+# define XDISPATCH_HAS_FUNCTION 1
+
+// g++,clang++ / gnu compiler collection
+#elif defined(__GNUC__) || defined(__clang__)
 
 // gcc 4.5 with c++0x enabled
-#elif defined __GXX_EXPERIMENTAL_CXX0X__
+# if defined(__GXX_EXPERIMENTAL_CXX0X__)
+#  ifndef XDISPATCH_HAS_BLOCKS
+#   define XDISPATCH_BLOCK [=]
+#   ifndef XDISPATCH_NO_KEYWORDS
+#    define $ [=]
+#   endif // XDISPATCH_NO_KEYWORDS
+#  endif // XDISPATCH_HAS_BLOCKS
+#  define XDISPATCH_HAS_LAMBDAS 1
+# endif // __GXX_EXPERIMENTAL_CXX0X__
 
-# include <tr1/functional>
-# define XDISPATCH_BLOCK [=]
-# ifndef XDISPATCH_NO_KEYWORDS
-#  define $ [=]
-# endif
-# define XDISPATCH_BLOCK_PERSIST(A) (A)
-# define XDISPATCH_BLOCK_COPY(A) (A)
-# define XDISPATCH_BLOCK_DELETE(A) {}
-# define XDISPATCH_BLOCK_EXEC(A) (A)
- typedef const std::tr1::function< void (void) >& dispatch_block_t;
- typedef const std::tr1::function< void (size_t) >& dispatch_iteration_block_t;
- typedef std::tr1::function< void (void) > dispatch_block_store;
- typedef std::tr1::function< void (size_t) > dispatch_iteration_block_store;
-# define XDISPATCH_HAS_BLOCKS
+#  include <tr1/functional>
+
+__XDISPATCH_BEGIN_NAMESPACE
+ typedef ::std::tr1::function< void (void) > lambda_function;
+ typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+__XDISPATCH_END_NAMESPACE
+
+# define XDISPATCH_HAS_FUNCTION 1
 
 #else
 
-# define XDISPATCH_BLOCK "No Block support!"
+# error "Unsupported compiler version"
 
 #endif
 
