@@ -21,6 +21,10 @@ if(DOXYGEN_FOUND)
 			${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
 			${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
 		)
+		configure_file(
+			${CMAKE_CURRENT_SOURCE_DIR}/docs/header.htm.in
+			${CMAKE_CURRENT_SOURCE_DIR}/docs/header.htm
+		)
 
         # add to the default target
         if( MZ_IS_RELEASE )
