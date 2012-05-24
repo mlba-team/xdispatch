@@ -10,7 +10,7 @@
 	  $(document).ready(function() { searchBox.OnSelectItem(0); });
 	</script>
 </head><body>
-<div class="custom_header" style="padding-left: 150px;">XDispatch 0.7.0</div>
+<div class="custom_header" style="padding-left: 150px;">XDispatch ${XDISPATCH_VERSION}</div>
 <!--
 <div id="global_nav">
 	<a href="http://opensource.mlba-team.de/xdispatch/news.htm">
