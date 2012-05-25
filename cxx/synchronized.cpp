@@ -27,52 +27,35 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-struct synclock::data {
-    dispatch_semaphore_t sem;
-    bool lock;
 
-    data(dispatch_semaphore_t s) : sem(s), lock(false) {
-        XDISPATCH_ASSERT(s);
-        dispatch_retain(s);
-    }
+synclock::synclock()
+  : _semaphore(1), _lock_active(false) {}
 
-    ~data(){
-        dispatch_release(sem);
-    }
-};
-
-synclock::synclock() : _d( new data(dispatch_semaphore_create(1)) ) {
-    XDISPATCH_ASSERT(_d);
-}
-
-synclock::synclock(dispatch_semaphore_t s) : _d( new data(s) ) {
-    XDISPATCH_ASSERT(_d);
-    _d->lock = true;
+synclock::synclock(dispatch_semaphore_t s)
+  : _semaphore( s ), _lock_active(true) {
 
     XDISPATCH_ASSERT(s);
-    dispatch_semaphore_wait(_d->sem,DISPATCH_TIME_FOREVER);
+    _semaphore.acquire ();
 }
 
-synclock::synclock(const synclock &other) : _d( new data(other._d->sem) )  {
-    XDISPATCH_ASSERT(_d);
-    _d->lock = true;
+synclock::synclock(const synclock &other)
+  : _semaphore(other._semaphore), _lock_active(true)  {
 
-    dispatch_semaphore_wait(_d->sem,DISPATCH_TIME_FOREVER);
+    _semaphore.acquire ();
 }
 
 synclock::~synclock() {
     unlock();
-    delete _d;
 }
 
 synclock::operator bool() const{
-    return _d->lock;
+    return _lock_active;
 }
 
 void synclock::unlock(){
-    if(_d->lock) {
-        _d->lock = false;
-        dispatch_semaphore_signal(_d->sem);
+    if(_lock_active) {
+       _lock_active = false;
+       _semaphore.release ();
     }
 }
 

@@ -62,8 +62,8 @@ public:
     void unlock();
 
 private:
-    struct data;
-    data* _d;
+    xdispatch::semaphore _semaphore;
+    bool _lock_active;
 
     synclock& operator= (synclock);
 
@@ -100,8 +100,8 @@ inline synclock get_lock_for_key( synclock& s ){ return s; }
 # define XDISPATCH_LOCK_VAR_ONCE(X) XDISPATCH_CONCAT( __xd_synclock_once_, X)
 # define XDISPATCH_SYNC_HEADER( lock ) for( xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)(lock) ; XDISPATCH_LOCK_VAR(__LINE__) ; XDISPATCH_LOCK_VAR(__LINE__).unlock() )
 # define XDISPATCH_SYNC_DECL( id ) \
-    static dispatch_semaphore_t XDISPATCH_LOCK_VAR_SEM( id ); \
-    static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ); \
+    static dispatch_semaphore_t XDISPATCH_LOCK_VAR_SEM( id ) = NULL; \
+    static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ) = 0; \
     dispatch_once_f( &XDISPATCH_LOCK_VAR_ONCE( id ), &XDISPATCH_LOCK_VAR_SEM( id ), xdispatch::init_semaphore_for_synclock ); \
     XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( XDISPATCH_LOCK_VAR_SEM( id ) ) )
 

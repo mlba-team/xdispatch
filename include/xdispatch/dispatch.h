@@ -56,13 +56,13 @@
 
 # define __XDISPATCH_INDIRECT__
 # include "pointer.h"
-# include "synchronized.h"
 # include "lambda_blocks.h"
 # include "base.h"
+# include "semaphore.h"
+# include "synchronized.h"
 # include "once.h"
 # include "queue.h"
 # include "group.h"
-# include "semaphore.h"
 # include "source.h"
 # include "timer.h"
 # include "lambda_dispatch.h"
