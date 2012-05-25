@@ -41,9 +41,11 @@ void _fail(const char* msg, const char* file, int line);
 #define MU_EX_VAL mu_rC
 #define MU_EX_L1(C) long mu_rC1 = (long)(C)
 #define MU_EX_D1(C) double mu_rC1 = (double)(C)
+#define MU_EX_STR1(C) std::string mu_rC1 = (C)
 #define MU_EX_VAL1 mu_rC1
 #define MU_EX_L2(C) long mu_rC2 = (long)(C)
 #define MU_EX_D2(C) double mu_rC2 = (double)(C)
+#define MU_EX_STR2(C) std::string mu_rC2 = (C)
 #define MU_EX_VAL2 mu_rC2
 
 #define MU_DESC_ASSERT_TRUE(D,C) { MU_EX_L(C); _assert_true_long(MU_EX_VAL, 0, (char)MU_EX_VAL, D": "#C,__FILE__,__LINE__); }
