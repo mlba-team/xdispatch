@@ -125,13 +125,18 @@ endif()
 # to mimic a proper installation. This is
 # due to us needing different headers on different
 # platforms (especially Darwin)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/xdispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
-if(XDISPATCH_QT_SUPPORT)
+if(APPLE OR HAVE_NATIVE_DISPATCH_H)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/xdispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+    if(XDISPATCH_QT_SUPPORT)
 	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/QtDispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
-endif()
-if(NOT HAVE_NATIVE_DISPATCH_H)
+    endif()
+    if(NOT HAVE_NATIVE_DISPATCH_H)
 	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/dispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+    endif()
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+else()
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 endif()
 
 # custom test framework for xdispatch
