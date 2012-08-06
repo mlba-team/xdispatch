@@ -5,7 +5,9 @@
 #if _WIN32
 
 /* Reduces build time by omitting extra system headers */
-#define WIN32_LEAN_AND_MEAN
+#ifndef WIN32_LEAN_AND_MEAN
+# define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 
 class Stopwatch {
@@ -34,9 +36,10 @@ class Stopwatch {
       if( _active )
         QueryPerformanceCounter(&_end);
 
-      LARGE_INTEGER diff = _start.QuadPart - _end.QuadPart;
+      LARGE_INTEGER diff;
+	  diff.QuadPart = _start.QuadPart - _end.QuadPart;
 
-      return (uint64_t)( ((double)diff.QuadPart/(double)_frequency.QuadPart * 1000000ul )
+      return (uint64_t)( (double)diff.QuadPart/(double)_frequency.QuadPart * 1000000ul );
     }
 
 

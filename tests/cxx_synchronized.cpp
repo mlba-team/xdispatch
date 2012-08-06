@@ -29,6 +29,7 @@
 #include "stopwatch.h"
 
 #include "../core/platform/atomic.h"
+#include "../core/platform/platform.h"
 
 static const size_t ITERATIONS = 10000; // 10 000
 
@@ -97,12 +98,12 @@ class SynchronizedGroupRun : public xdispatch::operation {
       }
     }
 
-    static intptr_t finished_workers;
+    static uintptr_t finished_workers;
 
     xdispatch::group& _group;
 };
 
-intptr_t SynchronizedGroupRun::finished_workers = 0;
+uintptr_t SynchronizedGroupRun::finished_workers = 0;
 
 /**
   Test the 'synchronized' statements
