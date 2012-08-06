@@ -27,7 +27,7 @@
 #include "../core/platform/atomic.h"
 #include "tests.h"
 
-#ifdef TEST_BLOCKS
+#if DISPATCH_SOURCE_HAS_TIMER && defined(TEST_BLOCKS)
 
 //
 // There were several bugs related to sign extension / integer overflow that
@@ -75,4 +75,4 @@ extern "C" void dispatch_timer_bit31() {
     MU_END_TEST
 }
 
-#endif /* TEST_BLOCKS */
+#endif /* DISPATCH_SOURCE_HAS_TIMER */

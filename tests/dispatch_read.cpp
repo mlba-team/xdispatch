@@ -33,7 +33,7 @@
 #include <errno.h>
 
 
-#ifdef TEST_BLOCKS
+#if DISPATCH_SOURCE_HAS_READ && defined(TEST_BLOCKS)
 
 static size_t bytes_total;
 static size_t bytes_read;
@@ -104,5 +104,5 @@ extern "C" void test_dispatch_read()
 
 
 
-#endif /* TEST_BLOCKS */
+#endif /* DISPATCH_SOURCE_HAS_READ */
 #endif /* _WIN32 */

@@ -48,7 +48,7 @@
 
 #define PID_CNT 5
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#if DISPATCH_SOURCE_HAS_PROC && defined(TEST_BLOCKS)
 
 static long event_cnt;
 
@@ -138,7 +138,7 @@ extern "C" void test_dispatch_proc(void)
     MU_END_TEST;
 }
 
-#endif
+#endif /* DISPATCH_SOURCE_HAS_PROC */
 
 
 #endif /* _WIN32 */

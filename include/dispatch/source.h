@@ -38,7 +38,71 @@
  * queues when such activity occurs.
  *
  * This suite of interfaces is known as the Dispatch Source API.
+ *
+ * Due to technical limitations of the underlying platforms, not all
+ * source types are available on all platforms. Below you can find a all
+ * supported types, listed by operating system:
+ *
+ * <b>Windows</b>
+ * <ul>
+ *  <li>data add</li>
+ *  <li>data or</li>
+ *  <li>timer</li>
+ * </ul>
+ *
+ * <b>Linux</b>
+ * <ul>
+ *  <li>data add</li>
+ *  <li>data or</li>
+ *  <li>read</li>
+ *  <li>signal</li>
+ *  <li>timer</li>
+ *  <li>vnode</li>
+ *  <li>write</li>
+ * </ul>
+ *
+ * <b>Mac OS</b>
+ * <ul>
+ *  <li>data add</li>
+ *  <li>data or</li>
+ *  <li>mach send</li>
+ *  <li>mach recv</li>
+ *  <li>proc</li>
+ *  <li>read</li>
+ *  <li>signal</li>
+ *  <li>timer</li>
+ *  <li>vnode</li>
+ *  <li>write</li>
+ * </ul>
  */
+
+#ifdef _WIN32
+# define DISPATCH_SOURCE_HAS_DATA_ADD 1
+# define DISPATCH_SOURCE_HAS_DATA_OR 1
+# define DISPATCH_SOURCE_HAS_TIMER 1
+#elif defined __APPLE__
+# define DISPATCH_SOURCE_HAS_DATA_ADD 1
+# define DISPATCH_SOURCE_HAS_DATA_OR 1
+# define DISPATCH_SOURCE_HAS_MACH_SEND 1
+# define DISPATCH_SOURCE_HAS_MACH_RECV 1
+# define DISPATCH_SOURCE_HAS_PROC 1
+# define DISPATCH_SOURCE_HAS_READ 1
+# define DISPATCH_SOURCE_HAS_SIGNAL 1
+# define DISPATCH_SOURCE_HAS_TIMER 1
+# define DISPATCH_SOURCE_HAS_VNODE 1
+# define DISPATCH_SOURCE_HAS_WRITE 1
+#elif defined __linux__
+# define DISPATCH_SOURCE_HAS_DATA_ADD 1
+# define DISPATCH_SOURCE_HAS_DATA_OR 1
+# define DISPATCH_SOURCE_HAS_PROC 1
+# define DISPATCH_SOURCE_HAS_READ 1
+# define DISPATCH_SOURCE_HAS_SIGNAL 1
+# define DISPATCH_SOURCE_HAS_TIMER 1
+# define DISPATCH_SOURCE_HAS_VNODE 1
+# define DISPATCH_SOURCE_HAS_WRITE 1
+#else
+# warning "Completely unsupported platform, might result in errors"
+#endif
 
 /**
  * Dispatch sources are used to automatically submit event handler blocks to
@@ -66,8 +130,10 @@ __DISPATCH_BEGIN_DECLS
  */
 #define DISPATCH_SOURCE_TYPE_DATA_ADD (&_dispatch_source_type_data_add)
 
+#if DISPATCH_SOURCE_HAS_DATA_ADD
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_data_add;
+#endif /* DISPATCH_SOURCE_HAS_DATA_ADD */
 
 /**
  * A dispatch source that coalesces data obtained via calls to
@@ -78,8 +144,10 @@ const struct dispatch_source_type_s _dispatch_source_type_data_add;
  */
 #define DISPATCH_SOURCE_TYPE_DATA_OR (&_dispatch_source_type_data_or)
 
+#if DISPATCH_SOURCE_HAS_DATA_OR
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_data_or;
+#endif /* DISPATCH_SOURCE_HAS_DATA_OR */
 
 /**
  * A dispatch source that monitors a Mach port for dead name
@@ -89,8 +157,10 @@ const struct dispatch_source_type_s _dispatch_source_type_data_or;
  */
 #define DISPATCH_SOURCE_TYPE_MACH_SEND (&_dispatch_source_type_mach_send)
 
+#if DISPATCH_SOURCE_HAS_MACH_SEND
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_mach_send;
+#endif /* DISPATCH_SOURCE_HAS_MACH_SEND */
 
 /**
  * A dispatch source that monitors a Mach port for pending messages.
@@ -99,8 +169,10 @@ const struct dispatch_source_type_s _dispatch_source_type_mach_send;
  */
 #define DISPATCH_SOURCE_TYPE_MACH_RECV (&_dispatch_source_type_mach_recv)
 
+#if DISPATCH_SOURCE_HAS_MACH_RECV
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
+#endif /* DISPATCH_SOURCE_HAS_MACH_RECV */
 
 /**
  * A dispatch source that monitors an external process for events
@@ -110,8 +182,10 @@ const struct dispatch_source_type_s _dispatch_source_type_mach_recv;
  */
 #define DISPATCH_SOURCE_TYPE_PROC (&_dispatch_source_type_proc)
 
+#if DISPATCH_SOURCE_HAS_PROC
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_proc;
+#endif /* DISPATCH_SOURCE_HAS_PROC */
 
 /**
  * A dispatch source that monitors a file descriptor for pending
@@ -121,8 +195,10 @@ const struct dispatch_source_type_s _dispatch_source_type_proc;
  */
 #define DISPATCH_SOURCE_TYPE_READ (&_dispatch_source_type_read)
 
+#if DISPATCH_SOURCE_HAS_READ
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_read;
+#endif /* DISPATCH_SOURCE_HAS_MACH_READ */
 
 /**
  * A dispatch source that monitors the current process for signals.
@@ -131,8 +207,10 @@ const struct dispatch_source_type_s _dispatch_source_type_read;
  */
 #define DISPATCH_SOURCE_TYPE_SIGNAL (&_dispatch_source_type_signal)
 
+#if DISPATCH_SOURCE_HAS_SIGNAL
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_signal;
+#endif /* DISPATCH_SOURCE_HAS_SIGNAL */
 
 /**
  * A dispatch source that submits the event handler block based
@@ -142,8 +220,10 @@ const struct dispatch_source_type_s _dispatch_source_type_signal;
  */
 #define DISPATCH_SOURCE_TYPE_TIMER (&_dispatch_source_type_timer)
 
+#if DISPATCH_SOURCE_HAS_TIMER
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_timer;
+#endif /* DISPATCH_SOURCE_HAS_TIMER */
 
 /**
  * A dispatch source that monitors a file descriptor for events
@@ -153,8 +233,10 @@ const struct dispatch_source_type_s _dispatch_source_type_timer;
  */
 #define DISPATCH_SOURCE_TYPE_VNODE (&_dispatch_source_type_vnode)
 
+#if DISPATCH_SOURCE_HAS_VNODE
 extern DISPATCH_EXPORT
 const struct dispatch_source_type_s _dispatch_source_type_vnode;
+#endif /* DISPATCH_SOURCE_HAS_VNODE */
 
 /**
  * A dispatch source that monitors a file descriptor for available
@@ -164,8 +246,10 @@ const struct dispatch_source_type_s _dispatch_source_type_vnode;
  */
 #define DISPATCH_SOURCE_TYPE_WRITE (&_dispatch_source_type_write)
 
+#if DISPATCH_SOURCE_HAS_WRITE
 extern DISPATCH_EXPORT 
 const struct dispatch_source_type_s _dispatch_source_type_write;
+#endif /* DISPATCH_SOURCE_HAS_WRITE */
 
 __DISPATCH_END_DECLS
 
