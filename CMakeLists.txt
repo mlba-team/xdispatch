@@ -13,9 +13,8 @@ enable_testing()
 # check if mz_tools is available
 if(NOT HAS_MZ_GLOBAL)
 
-	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Build")
-	include(${CMAKE_CURRENT_SOURCE_DIR}/Build/global.cmake)
-	include(${CMAKE_CURRENT_SOURCE_DIR}/Build/macros.cmake)
+	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
+	include(build/global.cmake)
 
 	# QT settings
     find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
