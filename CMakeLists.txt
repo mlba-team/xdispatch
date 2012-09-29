@@ -15,18 +15,17 @@ enable_testing()
 # check if mz_tools is available
 if(NOT HAS_MZ_GLOBAL)
 
-	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Build")
-	include(${CMAKE_CURRENT_SOURCE_DIR}/Build/global.cmake)
-	include(${CMAKE_CURRENT_SOURCE_DIR}/Build/macros.cmake)
+	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
+	include(build/global.cmake)
 
 	# QT settings
-    find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
+  find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
 	include(${QT_USE_FILE})
 	
 	# We need to ouput everything into the same directory
-        set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
-        set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
-        message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
+  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
+  set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
+  message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
 endif()
 
 # is the used compiler clang? if so we need blocks support
