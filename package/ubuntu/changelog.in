@@ -1,6 +1,6 @@
-xdispatch (${XDISPATCH_VERSION}-0ubuntu1) oneiric; urgency=low
+xdispatch (${XDISPATCH_VERSION}-0ubuntu2) precise; urgency=low
 
-  * Unstable build of trunk revision ${XDISPATCH_WC_REVISION}
+  * Update version 0.7 to be compatible with 12.04
 
  -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
 
@@ -35,7 +35,7 @@ xdispatch (0.7.0-0ubuntu1) oneiric; urgency=low
   * Included all headers of Qt by prepending the corresponding Qt module
   * Updated the copyright information on all headers
 
- -- Marius Zwicker <marius@mlba-team.de>   Mi, 23 Mai 2012 09:59:29 +0200
+ -- Marius Zwicker <marius@mlba-team.de>  Mi, 23 Mai 2012 09:59:29 +0200
 
 xdispatch (0.7.0~devel-0ubuntu1) oneiric; urgency=low
 
