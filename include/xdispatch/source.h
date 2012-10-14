@@ -192,7 +192,7 @@ class XDISPATCH_EXPORT source : public object {
             reason for the handler to be dispatched.
             */
             void handler(xdispatch::operation*);
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
             /**
             Sets the handler to dispatch each time the source
             becomes ready. You can use data() to obtain a pointer
@@ -203,6 +203,7 @@ class XDISPATCH_EXPORT source : public object {
                 handler( new block_operation(b) );
             }
     #endif
+    #if XDISPATCH_HAS_FUNCTION
             /**
             Sets the handler to dispatch each time the source
             becomes ready. You can use data() to obtain a pointer
@@ -212,6 +213,7 @@ class XDISPATCH_EXPORT source : public object {
             virtual inline void handler(const lambda_function& b) {
                 handler( new function_operation(b) );
             }
+    #endif
             /**
             Sets the queue the handler will be executed on
             */
@@ -280,7 +282,7 @@ class XDISPATCH_EXPORT source : public object {
             and the source's event handler block has returned.
             */
             void cancel_handler(xdispatch::operation*);
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
             /**
             Sets the cancellation handler block for the given dispatch source.
 
@@ -293,6 +295,7 @@ class XDISPATCH_EXPORT source : public object {
                 cancel_handler( new block_operation(b) );
             }
     #endif
+    #if XDISPATCH_HAS_FUNCTION
             /**
             Sets the cancellation handler function for the given dispatch source.
 
@@ -304,6 +307,7 @@ class XDISPATCH_EXPORT source : public object {
             virtual inline void cancel_handler(const lambda_function& b) {
                 cancel_handler( new function_operation(b) );
             }
+    #endif
 
     private:
             source(const source&);

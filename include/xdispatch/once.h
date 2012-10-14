@@ -81,7 +81,7 @@ class XDISPATCH_EXPORT once {
             operation
             */
         void operator()(operation&);
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
           Similar to operator()(operation&)
 
@@ -94,7 +94,8 @@ class XDISPATCH_EXPORT once {
             once_block op(b);
             operator()( op );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
         /**
           Similar to operator()(operation&)
 
@@ -107,12 +108,13 @@ class XDISPATCH_EXPORT once {
             once_function op(b);
             operator()( op );
         }
+  #endif
 
     private:
         dispatch_once_t _once_obj;
         dispatch_once_t* _once;
 
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         // we define our own block class
         // as the block_operation does a
         // copy of the stored block, something
@@ -129,7 +131,8 @@ class XDISPATCH_EXPORT once {
             private:
                 dispatch_block_t _block;
         };
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
         // we define our own function class
         // as the function_operation does a
         // copy of the stored block, something
@@ -146,6 +149,7 @@ class XDISPATCH_EXPORT once {
             private:
                 const lambda_function& _function;
         };
+  #endif
 
         friend XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once& );
 };
