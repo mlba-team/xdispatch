@@ -58,18 +58,20 @@ public:
     ~synclock();
 
     operator bool() const;
-
-    void unlock();
+    synclock& operator= (const synclock&);
 
 private:
-    struct data;
-    data* _d;
+    semaphore _semaphore;
+    bool _lock_active;
 
-    synclock& operator= (synclock);
+    void unlock();
+    void lock();
 
-    friend XDISPATCH_EXPORT synclock get_lock_for_key(const std::string&);
-    friend XDISPATCH_EXPORT synclock get_lock_for_key( dispatch_semaphore_t );
-    synclock(dispatch_semaphore_t);
+    friend XDISPATCH_EXPORT synclock lock_area(const std::string&);
+    friend synclock lock_area(const semaphore&);
+    friend synclock lock_area(const synclock&);
+    friend void unlock_area(synclock &s);
+    synclock(const semaphore &);
 };
 
 
@@ -83,27 +85,48 @@ XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
  @deprecated Please manage your synclock manually instead or use synchronized
  @see synchronized
   */
-XDISPATCH_EXPORT XDISPATCH_DEPRECATED( synclock get_lock_for_key(const std::string& key) );
+XDISPATCH_EXPORT XDISPATCH_DEPRECATED( synclock lock_area(const std::string& key) );
 /**
  @see synchronized
   */
-inline synclock get_lock_for_key( dispatch_semaphore_t sem ){ return synclock(sem); }
+inline synclock lock_area( const semaphore& sem ){
+  synclock sync_instance(sem);
+  sync_instance.lock ();
+  return sync_instance;
+}
 /**
  @see synchronized
   */
-inline synclock get_lock_for_key( synclock& s ){ return s; }
+inline synclock lock_area( const synclock& s ){
+  // we need to make a copy to ensure
+  // the copied synclock is locked, not the global
+  // synclock passed by reference as argument
+  synclock sync_instance(s);
+  sync_instance.lock ();
+  return sync_instance;
+}
+/**
+ @see synchronized
+ */
+inline void unlock_area( synclock& s ){
+  s.unlock ();
+}
 
 
 # define XDISPATCH_CONCAT(A,B) A ## B
 # define XDISPATCH_LOCK_VAR(X) XDISPATCH_CONCAT(xd_synclock_, X)
-# define XDISPATCH_LOCK_VAR_SEM(X) XDISPATCH_CONCAT( __xd_synclock_sem_, X)
-# define XDISPATCH_LOCK_VAR_ONCE(X) XDISPATCH_CONCAT( __xd_synclock_once_, X)
-# define XDISPATCH_SYNC_HEADER( lock ) for( xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)(lock) ; XDISPATCH_LOCK_VAR(__LINE__) ; XDISPATCH_LOCK_VAR(__LINE__).unlock() )
+# define XDISPATCH_LOCK_VAR_SEM(X) XDISPATCH_CONCAT( _xd_synclock_sem_, X)
+# define XDISPATCH_LOCK_VAR_ONCE(X) XDISPATCH_CONCAT( _xd_synclock_once_, X)
+# define XDISPATCH_SYNC_HEADER( lock ) for( \
+  ::xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)( ::xdispatch::lock_area(lock) ) ; \
+  XDISPATCH_LOCK_VAR(__LINE__) ; \
+  ::xdispatch::unlock_area( XDISPATCH_LOCK_VAR(__LINE__) ) \
+  )
 # define XDISPATCH_SYNC_DECL( id ) \
-    static dispatch_semaphore_t XDISPATCH_LOCK_VAR_SEM( id ); \
-    static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ); \
-    dispatch_once_f( &XDISPATCH_LOCK_VAR_ONCE( id ), &XDISPATCH_LOCK_VAR_SEM( id ), xdispatch::init_semaphore_for_synclock ); \
-    XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( XDISPATCH_LOCK_VAR_SEM( id ) ) )
+    static ::xdispatch::semaphore XDISPATCH_LOCK_VAR_SEM( id ); \
+    static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ) = 0; \
+    dispatch_once_f( &XDISPATCH_LOCK_VAR_ONCE( id ), &XDISPATCH_LOCK_VAR_SEM( id ), ::xdispatch::init_semaphore_for_synclock ); \
+    XDISPATCH_SYNC_HEADER( XDISPATCH_LOCK_VAR_SEM( id ) )
 
 /**
    Same as synchronize( lock )
@@ -113,7 +136,7 @@ inline synclock get_lock_for_key( synclock& s ){ return s; }
 
    @see synchronize( lock )
    */
-#  define XDISPATCH_SYNCHRONIZE( lock ) XDISPATCH_SYNC_HEADER( xdispatch::get_lock_for_key( lock ) )
+#  define XDISPATCH_SYNCHRONIZE( lock ) XDISPATCH_SYNC_HEADER( lock )
 
 /**
    Same as synchronized( lock )

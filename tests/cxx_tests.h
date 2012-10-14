@@ -57,12 +57,14 @@ void cxx_free_lambda();
 void cxx_dispatch_once1();
 void cxx_dispatch_once2();
 void cxx_dispatch_once3();
+void cxx_synchronized();
 void cxx_dispatch_fibo();
 void cxx_dispatch_read();
 void cxx_dispatch_proc();
 
 static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_once1);
+    MU_REGISTER_TEST(cxx_synchronized);
 #ifdef TEST_BLOCKS
     MU_REGISTER_TEST(cxx_dispatch_once2);
     MU_REGISTER_TEST(cxx_dispatch_once3);

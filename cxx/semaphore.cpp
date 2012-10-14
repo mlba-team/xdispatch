@@ -89,19 +89,19 @@ xdispatch::semaphore& semaphore::operator=(const semaphore& other){
 }
 
 bool semaphore::operator==(const semaphore& other){
-    return d->native == other.d->native;
+    return d.get () != NULL && other.d.get () != NULL && d->native == other.d->native;
 }
 
 bool semaphore::operator!=(const semaphore& other){
-    return d->native != other.d->native;
+    return d.get () == NULL || other.d.get () == NULL || d->native != other.d->native;
 }
 
 bool semaphore::operator==(const dispatch_semaphore_t& other){
-    return d->native == other;
+  return d.get() != NULL && d->native == other;
 }
 
 bool semaphore::operator!=(const dispatch_semaphore_t& other){
-    return d->native != other;
+  return d.get () == NULL || d->native != other;
 }
 
 std::ostream& xdispatch::operator<<(std::ostream& stream, const semaphore* q){

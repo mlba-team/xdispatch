@@ -21,6 +21,8 @@
 #ifndef MUNIT_CXX_H_
 #define MUNIT_CXX_H_
 
+#include <string>
+
 #define MU_ASSERT_THROW(X) \
      do { \
         try { X; } catch (...) { break; } \
@@ -32,4 +34,19 @@
        try { X; } catch (...) { MU_FAIL("Catched exception"); } \
    } while (0);
 
+#define MU_ASSERT_EQUAL_STR(A,B) MU_DESC_ASSERT_EQUAL_STR("",A,B)
+#define MU_DESC_ASSERT_EQUAL_STR(D,A,B) __MU_DESC_ASSERT_EQUAL_STR(D,A,B,__FILE__,__LINE__)
+inline void __MU_DESC_ASSERT_EQUAL_STR(const std::string& D, const std::string& A, const std::string& B, const char* file, int line ) {
+  std::string desc = D + ": B == A";
+  bool equal = A==B;
+  if(! equal) {
+    MU_MESSAGE("A = %s", A.c_str ());
+    MU_MESSAGE("B = %s", B.c_str ());
+  }
+  _assert_true_long(A.size(), B.size(), equal ? 1:0, desc.c_str(), file, line);
+}
+
+
+
 #endif /* MUNIT_CXX_H_ */
+

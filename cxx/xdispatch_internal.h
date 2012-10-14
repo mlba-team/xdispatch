@@ -61,13 +61,13 @@
     std::terminate(); } }
 
 #include "../include/xdispatch/pointer.h"
-#include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/lambda_blocks.h"
 #include "../include/xdispatch/base.h"
+#include "../include/xdispatch/semaphore.h"
+#include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/once.h"
 #include "../include/xdispatch/queue.h"
 #include "../include/xdispatch/group.h"
-#include "../include/xdispatch/semaphore.h"
 #include "../include/xdispatch/source.h"
 #include "../include/xdispatch/timer.h"
 #include "../include/xdispatch/lambda_dispatch.h"
