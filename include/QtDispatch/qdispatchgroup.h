@@ -99,14 +99,22 @@ class Q_DISPATCH_EXPORT QDispatchGroup : public QObject, public xdispatch::group
          @see notify(QRunnable* r, const xdispatch::queue&);
          */
         void notify(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
          @see notify(QRunnable* r, const xdispatch::queue&);
          */
         inline void notify(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
             notify( new QBlockRunnable(b), q );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        /**
+         @see notify(QRunnable* r, const xdispatch::queue&);
+         */
+        inline void notify(const xdispatch::lambda_function& b, const xdispatch::queue& q = xdispatch::global_queue()) {
+            notify( new QLambdaRunnable(b), q );
+        }
+  #endif
         /**
           Activates the allFinished() signal or this QDispatchGroup. Needs to
           be called everytime all scheduled work on the group finished and new work
