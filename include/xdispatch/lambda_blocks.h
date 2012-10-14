@@ -128,7 +128,7 @@ __XDISPATCH_END_NAMESPACE
 # define XDISPATCH_HAS_LAMBDAS 1
 # define XDISPATCH_HAS_FUNCTION 1
 
-// visual studio 2008
+// visual studio 2008 sp1
 #elif _MSC_VER >= 1500
 
 # include <functional>

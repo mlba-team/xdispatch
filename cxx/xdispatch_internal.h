@@ -63,6 +63,7 @@
 #include "../include/xdispatch/pointer.h"
 #include "../include/xdispatch/lambda_blocks.h"
 #include "../include/xdispatch/base.h"
+#include "../include/xdispatch/operation.h"
 #include "../include/xdispatch/semaphore.h"
 #include "../include/xdispatch/synchronized.h"
 #include "../include/xdispatch/once.h"

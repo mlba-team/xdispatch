@@ -59,6 +59,7 @@
 # include "pointer.h"
 # include "lambda_blocks.h"
 # include "base.h"
+# include "operation.h"
 # include "semaphore.h"
 # include "synchronized.h"
 # include "once.h"
