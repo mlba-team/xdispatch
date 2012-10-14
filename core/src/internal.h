@@ -34,6 +34,10 @@
 # define __DISPATCH_END_DECLS
 #endif
 
+#ifndef __DISPATCH_BUILD_FEATURE
+#  define __DISPATCH_BUILD_FEATURE(X) X
+#endif
+
 /* the configuration file */
 #include <config/config.h>
 

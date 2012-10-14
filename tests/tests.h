@@ -68,11 +68,17 @@ void dispatch_after_blocks();
 void dispatch_group_blocks();
 void dispatch_pingpong_blocks();
 void dispatch_semaphore();
+# if DISPATCH_SOURCE_HAS_TIMER
 void dispatch_timer_bit31();
 void dispatch_timer_bit63();
+# endif
 void dispatch_drift();
+# if DISPATCH_SOURCE_HAS_READ
 void test_dispatch_read();
+# endif
+# if DISPATCH_SOURCE_HAS_PROC
 void test_dispatch_proc();
+# endif
 #endif
 
 static void register_tests(){

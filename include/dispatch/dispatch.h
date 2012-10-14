@@ -41,6 +41,10 @@
 # endif
 #endif
 
+#ifndef __DISPATCH_BUILD_FEATURE
+#  define __DISPATCH_BUILD_FEATURE(X) X
+#endif
+
 #include <stddef.h>
 #if !defined(__GNUC__) && defined(_WIN32) && _MSC_VER < 1600
 # include "../../core/platform/windows/stdint.h"
