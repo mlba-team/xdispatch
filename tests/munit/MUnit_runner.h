@@ -42,7 +42,12 @@ int MU_main(int argc, char* argv[]);
   Will run the test with the given number,
   counting starts at 1
   */
-void MU_runTest(int no);
+int MU_runTest(int no);
+
+/**
+  Will run the test with the given name
+  */
+int MU_runTestName(const char* name);
 
 /**
   Will run all tests and return the return
