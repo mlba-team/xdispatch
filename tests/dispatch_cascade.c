@@ -41,7 +41,7 @@ union {
 
 uintptr_t iterations = (size_t)(QUEUES * BLOCKS * 0.25);
 
-void
+static void
 histogram(void) {
 	size_t counts[QUEUES];
 	size_t maxcount = 0;
@@ -77,7 +77,7 @@ histogram(void) {
     fflush(stdout);
 }
 
-void
+static void
 cascade(void* context) {
 	uintptr_t idx, *idxptr = (uintptr_t*)context;
 

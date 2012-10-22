@@ -18,36 +18,38 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
+
+#include <stdio.h>
 #include <xdispatch/dispatch.h>
-
-#ifdef XDISPATCH_HAS_BLOCKS
-
-#include "../core/platform/atomic.h"
+#include <stdlib.h>
+#include <assert.h>
 
 #include "tests.h"
 
-/*
-	A test for dispatching a block using dispatch_apply
-	*/
+#define LAPS 10000
 
-extern "C" void dispatch_apply_blocks() {
-	uintptr_t* count = new uintptr_t;
-	*count = 0;
-	const unsigned int final = 32;
 
-	MU_BEGIN_TEST(dispatch_apply_blocks);
-	dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-	MU_ASSERT_NOT_NULL(queue);
+void dispatch_semaphore_blocks()
+{
+	static size_t total;
+	dispatch_semaphore_t dsema;
 
-	dispatch_apply(final, queue, ^(size_t i) {
-		dispatch_atomic_inc(count);
+    MU_BEGIN_TEST(dispatch_semaphore_blocks);
+
+	dsema = dispatch_semaphore_create(1);
+    MU_ASSERT_NOT_NULL(dsema);
+
+	dispatch_apply(LAPS, dispatch_queue_create(0,0), ^(size_t idx) {
+		dispatch_semaphore_wait(dsema, DISPATCH_TIME_FOREVER);
+		total++;
+		dispatch_semaphore_signal(dsema);
 	});
 
-	MU_ASSERT_EQUAL(*count, final);
-	delete count;
+	dispatch_release(dsema);
 
-	MU_PASS("Looping works for blocks");
+	MU_ASSERT_EQUAL(total, LAPS);
+
+	MU_PASS("");
 	MU_END_TEST;
 }
 
-#endif

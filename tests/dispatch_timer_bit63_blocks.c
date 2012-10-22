@@ -23,7 +23,6 @@
 #include "tests.h"
 #include <assert.h>
 
-#ifdef TEST_BLOCKS
 
 //
 // There were several bugs related to sign extension / integer overflow that
@@ -36,17 +35,15 @@
 //
 
 
-extern "C" void dispatch_timer_bit63() {
-    MU_BEGIN_TEST(dispatch_timer_bit63);
+void dispatch_timer_bit63_blocks() {
+    MU_BEGIN_TEST(dispatch_timer_bit63_blocks);
 
     //uint64_t interval = 0xffffffffffffffffull;
     uint64_t interval = 0x8000000000000001ull;
 
     dispatch_queue_t mainq = dispatch_get_main_queue();
 
-    int* i = new int;
-    MU_ASSERT_NOT_NULL(i);
-    *i = 0;
+    __block int i = 0;
     struct timeval start_time;
 
     gettimeofday(&start_time, NULL);
@@ -55,15 +52,14 @@ extern "C" void dispatch_timer_bit63() {
     ds = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainq);
     MU_ASSERT_NOT_NULL(ds);
     dispatch_source_set_event_handler(ds, ^{
-        MU_ASSERT_LESS_THAN(*i, 1);
-        MU_MESSAGE("%d", (*i)++);
+        MU_ASSERT_LESS_THAN(i, 1);
+        MU_MESSAGE("%d", i++);
     });
     dispatch_source_set_timer(ds, DISPATCH_TIME_NOW, interval, 0);
     dispatch_resume(ds);
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5.0*NSEC_PER_SEC),
         dispatch_get_main_queue(), ^{
-        delete i;
         MU_PASS("");
     });
 
@@ -72,4 +68,3 @@ extern "C" void dispatch_timer_bit63() {
     MU_END_TEST
 }
 
-#endif /* TEST_BLOCKS */

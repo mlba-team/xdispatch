@@ -21,7 +21,6 @@
 
 #include <xdispatch/dispatch.h>
 
-#ifdef XDISPATCH_HAS_BLOCKS
 
 #include "tests.h"
 
@@ -30,8 +29,8 @@
  in C++ is working
  */
 
-extern "C" void dispatch_plusplus(void) {
-	MU_BEGIN_TEST(dispatch_plusplus);
+extern "C" void dispatch_plusplus_blocks(void) {
+    MU_BEGIN_TEST(dispatch_plusplus_blocks);
 
 	dispatch_queue_t q = dispatch_get_main_queue();
 	MU_ASSERT_NOT_NULL(q);
@@ -48,5 +47,3 @@ extern "C" void dispatch_plusplus(void) {
 	MU_FAIL("Should never reach this");
 	MU_END_TEST
 }
-
-#endif

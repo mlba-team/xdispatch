@@ -24,6 +24,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+#ifdef WIN32
+#	define WIN32_LEAN_AND_MEAN 1
+#	include <windows.h>
+#else
+#	include <unistd.h>
+#endif
+
 #include "../core/platform/atomic.h"
 #include "tests.h"
 
@@ -31,53 +39,38 @@
 #define NSEC_PER_SEC 1000000000
 #endif
 
-static void work(void* context){
-	int delay = *(int*)context;
-	free(context);
-	if (delay) {
-		MU_MESSAGE("sleeping...");
-        MU_SLEEP(delay);
-		MU_MESSAGE("done.");
-	}
-}
-
 static dispatch_group_t create_group(size_t count, int delay) {
 	size_t i;
-	int* param;
 
 	dispatch_group_t group = dispatch_group_create();
 
 	for (i = 0; i < count; ++i) {
-		dispatch_queue_t queue = dispatch_queue_create("foo", NULL);
-		param = (int*)malloc(sizeof(int));
-		*param = delay;
-
+		dispatch_queue_t queue = dispatch_queue_create(NULL, NULL);
 		MU_ASSERT_NOT_NULL(queue);
-		MU_ASSERT_NOT_NULL(param);
 
-		dispatch_group_async_f(group, queue, param, work);
+		dispatch_group_async(group, queue, ^{
+			if (delay) {
+				MU_MESSAGE("sleeping...");
+#ifdef WIN32
+				// on windows, sleep is in ms
+				Sleep(delay*1000);
+#else
+				sleep(delay);
+#endif
+				MU_MESSAGE("done.");
+			}
+		});
 
 		dispatch_release(queue);
 	}
 	return group;
 }
 
-void group_notify(void* data){
-	dispatch_queue_t m = dispatch_get_main_queue();
-	dispatch_queue_t c = dispatch_get_current_queue();
-	MU_ASSERT_EQUAL(m, c);
-	MU_PASS("Great!");
-}
-
-void foo(void* c){
-
-}
-
-void dispatch_group_function() {
+void dispatch_group_blocks() {
 	long res;
 	dispatch_group_t group;
 
-	MU_BEGIN_TEST(dispatch_group_function);
+	MU_BEGIN_TEST(dispatch_group_blocks);
 
 	group = create_group(100, 0);
 	MU_ASSERT_NOT_NULL(group);
@@ -85,7 +78,7 @@ void dispatch_group_function() {
 	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 	
 	// should be OK to re-use a group
-	dispatch_group_async_f(group, dispatch_get_global_queue(0, 0), 0, foo);
+	dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{});
 	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 
 	dispatch_release(group);
@@ -107,7 +100,12 @@ void dispatch_group_function() {
 	group = create_group(100, 0);
 	MU_ASSERT_NOT_NULL(group);
 
-	dispatch_group_notify_f(group, dispatch_get_main_queue(), 0, group_notify);
+	dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+		dispatch_queue_t m = dispatch_get_main_queue();
+		dispatch_queue_t c = dispatch_get_current_queue();
+		MU_ASSERT_EQUAL(m, c);
+		MU_PASS("");
+	});
 	
 	dispatch_release(group);
 	group = NULL;
@@ -117,3 +115,4 @@ void dispatch_group_function() {
 	MU_FAIL("Should never reach this");
 	MU_END_TEST
 }
+

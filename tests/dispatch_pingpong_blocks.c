@@ -32,7 +32,6 @@
 #	include <time.h>
 #endif
 
-#ifdef XDISPATCH_HAS_BLOCKS
 
 #include "../core/platform/atomic.h"
 #include "tests.h"
@@ -41,7 +40,7 @@
 uintptr_t count = 0;
 const uintptr_t final = 10000; // 10M
 
-void pingpongloop(dispatch_group_t group, dispatch_queue_t ping, dispatch_queue_t pong, size_t counter) {
+static void pingpongloop(dispatch_group_t group, dispatch_queue_t ping, dispatch_queue_t pong, size_t counter) {
 	//printf("[%p] %s: %lu\n", (void*)(uintptr_t)pthread_self(), dispatch_queue_get_label(dispatch_get_current_queue()), counter);
 	if (counter < final) {
 		dispatch_group_async(group, pong, ^{ pingpongloop(group, pong, ping, counter+1); });
@@ -50,7 +49,6 @@ void pingpongloop(dispatch_group_t group, dispatch_queue_t ping, dispatch_queue_
 	}
 }
 
-extern "C"
 void dispatch_pingpong_blocks() {
 	dispatch_group_t group;
 	dispatch_queue_t ping, pong;
@@ -74,4 +72,3 @@ void dispatch_pingpong_blocks() {
 	MU_END_TEST
 }
 
-#endif

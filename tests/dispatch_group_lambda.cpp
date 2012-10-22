@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef XDISPATCH_HAS_BLOCKS
 
 #ifdef WIN32
 #	define WIN32_LEAN_AND_MEAN 1
@@ -40,7 +39,7 @@
 #define NSEC_PER_SEC 1000000000
 #endif
 
-dispatch_group_t create_group(size_t count, int delay) {
+static dispatch_group_t create_group(size_t count, int delay) {
 	size_t i;
 
 	dispatch_group_t group = dispatch_group_create();
@@ -49,7 +48,7 @@ dispatch_group_t create_group(size_t count, int delay) {
 		dispatch_queue_t queue = dispatch_queue_create(NULL, NULL);
 		MU_ASSERT_NOT_NULL(queue);
 
-		dispatch_group_async(group, queue, ^{
+        dispatch_group_async(group, queue, [=]{
 			if (delay) {
 				MU_MESSAGE("sleeping...");
 #ifdef WIN32
@@ -68,11 +67,11 @@ dispatch_group_t create_group(size_t count, int delay) {
 }
 
 extern "C"
-void dispatch_group_blocks() {
+void dispatch_group_lambda() {
 	long res;
 	dispatch_group_t group;
 
-	MU_BEGIN_TEST(dispatch_group_blocks);
+    MU_BEGIN_TEST(dispatch_group_lambda);
 
 	group = create_group(100, 0);
 	MU_ASSERT_NOT_NULL(group);
@@ -80,7 +79,7 @@ void dispatch_group_blocks() {
 	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 	
 	// should be OK to re-use a group
-	dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{});
+    dispatch_group_async(group, dispatch_get_global_queue(0, 0), [=]{});
 	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 
 	dispatch_release(group);
@@ -102,7 +101,7 @@ void dispatch_group_blocks() {
 	group = create_group(100, 0);
 	MU_ASSERT_NOT_NULL(group);
 
-	dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+    dispatch_group_notify(group, dispatch_get_main_queue(), [=]{
 		dispatch_queue_t m = dispatch_get_main_queue();
 		dispatch_queue_t c = dispatch_get_current_queue();
 		MU_ASSERT_EQUAL(m, c);
@@ -118,4 +117,3 @@ void dispatch_group_blocks() {
 	MU_END_TEST
 }
 
-#endif

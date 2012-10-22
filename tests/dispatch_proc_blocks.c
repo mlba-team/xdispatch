@@ -48,17 +48,17 @@
 
 #define PID_CNT 5
 
-#if DISPATCH_SOURCE_HAS_PROC && defined(TEST_BLOCKS)
+#if DISPATCH_SOURCE_HAS_PROC
 
 static long event_cnt;
 
-extern "C" void test_dispatch_proc(void)
+void test_dispatch_proc_blocks(void)
 {
 	dispatch_source_t proc;
 	int res;
 	pid_t pid;
 
-    MU_BEGIN_TEST(test_dispatch_proc);
+    MU_BEGIN_TEST(test_dispatch_proc_blocks);
 	
 	// Creates a process and register multiple observers.  Send a signal,
 	// exit the process, etc., and verify all observers were notified.

@@ -24,17 +24,31 @@ file(GLOB TEST_DISPATCH
 	pthread_api.c
 	queue_finalizer.c
 )
+file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c)
+file(GLOB TEST_DISPATCH_LAMBDA dispatch_*_lambda.cpp)
+if(NOT HAS_BLOCKS)
+    list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_BLOCKS})
+endif()
+if(HAS_BLOCKS OR NOT HAS_LAMBDAS)
+    list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_LAMBDA})
+endif()
+
 file(GLOB TEST_XDISPATCH 
 	cxx_*.cpp
 	cxx_tests.h
 	cross_blocks.cpp
 )
+file(GLOB TEST_XDISPATCH_BLOCKS cxx_*_blocks.cpp)
+file(GLOB TEST_XDISPATCH_LAMBDA cxx_*_lambda.cpp)
+if(NOT HAS_LAMBDAS)
+    list(REMOVE_ITEM TEST_XDISPATCH ${TEST_XDISPATCH_LAMBDA})
+endif()
+if(NOT HAS_BLOCKS)
+    list(REMOVE_ITEM TEST_XDISPATCH ${TEST_XDISPATCH_BLOCKS})
+endif()
 
 file(GLOB SHIMS shims/*.c shims/*.h)
 
-# grouping
-source_group(tests FILES ${TESTSRCS})
-source_group(shims FILES ${SHIMS})
 
 if(XDISPATCH_QT_SUPPORT)
     # test cases for Qt Interface

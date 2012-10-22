@@ -33,14 +33,14 @@
 #include <errno.h>
 
 
-#if DISPATCH_SOURCE_HAS_READ && defined(TEST_BLOCKS)
+#if DISPATCH_SOURCE_HAS_READ
 
 static size_t bytes_total;
 static size_t bytes_read;
 
-extern "C" void test_dispatch_read()
+extern "C" void test_dispatch_read_lambda()
 {
-    MU_BEGIN_TEST(test_dispatch_read);
+    MU_BEGIN_TEST(test_dispatch_read_lambda);
 
 	const char *path = "/usr/share/dict/words";
 	struct stat sb;
@@ -69,7 +69,7 @@ extern "C" void test_dispatch_read()
 	reader = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, infd, 0, main_q);
     MU_DESC_ASSERT_NOT_NULL("DISPATCH_SOURCE_TYPE_READ", reader);
 	
-    dispatch_source_set_event_handler(reader, ^{
+    dispatch_source_set_event_handler(reader, [=]{
 			size_t estimated = dispatch_source_get_data(reader);
             MU_MESSAGE("bytes available: %zu", estimated);
 			const ssize_t bufsiz = 1024*500; // 500 KB buffer
@@ -87,7 +87,7 @@ extern "C" void test_dispatch_read()
 			}
 	});
 	
-    dispatch_source_set_cancel_handler(reader, ^{
+    dispatch_source_set_cancel_handler(reader, [=]{
         MU_DESC_ASSERT_EQUAL("Bytes read", bytes_read, bytes_total);
 		int res = close(infd);
         MU_DESC_ASSERT_EQUAL("close", res == -1 ? errno : 0, 0);

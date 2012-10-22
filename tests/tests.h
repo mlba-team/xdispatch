@@ -59,24 +59,40 @@ void dispatch_memory_use();
 void dispatch_test_sync();
 void dispatch_group_function();
 void test_dispatch_once();
-#ifdef TEST_BLOCKS
+
+#if TEST_LAMBDA && !TEST_BLOCKS
 void cross_blocks();
-void dispatch_plusplus();
+void dispatch_apply_lambda();
+void dispatch_after_lambda();
+void dispatch_group_lambda();
+void dispatch_pingpong_lambda();
+void dispatch_semaphore_lambda();
+# if DISPATCH_SOURCE_HAS_TIMER
+void dispatch_timer_bit31_lambda();
+void dispatch_timer_bit63_lambda();
+# endif
+# if DISPATCH_SOURCE_HAS_READ
+void test_dispatch_read_lambda();
+# endif
+#endif
+
+#if TEST_BLOCKS
+void dispatch_plusplus_blocks();
 void dispatch_apply_blocks();
 void dispatch_after_blocks();
 void dispatch_group_blocks();
 void dispatch_pingpong_blocks();
-void dispatch_semaphore();
+void dispatch_semaphore_blocks();
 # if DISPATCH_SOURCE_HAS_TIMER
-void dispatch_timer_bit31();
-void dispatch_timer_bit63();
+void dispatch_timer_bit31_blocks();
+void dispatch_timer_bit63_blocks();
 # endif
-void dispatch_drift();
+void dispatch_drift_blocks();
 # if DISPATCH_SOURCE_HAS_READ
-void test_dispatch_read();
+void test_dispatch_read_blocks();
 # endif
 # if DISPATCH_SOURCE_HAS_PROC
-void test_dispatch_proc();
+void test_dispatch_proc_blocks();
 # endif
 #endif
 
@@ -99,21 +115,41 @@ static void register_tests(){
 //	MU_REGISTER_TEST(dispatch_starfish);
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
-#ifdef TEST_BLOCKS
+
+#if TEST_LAMBDA && !TEST_BLOCKS
     MU_REGISTER_TEST(cross_blocks);
-	MU_REGISTER_TEST(dispatch_plusplus);
-	MU_REGISTER_TEST(dispatch_apply_blocks);
-	MU_REGISTER_TEST(dispatch_group_blocks);
-	MU_REGISTER_TEST(dispatch_after_blocks);
-	MU_REGISTER_TEST(dispatch_pingpong_blocks);
-	MU_REGISTER_TEST(dispatch_semaphore);
-#if DISPATCH_SOURCE_HAS_TIMER
-    MU_REGISTER_TEST(dispatch_timer_bit31);
-    MU_REGISTER_TEST(dispatch_timer_bit63);
+    MU_REGISTER_TEST(dispatch_apply_lambda);
+    MU_REGISTER_TEST(dispatch_after_lambda);
+    MU_REGISTER_TEST(dispatch_group_lambda);
+    MU_REGISTER_TEST(dispatch_pingpong_lambda);
+    MU_REGISTER_TEST(dispatch_semaphore_lambda);
+# if DISPATCH_SOURCE_HAS_TIMER
+    MU_REGISTER_TEST(dispatch_timer_bit31_lambda);
+    MU_REGISTER_TEST(dispatch_timer_bit63_lambda);
+# endif
+# if DISPATCH_SOURCE_HAS_READ
+    //MU_REGISTER_TEST(test_dispatch_read_lambda);
+# endif
 #endif
-    MU_REGISTER_TEST(dispatch_drift);
-//    MU_REGISTER_TEST(test_dispatch_read);
-//    MU_REGISTER_TEST(test_dispatch_proc);
+
+#if TEST_BLOCKS
+    MU_REGISTER_TEST(dispatch_plusplus_blocks);
+    MU_REGISTER_TEST(dispatch_apply_blocks);
+    MU_REGISTER_TEST(dispatch_after_blocks);
+    MU_REGISTER_TEST(dispatch_group_blocks);
+    MU_REGISTER_TEST(dispatch_pingpong_blocks);
+    MU_REGISTER_TEST(dispatch_semaphore_blocks);
+# if DISPATCH_SOURCE_HAS_TIMER
+    MU_REGISTER_TEST(dispatch_timer_bit31_blocks);
+    MU_REGISTER_TEST(dispatch_timer_bit63_blocks);
+# endif
+    MU_REGISTER_TEST(dispatch_drift_blocks);
+# if DISPATCH_SOURCE_HAS_READ
+    //MU_REGISTER_TEST(test_dispatch_read_blocks);
+# endif
+# if DISPATCH_SOURCE_HAS_PROC
+    //MU_REGISTER_TEST(test_dispatch_proc_blocks);
+# endif
 #endif
 }
 

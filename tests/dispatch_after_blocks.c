@@ -21,21 +21,18 @@
 
 #include <xdispatch/dispatch.h>
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
 #include "tests.h"
 
 /*
 	A test checking the dispatch_after apis by using blocks
 	*/
 
-void done(void *arg) {
+static void done(void *arg) {
 	//sleep(1);
 	MU_PASS("All blocks done");
 }
 
-extern "C" void
-		dispatch_after_blocks(void)
+void dispatch_after_blocks(void)
 {
 	MU_BEGIN_TEST(dispatch_after_blocks);
 
@@ -80,5 +77,3 @@ extern "C" void
 	MU_FAIL("Should never reach this");
 	MU_END_TEST;
 }
-
-#endif

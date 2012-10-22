@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef XDISPATCH_HAS_BLOCKS
 
 #ifdef WIN32
 #	define WIN32_LEAN_AND_MEAN 1
@@ -59,13 +58,12 @@
 # define MAX_DRIFTSUM 0.0001
 #endif
 
-extern "C"
-void dispatch_drift() {
+void dispatch_drift_blocks() {
 
-    MU_BEGIN_TEST(dispatch_drift);
+    MU_BEGIN_TEST(dispatch_drift_blocks);
 
-    uint32_t* count = new uint32_t(0);
-    double* last_jitter = new double(0);
+    __block uint32_t count = 0;
+    __block double last_jitter = 0;
 
     // interval is 1/10th of a second
     uint64_t interval = NSEC_PER_SEC / 10;
@@ -74,9 +72,9 @@ void dispatch_drift() {
     // for 25 seconds
     unsigned int target = 25 / interval_d;
 
-    double* first = new double(0);
-    double* jittersum = new double(0);
-    double* driftsum = new double(0);
+    __block double first = 0;
+    __block double jittersum = 0;
+    __block double driftsum = 0;
 
     dispatch_source_t timer;
     timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
@@ -87,26 +85,26 @@ void dispatch_drift() {
         gettimeofday(&now_tv, NULL);
         double now = now_tv.tv_sec + ((double)now_tv.tv_usec / (double)USEC_PER_SEC);
 
-        if (*first == 0) {
-            *first = now;
+        if (first == 0) {
+            first = now;
         }
 
-        double goal = *first + interval_d * (*count);
+        double goal = first + interval_d * count;
         double jitter = goal - now;
-        double drift = jitter - (*last_jitter);
+        double drift = jitter - last_jitter;
 
-        *count += dispatch_source_get_data(timer);
-        *jittersum += jitter;
-        *driftsum += drift;
+        count += dispatch_source_get_data(timer);
+        jittersum += jitter;
+        driftsum += drift;
 
-        MU_MESSAGE("%4d: jitter %f, drift %f", *count, jitter, drift);
+        MU_MESSAGE("%4d: jitter %f, drift %f", count, jitter, drift);
 
-        if (*count >= target) {
-            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average jitter", fabs(*jittersum) / (double)(*count), MAX_JITTERSUM);
-            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average drift", fabs(*driftsum) / (double)(*count), MAX_DRIFTSUM);
+        if (count >= target) {
+            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average jitter", fabs(jittersum) / (double)(count), MAX_JITTERSUM);
+            MU_DESC_ASSERT_LESS_THAN_DOUBLE("average drift", fabs(driftsum) / (double)(count), MAX_DRIFTSUM);
             MU_PASS("");
         }
-        *last_jitter = jitter;
+        last_jitter = jitter;
     });
 
 #ifdef _WIN32
@@ -129,5 +127,3 @@ void dispatch_drift() {
     MU_FAIL("Should never reach this");
     MU_END_TEST
 }
-
-#endif /* XDISPATCH_HAS_BLOCKS */

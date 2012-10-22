@@ -27,7 +27,7 @@
 #include "../core/platform/atomic.h"
 #include "tests.h"
 
-#if DISPATCH_SOURCE_HAS_TIMER && defined(TEST_BLOCKS)
+#if DISPATCH_SOURCE_HAS_TIMER
 
 //
 // There were several bugs related to sign extension / integer overflow that
@@ -37,8 +37,8 @@
 // 2 s < 0x80000000ull ns < 4 s
 //
 
-extern "C" void dispatch_timer_bit31() {
-    MU_BEGIN_TEST(dispatch_timer_bit31);
+extern "C" void dispatch_timer_bit31_lambda() {
+    MU_BEGIN_TEST(dispatch_timer_bit31_lambda);
 
 	MU_PASS("");
 
@@ -55,11 +55,11 @@ extern "C" void dispatch_timer_bit31() {
 
 	dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 0x80000000ull), 0, 0);
 
-    dispatch_source_set_event_handler(timer, ^{
+    dispatch_source_set_event_handler(timer, [=]{
 		dispatch_source_cancel(timer);
 	});
 
-    dispatch_source_set_cancel_handler(timer, ^{
+    dispatch_source_set_cancel_handler(timer, [=]{
 		struct timeval end_time;
 		gettimeofday(&end_time, NULL);
 
