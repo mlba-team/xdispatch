@@ -19,8 +19,6 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
 #include <QtCore/QTime>
 #include <QtCore/QObject>
 #include <QtDispatch/QtDispatch>
@@ -45,21 +43,19 @@ signals:
 
 };
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
-extern "C" void Qt_dispatch_source_signal(){
+extern "C" void Qt_dispatch_source_signal_lambda(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
     QDispatchApplication app(argc,&argv);
 
-        MU_BEGIN_TEST(Qt_dispatch_source_signal);
+        MU_BEGIN_TEST(Qt_dispatch_source_signal_lambda);
 
 	Emitter object;
 
 	// configure the source
 	QDispatchSource src(new QDispatchSourceTypeSignal(&object, SIGNAL(ready())));
     src.setTargetQueue(QDispatch::globalQueue(QDispatch::LOW));
-	src.setHandler(${
+	src.setHandler([=]{
 		MU_MESSAGE("Signal was emitted");
 		if(QDispatch::currentQueue().native() == dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0))
 			MU_MESSAGE("Executed on low global queue");
@@ -80,8 +76,4 @@ extern "C" void Qt_dispatch_source_signal(){
 	MU_END_TEST;
 }
 
-#endif
-
-#include <moc_Qt_dispatch_source_signal.moc>
-
-#endif
+#include <moc_Qt_dispatch_source_signal_lambda.moc>

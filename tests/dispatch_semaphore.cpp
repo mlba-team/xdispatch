@@ -40,7 +40,7 @@ extern "C" void dispatch_semaphore()
 	dsema = dispatch_semaphore_create(1);
     MU_ASSERT_NOT_NULL(dsema);
 
-	dispatch_apply(LAPS, dispatch_queue_create(0,0), $(size_t idx) {
+	dispatch_apply(LAPS, dispatch_queue_create(0,0), ^(size_t idx) {
 		dispatch_semaphore_wait(dsema, DISPATCH_TIME_FOREVER);
 		total++;
 		dispatch_semaphore_signal(dsema);

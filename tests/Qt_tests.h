@@ -32,63 +32,97 @@
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
-#ifndef XDISPATCH_HAS_BLOCKS
-#	if ( defined(MZ_HAS_CXX0X) || defined(__BLOCKS__) || (_MSC_VER >= 1600) )
-#		define TEST_BLOCKS
-#	endif
-#else
-#	define TEST_BLOCKS
+#if defined(XDISPATCH_HAS_BLOCKS) || defined(__BLOCKS__)
+# define TEST_BLOCKS 1
+#endif
+#if defined(XDISPATCH_HAS_LAMBDAS) || defined(MZ_HAS_CXX0X)
+# define TEST_LAMBAS 1
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if XDISPATCH_QT_SUPPORT
-void Qt_runnable();
-void Qt_dispatch_debug();
-void Qt_dispatch_cascade();
-void Qt_dispatch_group1();
-void Qt_dispatch_group2();
-void Qt_dispatch_mainqueue();
-void Qt_dispatch_queue();
-void Qt_dispatch_serialqueue();
-void Qt_dispatch_after();
-void Qt_dispatch_semaphore();
-void Qt_dispatch_current();
 void Qt_dispatch_timer();
-void Qt_dispatch_source_signal();
-void Qt_dispatch_source_device();
-void Qt_dispatch_source_network();
 void Qt_free_lambda();
-void Qt_early_dispatch1();
-void Qt_early_dispatch2();
 void Qt_dispatch_fibo();
+void Qt_dispatch_source_device();
+void Qt_dispatch_debug();
+void Qt_dispatch_group1();
+
+#if TEST_LAMBAS
+void Qt_runnable_lambda();
+void Qt_dispatch_cascade_lambda();
+void Qt_dispatch_group2_lambda();
+void Qt_dispatch_mainqueue_lambda();
+void Qt_dispatch_queue_lambda();
+void Qt_dispatch_serialqueue_lambda();
+void Qt_dispatch_after_lambda();
+void Qt_dispatch_semaphore_lambda();
+void Qt_dispatch_current_lambda();
+void Qt_dispatch_source_signal_lambda();
+void Qt_dispatch_source_network_lambda();
+void Qt_early_dispatch1_lambda();
+void Qt_early_dispatch2_lambda();
+#endif
+
+#if TEST_BLOCKS
+void Qt_runnable_blocks();
+void Qt_dispatch_cascade_blocks();
+void Qt_dispatch_group2_blocks();
+void Qt_dispatch_mainqueue_blocks();
+void Qt_dispatch_queue_blocks();
+void Qt_dispatch_serialqueue_blocks();
+void Qt_dispatch_after_blocks();
+void Qt_dispatch_semaphore_blocks();
+void Qt_dispatch_current_blocks();
+void Qt_dispatch_source_signal_blocks();
+void Qt_dispatch_source_device_blocks();
+void Qt_dispatch_source_network_blocks();
+void Qt_free_blocks();
+void Qt_early_dispatch1_blocks();
+void Qt_early_dispatch2_blocks();
 #endif
 
 static void register_qt_tests(){
-#ifdef XDISPATCH_QT_SUPPORT
-#ifdef TEST_BLOCKS
-    MU_REGISTER_TEST(Qt_runnable);
-	MU_REGISTER_TEST(Qt_dispatch_debug);
-	MU_REGISTER_TEST(Qt_dispatch_queue);
-	MU_REGISTER_TEST(Qt_dispatch_mainqueue);
-	MU_REGISTER_TEST(Qt_dispatch_cascade);
-	MU_REGISTER_TEST(Qt_dispatch_after);
-    MU_REGISTER_TEST(Qt_dispatch_group1);
-    MU_REGISTER_TEST(Qt_dispatch_group2);
-	MU_REGISTER_TEST(Qt_dispatch_serialqueue);
-	MU_REGISTER_TEST(Qt_dispatch_semaphore);
-    MU_REGISTER_TEST(Qt_dispatch_current);
-    MU_REGISTER_TEST(Qt_dispatch_timer);
-	MU_REGISTER_TEST(Qt_dispatch_source_signal);
-	MU_REGISTER_TEST(Qt_dispatch_source_device);
-	MU_REGISTER_TEST(Qt_dispatch_source_network);
-    MU_REGISTER_TEST(Qt_free_lambda);
-    MU_REGISTER_TEST(Qt_early_dispatch1);
-    MU_REGISTER_TEST(Qt_early_dispatch2);
-    MU_REGISTER_TEST(Qt_dispatch_fibo);
+  MU_REGISTER_TEST(Qt_dispatch_fibo);
+  MU_REGISTER_TEST(Qt_dispatch_debug);
+  MU_REGISTER_TEST(Qt_dispatch_source_device);
+  MU_REGISTER_TEST(Qt_dispatch_timer);
+  MU_REGISTER_TEST(Qt_dispatch_group1);
+
+#if TEST_LAMBAS
+  MU_REGISTER_TEST(Qt_runnable_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_queue_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_mainqueue_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_cascade_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_after_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_group2_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_serialqueue_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_semaphore_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_current_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_source_signal_lambda);
+  MU_REGISTER_TEST(Qt_dispatch_source_network_lambda);
+  MU_REGISTER_TEST(Qt_free_lambda);
+  MU_REGISTER_TEST(Qt_early_dispatch1_lambda);
+  MU_REGISTER_TEST(Qt_early_dispatch2_lambda);
 #endif
+
+#if TEST_BLOCKS
+    MU_REGISTER_TEST(Qt_runnable_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_queue_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_mainqueue_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_cascade_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_after_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_group2_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_serialqueue_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_semaphore_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_current_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_source_signal_blocks);
+    MU_REGISTER_TEST(Qt_dispatch_source_network_blocks);
+    MU_REGISTER_TEST(Qt_free_blocks);
+    MU_REGISTER_TEST(Qt_early_dispatch1_blocks);
+    MU_REGISTER_TEST(Qt_early_dispatch2_blocks);
 #endif
 }
 

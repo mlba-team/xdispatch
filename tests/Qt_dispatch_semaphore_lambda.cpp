@@ -19,15 +19,11 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
 #include <QtCore/QCoreApplication>
 #include <QtCore/QTime>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-
-#ifdef XDISPATCH_HAS_BLOCKS
 
 #define LAPS 10000
 
@@ -36,13 +32,13 @@ Little tests mainly checking the correct mapping of the Qt api
 to the underlying C Api
 */
 
-extern "C" void Qt_dispatch_semaphore(){
+extern "C" void Qt_dispatch_semaphore_lambda(){
 	static size_t total;
 
-	MU_BEGIN_TEST(Qt_dispatch_semaphore);
+    MU_BEGIN_TEST(Qt_dispatch_semaphore_lambda);
 	QDispatchSemaphore* dsema = new QDispatchSemaphore(1);
 
-    QDispatchQueue("Qt_dispatch_semaphore").apply($(size_t idx) {
+    QDispatchQueue("Qt_dispatch_semaphore").apply([=](size_t idx) {
         dsema->try_acquire(DISPATCH_TIME_FOREVER);
 		total++;
 		dsema->release();
@@ -56,6 +52,3 @@ extern "C" void Qt_dispatch_semaphore(){
 	MU_END_TEST;
 }
 
-#endif
-
-#endif

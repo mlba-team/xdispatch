@@ -104,7 +104,7 @@ extern "C" void cxx_dispatch_proc(void)
         xdispatch::source* proc = new xdispatch::source( new xdispatch::native_source(proc_native) );
         MU_DESC_ASSERT_NOT_NULL("DISPATCH_SOURCE_TYPE_PROC", proc);
 
-        proc->handler(${
+        proc->handler(^{
             long flags = dispatch_source_get_data( proc->native_source() );
             MU_DESC_ASSERT_EQUAL("DISPATCH_PROC_EXIT", flags, DISPATCH_PROC_EXIT);
 			event_cnt++;
@@ -120,7 +120,7 @@ extern "C" void cxx_dispatch_proc(void)
 	// has been fully resumed, at which point the test will exit successfully.
 	//
 
-    completion->async(${
+    completion->async(^{
 		int status;
 		int res2 = waitpid(pid, &status, 0);
         MU_ASSERT_TRUE(res2 != -1);

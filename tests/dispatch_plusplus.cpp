@@ -36,7 +36,7 @@ extern "C" void dispatch_plusplus(void) {
 	dispatch_queue_t q = dispatch_get_main_queue();
 	MU_ASSERT_NOT_NULL(q);
 
-	dispatch_async(dispatch_get_main_queue(), ${
+	dispatch_async(dispatch_get_main_queue(), ^{
         int i = 0;
         i++;
         MU_ASSERT_EQUAL(i, 1);

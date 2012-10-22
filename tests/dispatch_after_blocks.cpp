@@ -39,12 +39,12 @@ extern "C" void
 {
 	MU_BEGIN_TEST(dispatch_after_blocks);
 
-	dispatch_async(dispatch_get_main_queue(), ${
+	dispatch_async(dispatch_get_main_queue(), ^{
 		dispatch_time_t time_a_min = dispatch_time(0,  5.5*NSEC_PER_SEC);
         dispatch_time_t time_a     = dispatch_time(0,  6.0*NSEC_PER_SEC);
 		dispatch_time_t time_a_max = dispatch_time(0,  6.5*NSEC_PER_SEC);
 		dispatch_time_t time_a_start = dispatch_time(0,0);
-		dispatch_after(time_a, dispatch_get_current_queue(), ${
+		dispatch_after(time_a, dispatch_get_current_queue(), ^{
 			dispatch_time_t now_a = dispatch_time(0, 0);
 			MU_MESSAGE("must finish between 5.5s and 6.5s: %f",(now_a-time_a_start)/(float)NSEC_PER_SEC);
 			MU_ASSERT_TRUE(0<=(now_a - time_a_min));
@@ -54,7 +54,7 @@ extern "C" void
 			dispatch_time_t time_b     = dispatch_time(0,    2*NSEC_PER_SEC);
 			dispatch_time_t time_b_max = dispatch_time(0,  2.5*NSEC_PER_SEC);
 			dispatch_time_t time_b_start = dispatch_time(0,0);
-			dispatch_after(time_b, dispatch_get_current_queue(), ${
+			dispatch_after(time_b, dispatch_get_current_queue(), ^{
 				dispatch_time_t now_b = dispatch_time(0, 0);
 				MU_MESSAGE("must finish between 1.5s and 2.5s: %f",(now_b-time_b_start)/(float)NSEC_PER_SEC);
 				MU_ASSERT_TRUE(0<=(now_b - time_b_min));
@@ -64,7 +64,7 @@ extern "C" void
 				dispatch_time_t time_c     = dispatch_time(0,  0*NSEC_PER_SEC);
 				dispatch_time_t time_c_max = dispatch_time(0,  .5*NSEC_PER_SEC);
 				dispatch_time_t time_c_start = dispatch_time(0, 0);
-				dispatch_after(time_c, dispatch_get_current_queue(), ${
+				dispatch_after(time_c, dispatch_get_current_queue(), ^{
 					dispatch_time_t now_c = dispatch_time(0, 0);
 					MU_MESSAGE("must finish between 0s and .5s:  %f",(now_c-time_c_start)/(float)NSEC_PER_SEC);
 					MU_ASSERT_TRUE(0<=(now_c - time_c_min));

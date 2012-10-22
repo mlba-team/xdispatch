@@ -82,7 +82,7 @@ void dispatch_drift() {
     timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     MU_DESC_ASSERT_NOT_NULL("DISPATCH_SOURCE_TYPE_TIMER", timer);
 
-    dispatch_source_set_event_handler(timer, ${
+    dispatch_source_set_event_handler(timer, ^{
         struct timeval now_tv;
         gettimeofday(&now_tv, NULL);
         double now = now_tv.tv_sec + ((double)now_tv.tv_usec / (double)USEC_PER_SEC);

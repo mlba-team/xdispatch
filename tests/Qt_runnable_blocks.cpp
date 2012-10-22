@@ -19,8 +19,6 @@
  * @MLBA_OPEN_LICENSE_HEADER_END@
  */
 
-#ifdef QT_CORE_LIB
-
 #include <QtCore/QCoreApplication>
 #include <QtCore/QTime>
 #include <QtDispatch/QtDispatch>
@@ -38,11 +36,10 @@ public:
     
 };
 
-#ifdef XDISPATCH_HAS_BLOCKS
 static QIterationBlockRunnable* iter_block_run = NULL;
 static QBlockRunnable* block_run = NULL;
 
-void exec_runnables() {
+static void exec_runnables() {
     
     for(int i = 0; i < 5; i++)
         iter_block_run->run(i);
@@ -55,36 +52,28 @@ void exec_runnables() {
     
     MU_PASS("");
 }
-#endif
 
 /*
     Testing the various runnables introduced with QtDispatch
  */
-extern "C" void Qt_runnable(){
-    MU_BEGIN_TEST(Qt_runnable);
+extern "C" void Qt_runnable_blocks(){
+    MU_BEGIN_TEST(Qt_runnable_blocks);
     
     TestRunnable test_run;
     for(int i = 0; i < 5; i++)
         test_run.run(i);
     MU_ASSERT_EQUAL(counter, 1+2+3+4);
 
-#ifdef XDISPATCH_HAS_BLOCKS
     counter = 0;
-    iter_block_run = new QIterationBlockRunnable($(size_t index){
+    iter_block_run = new QIterationBlockRunnable(^(size_t index){
         counter += index;
     });
     
-    block_run = new QBlockRunnable(${
+    block_run = new QBlockRunnable(^{
         counter += 5;
     });
     
     exec_runnables();
     
-#else
-    MU_PASS("");
-#endif
-    
     MU_END_TEST;
 }
-
-#endif

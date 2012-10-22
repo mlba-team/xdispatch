@@ -33,7 +33,7 @@ static dispatch_block_t myTest;
 
 void installBlock(){
 	int a = 3, b = 4;
-    dispatch_block_t block = (${
+    dispatch_block_t block = (^{
 		result = a*b;
     });
 

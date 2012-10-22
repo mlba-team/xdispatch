@@ -20,46 +20,35 @@
 */
 
 
-#include "../include/xdispatch/dispatch"
-#include "cxx_tests.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QTime>
+#include <QtDispatch/QtDispatch>
 
-#ifdef TEST_BLOCKS
+#include "Qt_tests.h"
+
+#define LAPS 10000
 
 /*
-Little tests mainly checking the correct mapping of the c++ api
+Little tests mainly checking the correct mapping of the Qt api
 to the underlying C Api
 */
 
-extern "C" void cxx_dispatch_cascade(){
+extern "C" void Qt_dispatch_semaphore_blocks(){
+	static size_t total;
 
-	MU_BEGIN_TEST(cxx_dispatch_cascade);
+    MU_BEGIN_TEST(Qt_dispatch_semaphore_blocks);
+	QDispatchSemaphore* dsema = new QDispatchSemaphore(1);
 
-	xdispatch::queue q = xdispatch::global_queue();
-	MU_ASSERT_NOT_NULL_HEX(q.native());
+    QDispatchQueue("Qt_dispatch_semaphore").apply(^(size_t idx) {
+        dsema->try_acquire(DISPATCH_TIME_FOREVER);
+		total++;
+		dsema->release();
+	}, LAPS);
 
-	int no = 0;
+	delete dsema;
 
-	q.async(^{
-		MU_ASSERT_EQUAL(no, 0);
-		int no2 = no+100;
-		xdispatch::queue c = xdispatch::current_queue();
-		c.async(^{
-			MU_ASSERT_EQUAL(no2, 100);
-			int no3 = no2+20;
-			xdispatch::current_queue().async(^{
-				MU_ASSERT_EQUAL(no3, 120);
-				int no4 = no3+3 ;
-				xdispatch::current_queue().async(^{
-					MU_ASSERT_EQUAL(no4,123);
-					MU_PASS("And Out");
-				});
-			});
-		});
-	});
+	MU_ASSERT_EQUAL(total, LAPS);
 
-	xdispatch::exec();
+	MU_PASS("");
 	MU_END_TEST;
 }
-
-#endif
-

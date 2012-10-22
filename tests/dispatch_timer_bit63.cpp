@@ -54,7 +54,7 @@ extern "C" void dispatch_timer_bit63() {
     dispatch_source_t ds;
     ds = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, mainq);
     MU_ASSERT_NOT_NULL(ds);
-    dispatch_source_set_event_handler(ds, ${
+    dispatch_source_set_event_handler(ds, ^{
         MU_ASSERT_LESS_THAN(*i, 1);
         MU_MESSAGE("%d", (*i)++);
     });
@@ -62,7 +62,7 @@ extern "C" void dispatch_timer_bit63() {
     dispatch_resume(ds);
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5.0*NSEC_PER_SEC),
-        dispatch_get_main_queue(), ${
+        dispatch_get_main_queue(), ^{
         delete i;
         MU_PASS("");
     });

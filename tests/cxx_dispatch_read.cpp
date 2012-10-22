@@ -67,7 +67,7 @@ extern "C" void cxx_dispatch_read()
     xdispatch::source* reader = new xdispatch::source( new xdispatch::native_source(native_reader) );
     MU_ASSERT_NOT_NULL( reader );
 	
-    reader->handler(${
+    reader->handler(^{
             size_t estimated = dispatch_source_get_data( reader->native_source() );
             MU_MESSAGE("bytes available: %zu", estimated);
 			const ssize_t bufsiz = 1024*500; // 500 KB buffer
@@ -84,7 +84,7 @@ extern "C" void cxx_dispatch_read()
 			}
 	});
 	
-    reader->cancel_handler(${
+    reader->cancel_handler(^{
         MU_DESC_ASSERT_EQUAL("Bytes read", bytes_read, bytes_total);
 		int res = close(infd);
         MU_DESC_ASSERT_EQUAL("close", res == -1 ? errno : 0, 0);

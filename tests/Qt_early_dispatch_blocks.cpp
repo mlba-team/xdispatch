@@ -19,55 +19,44 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
+
 
 #include <QtCore/QTime>
-#include <QtCore/QDebug>
 #include <QtDispatch/QtDispatch>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
 
 #include "Qt_tests.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
 /*
- Tests the source type network manager
+ Verify that jobs dispatched before creation
+ of the QDispatchApplication are properly processed
  */
 
-extern "C" void Qt_dispatch_source_network(){
+extern "C" void Qt_early_dispatch1_blocks(){
+    MU_BEGIN_TEST(Qt_early_dispatch1_blocks);
+
+    QDispatchQueue q = QDispatch::mainQueue();
+    MU_ASSERT_NOT_NULL( q.native() );
+    q.async( ^{ MU_PASS(""); } );
+
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
     QDispatchApplication app(argc,&argv);
-
-        MU_BEGIN_TEST(Qt_dispatch_source_network);
-
-	// configure the source
-	QNetworkAccessManager* man = new QNetworkAccessManager();
-	QDispatchSource src(new QDispatchSourceTypeNetworkManager(man));
-	src.setHandler(${
-
-		QNetworkReply* r = QDispatchSource::data<QNetworkReply>();
-		MU_ASSERT_NOT_NULL(r);
-		
-
-		QString content = r->readAll();
-		if(content.isEmpty())
-			content = (r->readAll());
-		MU_MESSAGE("Received response contains:");
-		qDebug() << "\t\t" << content;
-
-		r->deleteLater();
-		MU_PASS("");
-	});
-
-	// now post a request
-	man->get(QNetworkRequest(QUrl("http://www.google.com")));
 
 	app.exec();
 	MU_END_TEST;
 }
 
-#endif
+extern "C" void Qt_early_dispatch2_blocks(){
+    MU_BEGIN_TEST(Qt_early_dispatch2_blocks);
 
-#endif
+    QDispatchQueue q = QDispatch::mainQueue();
+    MU_ASSERT_NOT_NULL( q.native() );
+    q.async( ^{ MU_PASS(""); } );
+
+    char* argv = QString("test").toAscii().data();
+    int argc = 1;
+    QDispatchCoreApplication app(argc,&argv);
+
+    app.exec();
+    MU_END_TEST;
+}

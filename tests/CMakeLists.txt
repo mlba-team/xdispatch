@@ -1,6 +1,18 @@
 # tests for xdispatch
 mz_add_library(munit munit)
 
+# test available features
+try_compile( HAS_BLOCKS
+    ${CMAKE_CURRENT_BINARY_DIR}/Blocks
+    ${CMAKE_CURRENT_SOURCE_DIR}/checks/blocks.c
+    OUTPUT_VARIABLE HAS_BLOCKS_OUTPUT
+)
+try_compile( HAS_LAMBDAS
+    ${CMAKE_CURRENT_BINARY_DIR}/Lambdas
+    ${CMAKE_CURRENT_SOURCE_DIR}/checks/lambdas.cpp
+    OUTPUT_VARIABLE HAS_LAMBDAS_OUTPUT
+)
+
 # define file groups
 
 file(GLOB TEST_DISPATCH
@@ -25,57 +37,69 @@ source_group(tests FILES ${TESTSRCS})
 source_group(shims FILES ${SHIMS})
 
 if(XDISPATCH_QT_SUPPORT)
-	# test cases for Qt Interface
-	file(GLOB TEST_QTDISPATCH Qt_*.cpp)
+    # test cases for Qt Interface
+    file(GLOB TEST_QT Qt_*.cpp Qt_*.h)
+    file(GLOB TEST_QT_LAMBDA Qt_*_lambda.cpp)
+    file(GLOB TEST_QT_BLOCKS Qt_*_blocks.cpp)
+    if(NOT HAS_LAMBDAS)
+        list(REMOVE_ITEM TEST_QT ${TEST_QT_LAMBDA})
+    endif()
+    if(NOT HAS_BLOCKS)
+        list(REMOVE_ITEM TEST_QT ${TEST_QT_BLOCKS})
+    endif()
 	
-	mz_add_definition(XDISPATCH_QT_SUPPORT=1)
+    mz_add_definition(XDISPATCH_QT_SUPPORT=1)
 
-	# we need to manually define mocced files
-	qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group.moc)
-	qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal.moc)
-	#qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_device.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc)
-	set(TESTMOC ${TESTMOC} 
-		${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group.moc
-		${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal.moc
-				#${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc
-	)
+    # we need to manually define mocced files
+    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group_blocks.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_blocks.moc)
+    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group_lambda.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_lambda.moc)
+    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal_blocks.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_blocks.moc)
+    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal_lambda.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_lambda.moc)
+    #qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_device.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc)
+    set(TESTMOC ${TESTMOC}
+        ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_lambda.moc
+        ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_blocks.moc
+        ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_lambda.moc
+        ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_blocks.moc
+        #${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc
+    )
 
-	#message("### COOL ${TEST_QTDISPATCH}")
+    #message("### COOL ${TEST_QTDISPATCH}")
 
-	set(TEST_LIB ${TEST_LIB} ${QT_LIBRARIES} QtDispatch)
+    set(TEST_LIB ${TEST_LIB} ${QT_LIBRARIES} QtDispatch)
 	
-	include_directories(
-		${QT_QTCORE_INCLUDE_DIR}
-		${QT_QTTEST_INCLUDE_DIR}
-	)
+    include_directories(
+        ${QT_QTCORE_INCLUDE_DIR}
+        ${QT_QTTEST_INCLUDE_DIR}
+    )
 endif()
 
 # includes
 include_directories(
-	${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 if(MINGW)
-	set(RES_FILES tests.rc)
+    set(RES_FILES tests.rc)
 endif()
 
 if(NOT HAVE_NATIVE_DISPATCH_H)
-	set(TEST_LIB ${TEST_LIB} dispatch)
+    set(TEST_LIB ${TEST_LIB} dispatch)
 endif()
 
 # add new exec target
 if( IOS )
-	add_library(xdispatch_tests STATIC main_ios.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QTDISPATCH} ${RES_FILES})
+    add_library(xdispatch_tests STATIC main_ios.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
 else()
-	add_executable(xdispatch_tests main.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QTDISPATCH} ${RES_FILES})
+    add_executable(xdispatch_tests main.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
 endif()
 
 # manifest (somehow we need one when using mingw - but only for this binary !?
 if(MINGW)
-	# create the manifest for the first time
-	execute_process(COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
-					WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-	)
+    # create the manifest for the first time
+    execute_process(COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
 	# and all other times automatically
 	add_custom_command( TARGET xdispatch_tests PRE_LINK
 						COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff

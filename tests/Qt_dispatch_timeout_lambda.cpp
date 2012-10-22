@@ -19,48 +19,37 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
+#include <QtCore/QTime>
 #include <QtDispatch/QtDispatch>
-#include "Qt_tests.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#include "Qt_tests.h"
 
 /*
  Little tests mainly checking the correct mapping of the Qt api
  to the underlying C Api
  */
 
-extern "C" void Qt_dispatch_cascade(){
+extern "C" void Qt_dispatch_after_lambda(){
+	QTime watch;
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-    QApplication app(argc,&argv);
-	
-	MU_BEGIN_TEST(Qt_dispatch_cascade);
+    QDispatchApplication app(argc,&argv);
 
-    QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
-    MU_ASSERT_NOT_NULL(q.native());
+        MU_BEGIN_TEST(Qt_dispatch_after_lambda);
 
-	int no = 0;
-	
-    q.async(new QBlockRunnable(${
-		int no2 = no+100;
-        QDispatchQueue c = QDispatch::currentQueue();
-        c.async(new QBlockRunnable(${
-			int no3 = no2+20;
-            QDispatch::currentQueue().async(new QBlockRunnable(${
-				int no4 = no3+3 ;
-                QDispatch::currentQueue().async(new QBlockRunnable(${
-					MU_ASSERT_EQUAL(no4,123);
-					MU_PASS("And Out");
-				}));
-			}));
-		}));
-	}));
-	
+	watch.start();
+
+    QDispatch::globalQueue(QDispatch::DEFAULT).after([=]{
+		MU_MESSAGE("Should finish between 0.5s and 1.5s: %f", watch.elapsed()/1000.0);
+		MU_ASSERT_GREATER_THAN_EQUAL(watch.elapsed(), 700);
+	},QTime::currentTime().addMSecs(1000));
+
+    QDispatch::mainQueue().after([=]{
+		MU_MESSAGE("Should finish between 2s and 2.5s: %f", watch.elapsed()/1000.0);
+		MU_ASSERT_GREATER_THAN_EQUAL(watch.elapsed(), 1800);
+		MU_PASS("");
+	},QTime::currentTime().addMSecs(2000));
+
 	app.exec();
 	MU_END_TEST;
 }
-
-#endif
-#endif

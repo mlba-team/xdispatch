@@ -19,33 +19,43 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#include <QtCore/QDebug>
+
+#include <QtCore/QTime>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 
 /*
- Little tests mainly checking the correct mapping of the Qt api
- to the underlying C Api
+ Verify that jobs dispatched before creation
+ of the QDispatchApplication are properly processed
  */
 
-extern "C" void Qt_dispatch_debug(){
-	
-
-    MU_BEGIN_TEST(Qt_dispatch_debug);
+extern "C" void Qt_early_dispatch1_lambda(){
+    MU_BEGIN_TEST(Qt_early_dispatch1_lambda);
 
     QDispatchQueue q = QDispatch::mainQueue();
-	QDispatchGroup g;
-	QDispatchSemaphore s(0);
-	
-	MU_MESSAGE("Begin testing debug output using QDebug()");
+    MU_ASSERT_NOT_NULL( q.native() );
+    q.async( [=]{ MU_PASS(""); } );
 
-	qDebug() << q;
-	qDebug() << g;
-	qDebug() << s;
+	char* argv = QString("test").toAscii().data();
+	int argc = 1;
+    QDispatchApplication app(argc,&argv);
 
-	MU_MESSAGE("All output done.");
-
+	app.exec();
 	MU_END_TEST;
 }
 
+extern "C" void Qt_early_dispatch2_lambda(){
+    MU_BEGIN_TEST(Qt_early_dispatch2_lambda);
+
+    QDispatchQueue q = QDispatch::mainQueue();
+    MU_ASSERT_NOT_NULL( q.native() );
+    q.async( [=]{ MU_PASS(""); } );
+
+    char* argv = QString("test").toAscii().data();
+    int argc = 1;
+    QDispatchCoreApplication app(argc,&argv);
+
+    app.exec();
+    MU_END_TEST;
+}

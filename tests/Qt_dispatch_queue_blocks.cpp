@@ -7,9 +7,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-*
+* 
 *     http://www.apache.org/licenses/LICENSE-2.0
-*
+* 
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,45 +20,40 @@
 */
 
 
-#include "../include/xdispatch/dispatch"
-#include "cxx_tests.h"
+#include <QtDispatch/QtDispatch>
 
-#include <iostream>
+#include "Qt_tests.h"
+#include "../core/platform/atomic.h"
+
+#define RUN_TIMES 20
 
 /*
- Little tests mainly checking the correct mapping of the c++ api
+ Little tests mainly checking the correct mapping of the Qt api
  to the underlying C Api
  */
 
+extern "C" void Qt_dispatch_queue_blocks(){
+	char* argv = QString("test").toAscii().data();
+	int argc = 1;
+    QDispatchApplication app(argc,&argv);
 
-#ifdef TEST_BLOCKS
+    MU_BEGIN_TEST(Qt_dispatch_queue_blocks);
 
-#define LAPS 10000
+	uintptr_t* worker = new uintptr_t;
+	*worker = 0;
 
-/*
-Little tests mainly checking the correct mapping of the Qt api
-to the underlying C Api
-*/
+    QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
+    MU_ASSERT_NOT_NULL(q.native());
 
-extern "C" void cxx_dispatch_semaphore(){
-	static size_t total;
+    q.apply(new QIterationBlockRunnable(^(size_t i){
+			dispatch_atomic_inc(worker);
+	}),RUN_TIMES);
 
-    MU_BEGIN_TEST(cxx_dispatch_semaphore);
-    xdispatch::semaphore* dsema = new xdispatch::semaphore(1);
+    QDispatch::globalQueue(QDispatch::LOW).async(new QBlockRunnable(^{
+			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
+			MU_PASS("Queue executed");
+		}));
 
-    xdispatch::queue("cxx_dispatch_semaphore").apply(^(size_t idx) {
-        dsema->try_acquire(DISPATCH_TIME_FOREVER);
-		total++;
-		dsema->release();
-	}, LAPS);
-
-	delete dsema;
-
-	MU_ASSERT_EQUAL(total, LAPS);
-
-	MU_PASS("");
+	app.exec();
 	MU_END_TEST;
 }
-
-#endif
-

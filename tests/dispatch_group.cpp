@@ -49,7 +49,7 @@ dispatch_group_t create_group(size_t count, int delay) {
 		dispatch_queue_t queue = dispatch_queue_create(NULL, NULL);
 		MU_ASSERT_NOT_NULL(queue);
 
-		dispatch_group_async(group, queue, ${
+		dispatch_group_async(group, queue, ^{
 			if (delay) {
 				MU_MESSAGE("sleeping...");
 #ifdef WIN32
@@ -80,7 +80,7 @@ void dispatch_group_blocks() {
 	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 	
 	// should be OK to re-use a group
-	dispatch_group_async(group, dispatch_get_global_queue(0, 0), ${});
+	dispatch_group_async(group, dispatch_get_global_queue(0, 0), ^{});
 	dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 
 	dispatch_release(group);
@@ -102,7 +102,7 @@ void dispatch_group_blocks() {
 	group = create_group(100, 0);
 	MU_ASSERT_NOT_NULL(group);
 
-	dispatch_group_notify(group, dispatch_get_main_queue(), ${
+	dispatch_group_notify(group, dispatch_get_main_queue(), ^{
 		dispatch_queue_t m = dispatch_get_main_queue();
 		dispatch_queue_t c = dispatch_get_current_queue();
 		MU_ASSERT_EQUAL(m, c);

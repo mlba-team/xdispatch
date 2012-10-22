@@ -19,61 +19,42 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
 
-#include <QtCore/QCoreApplication>
 #include <QtDispatch/QtDispatch>
-
 #include "Qt_tests.h"
-#include "../core/platform/atomic.h"
-
-#ifdef XDISPATCH_HAS_BLOCKS
-
-#define JOBS_NO 20
-
-#if TARGET_OS_EMBEDDED
-#define LOOP_COUNT 2000000
-#else
-#define LOOP_COUNT 100000
-#endif
 
 /*
  Little tests mainly checking the correct mapping of the Qt api
  to the underlying C Api
  */
 
-extern "C" void Qt_dispatch_serialqueue(){
+extern "C" void Qt_dispatch_cascade_blocks(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
-    QDispatchApplication app(argc,&argv);
+    QApplication app(argc,&argv);
+	
+    MU_BEGIN_TEST(Qt_dispatch_cascade_blocks);
 
-        MU_BEGIN_TEST(Qt_dispatch_serialqueue);
+    QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
+    MU_ASSERT_NOT_NULL(q.native());
 
-	unsigned int* worker = new unsigned int;
-	*worker = 0;
-
-    QDispatchQueue q("Qt_dispatch_serialqueue");
-
-	// dispatch some jobs
-	for(unsigned int x = 0; x < JOBS_NO; x++) {
-        q.async(new QBlockRunnable(${
-			MU_ASSERT_EQUAL(*worker,x);
-			// keep cpu busy
-			for(int i = 0; i < LOOP_COUNT;i++);
-			*worker = x+1;
+	int no = 0;
+	
+    q.async(new QBlockRunnable(^{
+		int no2 = no+100;
+        QDispatchQueue c = QDispatch::currentQueue();
+        c.async(new QBlockRunnable(^{
+			int no3 = no2+20;
+            QDispatch::currentQueue().async(new QBlockRunnable(^{
+				int no4 = no3+3 ;
+                QDispatch::currentQueue().async(new QBlockRunnable(^{
+					MU_ASSERT_EQUAL(no4,123);
+					MU_PASS("And Out");
+				}));
+			}));
 		}));
-
-	}
-
-    q.async(new QBlockRunnable(${
-		MU_ASSERT_EQUAL(*worker,JOBS_NO);
-		// Test passed
-		MU_PASS("Blocks were executed in correct order");
 	}));
-
+	
 	app.exec();
 	MU_END_TEST;
 }
-
-#endif
-#endif

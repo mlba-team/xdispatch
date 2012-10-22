@@ -43,11 +43,11 @@ extern "C" void cxx_dispatch_mainqueue(){
     xdispatch::queue q = xdispatch::main_queue();
     MU_ASSERT_NOT_NULL(q.native());
 
-    xdispatch::global_queue().apply($(size_t i){
+    xdispatch::global_queue().apply(^(size_t i){
 			dispatch_atomic_inc(worker);
         }, RUN_TIMES);
 
-    q.async(${
+    q.async(^{
             MU_ASSERT_EQUAL(RUN_TIMES, *worker);
             delete worker;
 			MU_PASS("");

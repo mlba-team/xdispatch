@@ -71,11 +71,11 @@ extern "C" void cxx_dispatch_once2(){
     int* counter_ptr = &counter;
 
     MU_ASSERT_EQUAL( counter, 0 );
-    x_once_obj( ${ (*counter_ptr)++; } );
-    x_once_obj( ${ (*counter_ptr)++; } );
-    x_once_obj( ${ (*counter_ptr)++; } );
-    x_once_obj( ${ (*counter_ptr)++; } );
-    x_once_obj( ${ (*counter_ptr)++; } );
+    x_once_obj( ^{ (*counter_ptr)++; } );
+    x_once_obj( ^{ (*counter_ptr)++; } );
+    x_once_obj( ^{ (*counter_ptr)++; } );
+    x_once_obj( ^{ (*counter_ptr)++; } );
+    x_once_obj( ^{ (*counter_ptr)++; } );
     MU_ASSERT_EQUAL( counter, 1 );
 
     MU_PASS("");
@@ -94,11 +94,11 @@ extern "C" void cxx_dispatch_once3(){
     int* counter_ptr = &counter;
 
     MU_ASSERT_EQUAL( counter, 0 );
-    dispatch_once( &once_obj, ${ (*counter_ptr)++; } );
-    dispatch_once( &once_obj, ${ (*counter_ptr)++; } );
-    dispatch_once( &once_obj, ${ (*counter_ptr)++; } );
-    dispatch_once( &once_obj, ${ (*counter_ptr)++; } );
-    dispatch_once( &once_obj, ${ (*counter_ptr)++; } );
+    dispatch_once( &once_obj, ^{ (*counter_ptr)++; } );
+    dispatch_once( &once_obj, ^{ (*counter_ptr)++; } );
+    dispatch_once( &once_obj, ^{ (*counter_ptr)++; } );
+    dispatch_once( &once_obj, ^{ (*counter_ptr)++; } );
+    dispatch_once( &once_obj, ^{ (*counter_ptr)++; } );
     MU_ASSERT_EQUAL( counter, 1 );
 
     MU_PASS("");

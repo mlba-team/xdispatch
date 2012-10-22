@@ -104,7 +104,7 @@ extern "C" void test_dispatch_proc(void)
 		proc = dispatch_source_create(DISPATCH_SOURCE_TYPE_PROC, pid, DISPATCH_PROC_EXIT, dispatch_get_main_queue());
         MU_DESC_ASSERT_NOT_NULL("DISPATCH_SOURCE_TYPE_PROC", proc);
 
-        dispatch_source_set_event_handler(proc, ${
+        dispatch_source_set_event_handler(proc, ^{
 			long flags = dispatch_source_get_data(proc);
             MU_DESC_ASSERT_EQUAL("DISPATCH_PROC_EXIT", flags, DISPATCH_PROC_EXIT);
 			event_cnt++;
@@ -121,7 +121,7 @@ extern "C" void test_dispatch_proc(void)
 	// has been fully resumed, at which point the test will exit successfully.
 	//
 
-    dispatch_async(completion, ${
+    dispatch_async(completion, ^{
 		int status;
 		int res2 = waitpid(pid, &status, 0);
         MU_ASSERT_TRUE(res2 != -1);

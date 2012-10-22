@@ -19,33 +19,29 @@
  * @MLBA_OPEN_LICENSE_HEADER_END@
  */
 
-#ifdef QT_CORE_LIB
-
 #include <QTest>
 #include <QtCore/QDebug>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
 /*
  Little tests mainly checking the correct mapping of the Qt api
  to the underlying C Api
  */
 
-extern "C" void Qt_dispatch_current(){
+extern "C" void Qt_dispatch_current_blocks(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
     QDispatchApplication app(argc,&argv);
 	
-	MU_BEGIN_TEST(Qt_dispatch_current);
+    MU_BEGIN_TEST(Qt_dispatch_current_blocks);
     
-    QDispatch::globalQueue().async(${
+    QDispatch::globalQueue().async(^{
         QTest::qSleep(10);
         MU_MESSAGE("Queue should be global default queue");
         qDebug() << QDispatch::currentQueue();
-        QDispatch::mainQueue().async(new QBlockRunnable(${
+        QDispatch::mainQueue().async(new QBlockRunnable(^{
             QTest::qSleep(10);
             MU_MESSAGE("Queue should be main queue");
             qDebug() << QDispatch::currentQueue();
@@ -57,6 +53,3 @@ extern "C" void Qt_dispatch_current(){
 	app.exec();
 	MU_END_TEST;
 }
-
-#endif
-#endif

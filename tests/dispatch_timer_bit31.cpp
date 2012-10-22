@@ -55,11 +55,11 @@ extern "C" void dispatch_timer_bit31() {
 
 	dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 0x80000000ull), 0, 0);
 
-    dispatch_source_set_event_handler(timer, ${
+    dispatch_source_set_event_handler(timer, ^{
 		dispatch_source_cancel(timer);
 	});
 
-    dispatch_source_set_cancel_handler(timer, ${
+    dispatch_source_set_cancel_handler(timer, ^{
 		struct timeval end_time;
 		gettimeofday(&end_time, NULL);
 

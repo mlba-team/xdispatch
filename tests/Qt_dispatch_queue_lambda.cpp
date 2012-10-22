@@ -18,36 +18,43 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
-#include <xdispatch/dispatch.h>
 
-#ifdef XDISPATCH_HAS_BLOCKS
 
+#include <QtDispatch/QtDispatch>
+
+#include "Qt_tests.h"
 #include "../core/platform/atomic.h"
 
-#include "tests.h"
+#define RUN_TIMES 20
 
 /*
-	A test for dispatching a block using dispatch_apply
-	*/
+ Little tests mainly checking the correct mapping of the Qt api
+ to the underlying C Api
+ */
 
-extern "C" void dispatch_apply_blocks() {
-	uintptr_t* count = new uintptr_t;
-	*count = 0;
-	const unsigned int final = 32;
+extern "C" void Qt_dispatch_queue_lambda(){
+	char* argv = QString("test").toAscii().data();
+	int argc = 1;
+    QDispatchApplication app(argc,&argv);
 
-	MU_BEGIN_TEST(dispatch_apply_blocks);
-	dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-	MU_ASSERT_NOT_NULL(queue);
+    MU_BEGIN_TEST(Qt_dispatch_queue_lambda);
 
-	dispatch_apply(final, queue, ^(size_t i) {
-		dispatch_atomic_inc(count);
-	});
+	uintptr_t* worker = new uintptr_t;
+	*worker = 0;
 
-	MU_ASSERT_EQUAL(*count, final);
-	delete count;
+    QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
+    MU_ASSERT_NOT_NULL(q.native());
 
-	MU_PASS("Looping works for blocks");
+    q.apply(new QIterationLambdaRunnable([=](size_t i){
+			dispatch_atomic_inc(worker);
+	}),RUN_TIMES);
+
+    QDispatch::globalQueue(QDispatch::LOW).async(new QLambdaRunnable([=]{
+			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
+			MU_PASS("Queue executed");
+		}));
+
+	app.exec();
 	MU_END_TEST;
 }
 
-#endif

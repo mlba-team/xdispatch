@@ -1,6 +1,5 @@
 /*
-* Copyright (c) 2008-2009 Apple Inc. All rights reserved.
-* Copyright (c) 2011-2012 MLBA-Team. All rights reserved.
+* Copyright (c) 2012 MLBA-Team. All rights reserved.
 *
 * @MLBA_OPEN_LICENSE_HEADER_START@
 *
@@ -19,33 +18,13 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#include <QtCore/QDebug>
-#include <QtDispatch/QtDispatch>
+typedef void (^block_t)();
 
-#include "Qt_tests.h"
+int main(int argc, char* argv[]) {
 
-/*
- Little tests mainly checking the correct mapping of the Qt api
- to the underlying C Api
- */
+  block_t block = ^{ int i = 3; i = i+4; };
+  block();
 
-extern "C" void Qt_dispatch_debug(){
-	
+  return 0;
 
-    MU_BEGIN_TEST(Qt_dispatch_debug);
-
-    QDispatchQueue q = QDispatch::mainQueue();
-	QDispatchGroup g;
-	QDispatchSemaphore s(0);
-	
-	MU_MESSAGE("Begin testing debug output using QDebug()");
-
-	qDebug() << q;
-	qDebug() << g;
-	qDebug() << s;
-
-	MU_MESSAGE("All output done.");
-
-	MU_END_TEST;
 }
-

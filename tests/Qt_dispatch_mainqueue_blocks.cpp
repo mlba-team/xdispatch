@@ -19,45 +19,58 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
 
 #include <QtCore/QTime>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
+#include "../core/platform/atomic.h"
 
-#ifdef XDISPATCH_HAS_BLOCKS
+#define RUN_TIMES 2000
+
+class MainWorker : public QRunnable {
+public:
+    MainWorker(unsigned int* work) : worker(work) {}
+    void run(){
+        if(*worker < RUN_TIMES) {
+            (*worker)++;
+            //MU_MESSAGE("Running worker %u", *worker);
+            QDispatch::mainQueue().async(new MainWorker(worker));
+        } else {
+            MU_ASSERT_EQUAL(RUN_TIMES, *worker);
+            delete worker;
+            //MU_MESSAGE("Deleted worker");
+            MU_MESSAGE("System usage should be zero");
+            QDispatch::mainQueue().after(^{
+                MU_PASS("");
+            }, QTime::currentTime().addSecs(5));
+        }
+    }
+
+private:
+    unsigned int* worker;
+};
 
 /*
  Little tests mainly checking the correct mapping of the Qt api
  to the underlying C Api
  */
 
-extern "C" void Qt_dispatch_after(){
-	QTime watch;
+extern "C" void Qt_dispatch_mainqueue_blocks(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
     QDispatchApplication app(argc,&argv);
 
-        MU_BEGIN_TEST(Qt_dispatch_after);
+    MU_BEGIN_TEST(Qt_dispatch_mainqueue_blocks);
 
-	watch.start();
+    unsigned int* worker = new unsigned int;
+    *worker = 0;
 
-    QDispatch::globalQueue(QDispatch::DEFAULT).after(${
-		MU_MESSAGE("Should finish between 0.5s and 1.5s: %f", watch.elapsed()/1000.0);
-		MU_ASSERT_GREATER_THAN_EQUAL(watch.elapsed(), 700);
-	},QTime::currentTime().addMSecs(1000));
-
-    QDispatch::mainQueue().after(${
-		MU_MESSAGE("Should finish between 2s and 2.5s: %f", watch.elapsed()/1000.0);
-		MU_ASSERT_GREATER_THAN_EQUAL(watch.elapsed(), 1800);
-		MU_PASS("");
-	},QTime::currentTime().addMSecs(2000));
+    QDispatchQueue q = QDispatch::mainQueue();
+    MU_ASSERT_NOT_NULL(q.native());
+    q.async(new MainWorker(worker));
 
 	app.exec();
 	MU_END_TEST;
 }
 
-#endif
-
-#endif

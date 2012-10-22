@@ -42,11 +42,11 @@ extern "C" void cxx_dispatch_queue(){
     xdispatch::queue q = xdispatch::global_queue(xdispatch::HIGH);
     MU_ASSERT_NOT_NULL(q.native());
 
-    q.apply($(size_t i){
+    q.apply(^(size_t i){
 			dispatch_atomic_inc(worker);
     }, RUN_TIMES);
 
-    xdispatch::global_queue(xdispatch::LOW).async(${
+    xdispatch::global_queue(xdispatch::LOW).async(^{
 			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
 			MU_PASS("Queue executed");
         });

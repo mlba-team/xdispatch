@@ -31,12 +31,11 @@
 
 /* detect wether to build blocks tests or not (the autodetection only works
    safely when building in cpp mode) */
-#ifndef XDISPATCH_HAS_BLOCKS
-#	if ( defined(MZ_HAS_CXX0X) || defined(__BLOCKS__) || (_MSC_VER >= 1600) )
-#		define TEST_BLOCKS
-#	endif
-#else
-#	define TEST_BLOCKS
+#if defined(XDISPATCH_HAS_BLOCKS) || defined(__BLOCKS__)
+# define TEST_BLOCKS 1
+#endif
+#if defined(XDISPATCH_HAS_LAMBDAS) || defined(MZ_HAS_CXX0X)
+# define TEST_LAMBAS 1
 #endif
 
 #ifdef __cplusplus

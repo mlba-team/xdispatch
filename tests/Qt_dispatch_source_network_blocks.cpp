@@ -19,28 +19,47 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-
 #include <QtCore/QTime>
-#include <QtCore/QFile>
+#include <QtCore/QDebug>
 #include <QtDispatch/QtDispatch>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
 
 #include "Qt_tests.h"
 
+
 /*
- Tests the source type IODevice
+ Tests the source type network manager
  */
 
-extern "C" void Qt_dispatch_source_device(){
+extern "C" void Qt_dispatch_source_network_blocks(){
 	char* argv = QString("test").toAscii().data();
 	int argc = 1;
     QDispatchApplication app(argc,&argv);
 
-        MU_BEGIN_TEST(Qt_dispatch_source_device);
+        MU_BEGIN_TEST(Qt_dispatch_source_network_blocks);
 
-	// TODO How? to test this?
-	QFile f;
-	QDispatchSource src(new QDispatchSourceTypeIODevice(&f));
-	MU_PASS("");
+	// configure the source
+	QNetworkAccessManager* man = new QNetworkAccessManager();
+	QDispatchSource src(new QDispatchSourceTypeNetworkManager(man));
+	src.setHandler(^{
+
+		QNetworkReply* r = QDispatchSource::data<QNetworkReply>();
+		MU_ASSERT_NOT_NULL(r);
+		
+
+		QString content = r->readAll();
+		if(content.isEmpty())
+			content = (r->readAll());
+		MU_MESSAGE("Received response contains:");
+		qDebug() << "\t\t" << content;
+
+		r->deleteLater();
+		MU_PASS("");
+	});
+
+	// now post a request
+	man->get(QNetworkRequest(QUrl("http://www.google.com")));
 
 	app.exec();
 	MU_END_TEST;

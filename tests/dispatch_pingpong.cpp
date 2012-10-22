@@ -44,7 +44,7 @@ const uintptr_t final = 10000; // 10M
 void pingpongloop(dispatch_group_t group, dispatch_queue_t ping, dispatch_queue_t pong, size_t counter) {
 	//printf("[%p] %s: %lu\n", (void*)(uintptr_t)pthread_self(), dispatch_queue_get_label(dispatch_get_current_queue()), counter);
 	if (counter < final) {
-		dispatch_group_async(group, pong, ${ pingpongloop(group, pong, ping, counter+1); });
+		dispatch_group_async(group, pong, ^{ pingpongloop(group, pong, ping, counter+1); });
 	} else {
 		count = counter;
 	}

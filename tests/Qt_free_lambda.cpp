@@ -19,8 +19,6 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
 #include <QtDispatch/QtDispatch>
 
 #include "../core/platform/atomic.h"
@@ -71,18 +69,16 @@ struct QtBeFreed {
 };
 
 static void Qt_dispatch_outer(){
-#ifdef XDISPATCH_HAS_BLOCKS
     QtBeFreed outer;
     QtBeFreed2 inner;
 
-    QDispatch::globalQueue().apply(new QIterationBlockRunnable($(size_t i){
+    QDispatch::globalQueue().apply(new QIterationLambdaRunnable([=](size_t i){
          inner.someFunction();
     }), 10);
 
-    QDispatch::mainQueue().async(new QBlockRunnable(${
+    QDispatch::mainQueue().async(new QLambdaRunnable([=]{
         outer.someFunction();
     }));
-#endif
 }
 
 extern "C" void Qt_free_lambda(){
@@ -98,5 +94,3 @@ extern "C" void Qt_free_lambda(){
 
     MU_END_TEST;
 }
-
-#endif /* QT_CORE_LIB */
