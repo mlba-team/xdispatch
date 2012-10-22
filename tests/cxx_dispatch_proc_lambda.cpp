@@ -22,7 +22,6 @@
 
 #include "tests.h"
 
-#ifdef TEST_BLOCKS
 
 #ifndef _WIN32
 
@@ -51,13 +50,13 @@
 
 static long event_cnt;
 
-extern "C" void cxx_dispatch_proc(void)
+extern "C" void cxx_dispatch_proc_lambda(void)
 {
     dispatch_source_t proc_native;
 	int res;
 	pid_t pid;
 
-    MU_BEGIN_TEST(cxx_dispatch_proc);
+    MU_BEGIN_TEST(cxx_dispatch_proc_lambda);
 	
 	// Creates a process and register multiple observers.  Send a signal,
 	// exit the process, etc., and verify all observers were notified.
@@ -104,7 +103,7 @@ extern "C" void cxx_dispatch_proc(void)
         xdispatch::source* proc = new xdispatch::source( new xdispatch::native_source(proc_native) );
         MU_DESC_ASSERT_NOT_NULL("DISPATCH_SOURCE_TYPE_PROC", proc);
 
-        proc->handler(^{
+        proc->handler([=]{
             long flags = dispatch_source_get_data( proc->native_source() );
             MU_DESC_ASSERT_EQUAL("DISPATCH_PROC_EXIT", flags, DISPATCH_PROC_EXIT);
 			event_cnt++;
@@ -120,7 +119,7 @@ extern "C" void cxx_dispatch_proc(void)
 	// has been fully resumed, at which point the test will exit successfully.
 	//
 
-    completion->async(^{
+    completion->async([=]{
 		int status;
 		int res2 = waitpid(pid, &status, 0);
         MU_ASSERT_TRUE(res2 != -1);
@@ -139,4 +138,3 @@ extern "C" void cxx_dispatch_proc(void)
 
 
 #endif /* _WIN32 */
-#endif /* TEST_BLOCKS */

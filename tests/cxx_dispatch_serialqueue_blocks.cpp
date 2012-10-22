@@ -25,54 +25,50 @@
 
 #include <iostream>
 
-#define RUN_TIMES 20
+/*
+ Little tests mainly checking the correct mapping of the c++ api
+ to the underlying C Api
+ */
+
+
+#define JOBS_NO 20
+
+#if TARGET_OS_EMBEDDED
+#define LOOP_COUNT 2000000
+#else
+#define LOOP_COUNT 100000
+#endif
 
 /*
  Little tests mainly checking the correct mapping of the c++ api
  to the underlying C Api
  */
 
-class inc : public xdispatch::iteration_operation {
-  public:
-    inc(uintptr_t* worker)
-      : worker(worker) {
+extern "C" void cxx_dispatch_serialqueue_blocks(){
+    MU_BEGIN_TEST(cxx_dispatch_serialqueue_blocks);
 
-    }
+	unsigned int* worker = new unsigned int;
+	*worker = 0;
 
-    void operator ()(size_t i){
-      dispatch_atomic_inc(worker);
-    }
-
-    uintptr_t* worker;
-};
-
-class cleanup : public xdispatch::operation {
-  public:
-    cleanup(uintptr_t* worker)
-      : worker(worker) {
-
-    }
-
-    void operator ()(){
-      MU_ASSERT_EQUAL(RUN_TIMES, *worker);
-      delete worker;
-      MU_PASS("");
-    }
-
-    uintptr_t* worker;
-};
-
-extern "C" void cxx_dispatch_mainqueue(){
-    MU_BEGIN_TEST(cxx_dispatch_mainqueue);
-
-	uintptr_t* worker = new uintptr_t;
-    *worker = 0;
-
-    xdispatch::queue q = xdispatch::main_queue();
+    xdispatch::queue q("cxx_dispatch_serialqueue");
     MU_ASSERT_NOT_NULL(q.native());
 
-    xdispatch::global_queue().apply(new inc(worker), RUN_TIMES);
-    q.async(new cleanup(worker));
+	// dispatch some jobs
+	for(unsigned int x = 0; x < JOBS_NO; x++) {
+        q.async(^{
+			MU_ASSERT_EQUAL(*worker,x);
+			// keep cpu busy
+			for(int i = 0; i < LOOP_COUNT;i++);
+			*worker = x+1;
+        });
+
+	}
+
+    q.sync(^{
+		MU_ASSERT_EQUAL(*worker,JOBS_NO);
+		// Test passed
+		MU_PASS("Blocks were executed in correct order");
+    });
 
     xdispatch::exec();
 	MU_END_TEST;

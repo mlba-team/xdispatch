@@ -30,21 +30,6 @@
  to the underlying C Api
  */
 
-
-class work : public xdispatch::operation {
-public:
-    work(int d) : delay(d) {}
-    void operator()() {
-        if (delay) {
-            MU_MESSAGE("sleeping...");
-            MU_SLEEP(delay);
-            MU_MESSAGE("done.");
-        }
-    }
-
-    int delay;
-};
-
 static xdispatch::group* create_group(size_t count, int delay) {
     size_t i;
 
@@ -56,34 +41,22 @@ static xdispatch::group* create_group(size_t count, int delay) {
         MU_ASSERT_NOT_NULL(queue.native());
         MU_ASSERT_NOT_NULL(group);
 
-        group->async(new work(delay), queue);
+        group->async([=]{
+          if(delay) {
+             MU_MESSAGE("sleeping...");
+             MU_SLEEP(delay);
+             MU_MESSAGE("done.");
+          }
+        }, queue);
     }
     return group;
 }
 
-
-class group_notify : public xdispatch::operation {
-public:
-    void operator()() {
-        xdispatch::queue m = xdispatch::main_queue();
-        xdispatch::queue c = xdispatch::current_queue();
-        MU_ASSERT_TRUE(m.label() == c.label());
-        MU_PASS("Great!");
-    }
-};
-
-class foo : public xdispatch::operation {
-public:
-    void operator ()(){
-
-    }
-};
-
-extern "C" void cxx_dispatch_group() {
+extern "C" void cxx_dispatch_group_lambda() {
     bool res;
     xdispatch::group* group;
 
-    MU_BEGIN_TEST(cxx_dispatch_group);
+    MU_BEGIN_TEST(cxx_dispatch_group_lambda);
 
     group = create_group(100, 0);
     MU_ASSERT_NOT_NULL(group);
@@ -91,7 +64,7 @@ extern "C" void cxx_dispatch_group() {
     group->wait();
 
     // should be OK to re-use a group
-    group->async(new foo, xdispatch::global_queue());
+    group->async([=]{}, xdispatch::global_queue());
     group->wait();
 
     delete group;
@@ -113,7 +86,12 @@ extern "C" void cxx_dispatch_group() {
     group = create_group(100, 0);
     MU_ASSERT_NOT_NULL(group);
 
-    group->notify(new group_notify, xdispatch::main_queue());
+    group->notify([=]{
+        xdispatch::queue m = xdispatch::main_queue();
+        xdispatch::queue c = xdispatch::current_queue();
+        MU_ASSERT_TRUE(m.label() == c.label());
+        MU_PASS("Great!");
+    }, xdispatch::main_queue());
 
     delete group;
     group = NULL;

@@ -32,7 +32,7 @@
 # define TEST_BLOCKS 1
 #endif
 #if defined(XDISPATCH_HAS_LAMBDAS) || defined(MZ_HAS_CXX0X)
-# define TEST_LAMBAS 1
+# define TEST_LAMBDA 1
 #endif
 
 #ifdef __cplusplus

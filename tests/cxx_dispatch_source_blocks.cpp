@@ -27,11 +27,10 @@
 #include "../core/platform/atomic.h"
 #include "tests.h"
 
+struct TestTypeBlocks : public xdispatch::sourcetype {
 
-struct TestType : public xdispatch::sourcetype {
-
-	static TestType* instance;
-    TestType() : xdispatch::sourcetype() {
+    static TestTypeBlocks* instance;
+    TestTypeBlocks() : xdispatch::sourcetype() {
 		instance = this;
 	}
 
@@ -40,26 +39,22 @@ struct TestType : public xdispatch::sourcetype {
 	}
 };
 
-struct handler : public xdispatch::operation {
-    void operator ()(){
-      MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
-      MU_PASS("");
-    }
-};
+TestTypeBlocks* TestTypeBlocks::instance = NULL;
 
-TestType* TestType::instance = NULL;
+extern "C" void cxx_dispatch_source_blocks() {
+    MU_BEGIN_TEST(cxx_dispatch_source_blocks);
 
-extern "C" void cxx_dispatch_source() {
-    MU_BEGIN_TEST(cxx_dispatch_source);
-
-    xdispatch::source src(new TestType);
+    xdispatch::source src(new TestTypeBlocks);
     MU_ASSERT_NULL( src.native() );
     src.target_queue(xdispatch::main_queue());
-    src.handler(new handler);
+	src.handler(^{
+		MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
+		MU_PASS("");
+	});
 
     src.resume();
 
-	TestType::instance->signalFinished(std::string("any working"));
+    TestTypeBlocks::instance->signalFinished(std::string("any working"));
 	xdispatch::exec();
 
     MU_END_TEST

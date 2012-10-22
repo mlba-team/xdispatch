@@ -21,43 +21,35 @@
 
 
 #include "../include/xdispatch/dispatch"
-#include "../core/platform/atomic.h"
 #include "cxx_tests.h"
 
+#include <iostream>
+
+#define RUN_TIMES 20
+
 /*
- A simple test for ensuring the once
- methods are properly working
+ Little tests mainly checking the correct mapping of the Qt api
+ to the underlying C Api
  */
 
-class incrementer : public xdispatch::operation {
+extern "C" void cxx_dispatch_queue_blocks(){
+    MU_BEGIN_TEST(cxx_dispatch_queue_blocks);
 
-    public:
-        incrementer()
-            : operation(), counter(0) {}
+	uintptr_t* worker = new uintptr_t;
+	*worker = 0;
 
-        void operator()(){
-            counter++;
-        }
+    xdispatch::queue q = xdispatch::global_queue(xdispatch::HIGH);
+    MU_ASSERT_NOT_NULL(q.native());
 
-        int counter;
+    q.apply(^(size_t i){
+        dispatch_atomic_inc(worker);
+    }, RUN_TIMES);
 
-};
+    xdispatch::global_queue(xdispatch::LOW).async(^{
+        MU_ASSERT_EQUAL(*worker,RUN_TIMES);
+        MU_PASS("Queue executed");
+    });
 
-static xdispatch::once x_once_obj;
-
-extern "C" void cxx_dispatch_once1(){
-    MU_BEGIN_TEST(cxx_dispatch_once1);
-
-    incrementer work;
-    MU_ASSERT_EQUAL( work.counter, 0 );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    MU_ASSERT_EQUAL( work.counter, 1 );
-
-    MU_PASS("");
-
-    MU_END_TEST;
+    xdispatch::exec();
+	MU_END_TEST;
 }

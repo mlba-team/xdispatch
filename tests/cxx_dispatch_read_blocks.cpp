@@ -22,7 +22,6 @@
 
 #include "tests.h"
 
-#ifdef TEST_BLOCKS
 #ifndef _WIN32
 
 #include <sys/stat.h>
@@ -36,9 +35,9 @@
 static size_t bytes_total;
 static size_t bytes_read;
 
-extern "C" void cxx_dispatch_read()
+extern "C" void cxx_dispatch_read_blocks()
 {
-    MU_BEGIN_TEST(cxx_dispatch_read);
+    MU_BEGIN_TEST(cxx_dispatch_read_blocks);
 
 	const char *path = "/usr/share/dict/words";
 	struct stat sb;
@@ -101,4 +100,3 @@ extern "C" void cxx_dispatch_read()
 
 
 #endif /* _WIN32 */
-#endif /* TEST_BLOCKS */

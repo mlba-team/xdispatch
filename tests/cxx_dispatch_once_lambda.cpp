@@ -29,35 +29,25 @@
  methods are properly working
  */
 
-class incrementer : public xdispatch::operation {
-
-    public:
-        incrementer()
-            : operation(), counter(0) {}
-
-        void operator()(){
-            counter++;
-        }
-
-        int counter;
-
-};
-
 static xdispatch::once x_once_obj;
 
-extern "C" void cxx_dispatch_once1(){
-    MU_BEGIN_TEST(cxx_dispatch_once1);
+extern "C" void cxx_dispatch_once2_lambda(){
+    MU_BEGIN_TEST(cxx_dispatch_once2_lambda);
 
-    incrementer work;
-    MU_ASSERT_EQUAL( work.counter, 0 );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    MU_ASSERT_EQUAL( work.counter, 1 );
+    int counter = 0;
+    int* counter_ptr = &counter;
+
+    MU_ASSERT_EQUAL( counter, 0 );
+    x_once_obj( [=]{ (*counter_ptr)++; } );
+    x_once_obj( [=]{ (*counter_ptr)++; } );
+    x_once_obj( [=]{ (*counter_ptr)++; } );
+    x_once_obj( [=]{ (*counter_ptr)++; } );
+    x_once_obj( [=]{ (*counter_ptr)++; } );
+    MU_ASSERT_EQUAL( counter, 1 );
 
     MU_PASS("");
 
+
     MU_END_TEST;
 }
+

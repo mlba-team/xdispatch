@@ -31,8 +31,6 @@
  */
 
 
-#ifdef TEST_BLOCKS
-
 #define JOBS_NO 20
 
 #if TARGET_OS_EMBEDDED
@@ -46,8 +44,8 @@
  to the underlying C Api
  */
 
-extern "C" void cxx_dispatch_serialqueue(){
-    MU_BEGIN_TEST(cxx_dispatch_serialqueue);
+extern "C" void cxx_dispatch_serialqueue_lambda(){
+    MU_BEGIN_TEST(cxx_dispatch_serialqueue_lambda);
 
 	unsigned int* worker = new unsigned int;
 	*worker = 0;
@@ -57,7 +55,7 @@ extern "C" void cxx_dispatch_serialqueue(){
 
 	// dispatch some jobs
 	for(unsigned int x = 0; x < JOBS_NO; x++) {
-        q.async(^{
+      q.async([=]{
 			MU_ASSERT_EQUAL(*worker,x);
 			// keep cpu busy
 			for(int i = 0; i < LOOP_COUNT;i++);
@@ -66,7 +64,7 @@ extern "C" void cxx_dispatch_serialqueue(){
 
 	}
 
-    q.async(^{
+    q.sync([=]{
 		MU_ASSERT_EQUAL(*worker,JOBS_NO);
 		// Test passed
 		MU_PASS("Blocks were executed in correct order");
@@ -76,4 +74,3 @@ extern "C" void cxx_dispatch_serialqueue(){
 	MU_END_TEST;
 }
 
-#endif

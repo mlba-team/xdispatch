@@ -35,7 +35,7 @@
 # define TEST_BLOCKS 1
 #endif
 #if defined(XDISPATCH_HAS_LAMBDAS) || defined(MZ_HAS_CXX0X)
-# define TEST_LAMBAS 1
+# define TEST_LAMBDA 1
 #endif
 
 #ifdef __cplusplus
@@ -43,47 +43,71 @@ extern "C" {
 #endif
 
 void cxx_dispatch_debug();
-void cxx_dispatch_cascade();
 void cxx_dispatch_group();
 void cxx_dispatch_mainqueue();
-void cxx_dispatch_queue();
-void cxx_dispatch_serialqueue();
 void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
 void cxx_dispatch_timer();
-void cxx_dispatch_source();
 void cxx_free_lambda();
 void cxx_dispatch_once1();
-void cxx_dispatch_once2();
-void cxx_dispatch_once3();
 void cxx_synchronized();
 void cxx_dispatch_fibo();
-void cxx_dispatch_read();
-void cxx_dispatch_proc();
+
+#if TEST_BLOCKS
+void cxx_dispatch_cascade_blocks();
+void cxx_dispatch_group_blocks();
+void cxx_dispatch_once2_blocks();
+void cxx_dispatch_once3_blocks();
+void cxx_dispatch_queue_blocks();
+void cxx_dispatch_read_blocks();
+void cxx_dispatch_serialqueue_blocks();
+void cxx_dispatch_source_blocks();
+#endif
+#if TEST_LAMBDA
+void cxx_dispatch_cascade_lambda();
+void cxx_dispatch_group_lambda();
+void cxx_dispatch_once2_lambda();
+void cxx_dispatch_queue_lambda();
+void cxx_dispatch_read_lambda();
+void cxx_dispatch_proc_lambda();
+void cxx_dispatch_serialqueue_lambda();
+void cxx_dispatch_source_lambda();
+#endif
 
 static void register_cxx_tests(){
-    MU_REGISTER_TEST(cxx_dispatch_once1);
-    MU_REGISTER_TEST(cxx_synchronized);
-#ifdef TEST_BLOCKS
-    MU_REGISTER_TEST(cxx_dispatch_once2);
-    MU_REGISTER_TEST(cxx_dispatch_once3);
+
     MU_REGISTER_TEST(cxx_dispatch_debug);
-    MU_REGISTER_TEST(cxx_dispatch_queue);
-    MU_REGISTER_TEST(cxx_dispatch_mainqueue);
-    MU_REGISTER_TEST(cxx_dispatch_cascade);
     MU_REGISTER_TEST(cxx_dispatch_group);
-    MU_REGISTER_TEST(cxx_dispatch_serialqueue);
+    MU_REGISTER_TEST(cxx_dispatch_mainqueue);
     MU_REGISTER_TEST(cxx_dispatch_semaphore);
     MU_REGISTER_TEST(cxx_dispatch_current);
     MU_REGISTER_TEST(cxx_dispatch_timer);
-	MU_REGISTER_TEST(cxx_dispatch_source);
     MU_REGISTER_TEST(cxx_free_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_once1);
+    MU_REGISTER_TEST(cxx_synchronized);
     MU_REGISTER_TEST(cxx_dispatch_fibo);
-#ifndef _WIN32
-    MU_REGISTER_TEST(cxx_dispatch_read);
+
+#if TEST_BLOCKS
+    MU_REGISTER_TEST(cxx_dispatch_cascade_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_group_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_once2_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_once3_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_queue_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_read_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_serialqueue_blocks);
+    MU_REGISTER_TEST(cxx_dispatch_source_blocks);
 #endif
-   // MU_REGISTER_TEST(cxx_dispatch_proc);
+#if TEST_LAMBDA
+    MU_REGISTER_TEST(cxx_dispatch_cascade_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_group_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_once2_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_queue_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_read_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_proc_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_serialqueue_lambda);
+    MU_REGISTER_TEST(cxx_dispatch_source_lambda);
 #endif
+
 }
 
 #ifdef __cplusplus

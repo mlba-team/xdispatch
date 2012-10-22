@@ -36,7 +36,7 @@
 # define TEST_BLOCKS 1
 #endif
 #if defined(XDISPATCH_HAS_LAMBDAS) || defined(MZ_HAS_CXX0X)
-# define TEST_LAMBAS 1
+# define TEST_LAMBDA 1
 #endif
 
 #ifdef __cplusplus
@@ -50,7 +50,7 @@ void Qt_dispatch_source_device();
 void Qt_dispatch_debug();
 void Qt_dispatch_group1();
 
-#if TEST_LAMBAS
+#if TEST_LAMBDA
 void Qt_runnable_lambda();
 void Qt_dispatch_cascade_lambda();
 void Qt_dispatch_group2_lambda();
@@ -91,7 +91,7 @@ static void register_qt_tests(){
   MU_REGISTER_TEST(Qt_dispatch_timer);
   MU_REGISTER_TEST(Qt_dispatch_group1);
 
-#if TEST_LAMBAS
+#if TEST_LAMBDA
   MU_REGISTER_TEST(Qt_runnable_lambda);
   MU_REGISTER_TEST(Qt_dispatch_queue_lambda);
   MU_REGISTER_TEST(Qt_dispatch_mainqueue_lambda);

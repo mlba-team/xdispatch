@@ -7,9 +7,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-*
+* 
 *     http://www.apache.org/licenses/LICENSE-2.0
-*
+* 
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,43 +21,42 @@
 
 
 #include "../include/xdispatch/dispatch"
-#include "../core/platform/atomic.h"
 #include "cxx_tests.h"
 
+
 /*
- A simple test for ensuring the once
- methods are properly working
- */
+Little tests mainly checking the correct mapping of the c++ api
+to the underlying C Api
+*/
 
-class incrementer : public xdispatch::operation {
+extern "C" void cxx_dispatch_cascade_blocks(){
 
-    public:
-        incrementer()
-            : operation(), counter(0) {}
+    MU_BEGIN_TEST(cxx_dispatch_cascade_blocks);
 
-        void operator()(){
-            counter++;
-        }
+	xdispatch::queue q = xdispatch::global_queue();
+	MU_ASSERT_NOT_NULL_HEX(q.native());
 
-        int counter;
+	int no = 0;
 
-};
+	q.async(^{
+		MU_ASSERT_EQUAL(no, 0);
+		int no2 = no+100;
+		xdispatch::queue c = xdispatch::current_queue();
+		c.async(^{
+			MU_ASSERT_EQUAL(no2, 100);
+			int no3 = no2+20;
+			xdispatch::current_queue().async(^{
+				MU_ASSERT_EQUAL(no3, 120);
+				int no4 = no3+3 ;
+				xdispatch::current_queue().async(^{
+					MU_ASSERT_EQUAL(no4,123);
+					MU_PASS("And Out");
+				});
+			});
+		});
+	});
 
-static xdispatch::once x_once_obj;
-
-extern "C" void cxx_dispatch_once1(){
-    MU_BEGIN_TEST(cxx_dispatch_once1);
-
-    incrementer work;
-    MU_ASSERT_EQUAL( work.counter, 0 );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    x_once_obj( work );
-    MU_ASSERT_EQUAL( work.counter, 1 );
-
-    MU_PASS("");
-
-    MU_END_TEST;
+	xdispatch::exec();
+	MU_END_TEST;
 }
+

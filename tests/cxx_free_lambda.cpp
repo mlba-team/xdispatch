@@ -69,18 +69,16 @@ struct BeFreed {
 };
 
 static void dispatch_outer(){
-#ifdef XDISPATCH_HAS_BLOCKS
     BeFreed outer;
     BeFreed2 inner;
 
-    xdispatch::global_queue().apply(^(size_t i){
+    xdispatch::global_queue().apply([=](size_t i){
          inner.someFunction();
     }, 10);
 
-    xdispatch::main_queue().async(^{
+    xdispatch::main_queue().async([=]{
         outer.someFunction();
     });
-#endif
 }
 
 extern "C" void cxx_free_lambda(){

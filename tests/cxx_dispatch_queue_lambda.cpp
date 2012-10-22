@@ -26,15 +26,15 @@
 #include <iostream>
 
 #define RUN_TIMES 20
-#ifdef TEST_BLOCKS
+
 
 /*
  Little tests mainly checking the correct mapping of the Qt api
  to the underlying C Api
  */
 
-extern "C" void cxx_dispatch_queue(){
-    MU_BEGIN_TEST(cxx_dispatch_queue);
+extern "C" void cxx_dispatch_queue_lambda(){
+    MU_BEGIN_TEST(cxx_dispatch_queue_lambda);
 
 	uintptr_t* worker = new uintptr_t;
 	*worker = 0;
@@ -42,17 +42,15 @@ extern "C" void cxx_dispatch_queue(){
     xdispatch::queue q = xdispatch::global_queue(xdispatch::HIGH);
     MU_ASSERT_NOT_NULL(q.native());
 
-    q.apply(^(size_t i){
-			dispatch_atomic_inc(worker);
+    q.apply([=](size_t i){
+      dispatch_atomic_inc(worker);
     }, RUN_TIMES);
 
-    xdispatch::global_queue(xdispatch::LOW).async(^{
-			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
-			MU_PASS("Queue executed");
-        });
+    xdispatch::global_queue(xdispatch::LOW).async([=]{
+        MU_ASSERT_EQUAL(*worker,RUN_TIMES);
+        MU_PASS("Queue executed");
+    });
 
     xdispatch::exec();
 	MU_END_TEST;
 }
-
-#endif
