@@ -12,6 +12,14 @@ try_compile( HAS_LAMBDAS
     ${CMAKE_CURRENT_SOURCE_DIR}/checks/lambdas.cpp
     OUTPUT_VARIABLE HAS_LAMBDAS_OUTPUT
 )
+if(HAS_LAMBDAS)
+    mz_message("Testing xdispatch lambda support")
+endif()
+if(HAS_BLOCKS)
+    mz_message("Testing xdispatch block support")
+#else()
+    #mz_message("${HAS_BLOCKS_OUTPUT}")
+endif()
 
 # define file groups
 

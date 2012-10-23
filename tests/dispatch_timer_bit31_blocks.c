@@ -37,7 +37,7 @@
 // 2 s < 0x80000000ull ns < 4 s
 //
 
-extern "C" void dispatch_timer_bit31_blocks() {
+void dispatch_timer_bit31_blocks() {
     MU_BEGIN_TEST(dispatch_timer_bit31_blocks);
 
 	MU_PASS("");

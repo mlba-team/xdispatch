@@ -18,12 +18,11 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-typedef void (^block_t)();
+#ifndef __BLOCKS__
+# error "no blocks"
+#endif
 
 int main(int argc, char* argv[]) {
-
-  block_t block = ^{ int i = 3; i = i+4; };
-  block();
 
   return 0;
 
