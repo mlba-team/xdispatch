@@ -58,11 +58,11 @@ extern "C" void
 				MU_ASSERT_TRUE(0<=(now_b - time_b_min));
 				MU_ASSERT_TRUE(0<=(time_b_max - now_b));
 
+#if 1 // FIXME: Nesting three lambdas seems to be broken...
 				dispatch_time_t time_c_min = dispatch_time(0,  0*NSEC_PER_SEC);
 				dispatch_time_t time_c     = dispatch_time(0,  0*NSEC_PER_SEC);
-				dispatch_time_t time_c_max = dispatch_time(0,  .5*NSEC_PER_SEC);
+				dispatch_time_t time_c_max = dispatch_time(0,  .5*NSEC_PER_SEC);                
 				dispatch_time_t time_c_start = dispatch_time(0, 0);
-#if 0 // FIXME: Nesting three lambdas seems to be broken...
                 dispatch_after(time_c, dispatch_get_current_queue(), [=]{
 					dispatch_time_t now_c = dispatch_time(0, 0);
 					MU_MESSAGE("must finish between 0s and .5s:  %f",(now_c-time_c_start)/(float)NSEC_PER_SEC);
