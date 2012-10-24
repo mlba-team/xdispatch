@@ -32,7 +32,7 @@
 
 static uintptr_t* worker = 0;
 
-class GroupTest : public QObject {
+class GroupTestBlocks : public QObject {
 
         Q_OBJECT
 
@@ -62,7 +62,7 @@ extern "C" void Qt_dispatch_group2_blocks(){
     *worker = 0;
 
     QDispatchGroup group;
-    GroupTest* gt = new GroupTest;
+    GroupTestBlocks* gt = new GroupTestBlocks;
     QObject::connect(&group, SIGNAL(allFinished()), gt, SLOT(notify()) );
 
     group.async(^{
@@ -91,5 +91,4 @@ extern "C" void Qt_dispatch_group2_blocks(){
     MU_END_TEST;
 }
 
-// same symbol already included in lambda variant
-//#include <moc_Qt_dispatch_group_blocks.moc>
+#include <moc_Qt_dispatch_group_blocks.moc>

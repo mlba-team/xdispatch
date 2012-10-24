@@ -32,7 +32,7 @@
 
 static uintptr_t* worker = 0;
 
-class GroupTest : public QObject {
+class GroupTestLambda : public QObject {
 
         Q_OBJECT
 
@@ -62,7 +62,7 @@ extern "C" void Qt_dispatch_group2_lambda(){
     *worker = 0;
 
     QDispatchGroup group;
-    GroupTest* gt = new GroupTest;
+    GroupTestLambda* gt = new GroupTestLambda;
     QObject::connect(&group, SIGNAL(allFinished()), gt, SLOT(notify()) );
 
     group.async([=]{

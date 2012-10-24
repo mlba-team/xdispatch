@@ -29,7 +29,7 @@
  Tests the source type signal
  */
 
-class Emitter : public QObject {
+class EmitterBlocks : public QObject {
 
 	Q_OBJECT
 
@@ -50,7 +50,7 @@ extern "C" void Qt_dispatch_source_signal_blocks(){
 
         MU_BEGIN_TEST(Qt_dispatch_source_signal_blocks);
 
-	Emitter object;
+    EmitterBlocks object;
 
 	// configure the source
 	QDispatchSource src(new QDispatchSourceTypeSignal(&object, SIGNAL(ready())));
@@ -76,7 +76,5 @@ extern "C" void Qt_dispatch_source_signal_blocks(){
 	MU_END_TEST;
 }
 
-
-// same symbol already included in lambda variant
-//#include <moc_Qt_dispatch_source_signal_blocks.moc>
+#include <moc_Qt_dispatch_source_signal_blocks.moc>
 
