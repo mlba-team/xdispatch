@@ -32,7 +32,7 @@ file(GLOB TEST_DISPATCH
 	pthread_api.c
 	queue_finalizer.c
 )
-file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c)
+file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c dispatch_*_blocks.cpp)
 file(GLOB TEST_DISPATCH_LAMBDA dispatch_*_lambda.cpp)
 if(NOT HAS_BLOCKS)
     list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_BLOCKS})
