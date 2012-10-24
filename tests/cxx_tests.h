@@ -49,7 +49,9 @@ void cxx_dispatch_group_blocks();
 void cxx_dispatch_once2_blocks();
 void cxx_dispatch_once3_blocks();
 void cxx_dispatch_queue_blocks();
+# if DISPATCH_SOURCE_HAS_READ
 void cxx_dispatch_read_blocks();
+# endif
 void cxx_dispatch_serialqueue_blocks();
 void cxx_dispatch_source_blocks();
 void cxx_free_blocks();
@@ -59,8 +61,12 @@ void cxx_dispatch_cascade_lambda();
 void cxx_dispatch_group_lambda();
 void cxx_dispatch_once2_lambda();
 void cxx_dispatch_queue_lambda();
+# if DISPATCH_SOURCE_HAS_READ
 void cxx_dispatch_read_lambda();
+# endif
+# if DISPATCH_SOURCE_HAS_PROC
 void cxx_dispatch_proc_lambda();
+# endif
 void cxx_dispatch_serialqueue_lambda();
 void cxx_dispatch_source_lambda();
 void cxx_free_lambda();
@@ -84,7 +90,9 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_once2_blocks);
     MU_REGISTER_TEST(cxx_dispatch_once3_blocks);
     MU_REGISTER_TEST(cxx_dispatch_queue_blocks);
+# if DISPATCH_SOURCE_HAS_READ
     MU_REGISTER_TEST(cxx_dispatch_read_blocks);
+# endif
     MU_REGISTER_TEST(cxx_dispatch_serialqueue_blocks);
     MU_REGISTER_TEST(cxx_dispatch_source_blocks);
     MU_REGISTER_TEST(cxx_free_blocks);
@@ -94,8 +102,12 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_group_lambda);
     MU_REGISTER_TEST(cxx_dispatch_once2_lambda);
     MU_REGISTER_TEST(cxx_dispatch_queue_lambda);
+#if DISPATCH_SOURCE_HAS_READ
     MU_REGISTER_TEST(cxx_dispatch_read_lambda);
+# endif
+# if DISPATCH_SOURCE_HAS_PROC
     MU_REGISTER_TEST(cxx_dispatch_proc_lambda);
+# endif
     MU_REGISTER_TEST(cxx_dispatch_serialqueue_lambda);
     MU_REGISTER_TEST(cxx_dispatch_source_lambda);
     MU_REGISTER_TEST(cxx_free_lambda);

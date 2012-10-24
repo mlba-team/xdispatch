@@ -22,7 +22,7 @@
 
 #include "tests.h"
 
-#ifndef _WIN32
+#if DISPATCH_SOURCE_HAS_READ
 
 #include <sys/stat.h>
 #include <assert.h>
@@ -99,4 +99,4 @@ extern "C" void cxx_dispatch_read_lambda()
 }
 
 
-#endif /* _WIN32 */
+#endif /* DISPATCH_SOURCE_HAS_READ */

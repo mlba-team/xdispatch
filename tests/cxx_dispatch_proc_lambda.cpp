@@ -23,7 +23,7 @@
 #include "tests.h"
 
 
-#ifndef _WIN32
+#if DISPATCH_SOURCE_HAS_PROC
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -137,4 +137,4 @@ extern "C" void cxx_dispatch_proc_lambda(void)
 }
 
 
-#endif /* _WIN32 */
+#endif /* DISPATCH_SOURCE_HAS_PROC */
