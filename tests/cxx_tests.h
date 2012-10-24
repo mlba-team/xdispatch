@@ -48,7 +48,6 @@ void cxx_dispatch_mainqueue();
 void cxx_dispatch_semaphore();
 void cxx_dispatch_current();
 void cxx_dispatch_timer();
-void cxx_free_lambda();
 void cxx_dispatch_once1();
 void cxx_synchronized();
 void cxx_dispatch_fibo();
@@ -62,6 +61,7 @@ void cxx_dispatch_queue_blocks();
 void cxx_dispatch_read_blocks();
 void cxx_dispatch_serialqueue_blocks();
 void cxx_dispatch_source_blocks();
+void cxx_free_blocks();
 #endif
 #if TEST_LAMBDA
 void cxx_dispatch_cascade_lambda();
@@ -72,6 +72,7 @@ void cxx_dispatch_read_lambda();
 void cxx_dispatch_proc_lambda();
 void cxx_dispatch_serialqueue_lambda();
 void cxx_dispatch_source_lambda();
+void cxx_free_lambda();
 #endif
 
 static void register_cxx_tests(){
@@ -82,7 +83,6 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_semaphore);
     MU_REGISTER_TEST(cxx_dispatch_current);
     MU_REGISTER_TEST(cxx_dispatch_timer);
-    MU_REGISTER_TEST(cxx_free_lambda);
     MU_REGISTER_TEST(cxx_dispatch_once1);
     MU_REGISTER_TEST(cxx_synchronized);
     MU_REGISTER_TEST(cxx_dispatch_fibo);
@@ -96,6 +96,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_read_blocks);
     MU_REGISTER_TEST(cxx_dispatch_serialqueue_blocks);
     MU_REGISTER_TEST(cxx_dispatch_source_blocks);
+    MU_REGISTER_TEST(cxx_free_blocks);
 #endif
 #if TEST_LAMBDA
     MU_REGISTER_TEST(cxx_dispatch_cascade_lambda);
@@ -106,6 +107,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_proc_lambda);
     MU_REGISTER_TEST(cxx_dispatch_serialqueue_lambda);
     MU_REGISTER_TEST(cxx_dispatch_source_lambda);
+    MU_REGISTER_TEST(cxx_free_lambda);
 #endif
 
 }
