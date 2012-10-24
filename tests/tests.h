@@ -52,7 +52,6 @@ void dispatch_group_function();
 void test_dispatch_once();
 
 #if TEST_LAMBDA && !TEST_BLOCKS
-void cross_blocks();
 void dispatch_apply_lambda();
 void dispatch_after_lambda();
 void dispatch_group_lambda();
@@ -108,7 +107,6 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_group_function);
 
 #if TEST_LAMBDA && !TEST_BLOCKS
-    MU_REGISTER_TEST(cross_blocks);
     MU_REGISTER_TEST(dispatch_apply_lambda);
     MU_REGISTER_TEST(dispatch_after_lambda);
     MU_REGISTER_TEST(dispatch_group_lambda);

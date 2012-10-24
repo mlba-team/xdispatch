@@ -46,7 +46,6 @@ endif()
 file(GLOB TEST_XDISPATCH 
 	cxx_*.cpp
 	cxx_tests.h
-	cross_blocks.cpp
 )
 file(GLOB TEST_XDISPATCH_BLOCKS cxx_*_blocks.cpp)
 file(GLOB TEST_XDISPATCH_LAMBDA cxx_*_lambda.cpp)
@@ -161,7 +160,6 @@ add_test( NAME dispatch_group_blocks COMMAND ${TEST_EXE} -n dispatch_group_block
 add_test( NAME dispatch_pingpong_blocks COMMAND ${TEST_EXE} -n dispatch_pingpong_blocks )
 add_test( NAME dispatch_semaphore_blocks COMMAND ${TEST_EXE} -n dispatch_semaphore_blocks )
 add_test( NAME dispatch_drift_blocks COMMAND ${TEST_EXE} -n dispatch_drift_blocks )
-add_test( NAME cross_blocks COMMAND ${TEST_EXE} -n cross_blocks)
 add_test( NAME dispatch_apply_lambda COMMAND ${TEST_EXE} -n dispatch_apply_lambda )
 add_test( NAME dispatch_after_lambda COMMAND ${TEST_EXE} -n dispatch_after_lambda )
 add_test( NAME dispatch_group_lambda COMMAND ${TEST_EXE} -n dispatch_group_lambda )
