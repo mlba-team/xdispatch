@@ -29,15 +29,6 @@
 # include <xdispatch/dispatch>
 #endif
 
-/* detect wether to build blocks tests or not (the autodetection only works
-   safely when building in cpp mode) */
-#if defined(XDISPATCH_HAS_BLOCKS) || defined(__BLOCKS__)
-# define TEST_BLOCKS 1
-#endif
-#if defined(XDISPATCH_HAS_LAMBDAS) || defined(MZ_HAS_CXX0X)
-# define TEST_LAMBDA 1
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

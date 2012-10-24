@@ -13,9 +13,11 @@ try_compile( HAS_LAMBDAS
     OUTPUT_VARIABLE HAS_LAMBDAS_OUTPUT
 )
 if(HAS_LAMBDAS)
+    mz_add_definition(TEST_LAMBDA=1)
     mz_message("Testing xdispatch lambda support")
 endif()
 if(HAS_BLOCKS)
+    mz_add_definition(TEST_BLOCKS=1)
     mz_message("Testing xdispatch block support")
 #else()
     #mz_message("${HAS_BLOCKS_OUTPUT}")
