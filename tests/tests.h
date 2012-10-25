@@ -50,6 +50,9 @@ void dispatch_memory_use();
 void dispatch_test_sync();
 void dispatch_group_function();
 void test_dispatch_once();
+#if DISPATCH_SOURCE_HAS_READ && DISPATCH_SOURCE_HAS_WRITE
+void dispatch_socket_read_write();
+#endif
 
 #if TEST_LAMBDA && !TEST_BLOCKS
 void dispatch_apply_lambda();
@@ -105,6 +108,9 @@ static void register_tests(){
 //	MU_REGISTER_TEST(dispatch_starfish);
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
+#if DISPATCH_SOURCE_HAS_READ && DISPATCH_SOURCE_HAS_WRITE
+    MU_REGISTER_TEST(dispatch_socket_read_write);
+#endif
 
 #if TEST_LAMBDA && !TEST_BLOCKS
     MU_REGISTER_TEST(dispatch_apply_lambda);
@@ -117,7 +123,7 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_timer_bit63_lambda);
 # endif
 # if DISPATCH_SOURCE_HAS_READ
-    //MU_REGISTER_TEST(test_dispatch_read_lambda);
+    MU_REGISTER_TEST(test_dispatch_read_lambda);
 # endif
 #endif
 
@@ -134,10 +140,10 @@ static void register_tests(){
 # endif
     MU_REGISTER_TEST(dispatch_drift_blocks);
 # if DISPATCH_SOURCE_HAS_READ
-    //MU_REGISTER_TEST(test_dispatch_read_blocks);
+    MU_REGISTER_TEST(test_dispatch_read_blocks);
 # endif
 # if DISPATCH_SOURCE_HAS_PROC
-    //MU_REGISTER_TEST(test_dispatch_proc_blocks);
+    MU_REGISTER_TEST(test_dispatch_proc_blocks);
 # endif
 #endif
 }
