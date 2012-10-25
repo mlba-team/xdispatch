@@ -54,24 +54,27 @@ class XDISPATCH_EXPORT synclock {
 
 public:
     synclock();
-    synclock(const synclock&);
+    /**
+     This function will be removed in future versions.
+
+     @deprecated Please manage your synclock manually instead or use synchronized
+     @see synchronized
+      */
+    XDISPATCH_DEPRECATED( synclock(const std::string&, const bool auto_lock = false ) );
+    synclock(const synclock&, const bool auto_lock = false );
+    synclock(const semaphore &, const bool auto_lock = false );
     ~synclock();
 
     operator bool() const;
     synclock& operator= (const synclock&);
 
+    synclock& unlock();
+    synclock& lock();
+
 private:
     semaphore _semaphore;
     bool _lock_active;
 
-    void unlock();
-    void lock();
-
-    friend XDISPATCH_EXPORT synclock lock_area(const std::string&);
-    friend synclock lock_area(const semaphore&);
-    friend synclock lock_area(const synclock&);
-    friend void unlock_area(synclock &s);
-    synclock(const semaphore &);
 };
 
 
@@ -79,38 +82,6 @@ private:
  @see synchronized
  */
 XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
-/**
- This function will be removed in future versions.
-
- @deprecated Please manage your synclock manually instead or use synchronized
- @see synchronized
-  */
-XDISPATCH_EXPORT XDISPATCH_DEPRECATED( synclock lock_area(const std::string& key) );
-/**
- @see synchronized
-  */
-inline synclock lock_area( const semaphore& sem ){
-  synclock sync_instance(sem);
-  sync_instance.lock ();
-  return sync_instance;
-}
-/**
- @see synchronized
-  */
-inline synclock lock_area( const synclock& s ){
-  // we need to make a copy to ensure
-  // the copied synclock is locked, not the global
-  // synclock passed by reference as argument
-  synclock sync_instance(s);
-  sync_instance.lock ();
-  return sync_instance;
-}
-/**
- @see synchronized
- */
-inline void unlock_area( synclock& s ){
-  s.unlock ();
-}
 
 
 # define XDISPATCH_CONCAT(A,B) A ## B
@@ -118,9 +89,9 @@ inline void unlock_area( synclock& s ){
 # define XDISPATCH_LOCK_VAR_SEM(X) XDISPATCH_CONCAT( _xd_synclock_sem_, X)
 # define XDISPATCH_LOCK_VAR_ONCE(X) XDISPATCH_CONCAT( _xd_synclock_once_, X)
 # define XDISPATCH_SYNC_HEADER( lock ) for( \
-  ::xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)( ::xdispatch::lock_area(lock) ) ; \
+  ::xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)( lock, true ) ; \
   XDISPATCH_LOCK_VAR(__LINE__) ; \
-  ::xdispatch::unlock_area( XDISPATCH_LOCK_VAR(__LINE__) ) \
+  XDISPATCH_LOCK_VAR(__LINE__).unlock() \
   )
 # define XDISPATCH_SYNC_DECL( id ) \
     static ::xdispatch::semaphore XDISPATCH_LOCK_VAR_SEM( id ); \
