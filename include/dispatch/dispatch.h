@@ -55,7 +55,7 @@
 # include <stdbool.h>
 #endif
 
-#define DISPATCH_API_VERSION 20090501
+#define DISPATCH_API_VERSION 20090501+071
 
 #ifndef __DISPATCH_INDIRECT__
 #define __DISPATCH_INDIRECT__
