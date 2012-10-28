@@ -1,6 +1,23 @@
 /**
 @page change_log Changelog
 
+@section changes-71 Version 0.7.1
+
+released 28/10/2012
+
+ - Improvements to the synchronized implementation (#414)
+ - Fixed a bug causing some synclocks not to be unlocked properly after
+   a call to return or throwing an exception
+ - Added official support for Ubuntu Precise 12.04 (#411)
+ - Introducing a new interface to query the availability of
+   source types at compiletime (#415)
+ - Only export the symbols of source types actually implemented
+   properly on a system (#415)
+ - Improved the support for clang version 3.1.0 and up resulting
+   in the ability to mix blocks and lambdas within the same program (#406)
+ - reworked the test build system
+ - moved to an own copy of the mz-cmaketools removing dependancy to svn:externals
+
 @section changes-7 Version 0.7.0
 
 released 23/05/2012

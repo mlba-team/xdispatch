@@ -2,7 +2,7 @@
 ##
 ## Used to switch between devel and release
 ##
-#set( IS_A_RELEASE ON )
+set( IS_A_RELEASE ON )
 
 ##
 ## Create all version info

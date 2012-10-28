@@ -1,8 +1,25 @@
-xdispatch (${XDISPATCH_VERSION}-0ubuntu2) precise; urgency=low
+xdispatch (${XDISPATCH_VERSION}-0ubuntu1) precise; urgency=low
+
+  * Improvements to the synchronized implementation (#414)
+  * Fixed a bug causing some synclocks not to be unlocked properly after
+    a call to return or throwing an exception
+  * Added official support for Ubuntu Precise 12.04 (#411)
+  * Introducing a new interface to query the availability of
+    source types at compiletime (#415)
+  * Only export the symbols of source types actually implemented
+    properly on a system (#415)
+  * Improved the support for clang version 3.1.0 and up resulting
+    in the ability to mix blocks and lambdas within the same program (#406)
+  * reworked the test build system
+  * moved to an own copy of the mz-cmaketools removing dependancy to svn:externals
+
+ -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
+
+xdispatch (0.7.0-0ubuntu2) precise; urgency=low
 
   * Update version 0.7 to be compatible with 12.04
 
- -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
+ -- Marius Zwicker <marius@mlba-team.de>  So, 12 Aug 2012 21:07:02 +0200
 
 xdispatch (0.7.0-0ubuntu1) oneiric; urgency=low
 
