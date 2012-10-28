@@ -164,7 +164,7 @@ add_test( NAME dispatch_drift_blocks COMMAND ${TEST_EXE} -n dispatch_drift_block
 add_test( NAME dispatch_timer_bit31_blocks COMMAND ${TEST_EXE} -n dispatch_timer_bit31_blocks )
 add_test( NAME dispatch_timer_bit63_blocks COMMAND ${TEST_EXE} -n dispatch_timer_bit63_blocks )
 endif()
-if( HAS_LAMBDAS )
+if( HAS_LAMBDAS AND NOT HAS_BLOCKS )
 add_test( NAME dispatch_apply_lambda COMMAND ${TEST_EXE} -n dispatch_apply_lambda )
 add_test( NAME dispatch_after_lambda COMMAND ${TEST_EXE} -n dispatch_after_lambda )
 add_test( NAME dispatch_group_lambda COMMAND ${TEST_EXE} -n dispatch_group_lambda )
