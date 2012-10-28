@@ -32,6 +32,20 @@
 # define NSEC_PER_MSEC 1000000ll
 #endif
 
+#if DISPATCH_API_VERSION == 20090501
+// quick hack to force the definition of these macros despite a native libdispatch implementation
+# define DISPATCH_SOURCE_HAS_DATA_ADD 1
+# define DISPATCH_SOURCE_HAS_DATA_OR 1
+# define DISPATCH_SOURCE_HAS_MACH_SEND 1
+# define DISPATCH_SOURCE_HAS_MACH_RECV 1
+# define DISPATCH_SOURCE_HAS_PROC 1
+# define DISPATCH_SOURCE_HAS_READ 1
+# define DISPATCH_SOURCE_HAS_SIGNAL 1
+# define DISPATCH_SOURCE_HAS_TIMER 1
+# define DISPATCH_SOURCE_HAS_VNODE 1
+# define DISPATCH_SOURCE_HAS_WRITE 1
+#endif
+
 #if defined(__cplusplus)
 
 #ifndef XDISPATCH_EXPORT
