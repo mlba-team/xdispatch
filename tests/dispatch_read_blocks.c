@@ -22,8 +22,6 @@
 
 #include "tests.h"
 
-#ifndef _WIN32
-
 #include <sys/stat.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -105,4 +103,3 @@ void test_dispatch_read_blocks()
 
 
 #endif /* DISPATCH_SOURCE_HAS_READ */
-#endif /* _WIN32 */

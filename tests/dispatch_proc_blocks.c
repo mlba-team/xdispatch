@@ -22,16 +22,13 @@
 
 #include "tests.h"
 
-#ifndef _WIN32
-
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <spawn.h>
-#include <signal.h>
 
 #ifndef WIN32
+#   include <stdio.h>
+#   include <stdlib.h>
+#   include <assert.h>
+#   include <spawn.h>
+#   include <signal.h>
 #	include <unistd.h>
 #	include <sys/time.h>
 #	include <sys/resource.h>
@@ -140,5 +137,3 @@ void test_dispatch_proc_blocks(void)
 
 #endif /* DISPATCH_SOURCE_HAS_PROC */
 
-
-#endif /* _WIN32 */
