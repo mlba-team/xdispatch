@@ -105,9 +105,6 @@ static void register_tests(){
 //	MU_REGISTER_TEST(dispatch_starfish);
 	MU_REGISTER_TEST(dispatch_memory_use);
 	MU_REGISTER_TEST(dispatch_group_function);
-#if DISPATCH_SOURCE_HAS_READ && DISPATCH_SOURCE_HAS_WRITE
-    MU_REGISTER_TEST(dispatch_socket_read_write);
-#endif
 
 #if TEST_LAMBDA && !TEST_BLOCKS
     MU_REGISTER_TEST(dispatch_apply_lambda);
