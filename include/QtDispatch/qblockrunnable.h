@@ -31,16 +31,15 @@
  * @{
  */
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 
+#if XDISPATCH_HAS_BLOCKS
 /**
   Provides a QRunnable Implementation for use with
-  blocks on clang or lambda functions in C++0x
+  blocks on clang or Apple gcc 4.2
 
   Please see the documentation for QRunnable for the
   functionality of the autoDelete flags as well.
@@ -52,30 +51,65 @@ class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
           Constructs a new QBlockRunnable using the given block, e.g.
 
           @code
-          QBlockRunnable task(${cout << "Hello World\n";});
+          QBlockRunnable task(^{cout << "Hello World\n";});
           @endcode
           */
         QBlockRunnable(dispatch_block_t b)
-            : QRunnable(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+            : QRunnable(), _block(Block_copy(b)) {}
         QBlockRunnable(const QBlockRunnable& other)
-            : QRunnable(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
+            : QRunnable(other), _block(Block_copy(other._block)) {}
         virtual ~QBlockRunnable() {
-            XDISPATCH_BLOCK_DELETE(block);
+            Block_release(_block);
         }
 
         virtual void run(){
-            XDISPATCH_BLOCK_EXEC(block)();
+            _block();
         };
 
     private:
-        dispatch_block_store block;
+        dispatch_block_t _block;
 
 };
+#endif
+#if XDISPATCH_HAS_FUNCTION
+/**
+  Provides a QRunnable Implementation for use with
+  lambda functions in C++0x
+
+  Please see the documentation for QRunnable for the
+  functionality of the autoDelete flags as well.
+  */
+class Q_DISPATCH_EXPORT QLambdaRunnable : public QRunnable {
+
+    public:
+        /**
+          Constructs a new QBlockRunnable using the given lambda, e.g.
+
+          @code
+          QLambdaRunnable task([]{cout << "Hello World\n";});
+          @endcode
+          */
+        QLambdaRunnable(const xdispatch::lambda_function& b)
+            : QRunnable(), _function(b) {}
+        QLambdaRunnable(const QLambdaRunnable& other)
+            : QRunnable(other), _function(other._function) {}
+        virtual ~QLambdaRunnable() {
+          // empty
+        }
+
+        virtual void run(){
+            _function();
+        }
+
+    private:
+        xdispatch::lambda_function _function;
+
+};
+#endif
+
 
 QT_END_NAMESPACE
 QT_END_HEADER
-
-#endif
 
 /** @} */
 

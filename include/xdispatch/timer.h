@@ -114,6 +114,20 @@ class XDISPATCH_EXPORT timer : public source {
             single_shot( t, q, new block_operation(b) );
         }
 #endif
+        /**
+          Creates a single shot timer executing the given function on the given
+          queue at the given time. This is quite similar to using xdispatch::queue::after()
+          */
+        static void single_shot(dispatch_time_t t, const xdispatch::queue& q, const lambda_function& b) {
+            single_shot( t, q, new function_operation(b) );
+        }
+        /**
+          Creates a single shot timer executing the given function on the given
+          queue at the given time. This is quite similar to using xdispatch::queue::after()
+          */
+        static void single_shot(struct tm* t, const xdispatch::queue& q, const lambda_function& b) {
+            single_shot( t, q, new function_operation(b) );
+        }
 
         timer& operator =(const timer&);
 

@@ -81,7 +81,7 @@ class XDISPATCH_EXPORT once {
             operation
             */
         void operator()(operation&);
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
           Similar to operator()(operation&)
 
@@ -94,13 +94,27 @@ class XDISPATCH_EXPORT once {
             once_block op(b);
             operator()( op );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        /**
+          Similar to operator()(operation&)
+
+          Will wrap the given function as operation
+          and try to execute it on the once object
+
+          @see operator()(operation&)
+          */
+        inline void operator()(const lambda_function& b) {
+            once_function op(b);
+            operator()( op );
+        }
+  #endif
 
     private:
         dispatch_once_t _once_obj;
         dispatch_once_t* _once;
 
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         // we define our own block class
         // as the block_operation does a
         // copy of the stored block, something
@@ -108,16 +122,34 @@ class XDISPATCH_EXPORT once {
         class once_block : public operation {
             public:
                 once_block(dispatch_block_t b)
-                    : operation(), block( b ) {}
+                    : operation(), _block( b ) {}
 
                 void operator()() {
-                    XDISPATCH_BLOCK_EXEC(block)();
+                    _block();
                 }
 
             private:
-                dispatch_block_t block;
+                dispatch_block_t _block;
         };
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        // we define our own function class
+        // as the function_operation does a
+        // copy of the stored block, something
+        // we do not need in here
+        class once_function : public operation {
+            public:
+                once_function(const lambda_function& b)
+                    : operation(), _function( b ) {}
+
+                void operator()() {
+                    _function();
+                }
+
+            private:
+                const lambda_function& _function;
+        };
+  #endif
 
         friend XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once& );
 };

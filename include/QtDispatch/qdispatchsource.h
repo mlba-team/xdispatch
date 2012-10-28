@@ -238,7 +238,7 @@ class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
                 information about the reason the source has become ready
          */
         void setHandler(QRunnable*);
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
          Sets the given block as handler that will be executed each time
          the source has become ready.
@@ -249,7 +249,19 @@ class Q_DISPATCH_EXPORT QDispatchSource : public QObject {
         inline void setHandler(dispatch_block_t b) {
             setHandler( new QBlockRunnable(b) );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+      /**
+       Sets the given function as handler that will be executed each time
+       the source has become ready.
+
+       @see data() and the source type's documentation on how to obtain
+              information about the reason the source has become ready
+       */
+      inline void setHandler(const xdispatch::lambda_function& b) {
+          setHandler( new QLambdaRunnable(b) );
+      }
+  #endif
         /**
           @returns The queue the handler will be dispatched on.
             Defaults to QDispatch::globalQueue();

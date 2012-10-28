@@ -92,7 +92,7 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         void after(QRunnable*, const QTime& time);
         void after(QRunnable*, dispatch_time_t time);
         using xdispatch::queue::after;
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
         Same as after().
         Will wrap the given block in a QRunnable and put it on the
@@ -101,7 +101,17 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         inline void after(dispatch_block_t b, const QTime& time) {
             after( new QBlockRunnable(b), time );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as after().
+        Will wrap the given function in a QRunnable and put it on the
+        queue.
+        */
+        inline void after(const xdispatch::lambda_function& b, const QTime& time) {
+            after( new QLambdaRunnable(b), time );
+        }
+  #endif
         /**
         Applies the given QRunnable for execution
         int his queue and blocks until the QRunnable
@@ -121,11 +131,16 @@ class Q_DISPATCH_EXPORT QDispatchQueue : public QObject, public xdispatch::queue
         */
         void setFinalizer(QRunnable*, const xdispatch::queue& = xdispatch::global_queue());
         void setFinalizer(xdispatch::operation*, const xdispatch::queue& = xdispatch::global_queue());
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         inline void setFinalizer(dispatch_block_t b, const xdispatch::queue& q = xdispatch::global_queue()) {
             setFinalizer( new QBlockRunnable(b), q );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+      inline void setFinalizer(const xdispatch::lambda_function& b, const xdispatch::queue& q = xdispatch::global_queue()) {
+          setFinalizer( new QLambdaRunnable(b), q );
+      }
+  #endif
         /**
         Sets the target queue of this queue, i.e. the queue
         all items of this queue will be dispatched on in turn.

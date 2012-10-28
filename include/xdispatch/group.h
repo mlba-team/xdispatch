@@ -65,7 +65,7 @@ class XDISPATCH_EXPORT group : public object {
         @param q The Queue to use. If no Queue is given, the system default queue will be used
         */
         void async(operation* r, const queue& q = global_queue());
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
         Same as dispatch(operation* r, ...)
         Will wrap the given block in an operation and put it on the queue.
@@ -73,7 +73,17 @@ class XDISPATCH_EXPORT group : public object {
         inline void async(dispatch_block_t b, const queue& q = global_queue()) {
             async( new block_operation(b), q );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as dispatch(operation* r, ...)
+        Will wrap the given function in an operation and put it on the queue.
+        */
+        inline void async(const lambda_function& b, const queue& q = global_queue()) {
+            async( new function_operation(b), q );
+        }
+  #endif
+
         /**
         Waits until the given time has passed
         or all dispatched operations in the group were executed
@@ -101,7 +111,7 @@ class XDISPATCH_EXPORT group : public object {
         @see dispatch() for more information.
         */
         void notify(operation* r, const queue& q = global_queue());
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
         This function schedules a notification block to be submitted to the specified
         queue once all blocks associated with the dispatch group have completed.
@@ -117,7 +127,24 @@ class XDISPATCH_EXPORT group : public object {
         inline void notify(dispatch_block_t b, const queue& q = global_queue()) {
             notify( new block_operation(b), q );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        /**
+        This function schedules a notification function to be submitted to the specified
+        queue once all operations associated with the dispatch group have completed.
+
+        If no operations are associated with the dispatch group (i.e. the group is empty)
+        then the notification block will be submitted immediately.
+
+        The group will be empty at the time the notification function is submitted to
+        the target queue. The group may either be deleted
+        or reused for additional operations.
+        @see dispatch() for more information.
+        */
+        inline void notify(const lambda_function& b, const queue& q = global_queue()) {
+            notify( new function_operation(b), q );
+        }
+  #endif
         /**
         @returns The dispatch_object_t object associated with this
         C++ object. Use this, if you need to use the plain C Interface

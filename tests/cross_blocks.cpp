@@ -29,7 +29,7 @@
   */
 
 static int result;
-static dispatch_block_store myTest;
+static dispatch_block_t myTest;
 
 void installBlock(){
 	int a = 3, b = 4;
@@ -37,18 +37,18 @@ void installBlock(){
 		result = a*b;
     });
 
-    myTest = XDISPATCH_BLOCK_PERSIST(block);
+    myTest = Block_copy(block);
 }
 
 extern "C" void cross_blocks(){
 	MU_BEGIN_TEST(cross_blocks);
 
 	installBlock();
-    XDISPATCH_BLOCK_EXEC(myTest)();
+    myTest();
 	MU_ASSERT_EQUAL(result,12);
 	MU_PASS("Blocks are running");
 
-    XDISPATCH_BLOCK_DELETE(myTest);
+    Block_release(myTest);
 
 	MU_END_TEST;
 }

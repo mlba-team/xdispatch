@@ -32,16 +32,15 @@
  * @{
  */
 
-#ifdef XDISPATCH_HAS_BLOCKS
-
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
 QT_MODULE(Dispatch)
 
+#if XDISPATCH_HAS_BLOCKS
 /**
-Provides a QIteration Implementation for use with
-blocks on clang or lambda functions in C++0x
+Provides a QIterationRunnable implementation for use with
+blocks on clang or Apple's gcc 4.2
 
 Please see the documentation for QRunnable for the
 functionality of the autoDelete flags as well.
@@ -57,24 +56,57 @@ class Q_DISPATCH_EXPORT QIterationBlockRunnable : public QIterationRunnable {
         @endcode
         */
         QIterationBlockRunnable(dispatch_iteration_block_t b)
-            : QIterationRunnable(), block(XDISPATCH_BLOCK_PERSIST(b)) {}
+            : QIterationRunnable(), _block(Block_copy(b)) {}
         QIterationBlockRunnable(const QIterationBlockRunnable& other)
-            : QIterationRunnable(other), block(XDISPATCH_BLOCK_COPY(other.block)) {}
-        virtual ~QIterationBlockRunnable() { XDISPATCH_BLOCK_DELETE(block); }
+            : QIterationRunnable(other), _block(Block_copy(other._block)) {}
+        virtual ~QIterationBlockRunnable() { Block_release(_block); }
 
         virtual inline void run(size_t index){
-            XDISPATCH_BLOCK_EXEC(block)(index);
+            _block(index);
         };
 
     private:
-        dispatch_iteration_block_store block;
+        dispatch_iteration_block_t _block;
 
 };
+#endif
+#if XDISPATCH_HAS_FUNCTION
+/**
+Provides a QIteration Implementation for use with
+lambda functions in C++0x
+
+Please see the documentation for QRunnable for the
+functionality of the autoDelete flags as well.
+*/
+class Q_DISPATCH_EXPORT QIterationLambdaRunnable : public QIterationRunnable {
+
+    public:
+        /**
+        Constructs a new QBlockRunnable using the given lambda, e.g.
+
+        @code
+        QIterationLambdaRunnable task([](size_t index){cout << "Hello World at" << index << "\n";}, 3);
+        @endcode
+        */
+        QIterationLambdaRunnable(const xdispatch::iteration_lambda_function& b)
+            : QIterationRunnable(), _function(b) {}
+        QIterationLambdaRunnable(const QIterationLambdaRunnable& other)
+            : QIterationRunnable(other), _function(other._function) {}
+        virtual ~QIterationLambdaRunnable() { }
+
+        virtual inline void run(size_t index){
+            _function(index);
+        }
+
+    private:
+        xdispatch::iteration_lambda_function _function;
+
+};
+#endif
+
 
 QT_END_NAMESPACE
 QT_END_HEADER
-
-#endif
 
 /** @} */
 

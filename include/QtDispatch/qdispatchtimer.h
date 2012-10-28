@@ -78,7 +78,7 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
           every time the timer fires
           */
         void setHandler(QRunnable*);
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
           Sets a block that will be executed every
           time the timer fires
@@ -86,7 +86,16 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
         inline void setHandler(dispatch_block_t b) {
             setHandler( new QBlockRunnable(b) );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_FUNCTION
+        /**
+          Sets a function that will be executed every
+          time the timer fires
+          */
+        inline void setHandler(const xdispatch::lambda_function& b) {
+            setHandler( new QLambdaRunnable(b) );
+        }
+  #endif
         /**
           Sets the latency, i.e. the divergence the
           timer may have. Please note that this can
@@ -104,7 +113,7 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
           queue at the given time. This is quite similar to using QDispatchQueue::after()
           */
         static void singleShot(const QTime&, const xdispatch::queue&, QRunnable*);
-#ifdef XDISPATCH_HAS_BLOCKS
+  #if XDISPATCH_HAS_BLOCKS
         /**
           Creates a single shot timer executing the given block on the given
           queue at the given time. This is quite similar to using QDispatchQueue::after()
@@ -119,7 +128,23 @@ class Q_DISPATCH_EXPORT QDispatchTimer : public QObject, private xdispatch::time
         static void singleShot(const QTime& t, const xdispatch::queue& q, dispatch_block_t b) {
             singleShot( t, q, new QBlockRunnable(b) );
         }
-#endif
+  #endif
+  #if XDISPATCH_HAS_BLOCKS
+        /**
+          Creates a single shot timer executing the given function on the given
+          queue at the given time. This is quite similar to using QDispatchQueue::after()
+          */
+        static void singleShot(dispatch_time_t t, const xdispatch::queue& q, const xdispatch::lambda_function& b) {
+            singleShot( t, q, new QLambdaRunnable(b) );
+        }
+        /**
+          Creates a single shot timer executing the given function on the given
+          queue at the given time. This is quite similar to using QDispatchQueue::after()
+          */
+        static void singleShot(const QTime& t, const xdispatch::queue& q, const xdispatch::lambda_function& b) {
+            singleShot( t, q, new QLambdaRunnable(b) );
+        }
+  #endif
         static QDispatchTimer* current();
 
         bool operator ==(const QDispatchTimer&);

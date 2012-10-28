@@ -108,8 +108,10 @@ static void register_tests(){
 	MU_REGISTER_TEST(dispatch_after_blocks);
 	MU_REGISTER_TEST(dispatch_pingpong_blocks);
 	MU_REGISTER_TEST(dispatch_semaphore);
+#if DISPATCH_SOURCE_HAS_TIMER
     MU_REGISTER_TEST(dispatch_timer_bit31);
     MU_REGISTER_TEST(dispatch_timer_bit63);
+#endif
     MU_REGISTER_TEST(dispatch_drift);
 //    MU_REGISTER_TEST(test_dispatch_read);
 //    MU_REGISTER_TEST(test_dispatch_proc);

@@ -75,7 +75,7 @@ class XDISPATCH_EXPORT queue : public object {
           @see operation::auto_delete()
           */
         void async(operation*);
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
         /**
         Same as async(operation*).
         Will put the given block on the queue.
@@ -84,6 +84,17 @@ class XDISPATCH_EXPORT queue : public object {
         */
         inline void async(dispatch_block_t b) {
             async( new block_operation(b) );
+        }
+    #endif
+    #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as async(operation*).
+        Will put the given function on the queue.
+
+        @see async(operation*)
+        */
+        inline void async(const lambda_function& b) {
+            async( new function_operation(b) );
         }
     #endif
         /**
@@ -99,7 +110,7 @@ class XDISPATCH_EXPORT queue : public object {
         @param times The number of times the operation will be executed
         */
         void apply(iteration_operation*, size_t times);
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
         /**
         Same as apply(iteration_operation*, size_t times).
 
@@ -110,6 +121,19 @@ class XDISPATCH_EXPORT queue : public object {
         */
         inline void apply(dispatch_iteration_block_t b, size_t times) {
             apply( new block_iteration_operation(b), times );
+        }
+    #endif
+    #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as apply(iteration_operation*, size_t times).
+
+        Will wrap the given function in an operation and put it on the
+        queue.
+
+        @see apply(iteration_operation*, size_t times)
+        */
+        inline void apply(const iteration_lambda_function& b, size_t times) {
+            apply( new function_iteration_operation(b), times );
         }
     #endif
         /**
@@ -125,7 +149,7 @@ class XDISPATCH_EXPORT queue : public object {
         */
         void after(operation*, struct tm* time);
         void after(operation*, dispatch_time_t time);
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
         /**
         Same as dispatch_after(operation*, time_t).
         Will wrap the given block in an operation and put it on the
@@ -138,6 +162,19 @@ class XDISPATCH_EXPORT queue : public object {
             after( new block_operation(b), time );
         }
     #endif
+    #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as dispatch_after(operation*, time_t).
+        Will wrap the given function in an operation and put it on the
+        queue.
+        */
+        inline void after(const lambda_function& b, struct tm* time) {
+            after( new function_operation(b), time );
+        }
+        inline void after(const lambda_function& b, dispatch_time_t time) {
+            after( new function_operation(b), time );
+        }
+    #endif
         /**
         Applies the given operation for execution
         in this queue and blocks until the operation
@@ -147,7 +184,7 @@ class XDISPATCH_EXPORT queue : public object {
         @see operation::auto_delete();
         */
         void sync(operation*);
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
         /**
         Same as dispatch_sync(operation*).
         Will wrap the given block in an operation and put it on the
@@ -155,6 +192,16 @@ class XDISPATCH_EXPORT queue : public object {
         */
         inline void sync(dispatch_block_t b) {
             sync( new block_operation(b) );
+        }
+    #endif
+    #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as dispatch_sync(operation*).
+        Will wrap the given function in an operation and put it on the
+        queue.
+        */
+        inline void sync(const lambda_function& b) {
+            sync( new function_operation(b) );
         }
     #endif
         /**
@@ -171,7 +218,7 @@ class XDISPATCH_EXPORT queue : public object {
         will be executed on the queue itself.
         */
         void finalizer(operation*, const queue& = global_queue());
-    #ifdef XDISPATCH_HAS_BLOCKS
+    #if XDISPATCH_HAS_BLOCKS
         /**
         Same as set_finalizer(operation*, queue*).
         Will wrap the given block in an operation and store
@@ -179,6 +226,16 @@ class XDISPATCH_EXPORT queue : public object {
         */
         inline void finalizer(dispatch_block_t b, const queue& q = global_queue()) {
             finalizer( new block_operation(b), q );
+        }
+    #endif
+    #if XDISPATCH_HAS_FUNCTION
+        /**
+        Same as set_finalizer(operation*, queue*).
+        Will wrap the given function in an operation and store
+        it as finalizer.
+        */
+        inline void finalizer(const lambda_function& b, const queue& q = global_queue()) {
+            finalizer( new function_operation(b), q );
         }
     #endif
         /**
