@@ -182,7 +182,7 @@ add_test( NAME cxx_dispatch_current COMMAND ${TEST_EXE} -n cxx_dispatch_current 
 add_test( NAME cxx_dispatch_timer COMMAND ${TEST_EXE} -n cxx_dispatch_timer )
 add_test( NAME cxx_dispatch_once1 COMMAND ${TEST_EXE} -n cxx_dispatch_once1 )
 add_test( NAME cxx_synchronized COMMAND ${TEST_EXE} -n cxx_synchronized )
-add_test( NAME cxx_dispatch_fibo COMMAND ${TEST_EXE} -n cxx_dispatch_fibo )
+#add_test( NAME cxx_dispatch_fibo COMMAND ${TEST_EXE} -n cxx_dispatch_fibo )
 if( HAS_BLOCKS )
 add_test( NAME cxx_dispatch_cascade_blocks COMMAND ${TEST_EXE} -n cxx_dispatch_cascade_blocks )
 add_test( NAME cxx_dispatch_group_blocks COMMAND ${TEST_EXE} -n cxx_dispatch_group_blocks )
@@ -206,7 +206,7 @@ add_test( NAME cxx_dispatch_source_lambda COMMAND ${TEST_EXE} -n cxx_dispatch_so
 endif()
 
 if(XDISPATCH_QT_SUPPORT)
-  add_test( NAME Qt_dispatch_fibo COMMAND ${TEST_EXE} -n Qt_dispatch_fibo )
+  #add_test( NAME Qt_dispatch_fibo COMMAND ${TEST_EXE} -n Qt_dispatch_fibo )
   add_test( NAME Qt_dispatch_debug COMMAND ${TEST_EXE} -n Qt_dispatch_debug )
   add_test( NAME Qt_dispatch_source_device COMMAND ${TEST_EXE} -n Qt_dispatch_source_device )
   add_test( NAME Qt_dispatch_timer COMMAND ${TEST_EXE} -n Qt_dispatch_timer )
