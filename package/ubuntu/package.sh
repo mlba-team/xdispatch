@@ -16,7 +16,7 @@ echo -- clean svn information
 rm -vrf `find . -type d -name .svn`
 # delete old build files
 echo -- cleaning build directories
-rm -vrf Build/QtCreator_ProjectFiles Build/*MakeFiles Build/Docs Build/VS10_ProjectFiles*
+rm -vrf build/QtCreator_ProjectFiles build/*MakeFiles build/Docs build/VS10_ProjectFiles*
 # copy debian packaging information
 echo -- copy packaging information
 mkdir -p debian
@@ -29,7 +29,7 @@ dpkg-buildpackage -us -uc -S -rfakeroot
 # build binary packages
 echo -- build binaries
 
-#sudo pbuilder build --buildresult $BUILDDIR ../*.dsc 
+sudo pbuilder build --buildresult $BUILDDIR ../*.dsc 
 
 # copy binaries back to source dir
 echo -- retrieve packages
