@@ -43,6 +43,7 @@ const char* STR_RUN_TEST = "-t";
 const char* STR_KEEP_RUNNING = "-k";
 const char* STR_REPEAT_TEST = "-r";
 const char* STR_CTEST = "-ctl";
+const char* STR_RUN_TEST_BY_NAME = "-n";
 
 void print_header() {
 	printf("\n   MUnit Test Framework with independent processes\n");
@@ -67,12 +68,15 @@ void MU_printHelp(){
     printf("%s\tList all available tests\n",STR_LIST_TESTS);
     printf("%s [no]\tRepeat the testrun [no] times\n",STR_REPEAT_TEST);
     printf("%s [no]\tRun only the test with the given [no]\n",STR_RUN_TEST);
+    printf("%s [na]\tRun only the test with the given [na]\n",STR_RUN_TEST_BY_NAME);
     printf("%s\tVerbose output of all assertions\n", STR_VERBOSE);
+    printf("%s\tPrint a CTest compatible list of all tests\n", STR_CTEST);
 	printf("\n");
 }
 
 static int test_runs = 1;
 static int test_selection = -1;
+static char* test_selection_name = NULL;
 static char keep_running = 0;
 char verbose = 0;
 
@@ -82,6 +86,7 @@ enum modes {
     DISPLAY_CTEST,
     MULTIPLE_TESTS,
     RUN_SINGLE,
+    RUN_SINGLE_BY_NAME,
     SUITE
 };
 
@@ -96,6 +101,12 @@ void parse_arguments(int argc, char* argv[]){
                 mode = RUN_SINGLE;
             i++;
             test_selection = atoi(argv[i]);
+        } else if(strcmp(argv[i],STR_RUN_TEST_BY_NAME) == 0) {
+            if(mode == SUITE) // we do not want to override the multiple tests selection
+              mode = RUN_SINGLE_BY_NAME;
+            mode = RUN_SINGLE_BY_NAME;
+            i++;
+            test_selection_name = argv[i];
         } else if(strcmp(argv[i],STR_KEEP_RUNNING) == 0) {
             keep_running = 1;
         } else if(strcmp(argv[i],STR_REPEAT_TEST) == 0) {
@@ -137,8 +148,10 @@ int MU_main(int argc, char *argv[]){
         return 0;
         break;
     case RUN_SINGLE:
-        MU_runTest(test_selection);
-        return 0;
+        return MU_runTest(test_selection);
+        break;
+    case RUN_SINGLE_BY_NAME:
+        return MU_runTestName(test_selection_name);
         break;
     case MULTIPLE_TESTS:
         if(test_selection == -1)
@@ -387,7 +400,7 @@ int MU_runAllTests(const char* bin, char keep_running){
     return repeat_suite(bin, keep_running, 1);
 }
 
-void MU_runTest(int no){
+int MU_runTest(int no){
 	int ct = 0;
 	item_t* curr = suite;
 	mu_test_t* test = NULL;
@@ -398,12 +411,38 @@ void MU_runTest(int no){
 
 	if(curr==NULL){
         print_header();
-		printf(" ! Test (%u) does not exist\n\n", no);
-		return;
+        printf(" ! Test (%u) does not exist\n\n", no);
+        return EXIT_FAILURE;
 	}
 
 	test = (mu_test_t*)curr->data;
 	test->function();
+
+    return EXIT_SUCCESS;
+}
+
+int MU_runTestName(const char* name){
+    item_t* curr = suite->next;
+    mu_test_t* test = NULL;
+
+    while(curr != NULL) {
+
+      test = curr->data;
+      if( strcmp(test->name, name) == 0 )
+        break;
+
+      curr = curr->next;
+    }
+
+    if(curr==NULL){
+        print_header();
+        printf(" ! Test (%s) does not exist\n\n", name);
+        return EXIT_FAILURE;
+    }
+
+    test->function();
+
+    return EXIT_SUCCESS;
 }
 
 void MU_printTestsCTest(){
@@ -425,7 +464,7 @@ void MU_printTestsCTest(){
         fflush(stdout);
         // then print the info
                 test = (mu_test_t*)curr->data;
-                printf("add_test( NAME %s COMMAND ${TEST_EXE} -t %u )\n",test->name, no);
+                printf("add_test( NAME %s COMMAND ${TEST_EXE} -n %s )\n",test->name, test->name);
         }
         printf("\n");
 }

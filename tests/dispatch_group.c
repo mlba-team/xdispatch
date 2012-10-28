@@ -31,7 +31,7 @@
 #define NSEC_PER_SEC 1000000000
 #endif
 
-void work(void* context){
+static void work(void* context){
 	int delay = *(int*)context;
 	free(context);
 	if (delay) {

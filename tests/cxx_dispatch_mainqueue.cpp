@@ -32,7 +32,35 @@
  to the underlying C Api
  */
 
-#ifdef TEST_BLOCKS
+class inc : public xdispatch::iteration_operation {
+  public:
+    inc(uintptr_t* worker)
+      : worker(worker) {
+
+    }
+
+    void operator ()(size_t i){
+      dispatch_atomic_inc(worker);
+    }
+
+    uintptr_t* worker;
+};
+
+class cleanup : public xdispatch::operation {
+  public:
+    cleanup(uintptr_t* worker)
+      : worker(worker) {
+
+    }
+
+    void operator ()(){
+      MU_ASSERT_EQUAL(RUN_TIMES, *worker);
+      delete worker;
+      MU_PASS("");
+    }
+
+    uintptr_t* worker;
+};
 
 extern "C" void cxx_dispatch_mainqueue(){
     MU_BEGIN_TEST(cxx_dispatch_mainqueue);
@@ -43,18 +71,10 @@ extern "C" void cxx_dispatch_mainqueue(){
     xdispatch::queue q = xdispatch::main_queue();
     MU_ASSERT_NOT_NULL(q.native());
 
-    xdispatch::global_queue().apply($(size_t i){
-			dispatch_atomic_inc(worker);
-        }, RUN_TIMES);
-
-    q.async(${
-            MU_ASSERT_EQUAL(RUN_TIMES, *worker);
-            delete worker;
-			MU_PASS("");
-        });
+    xdispatch::global_queue().apply(new inc(worker), RUN_TIMES);
+    q.async(new cleanup(worker));
 
     xdispatch::exec();
 	MU_END_TEST;
 }
 
-#endif

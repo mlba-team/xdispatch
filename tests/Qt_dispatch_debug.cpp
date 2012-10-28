@@ -19,8 +19,6 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
 #include <QtCore/QDebug>
 #include <QtDispatch/QtDispatch>
 
@@ -51,4 +49,3 @@ extern "C" void Qt_dispatch_debug(){
 	MU_END_TEST;
 }
 
-#endif

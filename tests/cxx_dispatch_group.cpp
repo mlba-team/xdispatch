@@ -30,10 +30,6 @@
  to the underlying C Api
  */
 
-#ifndef NSEC_PER_SEC
-#define NSEC_PER_SEC 1000000000
-#endif
-
 
 class work : public xdispatch::operation {
 public:

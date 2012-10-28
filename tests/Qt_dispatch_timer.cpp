@@ -19,8 +19,6 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
 #include <QtDispatch/QtDispatch>
 #include <QtCore/QTime>
 #include <QtCore/QRunnable>
@@ -109,5 +107,3 @@ extern "C" void Qt_dispatch_timer() {
 
     MU_END_TEST
 }
-
-#endif /* QT_CORE_LIB */

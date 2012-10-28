@@ -52,7 +52,7 @@ class Q_DISPATCH_EXPORT QIterationBlockRunnable : public QIterationRunnable {
         Constructs a new QBlockRunnable using the given block, e.g.
 
         @code
-        QIterationBlockRunnable task($(size_t index){cout << "Hello World at" << index << "\n";}, 3);
+        QIterationBlockRunnable task((size_t index){cout << "Hello World at" << index << "\n";}, 3);
         @endcode
         */
         QIterationBlockRunnable(dispatch_iteration_block_t b)

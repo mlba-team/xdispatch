@@ -19,15 +19,12 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
 
 #include <QtCore/QTime>
 #include <QtCore/QFile>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-
-#ifdef XDISPATCH_HAS_BLOCKS
 
 /*
  Tests the source type IODevice
@@ -48,7 +45,3 @@ extern "C" void Qt_dispatch_source_device(){
 	app.exec();
 	MU_END_TEST;
 }
-
-#endif
-
-#endif

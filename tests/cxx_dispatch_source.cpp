@@ -27,7 +27,6 @@
 #include "../core/platform/atomic.h"
 #include "tests.h"
 
-#ifdef TEST_BLOCKS
 
 struct TestType : public xdispatch::sourcetype {
 
@@ -41,6 +40,13 @@ struct TestType : public xdispatch::sourcetype {
 	}
 };
 
+struct handler : public xdispatch::operation {
+    void operator ()(){
+      MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
+      MU_PASS("");
+    }
+};
+
 TestType* TestType::instance = NULL;
 
 extern "C" void cxx_dispatch_source() {
@@ -49,10 +55,7 @@ extern "C" void cxx_dispatch_source() {
     xdispatch::source src(new TestType);
     MU_ASSERT_NULL( src.native() );
     src.target_queue(xdispatch::main_queue());
-	src.handler(${
-		MU_ASSERT_TRUE(xdispatch::source::data<std::string>() == "any working");
-		MU_PASS("");
-	});
+    src.handler(new handler);
 
     src.resume();
 
@@ -62,4 +65,3 @@ extern "C" void cxx_dispatch_source() {
     MU_END_TEST
 }
 
-#endif /* XDISPATCH_HAS_BLOCKS */

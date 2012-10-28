@@ -21,7 +21,12 @@
 #include "munit/MUnit.h"
 #include "tests.h"
 #include "cxx_tests.h"
-#include "Qt_tests.h"
+
+#if XDISPATCH_QT_SUPPORT
+# include "Qt_tests.h"
+#else
+  static void register_qt_tests(){}
+#endif
 
 void print_log(const char* msg) {
     printf("%s", msg);

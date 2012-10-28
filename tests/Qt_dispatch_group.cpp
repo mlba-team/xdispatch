@@ -19,8 +19,6 @@
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
 
-#ifdef QT_CORE_LIB
-
 #include <QTest>
 #include <QtCore/QObject>
 #include <QtCore/QCoreApplication>
@@ -32,8 +30,6 @@
 
 
 // // Test the 'normal' API mapping
-
-#ifdef XDISPATCH_HAS_BLOCKS
 
 class Work : public QRunnable {
     public:
@@ -135,76 +131,3 @@ extern "C" void Qt_dispatch_group1() {
     MU_FAIL("Should never reach this");
     MU_END_TEST
 }
-
-#endif
-
-// // Test the signal implementation
-
-static uintptr_t* worker = 0;
-
-class GroupTest : public QObject {
-
-        Q_OBJECT
-
-    public slots:
-        void notify(){
-            MU_MESSAGE("signal 'allFinished' emitted, worker = %u", *worker);
-
-            if(*worker == 0)
-                return;
-
-            MU_ASSERT_EQUAL(*worker,4);
-            delete worker;
-            this->deleteLater();
-            MU_PASS("All Done");
-        }
-
-};
-
-#ifdef XDISPATCH_HAS_BLOCKS
-
-extern "C" void Qt_dispatch_group2(){
-    char* argv = QString("test").toAscii().data();
-    int argc = 1;
-    QDispatchCoreApplication app(argc,&argv);
-
-    MU_BEGIN_TEST(Qt_dispatch_group2);
-
-    worker = new uintptr_t;
-    *worker = 0;
-
-    QDispatchGroup group;
-    GroupTest* gt = new GroupTest;
-    QObject::connect(&group, SIGNAL(allFinished()), gt, SLOT(notify()) );
-
-    group.async(${
-        QTest::qSleep(400);
-        dispatch_atomic_inc(worker);
-    });
-
-    group.enableAllFinishedSignal();
-
-    group.async(${
-        QTest::qSleep(300);
-        dispatch_atomic_inc(worker);
-    });
-
-    group.async(${
-       QTest::qSleep(300);
-        dispatch_atomic_inc(worker);
-    });
-
-    group.async(${
-        QTest::qSleep(200);
-        dispatch_atomic_inc(worker);
-    });
-
-    app.exec();
-    MU_END_TEST;
-}
-
-#endif
-
-#include <moc_Qt_dispatch_group.moc>
-
-#endif
