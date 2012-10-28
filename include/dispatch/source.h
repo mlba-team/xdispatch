@@ -76,8 +76,8 @@
  *  <li>write</li>
  * </ul>
  *
- * The availability can be queried at compiletime using the preprocessor
- * either using
+ * The availability can be queried at compiletime via the preprocessor
+ * either by using
  * @code
  *  #ifdef DISPATCH_SOURCE_TYPE_*
  *   ...
@@ -90,8 +90,12 @@
  * or
  * @code
  *  #if DISPATCH_SOURCE_HAS_*
+ *   ...
+ *  #endif
  *  // e.g. considering timers again
  *  #if DISPATCH_SOURCE_HAS_TIMER
+ *   ...
+ *  #endif
  * @endcode
  * The latter will be defined to 1 when the given type is available
  * and be equal to zero if not.

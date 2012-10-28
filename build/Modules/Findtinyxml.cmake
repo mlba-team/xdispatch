@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ##
 # Copyright (c) 2008-2012 Marius Zwicker
 # All rights reserved.
@@ -23,19 +21,37 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
-#######################################################################
-#
-#  Configure Codeblocks/QtCreator project files
-#  (c) 2012 Marius Zwicker
-#
-#  Pass 'Release' as argument to build without debug flags
-#
-#######################################################################
+FIND_PATH(
+  TINYXML_INCLUDE_DIRS
+  NAMES
+  tinyxml.h
+  HINTS
+  "$ENV{LIB_DIR}/include"
+  "$ENV{LIB_DIR}/include/tinyxml"
+  c:/msys/local/include
+  /opt/local/include
+)
 
-BUILD_DIR="QtCreator_ProjectFiles"
-RELEASE_DIR="Release_$BUILD_DIR"
-GENERATOR="CodeBlocks - Unix Makefiles"
-TARGET="Qt Creator"
+set(CMAKE_FIND_FRAMEWORK LAST)
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/util.sh $@
+FIND_LIBRARY(
+  TINYXML_LIBRARIES
+  NAMES 
+  tinyxml
+  HINTS
+  "$ENV{LIB_DIR}/lib"
+  #mingw
+  c:/msys/local/lib
+)
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(
+	tinyxml
+	DEFAULT_MSG
+	TINYXML_INCLUDE_DIRS
+	TINYXML_LIBRARIES
+)
+
+MARK_AS_ADVANCED(
+	TINYXML_INCLUDE_DIRS
+	TINYXML_LIBRARIES
+) 

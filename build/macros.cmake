@@ -1,11 +1,33 @@
+##
+# Copyright (c) 2008-2012 Marius Zwicker
+# All rights reserved.
+# 
+# @LICENSE_HEADER_START:Apache@
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+# http://www.mlba-team.de
+# 
+# @LICENSE_HEADER_END:Apache@
+##
+
 ########################################################################
 #
 #	BUILD/MACROS.CMAKE
 #
-# 	This file provides some useful macros to
+# This file provides some useful macros to
 #	simplify adding of componenents and other
-#	taskss
-#	(c) 2009-2012 Marius Zwicker
+#	tasks
 #
 # This file defines a whole bunch of macros
 # to add a subdirectory containing another
@@ -156,7 +178,7 @@ macro(mz_find_include_library _NAME SYS _VERSION SRC _DIRECTORY _INC_DIR _TARGET
     
     STRING(TOUPPER ${_NAME} _NAME_UPPER)
     
-    find_package( ${_NAME} )
+    find_package( ${_NAME} ${_VERSION} )
     if( NOT ${_NAME_UPPER}_FOUND )
         set(${_NAME_UPPER}_INCLUDE_DIRS ${_INC_DIR})
         set(${_NAME_UPPER}_LIBRARIES ${_TARGET})
