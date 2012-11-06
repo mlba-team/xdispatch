@@ -84,17 +84,7 @@ dispatch_time(dispatch_time_t inval, int64_t delta)
 dispatch_time_t
 dispatch_walltime(const struct timespec *inval, int64_t delta)
 {
-#if TARGET_OS_WIN32
-	int64_t spec_delta;
-	dispatch_time_t temp;
-	struct timeval now;
-
-	gettimeofday(&now, NULL);
-	spec_delta = (inval->tv_sec - now.tv_sec) * NSEC_PER_SEC + inval->tv_nsec - now.tv_usec * NSEC_PER_MSEC;
-	temp = dispatch_time(DISPATCH_TIME_NOW, spec_delta);
-	return dispatch_time(temp, delta);
-#else
-	int64_t nsec;
+    int64_t nsec;
 	
 	if (inval) {
 		nsec = inval->tv_sec * 1000000000ull + inval->tv_nsec;
@@ -109,7 +99,6 @@ dispatch_walltime(const struct timespec *inval, int64_t delta)
 	}
 
 	return -nsec;
-#endif
 }
 
 uint64_t
