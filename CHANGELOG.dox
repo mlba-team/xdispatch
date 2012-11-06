@@ -1,6 +1,56 @@
 /**
 @page change_log Changelog
 
+@section changes-71 Version 0.7.1
+
+released 28/10/2012
+
+ - Improvements to the synchronized implementation (#414)
+ - Fixed a bug causing some synclocks not to be unlocked properly after
+   a call to return or throwing an exception
+ - Added official support for Ubuntu Precise 12.04 (#411)
+ - Introducing a new interface to query the availability of
+   source types at compiletime (#415)
+ - Only export the symbols of source types actually implemented
+   properly on a system (#415)
+ - Improved the support for clang version 3.1.0 and up resulting
+   in the ability to mix blocks and lambdas within the same program (#406)
+ - reworked the test build system
+ - moved to an own copy of the mz-cmaketools removing dependancy to svn:externals
+
+@section changes-7 Version 0.7.0
+
+released 23/05/2012
+
+ - Introduced a xdispatch::once api as a correspondence to the
+   dispatch_once C interface (#379)
+ - Removed the dependency of QtDispatch on QtNetwork (#389)
+ - Make all C++ lambda/std::function/Block api functions inlined to
+   support all types from the same binary (#378)
+ - Restored MinGW support (#392)
+ - Reworked large parts of the documentation (#377)
+ - Made xdispatch::sources canceable (#384)
+ - Added a modules 'findQtDispatch', 'findxdispatch', 'finddispatch' to
+   support calls to find_package (#380)
+ - Include building proper installer packages on platforms supporting it (currently
+   Ubuntu, Mac OS) in the build process (#368)
+ - Reworked the xdispatch::source implementation with special regard on
+   the existing, 'native' sourcetypes (#308)
+ - Reworked the synchronized{} implementation to eradicate degraded performance
+   when using a lot of synchronized blocks (#386)
+ - Reduced the number of interally used calls to new, moved to smart pointers
+   for interal memory management were possible (#307)
+ - Rechecked for proper implementations of assignment and comparison operators (#309)
+ - Moved from dylibs to frameworks on Mac OS
+ - Officially tested support for Mac OS Lion
+ - Assigned all shared libraries a proper version number on all platforms
+ - Dropped support for Visual Studio 2008, need Visual Studio 2008 SP1 instead
+ - Added support for the upcoming Clang 3.1
+ - Provide type-safe constants instead of macros within xdispatch and QtDispatch
+ - Ship documentation within the binary packages on each platform
+ - Included all headers of Qt by prepending the corresponding Qt module
+ - Updated the copyright information on all headers
+
 @section changes-61 Version 0.6.1
 
 released 22/02/2012

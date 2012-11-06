@@ -39,8 +39,8 @@ endif()
 # libxdispatch will be updated on each new version release
 
 set( XDISPATCH_VERSION_MAJOR            0)
-set( XDISPATCH_VERSION_MINOR            7)
-set( XDISPATCH_VERSION_PATCH            1)
+set( XDISPATCH_VERSION_MINOR            8)
+set( XDISPATCH_VERSION_PATCH            0)
 if( NOT IS_A_RELEASE )
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
