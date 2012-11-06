@@ -32,8 +32,8 @@
 # define NSEC_PER_MSEC 1000000ll
 #endif
 
-#if DISPATCH_API_VERSION == 20090501
 // quick hack to force the definition of these macros despite a native libdispatch implementation
+#ifdef __APPLE__
 # define DISPATCH_SOURCE_HAS_DATA_ADD 1
 # define DISPATCH_SOURCE_HAS_DATA_OR 1
 # define DISPATCH_SOURCE_HAS_MACH_SEND 1
