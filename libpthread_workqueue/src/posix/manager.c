@@ -1,5 +1,4 @@
 /*-
- * Copyright (c) 2011, Joakim Johansson <jocke@tbricks.com>
  * Copyright (c) 2010, Mark Heily <mark@heily.com>
  * Copyright (c) 2009, Stacey Son <sson@freebsd.org>
  * Copyright (c) 2000-2008, Apple Inc.
@@ -37,10 +36,7 @@
 #include <sys/time.h>
 
 /* Environment setting */
-unsigned int PWQ_RT_THREADS = 0;
-unsigned long PWQ_SPIN_LAPS = 10*1000*1000; // The number of laps we should spin loop if desired (default 10M)
-unsigned int PWQ_SPIN_THREADS = 0; // The number of threads that should be kept spinning
-unsigned volatile int current_threads_spinning = 0; // The number of threads currently spinning
+int USE_RT_THREADS = 0;
 
 /* Tunable constants */
 
@@ -54,6 +50,9 @@ static unsigned int get_process_limit(void);
 static void manager_start(void);
 
 static unsigned int      cpu_count;
+
+static LIST_HEAD(, worker) workers;
+static pthread_mutex_t   workers_mtx;
 static unsigned int      worker_min;
 static unsigned int      worker_idle_threshold; // we don't go down below this if we had to increase # workers
 
@@ -66,7 +65,7 @@ static unsigned int      ocwq_idle_threads;
 
 /* Non-overcommit */
 static struct _pthread_workqueue *wqlist[PTHREAD_WORKQUEUE_MAX];
-static volatile unsigned int     wqlist_mask; // mask of currently pending workqueues, atomics used for manipulation
+static int               wqlist_mask;
 static pthread_mutex_t   wqlist_mtx;
 
 static pthread_cond_t    wqlist_has_work;
@@ -74,7 +73,7 @@ static int               wqlist_has_manager;
 static pthread_attr_t    detached_attr;
 
 static struct {
-    volatile unsigned int load,
+    unsigned int    load,
                     count,
                     idle;
     unsigned int    sb_wake_pending;
@@ -83,7 +82,7 @@ static struct {
 } scoreboard;
 
 static unsigned int 
-worker_idle_threshold_per_cpu(void)
+worker_idle_threshold_per_cpu()
 {
     switch (cpu_count)
     {
@@ -110,7 +109,7 @@ worker_idle_threshold_per_cpu(void)
     return 2;
 }
 
-static void
+void
 manager_reinit(void)
 {
     if (manager_init() < 0)
@@ -123,6 +122,9 @@ manager_init(void)
     wqlist_has_manager = 0;
     pthread_cond_init(&wqlist_has_work, NULL);
 
+    LIST_INIT(&workers);
+    pthread_mutex_init(&workers_mtx, NULL);
+
     pthread_mutex_init(&wqlist_mtx, NULL);
     wqlist_mask = 0;
 
@@ -133,7 +135,7 @@ manager_init(void)
 
     witem_cache_init();
 
-    cpu_count = (PWQ_ACTIVE_CPU > 0) ? (PWQ_ACTIVE_CPU) : (unsigned int) sysconf(_SC_NPROCESSORS_ONLN);
+    cpu_count = (unsigned int) sysconf(_SC_NPROCESSORS_ONLN);
 
     pthread_attr_init(&detached_attr);
     pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_DETACHED);
@@ -181,6 +183,7 @@ manager_workqueue_create(struct _pthread_workqueue *workq)
     pthread_mutex_unlock(&wqlist_mtx);
 }
 
+/* The caller must hold the wqlist_mtx. */
 static struct work *
 wqlist_scan(int *queue_priority)
 {
@@ -193,43 +196,20 @@ wqlist_scan(int *queue_priority)
         return (NULL);
 
     workq = wqlist[idx - 1];
- 
-    pthread_spin_lock(&workq->mtx);
-
     witem = STAILQ_FIRST(&workq->item_listhead);
     if (witem != NULL) {
         STAILQ_REMOVE_HEAD(&workq->item_listhead, item_entry);
         if (STAILQ_EMPTY(&workq->item_listhead))
-        {
-            unsigned int wqlist_index_bit = (0x1 << workq->wqlist_index);
-            unsigned int new_mask;
-            // Remove this now empty wq from the mask, the only contention here is with threads performing the same
-            // operation on another workqueue, so we will not be long
-            // the 'bit' for this queue is protected by the spin lock, so we will only clear a bit which we have 
-            // ownership for (see additem() below for the corresponding part on the producer side)
-            do
-            {
-                new_mask = atomic_and(&wqlist_mask, ~(wqlist_index_bit));
-
-                if (slowpath((new_mask & wqlist_index_bit))) // if we would race, issue pause instruction
-                    _hardware_pause();
-                
-            } while (new_mask & wqlist_index_bit);
-        }
+            wqlist_mask &= ~(0x1 << workq->wqlist_index);
         if (queue_priority != NULL)
             *queue_priority = workq->queueprio;
-
-        pthread_spin_unlock(&workq->mtx);
         return (witem);
     } else {
-        // this could happen if multiple threads raced and found the same bit with ffs() and
-        // emptied the queue completely, so we should just bail out
-        pthread_spin_unlock(&workq->mtx);
         return (NULL);
     }
 }
 
-static void _wakeup_manager(void)
+static void _wakeup_manager()
 {
     dbg_puts("asking manager to wake up");
 
@@ -282,14 +262,12 @@ overcommit_worker_main(void *arg)
         ocwq_idle_threads++;
         dbg_printf("waiting for work (idle=%d)", ocwq_idle_threads);
         rv = pthread_cond_timedwait(&ocwq_has_work, &ocwq_mtx, &ts);
-        if (rv != 0) {
+        if (rv < 0) {
             /* Normally, the signaler will decrement the idle counter,
                but this path is not taken in response to a signaler.
              */
             ocwq_idle_threads--;
-	    pthread_mutex_unlock(&ocwq_mtx);
-
-            if (rv == ETIMEDOUT) {
+            if (errno == ETIMEDOUT) {
                 dbg_puts("timeout, no work available");
                 break;
             } else {
@@ -300,85 +278,45 @@ overcommit_worker_main(void *arg)
         }
     }
 
-    dbg_printf("worker exiting (idle=%d)", ocwq_idle_threads);
     pthread_exit(NULL);
 }
 
 static void *
 worker_main(void *arg)
 {
+    struct worker *self = (struct worker *) arg;
     struct work *witem;
     void (*func)(void *);
     void *func_arg;
     int queue_priority = 0;
     
-    (void) arg;
     dbg_puts("worker thread started");
 
-    if (PWQ_RT_THREADS)
+    if (USE_RT_THREADS)
         ptwq_set_current_thread_priority(WORKQ_HIGH_PRIOQUEUE); // start at highest priority possible
         
     for (;;) {
 
-        witem = wqlist_scan(&queue_priority);
+        self->state = WORKER_STATE_SLEEPING;
 
-        // Only take overhead of sleeping and/or spinning if we 
-        // could not get a witem cheaply using the spinlock above
-        if (slowpath(!witem))
-        {
-            // Optional busy loop for getting the next item for a while if so configured
-            // We'll only spin limited thread at a time (this is really mostly useful when running
-            // in low latency configurations using dedicated processor sets)
-            if ((PWQ_SPIN_THREADS > 0) && (current_threads_spinning <= PWQ_SPIN_THREADS))
-            {
-                atomic_inc(&current_threads_spinning);
+        pthread_mutex_lock(&wqlist_mtx);
 
-                // If we are racing with another thread, let's skip
-                // spinning and instead go through the slowpath below
+        while ((witem = wqlist_scan(&queue_priority)) == NULL)
+            pthread_cond_wait(&wqlist_has_work, &wqlist_mtx);
 
-                if (current_threads_spinning <= PWQ_SPIN_THREADS)
-                {
-                    unsigned long current_lap = 0;
-                    
-                    // Spin until we get an item or PWQ_SPIN_LAPS have passed
-                    while (!witem && (current_lap <= PWQ_SPIN_LAPS))
-                    {
-                        witem = wqlist_scan(&queue_priority);
-                        if (!witem)
-                        {
-                            current_lap++;
-                            _hardware_pause();
-                        }
-                    }                
-                }
-                
-                atomic_dec(&current_threads_spinning);
-            }
+        pthread_mutex_unlock(&wqlist_mtx);
 
-            // No witem from the busy loop, let's wait for wakeup
-            if (!witem)
-            {
-                pthread_mutex_lock(&wqlist_mtx);
-
-                /*
-                  TODO: Consider using pthread_cond_timedwait() so that
-                  workers can self-terminate if they are idle too long.
-                  This would also be a failsafe in case there are bugs
-                  with the scoreboard that cause us to "leak" workers.
-                 */
-                while ((witem = wqlist_scan(&queue_priority)) == NULL)
-                    pthread_cond_wait(&wqlist_has_work, &wqlist_mtx);
-
-                pthread_mutex_unlock(&wqlist_mtx);
-            }
-        }
+        self->state = WORKER_STATE_RUNNING;
 
         atomic_dec(&scoreboard.idle);
 
         if (slowpath(witem->func == NULL)) {
             dbg_puts("worker exiting..");
-            atomic_dec(&scoreboard.count);
             witem_free(witem);
+            pthread_mutex_lock(&workers_mtx);
+            LIST_REMOVE(self, entries);
+            pthread_mutex_unlock(&workers_mtx);
+            free(self);
             pthread_exit(0);
         }
 
@@ -390,7 +328,7 @@ worker_main(void *arg)
             _wakeup_manager();
 
         // If using RT threads, decrease thread prio if we aren't a high prio queue
-        if (PWQ_RT_THREADS && (queue_priority != WORKQ_HIGH_PRIOQUEUE))
+        if (USE_RT_THREADS && (queue_priority != WORKQ_HIGH_PRIOQUEUE))
             ptwq_set_current_thread_priority(queue_priority);
         
         /* Invoke the callback function, free witem first for possible reuse */
@@ -403,7 +341,7 @@ worker_main(void *arg)
         atomic_inc(&scoreboard.idle); // initial inc was one in worker_start, this is to avoid a race
 
         // Only take the overhead and change RT priority back if it was not a high priority queue being serviced
-        if (PWQ_RT_THREADS && (queue_priority != WORKQ_HIGH_PRIOQUEUE))
+        if (USE_RT_THREADS && (queue_priority != WORKQ_HIGH_PRIOQUEUE))
             ptwq_set_current_thread_priority(WORKQ_HIGH_PRIOQUEUE);
     }
 
@@ -414,30 +352,40 @@ worker_main(void *arg)
 static int
 worker_start(void) 
 {
-    pthread_t tid;
+    struct worker *wkr;
 
     dbg_puts("Spawning another worker");
 
-    atomic_inc(&scoreboard.idle);
-    atomic_inc(&scoreboard.count);
-
-    if (pthread_create(&tid, &detached_attr, worker_main, NULL) != 0) {
-        dbg_perror("pthread_create(3)");
-        atomic_dec(&scoreboard.idle);
-        atomic_dec(&scoreboard.count);
+    wkr = calloc(1, sizeof(*wkr));
+    if (wkr == NULL) {
+        dbg_perror("calloc(3)");
         return (-1);
     }
+
+    scoreboard.count++;
+    atomic_inc(&scoreboard.idle);
+
+    if (pthread_create(&wkr->tid, &detached_attr, worker_main, wkr) != 0) {
+        dbg_perror("pthread_create(3)");
+        atomic_dec(&scoreboard.idle);
+        scoreboard.count--;
+        return (-1);
+    }
+
+    pthread_mutex_lock(&workers_mtx);
+    LIST_INSERT_HEAD(&workers, wkr, entries);
+    pthread_mutex_unlock(&workers_mtx);
 
     return (0);
 }
 
 static int
+//int
 worker_stop(void) 
 {
     struct work *witem;
     pthread_workqueue_t workq;
     int i;
-    unsigned int wqlist_index_bit, new_mask;
 
     witem = witem_alloc(NULL, NULL);
 
@@ -447,22 +395,11 @@ worker_stop(void)
         if (workq == NULL)
             continue;
 
-        wqlist_index_bit = (0x1 << workq->wqlist_index);
-
-        pthread_spin_lock(&workq->mtx);
-        
-        do
-        {
-            new_mask = atomic_or(&wqlist_mask, wqlist_index_bit);
-        } while (!(new_mask & wqlist_index_bit));
-
         STAILQ_INSERT_TAIL(&workq->item_listhead, witem, item_entry);
-
-        pthread_spin_unlock(&workq->mtx);
-        
         pthread_cond_signal(&wqlist_has_work);
         pthread_mutex_unlock(&wqlist_mtx);
 
+        scoreboard.count--;
         return (0);
     }
 
@@ -476,6 +413,7 @@ worker_stop(void)
 static void *
 manager_main(void *unused __attribute__ ((unused)))
 {
+    //struct worker *wkr;
     unsigned int load_max = cpu_count;
     unsigned int worker_max, current_thread_count = 0;
     unsigned int worker_idle_seconds_accumulated = 0;
@@ -499,6 +437,30 @@ manager_main(void *unused __attribute__ ((unused)))
         worker_start();
 
     for (;;) {
+
+#if DEADWOOD
+        /* Examine each worker and update statistics */
+        scoreboard.sleeping = 0;
+        scoreboard.running = 0;
+        LIST_FOREACH(wkr, &workers, entries) {
+            switch (wkr->state) {
+                case WORKER_STATE_SLEEPING:
+                    scoreboard.sleeping++;
+                    break;
+
+                case WORKER_STATE_RUNNING:
+                    scoreboard.running++;
+                    /* TODO: check for stalled worker */
+                    break;
+
+                case WORKER_STATE_ZOMBIE:
+                    LIST_REMOVE(wkr, entries);
+                    scoreboard.count--;
+                    free(wkr);
+                    break;
+            }
+        }
+#endif
 
         pthread_mutex_lock(&scoreboard.sb_wake_mtx);
 
@@ -628,8 +590,6 @@ manager_start(void)
 void
 manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
 {
-    unsigned int wqlist_index_bit = (0x1 << workq->wqlist_index);
-    
     if (workq->overcommit) {
         pthread_t tid;
 
@@ -637,7 +597,7 @@ manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
         pthread_spin_lock(&workq->mtx);
         STAILQ_INSERT_TAIL(&workq->item_listhead, witem, item_entry);
         pthread_spin_unlock(&workq->mtx);
-        ocwq_mask |= wqlist_index_bit;
+        ocwq_mask |= (0x1 << workq->wqlist_index);
         if (ocwq_idle_threads > 0) {
             dbg_puts("signaling an idle worker");
             pthread_cond_signal(&ocwq_has_work);
@@ -647,38 +607,16 @@ manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
         }
         pthread_mutex_unlock(&ocwq_mtx);
     } else {
+        /* TODO: possibly use a separate mutex or some kind of atomic CAS */
+        pthread_mutex_lock(&wqlist_mtx);
+
         pthread_spin_lock(&workq->mtx);
-
-        // Only set the mask for the first item added to the workqueue. 
-        if (STAILQ_EMPTY(&workq->item_listhead))
-        {
-            unsigned int new_mask;
-            
-            // The only possible contention here are with threads performing the same
-            // operation on another workqueue, so we will not be blocked long... 
-            // Threads operating on the same workqueue will be serialized by the spinlock so it is very unlikely.
-            do
-            {
-                new_mask = atomic_or(&wqlist_mask, wqlist_index_bit);
-
-                if (slowpath((!(new_mask & wqlist_index_bit)))) // if we would race, issue pause instruction
-                    _hardware_pause();
-
-            } while (!(new_mask & wqlist_index_bit));
-        }
-        
         STAILQ_INSERT_TAIL(&workq->item_listhead, witem, item_entry);
-
         pthread_spin_unlock(&workq->mtx);
 
-        // Only signal thread wakeup if there are idle threads available
-        // and no other thread have managed to race us and empty the wqlist on our behalf already
-        if ((scoreboard.idle > 0)) // && ((wqlist_mask & wqlist_index_bit) != 0)) // disabling this fringe optimization for now
-        {
-            pthread_mutex_lock(&wqlist_mtx);
-            pthread_cond_signal(&wqlist_has_work);
-            pthread_mutex_unlock(&wqlist_mtx);
-        }
+        wqlist_mask |= (0x1 << workq->wqlist_index);
+        pthread_cond_signal(&wqlist_has_work);
+        pthread_mutex_unlock(&wqlist_mtx);
     }
 }
 
@@ -715,28 +653,4 @@ get_load_average(void)
         loadavg = 1;
 
     return ((int) loadavg);
-}
-
-unsigned long 
-manager_peek(const char *key)
-{
-    uint64_t rv;
-
-    if (strcmp(key, "combined_idle") == 0) {
-        rv = scoreboard.idle;
-        if (scoreboard.idle > worker_min)
-            rv -= worker_min;
-        rv += ocwq_idle_threads;
-    } else if (strcmp(key, "idle") == 0) {
-        rv = scoreboard.idle;
-        if (scoreboard.idle > worker_min)
-            rv -= worker_min;
-    } else if (strcmp(key, "ocomm_idle") == 0) {
-        rv = ocwq_idle_threads;
-    } else {
-        dbg_printf("invalid key: %s", key);
-        abort();
-    }
-
-    return rv;
 }

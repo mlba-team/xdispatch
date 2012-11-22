@@ -88,9 +88,6 @@ void _PWQ_EXPORT pthread_workqueue_main_np(void);
 int _PWQ_EXPORT pthread_workqueue_init_np(void);
 #endif
 
-/* NOTE: this is not part of the Darwin API */
-unsigned long _PWQ_EXPORT pthread_workqueue_peek_np(const char *);
-
 #if defined(__cplusplus)
 	}
 #endif

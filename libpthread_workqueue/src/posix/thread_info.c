@@ -195,7 +195,7 @@ errout:
 
 #define MAX_RESULT_SIZE 4096
 
-static int _read_file(const char *path, char *result)
+int _read_file(const char *path, char *result)
 {
 	int read_fd, retval = -1;
     ssize_t actual_read;

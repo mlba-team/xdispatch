@@ -60,14 +60,12 @@ witem_alloc(void (*func)(void *), void *func_arg)
 void 
 witem_free(struct work *wi)
 {
-    dbg_printf("freed work item %p", wi);
     free(wi);
 }
 
 void
-witem_cache_cleanup(void *value)
+witem_cache_cleanup(void *value __attribute__ ((unused)))
 {
-    (void) value;
 }
 
 /* libumem based object cache */
@@ -81,7 +79,7 @@ static umem_cache_t  *witem_cache;
 int
 witem_cache_init(void)
 {
-    witem_cache = umem_cache_create((char *) "witem_cache",   
+    witem_cache = umem_cache_create("witem_cache",   
                                     sizeof(struct work),   
                                     CACHELINE_SIZE,  
                                     NULL,
@@ -121,8 +119,6 @@ witem_free(struct work *wi)
 void
 witem_cache_cleanup(void *value)
 {
-    void * p;
-    p = value;
 }
 
 /* TSD based cacheing per thread */

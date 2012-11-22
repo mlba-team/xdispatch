@@ -17,11 +17,11 @@
 # Flags to pass to dpkg-buildpackage
 DPKGFLAGS=-uc -us
 
-.PHONY :: install uninstall check dist dist-upload publish-www clean merge distclean fresh-build rpm edit cscope valgrind testing
+.PHONY :: install uninstall check dist dist-upload publish-www clean merge distclean fresh-build rpm edit cscope valgrind
 
 include config.mk
 
-all: $(PROGRAM).so testing
+all: $(PROGRAM).so
 
 %.dll: $(OBJS)
 	$(LD) -o $@ $(LDFLAGS) $(OBJS) $(LDADD)
@@ -69,9 +69,6 @@ $(PROGRAM)-$(VERSION).tar.gz:
 	find $(PROGRAM)-$(VERSION) -name '.svn' -exec rm -rf {} \; 2>/dev/null || true
 	tar zcf $(PROGRAM)-$(VERSION).tar.gz $(PROGRAM)-$(VERSION)
 	rm -rf $(PROGRAM)-$(VERSION)
-
-testing:
-	cd testing && make
 
 dist: clean $(PROGRAM)-$(VERSION).tar.gz
 

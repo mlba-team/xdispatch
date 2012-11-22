@@ -1,4 +1,0 @@
-#!/usr/bin/make -f
-
-%:
-	CFLAGS="" LDADD="-lpthread" dh $@ 

@@ -14,17 +14,23 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-obj-m = pthread_workqueue.o
+obj-m = threadpool.o
 KVERSION = $(shell uname -r)
 
-all: pthread_workqueue.ko modtest
+all: threadpool.ko modtest
 
-pthread_workqueue.ko: pthread_workqueue.c
+threadpool.ko: threadpool.c
 	make -C /lib/modules/`uname -r`/build M=$(PWD) modules
 
 clean:
 	make -C /lib/modules/`uname -r`/build M=$(PWD) clean
 	rm -f modtest
+
+update: all
+	rmmod threadpool
+	insmod ./threadpool.ko
+	sleep 2
+	chmod 777 /dev/threadpool
 
 modtest: test.c
 	gcc -o modtest -Wall -Werror test.c
@@ -33,8 +39,4 @@ edit:
 	$(EDITOR) Makefile *.[ch]
 
 check: modtest
-	sudo rmmod pthread_workqueue || true
-	sudo insmod ./pthread_workqueue.ko
-	sleep 2
-	sudo chmod 777 /dev/pthread_workqueue
 	./modtest

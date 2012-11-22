@@ -29,7 +29,6 @@
 
 #include "private.h"
 
-unsigned int PWQ_ACTIVE_CPU = 0;
 int DEBUG_WORKQUEUE = 0;
 char *WORKQUEUE_DEBUG_IDENT = "WQ";
 
@@ -45,27 +44,35 @@ valid_workq(pthread_workqueue_t workq)
 int VISIBLE CONSTRUCTOR
 pthread_workqueue_init_np(void)
 {
+    static int pwq_initialized = 0;
+
+    /* This is not reentrant, but is used to make this function idempotent
+       to support static linking.
+
+       Programs which are (or can be) be statically linked against
+       this library should call pthread_workqueue_init_np() early in
+       their main() function. If the program is dynamically linked,
+       this function will be called twice; once by the dynamic linker
+       as a constructor, and once within main().
+     */
+    if (pwq_initialized)
+        return (0);
+
 #ifdef NDEBUG
     DEBUG_WORKQUEUE = 0;
 #else
     DEBUG_WORKQUEUE = (getenv("PWQ_DEBUG") == NULL) ? 0 : 1;
 # ifndef _WIN32
-    PWQ_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
-    PWQ_ACTIVE_CPU = (getenv("PWQ_ACTIVE_CPU") == NULL) ? 0 : atoi(getenv("PWQ_ACTIVE_CPU"));
-
-    if (getenv("PWQ_SPIN_LAPS") != NULL)
-        PWQ_SPIN_LAPS = atol(getenv("PWQ_SPIN_LAPS"));
-    
-    if (getenv("PWQ_SPIN_THREADS") != NULL)
-        PWQ_SPIN_THREADS =  atoi(getenv("PWQ_SPIN_THREADS"));
-
+    USE_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
 # endif
 #endif
 
     if (manager_init() < 0)
         return (-1);
 
+    pwq_initialized = 1;
     dbg_puts("pthread_workqueue library initialized");
+
     return (0);
 }
 
@@ -94,7 +101,7 @@ pthread_workqueue_create_np(pthread_workqueue_t *workqp,
 
     manager_workqueue_create(workq);
 
-    dbg_printf("created queue %p", (void *) workq);
+    dbg_printf("created queue %p", workq);
 
     *workqp = workq;
     return (0);
@@ -120,7 +127,7 @@ pthread_workqueue_additem_np(pthread_workqueue_t workq,
 
     manager_workqueue_additem(workq, witem);
 
-    dbg_printf("added item %p to queue %p", (void *) witem, (void *) workq);
+    dbg_printf("added item %p to queue %p", witem, workq);
 
     return (0);
 }
@@ -192,10 +199,4 @@ pthread_workqueue_attr_setqueuepriority_np(
         }
     } else
         return (EINVAL);
-}
-
-unsigned long VISIBLE
-pthread_workqueue_peek_np(const char *key)
-{
-    return manager_peek(key);
 }

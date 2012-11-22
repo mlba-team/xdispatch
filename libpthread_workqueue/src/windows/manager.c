@@ -32,23 +32,21 @@
 #ifdef PROVIDE_LEGACY_XP_SUPPORT
 
 static LIST_HEAD(, _pthread_workqueue) wqlist[WORKQ_NUM_PRIOQUEUE];
-static pthread_rwlock_t wqlist_mtx;
+static CRITICAL_SECTION   wqlist_mtx;
 
 int
 manager_init(void)
 {
-	pthread_rwlock_init(&wqlist_mtx, NULL);
+    InitializeCriticalSection(&wqlist_mtx);
     return (0);
 }
 
 void
 manager_workqueue_create(struct _pthread_workqueue *workq)
 {
-    pthread_rwlock_wrlock(&wqlist_mtx);
+    EnterCriticalSection(&wqlist_mtx);
     LIST_INSERT_HEAD(&wqlist[workq->queueprio], workq, wqlist_entry);
-	pthread_rwlock_unlock(&wqlist_mtx);
-
-	pthread_spin_init(&workq->mtx, PTHREAD_PROCESS_PRIVATE);
+    LeaveCriticalSection(&wqlist_mtx);
 }
 
 /* The caller must hold the wqlist_mtx. */
@@ -59,27 +57,21 @@ wqlist_scan(void)
     struct work *witem = NULL;
     int i;
 
-    pthread_rwlock_rdlock(&wqlist_mtx);
+    EnterCriticalSection(&wqlist_mtx);
     for (i = 0; i < WORKQ_NUM_PRIOQUEUE; i++) {
         LIST_FOREACH(workq, &wqlist[i], wqlist_entry) {
-			pthread_spin_lock(&workq->mtx);
-
-            if (STAILQ_EMPTY(&workq->item_listhead)) {
-				pthread_spin_unlock(&workq->mtx);
-				continue;
-			}
+            if (STAILQ_EMPTY(&workq->item_listhead))
+            continue;
 
             witem = STAILQ_FIRST(&workq->item_listhead);
             if (witem != NULL)
                 STAILQ_REMOVE_HEAD(&workq->item_listhead, item_entry);
-
-			pthread_spin_unlock(&workq->mtx);
             goto out;
         }
     }
 
 out:
-    pthread_rwlock_unlock(&wqlist_mtx);
+    LeaveCriticalSection(&wqlist_mtx);
     return (witem);
 }
 
@@ -100,9 +92,9 @@ worker_main(LPVOID arg)
 void
 manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
 {
-    pthread_spin_lock(&workq->mtx);
+    EnterCriticalSection(&wqlist_mtx);
     STAILQ_INSERT_TAIL(&workq->item_listhead, witem, item_entry);
-    pthread_spin_unlock(&workq->mtx);
+    LeaveCriticalSection(&wqlist_mtx);
     if (!QueueUserWorkItem(worker_main, NULL, WT_EXECUTELONGFUNCTION))
 	    abort();
 }
@@ -180,19 +172,3 @@ manager_workqueue_additem(struct _pthread_workqueue *workq, struct work *witem)
 // TODO: We need to cleanly close the environment and threadpools!
 
 #endif
-
-unsigned long
-manager_peek(const char *key)
-{
-    unsigned long rv = 0;
-
-    if (strcmp(key, "combined_idle") == 0) {
-        dbg_puts("TODO");
-        abort();
-    } else {
-        dbg_printf("invalid key: %s", key);
-        abort();
-    }
-
-    return rv;
-}

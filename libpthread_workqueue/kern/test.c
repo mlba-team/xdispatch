@@ -27,7 +27,7 @@ main(int argc, char **argv)
 {
     int fd;
 
-    fd = open("/dev/pthread_workqueue", O_RDWR);
+    fd = open("/dev/threadpool", O_RDWR);
     if (fd < 0)
         err(1, "open()");
     printf("fd = %d\n", fd);
@@ -40,6 +40,5 @@ main(int argc, char **argv)
     puts("ok");
 #endif
 
-    pause();
     exit(0);
 }

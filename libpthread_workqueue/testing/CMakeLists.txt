@@ -35,12 +35,12 @@ add_executable(test_api_pthread_workqueue ${API})
 target_link_libraries(test_api_pthread_workqueue pthread_workqueue)
 set_target_properties(test_api_pthread_workqueue PROPERTIES DEBUG_POSTFIX "D")
 
-add_executable(test_latency_pthread_workqueue ${LATENCY})
-target_link_libraries(test_latency_pthread_workqueue pthread_workqueue)
-
 if(NOT WIN32)
 
         #add_executable(test_witem_cache_pthread_workqueue ${WITEM_CACHE})
         #target_link_libraries(test_witem_cache_pthread_workqueue pthreads_workqueue)
+
+        #add_executable(test_latency_pthread_workqueue ${LATENCY})
+        #target_link_libraries(test_latency_pthread_workqueue pthread_workqueue)
 
 endif()
