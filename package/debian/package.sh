@@ -1,5 +1,6 @@
 #!/bin/sh
 
+CONFIG=package/ubuntu
 VERSION=$1
 BUILDDIR=/tmp/xdispatch
 
@@ -7,18 +8,19 @@ BUILDDIR=/tmp/xdispatch
 echo -- create $BUILDDIR
 mkdir -p $BUILDDIR
 echo -- copy sources to $BUILDDIR/$VERSION
-cp -rf . $BUILDDIR/$VERSION
+cp -vrf . $BUILDDIR/$VERSION
 CURRENT=`pwd`
 cd $BUILDDIR/$VERSION
 # remove .svn directories (if any)
 echo -- clean svn information
-rm -rf `find . -type d -name .svn`
+rm -vrf `find . -type d -name .svn`
 # delete old build files
 echo -- cleaning build directories
-rm -rf Build/QtCreator_ProjectFiles Build/*MakeFiles Build/Docs Build/VS10_ProjectFiles*
+rm -vrf build/QtCreator_ProjectFiles build/*MakeFiles build/Docs build/VS10_ProjectFiles*
 # copy debian packaging information
 echo -- copy packaging information
-cp -rf package/debian debian
+mkdir -p debian
+cp -vrf $CONFIG/* debian
 
 # build src package
 echo -- build source package
@@ -31,14 +33,15 @@ sudo pbuilder build --buildresult $BUILDDIR ../*.dsc
 
 # copy binaries back to source dir
 echo -- retrieve packages
+mv *.deb *.dsc *.tar.gz *.changes $CURRENT/../
 cd ..
 lintian *.deb
-cp *.deb *.dsc *.tar.gz *.changes $CURRENT/../
+mv *.deb *.dsc *.tar.gz *.changes $CURRENT/../
 
 # cleanup
 echo -- cleanup
 cd $CURRENT
-rm -rf $BUILDDIR
+#rm -rf $BUILDDIR
 
 echo -- DONE
 
