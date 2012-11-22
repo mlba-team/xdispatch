@@ -1,5 +1,4 @@
 #include <limits.h>
-#include <semaphore.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,6 +8,11 @@
 # if !defined(NO_CONFIG_H)
 #  include "config.h"
 # endif
+# include <semaphore.h>
+#else
+# define inline _inline
+# include "../../src/windows/platform.h"
+# include "posix_semaphore.h"
 #endif
 #include "../../src/private.h"
 
@@ -256,6 +260,10 @@ run_overcommit_test(pthread_workqueue_t wq)
 int main() {
     pthread_workqueue_t wq;
     int rv;
+
+#ifdef MAKE_STATIC
+	pthread_workqueue_init_np();
+#endif
 
     sem_init(&test_complete, 0, 0);
 
