@@ -3,8 +3,6 @@
 CC := clang
 CXX := clang++
 CMAKE_FLAGS = \
-	-DCMAKE_C_COMPILER=clang \
-	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_BUILD_TYPE=Release	\
 	-DSTATIC_KQUEUE=ON \
 	-DSTATIC_WORKQUEUE=ON \
