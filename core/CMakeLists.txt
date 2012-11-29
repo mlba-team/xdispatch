@@ -9,8 +9,7 @@ set(NAME dispatch)
 project(${NAME} C)
 
 # do we have kernel support for pthread_workqueues?
-check_include_files(pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
-if(FORCE_OWN_LIBKQUEUE OR LINUX)
+if(NOT APPLE)
     set(LIBS ${LIBS} pthread_workqueue)
 endif()
 
