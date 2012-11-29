@@ -21,8 +21,6 @@
 #include <xdispatch/dispatch.h>
 
 
-#include "../core/platform/atomic.h"
-
 #include "tests.h"
 
 /*
