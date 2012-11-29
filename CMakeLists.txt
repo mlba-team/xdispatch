@@ -37,7 +37,7 @@ if(MZ_IS_CLANG AND NOT APPLE)
     )
 
     mz_add_flag(CLANG -fblocks)
-   	include_directories( ${BLOCKSRUNTIME_INCLUDE_DIRS} )
+    include_directories(${BLOCKSRUNTIME_INCLUDE_DIRS})
     set(LIBS ${LIBS} ${BLOCKSRUNTIME_LIBRARIES})
 endif()
 
@@ -49,12 +49,30 @@ if(APPLE)
 		mz_add_flag(GCC -arch i386 -arch x86_64)
 	endif()
 endif()
-CHECK_INCLUDE_FILES (sys/event.h FOUND_KQUEUE_IMPL)
-CHECK_INCLUDE_FILES (kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
-CHECK_INCLUDE_FILES (pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
-CHECK_INCLUDE_FILES (dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
 
-if(NOT FOUND_KQUEUE_IMPL AND NOT FOUND_LIBKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
+check_include_files(sys/event.h FOUND_KQUEUE_IMPL)
+check_include_files(kqueue/sys/event.h FOUND_LIBKQUEUE_IMPL)
+if(FOUND_KQUEUE_IMPL OR FOUND_LIBKQUEUE_IMPL)
+    option(FORCE_OWN_LIBKQUEUE "Enable to force the use of the shipped libkqueue version" OFF)
+else()
+    option(FORCE_OWN_LIBKQUEUE "Enable to force the use of the shipped libkqueue version" ON)
+endif()
+
+check_include_files(pthread_workqueue.h FOUND_PTHREAD_WORKQUEUE_IMPL)
+if(FOUND_PTHREAD_WORKQUEUE_IMPL)
+    option(FORCE_OWN_LIBPTHREAD_WORKQUEUE "Enable to force the use of the shipped libpthread_workqueue version" OFF)
+else()
+    option(FORCE_OWN_LIBPTHREAD_WORKQUEUE "Enable to force the use of the shipped libpthread_workqueue version" ON)
+endif()
+
+check_include_files(dispatch/dispatch.h HAVE_NATIVE_DISPATCH_H)
+if(HAVE_NATIVE_DISPATCH_H)
+    option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" OFF)
+else()
+    option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" ON)
+endif()
+
+if(FORCE_OWN_LIBKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_KQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_KQUEUE=1)
     mz_add_library(libkqueue libkqueue)
@@ -74,7 +92,7 @@ if(NOT WIN32)
 	mz_add_flag(GCC -fvisibility=hidden)
 endif()
 
-if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
+if(FORCE_OWN_LIBPTHREAD_WORKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_WORKQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_WORKQUEUE=1)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
@@ -84,30 +102,15 @@ if(NOT FOUND_PTHREAD_WORKQUEUE_IMPL AND NOT HAVE_NATIVE_DISPATCH_H)
 endif()
 
 # do we have native dispatch support on this platform?
-if(HAVE_NATIVE_DISPATCH_H)
-    message("   >> found native libDispatch implementation, using it")
+if(NOT FORCE_OWN_LIBDISPATCH)
+    message("   >> using system installed libdispatch")
 else()
     mz_add_library(libdispatch core)
     set(LIBS ${LIBS} dispatch)
 endif()
 
-# tell everybody we have libdispatch support here, perhaps even native by the OS
-if(HAVE_NATIVE_DISPATCH_H)
-    if(PARENT_SCOPE)
-        mz_add_definition("HAVE_NATIVE_DISPATCH_H=1" PARENT_SCOPE)
-    else()
-        mz_add_definition("HAVE_NATIVE_DISPATCH_H=1")
-    endif()
-endif()
-
 # the xdispatch target
 mz_add_library(xdispatch cxx)
-
-# Use HAS_LIBDISPATCH to query it in other projects
-if(PARENT_SCOPE)
-	mz_add_definition("HAS_LIBDISPATCH" PARENT_SCOPE)
-	set(HAS_LIBDISPATCH TRUE PARENT_SCOPE)
-endif()
 
 
 # Qt Extension if Qt is available
@@ -125,14 +128,14 @@ endif()
 # to mimic a proper installation. This is
 # due to us needing different headers on different
 # platforms (especially Darwin)
-if(APPLE OR HAVE_NATIVE_DISPATCH_H)
+if(APPLE OR NOT FORCE_OWN_LIBDISPATCH)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
     file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/xdispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
     if(XDISPATCH_QT_SUPPORT)
-	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/QtDispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/QtDispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
     endif()
-    if(NOT HAVE_NATIVE_DISPATCH_H)
-	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/dispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
+    if(FORCE_OWN_LIBDISPATCH)
+        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/dispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
     endif()
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 else()
@@ -140,7 +143,7 @@ else()
 endif()
 
 # custom test framework for xdispatch
-if( BUILD_XDISPATCH_TESTS)
+if(BUILD_XDISPATCH_TESTS)
 	mz_add_executable(tests tests)
 endif()
 
@@ -157,7 +160,7 @@ if(APPLE)
 elseif(UNIX)
 	include(package/rpm/rpm.cmake)
 	include(package/debian/deb.cmake)	
-        include(package/ubuntu/deb.cmake)
+    include(package/ubuntu/deb.cmake)
 else() # Windows ...
 	include(package/windows/zip.cmake)
 endif()
