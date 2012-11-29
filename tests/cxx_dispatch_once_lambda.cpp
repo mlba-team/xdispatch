@@ -20,9 +20,9 @@
 */
 
 
-#include "../include/xdispatch/dispatch"
-#include "../core/platform/atomic.h"
+#include <xdispatch/dispatch>
 #include "cxx_tests.h"
+
 
 /*
  A simple test for ensuring the once

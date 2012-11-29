@@ -23,7 +23,6 @@
 #include <xdispatch/dispatch.h>
 
 #include "tests.h"
-#include "../core/platform/atomic.h"
 
 #define JOBS_NO 20
 

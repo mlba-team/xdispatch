@@ -36,7 +36,6 @@
 #	include <unistd.h>
 #endif
 
-#include "../core/platform/atomic.h"
 #include "tests.h"
 
 #if TARGET_OS_EMBEDDED

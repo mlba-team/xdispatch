@@ -6,7 +6,7 @@
 #include <qthreadstorage.h>
 #include <qcoreapplication.h>
 
-#include "../core/platform/platform.h"
+#include "../libdispatch/platform/platform.h"
 
 #include "../include/QtDispatch/qdispatchqueue.h"
 #include "../include/QtDispatch/qdispatch.h"

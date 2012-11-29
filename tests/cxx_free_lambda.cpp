@@ -20,8 +20,7 @@
 */
 
 
-#include "../include/xdispatch/dispatch"
-#include "../core/platform/atomic.h"
+#include <xdispatch/dispatch>
 #include "cxx_tests.h"
 
 static bool was_freed = false;

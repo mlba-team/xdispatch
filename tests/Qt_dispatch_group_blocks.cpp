@@ -25,7 +25,6 @@
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
-#include "../core/platform/atomic.h"
 
 
 // // Test the signal implementation

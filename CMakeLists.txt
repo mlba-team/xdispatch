@@ -105,7 +105,7 @@ endif()
 if(NOT FORCE_OWN_LIBDISPATCH)
     message("   >> using system installed libdispatch")
 else()
-    mz_add_library(libdispatch core)
+    mz_add_library(dispatch libdispatch)
     set(LIBS ${LIBS} dispatch)
 endif()
 

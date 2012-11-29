@@ -24,7 +24,9 @@
 
 #include "munit/MUnit.h"
 #include <xdispatch/dispatch.h>
-#include "../core/platform/platform.h"
+
+#include "../libdispatch/platform/platform.h"
+#include "../libdispatch/platform/atomic.h"
 
 #ifdef __cplusplus
 extern "C" {

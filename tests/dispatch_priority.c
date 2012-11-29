@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "../core/platform/atomic.h"
 #include "tests.h"
 
 /*

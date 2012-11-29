@@ -18,10 +18,8 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
+
 #include <xdispatch/dispatch.h>
-
-
-#include "../core/platform/atomic.h"
 
 #include "tests.h"
 

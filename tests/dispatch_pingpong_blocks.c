@@ -33,7 +33,6 @@
 #endif
 
 
-#include "../core/platform/atomic.h"
 #include "tests.h"
 
 

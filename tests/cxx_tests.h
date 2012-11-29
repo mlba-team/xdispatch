@@ -23,7 +23,9 @@
 #define CXX_TESTS_H_
 
 #include "munit/MUnit.h"
-#include "../core/platform/atomic.h"
+
+#include "../libdispatch/platform/atomic.h"
+#include "../libdispatch/platform/platform.h"
 
 #ifdef __cplusplus
 # include <xdispatch/dispatch>

@@ -73,8 +73,8 @@
 #include "../include/xdispatch/timer.h"
 #include "../include/xdispatch/lambda_dispatch.h"
 
-#include "../core/platform/platform.h"
-#include "../core/src/shims/hardware.h"
+#include "../libdispatch/platform/platform.h"
+#include "../libdispatch/src/shims/hardware.h"
 
 #include "execution.h"
 

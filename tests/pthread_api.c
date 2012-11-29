@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 
-#include "../core/platform/platform.h"
 #include "tests.h"
 
 /*

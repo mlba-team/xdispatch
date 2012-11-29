@@ -22,8 +22,8 @@
 
 #include <QtDispatch/QtDispatch>
 
-#include "../core/platform/atomic.h"
 #include "Qt_tests.h"
+
 
 static bool was_freed = false;
 

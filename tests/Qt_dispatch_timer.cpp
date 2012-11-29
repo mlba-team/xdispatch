@@ -23,8 +23,8 @@
 #include <QtCore/QTime>
 #include <QtCore/QRunnable>
 
-#include "../core/platform/atomic.h"
 #include "Qt_tests.h"
+
 
 static QDispatchTimer* tested_timer = NULL;
 static QTime checked_time;

@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core/platform/atomic.h"
 #include "tests.h"
 
 #if DISPATCH_SOURCE_HAS_TIMER

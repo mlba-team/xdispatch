@@ -23,7 +23,7 @@
 #define QT_TESTS_H_
 
 #include "munit/MUnit.h"
-#include "../core/platform/platform.h"
+#include "../libdispatch/platform/platform.h"
 
 #ifdef __cplusplus
 # include <QtDispatch/QDispatch>

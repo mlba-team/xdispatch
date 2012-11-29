@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../core/platform/atomic.h"
 #include "tests.h"
 
 int done = 0;

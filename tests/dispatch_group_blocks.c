@@ -32,7 +32,6 @@
 #	include <unistd.h>
 #endif
 
-#include "../core/platform/atomic.h"
 #include "tests.h"
 
 #ifndef NSEC_PER_SEC

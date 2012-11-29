@@ -28,8 +28,6 @@
 #include "cxx_tests.h"
 #include "stopwatch.h"
 
-#include "../core/platform/atomic.h"
-#include "../core/platform/platform.h"
 
 static const size_t ITERATIONS = 10000; // 10 000
 

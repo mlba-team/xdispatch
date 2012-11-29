@@ -20,7 +20,7 @@
 */
 
 
-#include "../include/xdispatch/dispatch"
+#include <xdispatch/dispatch>
 #include "cxx_tests.h"
 
 #include <iostream>
