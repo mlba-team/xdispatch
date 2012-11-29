@@ -47,7 +47,8 @@
 
 #include <stddef.h>
 #if !defined(__GNUC__) && defined(_WIN32) && _MSC_VER < 1600
-# include "../../core/platform/windows/stdint.h"
+  typedef signed __int64       int64_t;
+  typedef unsigned __int64     uint64_t;
 #else
 # include <stdint.h>
 #endif
