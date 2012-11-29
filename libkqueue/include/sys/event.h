@@ -193,8 +193,7 @@ kevent(int kq, const struct kevent *changelist, int nchanges,
 	    const struct timespec *timeout);
 
 #ifdef MAKE_STATIC
-__declspec(dllexport) int
-libkqueue_init();
+void	libkqueue_init();
 #endif
 
 #else
