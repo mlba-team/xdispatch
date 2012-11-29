@@ -104,6 +104,7 @@ endif()
 # do we have native dispatch support on this platform?
 if(NOT FORCE_OWN_LIBDISPATCH)
     message("   >> using system installed libdispatch")
+    mz_add_definition("HAVE_NATIVE_DISPATCH_H=1")
 else()
     mz_add_library(dispatch libdispatch)
     set(LIBS ${LIBS} dispatch)
