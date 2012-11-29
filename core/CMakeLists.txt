@@ -9,42 +9,27 @@ set(NAME dispatch)
 project(${NAME} C)
 
 # do we have kernel support for pthread_workqueues?
-CHECK_INCLUDE_FILES (pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
-if(HAVE_PTHREAD_WORKQUEUE_H)
-    if(LINUX)
-        message("   >> found libpthread_workqueue installation, using it")
-        set(LIBS ${LIBS} pthread_workqueue)
-    else()
-        message("   >> found native pthread_workqueue implementation, using it")
-    endif()
-else()
+check_include_files(pthread_workqueue.h HAVE_PTHREAD_WORKQUEUE_H)
+if(FORCE_OWN_LIBKQUEUE OR LINUX)
     set(LIBS ${LIBS} pthread_workqueue)
 endif()
 
-# do we have kqueues?
-CHECK_INCLUDE_FILES (sys/event.h HAVE_KQUEUE_H)
-if(HAVE_KQUEUE_H)
-    message("   >> found native kqeue implementation, using it")
-endif()
-CHECK_INCLUDE_FILES (kqueue/sys/event.h HAVE_LIBKQUEUE_H)
-if(HAVE_LIBKQUEUE_H)
-    message("   >> found libkqeue installation, using it")
-endif()
-if(NOT HAVE_KQUEUE_H)
+# do we have kqueue?
+if(FORCE_OWN_LIBKQUEUE)
     set(LIBS ${LIBS} kqueue)
 endif()
 
 # other needed functions
-CHECK_INCLUDE_FILES( mach/mach_time.h HAVE_MACH_ABSOLUTE_TIME)
-CHECK_INCLUDE_FILES( stdint.h HAVE_STDINT_H )
-CHECK_INCLUDE_FILES( crtdbg.h HAVE_CRTDBG_H )
-CHECK_INCLUDE_FILES( pthread.h HAVE_PTHREAD_H )
-CHECK_FUNCTION_EXISTS( getprogname HAVE_GETPROGNAME)
-CHECK_FUNCTION_EXISTS( getexecname HAVE_GETEXECNAME)
-CHECK_FUNCTION_EXISTS( program_invocation_short_name HAVE_DECL_PROGRAM_INVOCATION_SHORT_NAME)
-CHECK_SYMBOL_EXISTS( CLOCK_UPTIME "time.h" HAVE_DECL_CLOCK_UPTIME)
-CHECK_SYMBOL_EXISTS( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
-CHECK_FUNCTION_EXISTS( sysconf HAVE_SYSCONF)
+check_include_files( mach/mach_time.h HAVE_MACH_ABSOLUTE_TIME)
+check_include_files( stdint.h HAVE_STDINT_H )
+check_include_files( crtdbg.h HAVE_CRTDBG_H )
+check_include_files( pthread.h HAVE_PTHREAD_H )
+check_function_exists( getprogname HAVE_GETPROGNAME)
+check_function_exists( getexecname HAVE_GETEXECNAME)
+check_function_exists( program_invocation_short_name HAVE_DECL_PROGRAM_INVOCATION_SHORT_NAME)
+check_symbol_exists( CLOCK_UPTIME "time.h" HAVE_DECL_CLOCK_UPTIME)
+check_symbol_exists( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
+check_function_exists( sysconf HAVE_SYSCONF)
 
 if(LINUX)
     set(LIBS ${LIBS} rt m)
@@ -100,8 +85,8 @@ set_property(TARGET dispatch PROPERTY VERSION ${XDISPATCH_VERSION})
 set_property(TARGET dispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
 
 # finally create the config.h
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)
-INCLUDE_DIRECTORIES(
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)
+include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 

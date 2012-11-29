@@ -73,14 +73,11 @@ BOOL WINAPI DllMain(
 
 int init(){
 #if STATIC_WORKQUEUE
-    if (pthread_workqueue_init_np() < 0)
-        return (-1);
+    pthread_workqueue_init_np();
 #endif
 #if STATIC_KQUEUE
-    if (libkqueue_init() < 0)
-        return (-1);
+    libkqueue_init();
 #endif
-
     libdispatch_init();
 
     return 0;
