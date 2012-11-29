@@ -22,12 +22,6 @@
 #include <string.h>
 #include "tree.h"
 
-/* If true, calls to kevent() will be serialized so that only a 
-   single thread can copyin/copyout. This should go away once
-   fine-grained locking is fixed.
-*/
-#define SERIALIZE_KEVENT 1
-
 /* Maximum events returnable in a single kevent() call */
 #define MAX_KEVENT  512
 
@@ -56,6 +50,11 @@ struct evfilt_data;
 
 #include "debug.h"
 
+/* Workaround for Android */
+#ifndef EPOLLONESHOT
+# define EPOLLONESHOT (1 << 30)
+#endif
+
 struct eventfd {
     int ef_id;
 #if defined(EVENTFD_PLATFORM_SPECIFIC)
@@ -82,11 +81,10 @@ struct knote {
             off_t     size;   /* Used by vnode */
         } vnode;
         timer_t       timerid;  
-        pthread_t     tid;          /* Used by posix/timer.c */
+        struct sleepreq *sleepreq; /* Used by posix/timer.c */
 		void          *handle;      /* Used by win32 filters */
     } data;
 	struct kqueue*	   kn_kq;
-    tracing_mutex_t    kn_mtx;
     volatile uint32_t  kn_ref;
 #if defined(KNOTE_PLATFORM_SPECIFIC)
     KNOTE_PLATFORM_SPECIFIC;
@@ -122,11 +120,10 @@ struct filter {
 
     struct eventfd kf_efd;             /* Used by user.c */
 
-#if DEADWOOD
     //MOVE TO POSIX?
     int       kf_pfd;                   /* fd to poll(2) for readiness */
     int       kf_wfd;                   /* fd to write when an event occurs */
-#endif
+    //----?
 
     struct evfilt_data *kf_data;	    /* filter-specific data */
     RB_HEAD(knt, knote) kf_knote;
@@ -194,17 +191,7 @@ void knote_insert(struct filter *, struct knote *);
 int  knote_delete(struct filter *, struct knote *);
 int  knote_init(void);
 int  knote_disable(struct filter *, struct knote *);
-void knote_lock(struct knote *);
-
-#define knote_lock(kn) do {                                         \
-    tracing_mutex_assert(&(kn)->kn_mtx, MTX_UNLOCKED);              \
-    tracing_mutex_lock(&(kn)->kn_mtx);                              \
-} while (0)
-
-#define knote_unlock(kn) do {                                       \
-    tracing_mutex_assert(&(kn)->kn_mtx, MTX_LOCKED);                \
-    tracing_mutex_unlock(&(kn)->kn_mtx);                            \
-} while (0)
+#define knote_get_filter(knt) &((knt)->kn_kq->kq_filt[(knt)->kev.filter])
 
 int         filter_lookup(struct filter **, struct kqueue *, short);
 int      	filter_register_all(struct kqueue *);
@@ -225,7 +212,5 @@ int         map_replace(struct map *, int, void *, void *);
 void       *map_lookup(struct map *, int);
 void       *map_delete(struct map *, int);
 void        map_free(struct map *);
-
-int CONSTRUCTOR libkqueue_init(void);
 
 #endif  /* ! _KQUEUE_PRIVATE_H */

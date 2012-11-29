@@ -45,6 +45,14 @@ if(WIN32)
         SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=i486")
     endif()
 else()
+    check_include_files(sys/signalfd.h HAVE_SYS_SIGNALFD_H)
+    if(HAVE_SYS_SIGNALFD_H)
+        mz_add_definition(HAVE_SYS_SIGNALFD_H=1)
+    endif()
+    check_include_files(sys/timerfd.h HAVE_SYS_TIMERFD_H)
+    if(HAVE_SYS_TIMERFD_H)
+        mz_add_definition(HAVE_SYS_TIMERFD_H=1)
+    endif()
 	file(GLOB SRC 
 		src/posix/*.h
 		src/posix/platform.c
