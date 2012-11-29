@@ -121,7 +121,7 @@ else()
 endif()
 
 if(XDISPATCH_QT_SUPPORT)
-	mz_add_library(QtDispatch Qt)
+    mz_add_library(QtDispatch libqtdispatch)
 endif()
 
 # copy the includes to a specific folder
