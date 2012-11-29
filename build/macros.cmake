@@ -1,33 +1,11 @@
-##
-# Copyright (c) 2008-2012 Marius Zwicker
-# All rights reserved.
-# 
-# @LICENSE_HEADER_START:Apache@
-# 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#     http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# 
-# http://www.mlba-team.de
-# 
-# @LICENSE_HEADER_END:Apache@
-##
-
 ########################################################################
 #
 #	BUILD/MACROS.CMAKE
 #
-# This file provides some useful macros to
+# 	This file provides some useful macros to
 #	simplify adding of componenents and other
-#	tasks
+#	taskss
+#	(c) 2009-2012 Marius Zwicker
 #
 # This file defines a whole bunch of macros
 # to add a subdirectory containing another
@@ -75,6 +53,10 @@
 #                              found on the system
 #           <name>_LIBRARIES The libs to link against - either lib or target
 #           <name>_FOUND true if the lib was found on the system
+#           <name>_IGNORE_SYSTEM_LIBRARY Will be an option available
+#                              for custom configuration. Enable to ignore the
+#                              detected system install library and force use
+#                              of the version in <directory>
 #
 ########################################################################
 
@@ -137,7 +119,8 @@ macro(mz_auto_moc mocced)
 	# determine the required files
 	__mz_extract_files(to_moc ${ARGN})
 	#mz_debug_message("mz_auto_moc mocced: ${to_moc}")
-	qt4_wrap_cpp(_mocced ${to_moc})
+    # the definition of -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED is to bypass a parsing bug within moc
+    qt4_wrap_cpp(_mocced ${to_moc} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
 	set(${mocced} ${${mocced}} ${_mocced})
 endmacro()
 
@@ -179,9 +162,15 @@ macro(mz_find_include_library _NAME SYS _VERSION SRC _DIRECTORY _INC_DIR _TARGET
     STRING(TOUPPER ${_NAME} _NAME_UPPER)
     
     find_package( ${_NAME} ${_VERSION} )
-    if( NOT ${_NAME_UPPER}_FOUND )
+    if( ${_NAME_UPPER}_FOUND )
+        option(${_NAME_UPPER}_IGNORE_SYSTEM_LIBRARY "Force use of the in-source library version of ${_NAME}" OFF)
+    else()
+        option(${_NAME_UPPER}_IGNORE_SYSTEM_LIBRARY "Force use of the in-source library version of ${_NAME}" ON)
+    endif()
+
+    if( NOT ${_NAME_UPPER}_FOUND OR ${_NAME_UPPER}_IGNORE_SYSTEM_LIBRARY )
         set(${_NAME_UPPER}_INCLUDE_DIRS ${_INC_DIR})
-        set(${_NAME_UPPER}_LIBRARIES ${_TARGET})
+        set(${_NAME_UPPER}_LIBRARIES ${_TARGET} ${ARGN})
         
         mz_add_library(${_NAME} ${_DIRECTORY})    
     endif()
