@@ -195,6 +195,10 @@ kevent(int kq, const struct kevent *changelist, int nchanges,
 #ifdef MAKE_STATIC
 __declspec(dllexport) int
 libkqueue_init();
+__declspec(dllexport) void
+libkqueue_thread_attach();
+__declspec(dllexport) void
+libkqueue_thread_detach();
 #endif
 
 #else
