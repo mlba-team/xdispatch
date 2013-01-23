@@ -23,7 +23,7 @@
 #ifndef QITERATIONRUNNABLE_H_
 #define QITERATIONRUNNABLE_H_
 
-#include <QtCore/qrunnable.h>
+#include <QRunnable>
 #include "qdispatchglobal.h"
 
 /**
