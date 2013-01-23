@@ -34,7 +34,12 @@ include_directories(
 
 # moc qt files
 mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
-qt4_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+if(XDISPATCH_USE_QT5)
+    qt5_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+else()
+    qt4_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+endif()
+set(QMOC ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 
 source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
@@ -51,12 +56,17 @@ else()
 	set( QTDISPATCH_BUILD_TYPE SHARED )
 endif()
 
-add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc ${RES_FILE})
-target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QMOC} ${QINCLUDE_H} ${RES_FILE})
+set_property(TARGET QtDispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
+if(XDISPATCH_USE_QT5)
+    target_link_libraries(QtDispatch dispatch xdispatch)
+    qt5_use_modules(QtDispatch Widgets Network)
+else()
+    target_link_libraries(QtDispatch dispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+endif()
 
 mz_target_props(QtDispatch)
 set_property(TARGET QtDispatch PROPERTY VERSION ${XDISPATCH_VERSION})
-set_property(TARGET QtDispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
 
 if(IOS)
     install(TARGETS QtDispatch

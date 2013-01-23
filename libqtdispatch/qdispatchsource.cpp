@@ -87,7 +87,7 @@ private:
 
 class QDispatchSource::Private {
 public:
-	Private() : target(QDispatch::globalQueue()){
+    Private() : suspend_ct(0), target(QDispatch::globalQueue()){
 		//dispatch_once_f(&QDispatchSourceThread::started, &thread, qstart_source_thread);
 	}
     ~Private(){
@@ -140,7 +140,8 @@ void QDispatchSource::signal(QObject* obj){
 	if(!d->handler)
 		return;
 
-	if(d->suspend_ct < 0)
+	// TODO: Validate this implementation
+    if(d->suspend_ct.fetchAndAddAcquire(0) <= 0)
 		return;
 
 	if(obj == NULL)

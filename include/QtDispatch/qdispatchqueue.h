@@ -23,7 +23,7 @@
 #ifndef QDISPATCH_QUEUE
 #define QDISPATCH_QUEUE
 
-#include <QtCore/qobject.h>
+#include <QObject>
 
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"

@@ -17,15 +17,11 @@ if(NOT HAS_MZ_GLOBAL)
 
 	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
 	include(build/global.cmake)
-
-	# QT settings
-  find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
-	include(${QT_USE_FILE})
 	
 	# We need to ouput everything into the same directory
-  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
-  set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
-  message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
+    set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
+    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
+    message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
 endif()
 
 # is the used compiler clang? if so we need blocks support
@@ -115,7 +111,23 @@ mz_add_library(xdispatch libxdispatch)
 
 
 # Qt Extension if Qt is available
-if(QT4_FOUND)
+if( Qt5Core_VERSION_STRING )
+    option(XDISPATCH_USE_QT5 "Enable to link against Qt5 instead of Qt4" ON)
+else()
+    option(XDISPATCH_USE_QT5 "Enable to link against Qt5 instead of Qt4" OFF)
+endif()
+
+if(XDISPATCH_USE_QT5)
+    # new: Qt5 is separated into modules
+    find_package(Qt5Core)
+else()
+    if(NOT QT4_FOUND)
+        find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
+        include(${QT_USE_FILE})
+    endif()
+endif()
+
+if( QT4_FOUND OR Qt5Core_VERSION_STRING )
 	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
 else()
 	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)

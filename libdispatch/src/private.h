@@ -121,7 +121,7 @@ void (*_dispatch_end_NSAutoReleasePool)(void *);
 #endif
 #endif /* HAVE_MACH */
 
-#ifdef QT_CORE_LIB
+#if defined(QT_CORE_LIB) || defined(XDISPATCH_QT_SUPPORT)
 # define DISPATCH_QT_COMPAT 1
 # if DISPATCH_QT_COMPAT
 

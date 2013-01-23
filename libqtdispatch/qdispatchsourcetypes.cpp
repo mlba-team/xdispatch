@@ -1,9 +1,9 @@
 
 
-#include <qiodevice.h>
-#include <qvariant.h>
-#include <qnetworkaccessmanager.h>
-#include <qnetworkreply.h>
+#include <QIODevice>
+#include <QVariant>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "../include/QtDispatch/qdispatchsource.h"
 

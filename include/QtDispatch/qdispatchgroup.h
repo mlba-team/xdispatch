@@ -23,8 +23,8 @@
 #ifndef QDISPATCH_GROUP_H_
 #define QDISPATCH_GROUP_H_
 
-#include <QtCore/qobject.h>
-#include <QtCore/qscopedpointer.h>
+#include <QObject>
+#include <QScopedPointer>
 
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"

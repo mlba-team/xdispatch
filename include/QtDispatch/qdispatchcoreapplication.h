@@ -26,7 +26,7 @@
 #include "qdispatchapplication.h"
 #include "qdispatchglobal.h"
 
-#include <QtCore/qcoreapplication.h>
+#include <QCoreApplication>
 
 /**
  * @addtogroup qtdispatch

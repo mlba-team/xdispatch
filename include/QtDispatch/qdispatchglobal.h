@@ -24,7 +24,7 @@
 
 #include <xdispatch/dispatch.h>
 
-#include <QtCore/qglobal.h>
+#include <QtGlobal>
 
 /**
  * @addtogroup qtdispatch
@@ -46,7 +46,9 @@
 # define Q_DISPATCH_EXPORT Q_DECL_IMPORT
 #endif
 
-QT_LICENSED_MODULE(Dispatch)
+#ifdef QT_LICENSED_MODULE
+  QT_LICENSED_MODULE(Dispatch)
+#endif
 
 QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE

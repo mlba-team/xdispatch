@@ -23,7 +23,7 @@
 #ifndef QBLOCKRUNNABLE_H_
 #define QBLOCKRUNNABLE_H_
 
-#include <QtCore/qrunnable.h>
+#include <QRunnable>
 #include "qdispatchglobal.h"
 
 /**
