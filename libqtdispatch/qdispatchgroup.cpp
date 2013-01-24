@@ -81,14 +81,14 @@ class QDispatchGroup::Emitter : public xdispatch::operation {
             if( _operation )
                 (*_operation)();
 
-            if( ! _group.isNull() )
-                _group.data()->emitFinished();
+            if( _group )
+                _group->emitFinished();
         }
 
     private:
         QRunnable *_runnable;
         xdispatch::operation* _operation;
-        QWeakPointer<QDispatchGroup::Private> _group;
+        QDispatchGroup::Private* _group;
 };
 
 
