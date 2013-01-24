@@ -144,7 +144,7 @@ __XDISPATCH_END_NAMESPACE
 #elif defined(__GNUC__) || defined(__clang__)
 
 // gcc 4.5 with c++0x enabled
-# if defined(__GXX_EXPERIMENTAL_CXX0X__)
+# if defined(__GXX_EXPERIMENTAL_CXX0X_) || (__cplusplus >= 201103L)
 #  ifndef XDISPATCH_HAS_BLOCKS
 #   define XDISPATCH_BLOCK [=]
 #   ifndef XDISPATCH_NO_KEYWORDS
@@ -154,11 +154,11 @@ __XDISPATCH_END_NAMESPACE
 #  define XDISPATCH_HAS_LAMBDAS 1
 # endif // __GXX_EXPERIMENTAL_CXX0X__
 
-#  include <tr1/functional>
+#  include <functional>
 
 __XDISPATCH_BEGIN_NAMESPACE
- typedef ::std::tr1::function< void (void) > lambda_function;
- typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+ typedef ::std::function< void (void) > lambda_function;
+ typedef ::std::function< void (size_t) > iteration_lambda_function;
 __XDISPATCH_END_NAMESPACE
 
 # define XDISPATCH_HAS_FUNCTION 1

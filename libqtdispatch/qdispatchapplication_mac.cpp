@@ -25,7 +25,7 @@
 
 #ifdef Q_OS_MAC
 
-#ifndef QT_MAC_USE_COCOA
+#if ! defined( QT_MAC_USE_COCOA ) && ! defined( Q_OS_MAC /* Qt 5+ only */ )
 # error "QtDispatch is supporting Qt built on Cocoa only"
 #endif
 
