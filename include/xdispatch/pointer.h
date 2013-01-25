@@ -75,7 +75,7 @@ struct pointer {
 __XDISPATCH_END_NAMESPACE
 
 // gcc 4.5+ with c++0x/c++11 enabled
-#elif defined(__GXX_EXPERIMENTAL_CXX0X_) || (__cplusplus >= 201103L)
+#elif defined(__GXX_EXPERIMENTAL_CXX0X_) || defined(_LIBCPP_VERSION)
 
 # include <memory>
 
