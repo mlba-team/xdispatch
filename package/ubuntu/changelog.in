@@ -1,5 +1,12 @@
 xdispatch (${XDISPATCH_VERSION}-0ubuntu1) precise; urgency=low
 
+  * Fixed an issue with implicit TLS declarations in conjunction
+    with Windows XP and LoadLibrary()
+
+ -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
+
+xdispatch (0.7.1-0ubuntu1) precise; urgency=low
+
   * Improvements to the synchronized implementation (#414)
   * Fixed a bug causing some synclocks not to be unlocked properly after
     a call to return or throwing an exception
@@ -13,7 +20,7 @@ xdispatch (${XDISPATCH_VERSION}-0ubuntu1) precise; urgency=low
   * reworked the test build system
   * moved to an own copy of the mz-cmaketools removing dependancy to svn:externals
 
- -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
+ -- Marius Zwicker <marius@mlba-team.de>  So, 28 Okt 2012 16:46:55 +0100
 
 xdispatch (0.7.0-0ubuntu2) precise; urgency=low
 

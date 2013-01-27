@@ -1,6 +1,11 @@
 /**
 @page change_log Changelog
 
+@section changes-72 Version 0.7.2
+
+ - Fixed an issue with implicit TLS declarations in conjunction
+   with Windows XP and LoadLibrary()
+
 @section changes-71 Version 0.7.1
 
 released 28/10/2012
