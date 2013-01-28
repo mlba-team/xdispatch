@@ -73,6 +73,7 @@ libkqueue_init(void)
 		tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 		_CrtSetDbgFlag(tmpFlag);
 	}
+	libkqueue_process_attach();
 # endif /* _WIN32 */
     }
 #endif

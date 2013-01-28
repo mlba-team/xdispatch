@@ -132,7 +132,11 @@ typedef int sigset_t;
 typedef int pid_t;
 
 #ifndef __GNUC__
+// unfortunately broken prior to MS Vista, so we need to work around 
+// whenever possible, this is done using libkqueue_thread_attach/_detach
+// also see http://support.microsoft.com/kb/118816/en-us
 # define __thread    __declspec(thread)
+void libkqueue_process_attach();
 #endif
 
 /* Emulation of pthreads mutex functionality */

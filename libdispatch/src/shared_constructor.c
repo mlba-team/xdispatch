@@ -51,6 +51,11 @@ BOOL WINAPI DllMain(
         cleanup();
         break;
 
+    case DLL_THREAD_ATTACH:
+# if STATIC_KQUEUE
+		libkqueue_thread_attach();
+# endif
+        break;
     case DLL_THREAD_DETACH:
         // Perform cleanup on a per thread base
     {
@@ -63,6 +68,9 @@ BOOL WINAPI DllMain(
         val = _dispatch_thread_getspecific(dispatch_cache_key);
         if(val) _dispatch_cache_cleanup2(val);
 		*/
+# if STATIC_KQUEUE
+		libkqueue_thread_detach();
+# endif
     }
         break;
     }

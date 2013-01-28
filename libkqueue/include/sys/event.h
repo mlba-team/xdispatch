@@ -194,6 +194,8 @@ kevent(int kq, const struct kevent *changelist, int nchanges,
 
 #ifdef MAKE_STATIC
 void	libkqueue_init();
+void	libkqueue_thread_attach();
+void	libkqueue_thread_detach();
 #endif
 
 #else

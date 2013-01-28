@@ -22,11 +22,45 @@ struct event_buf {
     OVERLAPPED *overlap;
 };
 
+#if NO_IMPLICIT_TLS_WORKAROUND
+
 /*
  * Per-thread evt event buffer used to ferry data between
  * kevent_wait() and kevent_copyout().
  */
 static __thread struct event_buf iocp_buf;
+
+#else
+
+/*
+ * Per-thread evt event buffer used to ferry data between
+ * kevent_wait() and kevent_copyout().
+ */
+#define iocp_buf (*( (struct event_buf*)TlsGetValue(event_buf_tls) ))
+static DWORD event_buf_tls;
+
+
+// workaround for implicit TLS initialization
+// bug on Windows prior to Windows Vista
+void libkqueue_thread_attach(){
+	struct event_buf* ev_buf = malloc(sizeof(struct event_buf));
+	assert(ev_buf);
+	TlsSetValue(event_buf_tls, ev_buf);
+}
+
+void libkqueue_thread_detach(){
+	struct event_buf* ev_buf = TlsGetValue(event_buf_tls);
+	assert(ev_buf);
+	free(ev_buf);
+}
+
+void libkqueue_process_attach(){
+	event_buf_tls = TlsAlloc();
+	libkqueue_thread_attach();
+}
+
+#endif
+
 
 /* FIXME: remove these as filters are implemented */
 const struct filter evfilt_proc = EVFILT_NOTIMPL;
