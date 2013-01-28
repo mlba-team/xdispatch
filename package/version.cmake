@@ -21,7 +21,7 @@
 ##
 ## Used to switch between devel and release
 ##
-set( IS_A_RELEASE ON )
+#set( IS_A_RELEASE ON )
 
 ##
 ## Create all version info
@@ -59,7 +59,7 @@ endif()
 
 set( XDISPATCH_VERSION_MAJOR            0)
 set( XDISPATCH_VERSION_MINOR            7)
-set( XDISPATCH_VERSION_PATCH            2)
+set( XDISPATCH_VERSION_PATCH            3)
 if( NOT IS_A_RELEASE )
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
