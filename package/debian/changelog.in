@@ -4,6 +4,13 @@ xdispatch (${XDISPATCH_VERSION}) unstable; urgency=low
 
  -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
 
+xdispatch (0.7.2-0) unstable; urgency=low
+
+  * Fixed an issue with implicit TLS declarations in conjunction
+    with Windows XP and LoadLibrary()
+
+ -- Marius Zwicker <marius@mlba-team.de>  So, 27 Jan 2013 21:21:41 +0100
+
 xdispatch (0.7.1-0) unstable; urgency=low
 
   * Improvements to the synchronized implementation (#414)
