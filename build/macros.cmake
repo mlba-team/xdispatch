@@ -95,7 +95,7 @@ macro(mz_add_external NAME FOLDER)
 endmacro()
 
 macro(__mz_add_target NAME FOLDER)
-    add_subdirectory(${FOLDER})
+    add_subdirectory(${FOLDER} ${CMAKE_BINARY_DIR}/${FOLDER})
 endmacro()
 
 macro(mz_target_props NAME)
@@ -118,13 +118,18 @@ macro(mz_auto_moc mocced)
 	set(_mocced "")
 	# determine the required files
 	__mz_extract_files(to_moc ${ARGN})
-	#mz_debug_message("mz_auto_moc mocced: ${to_moc}")
+    mz_debug_message("mz_auto_moc mocced in: ${to_moc}")
     # the definition of -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED is to bypass a parsing bug within moc
-    qt4_wrap_cpp(_mocced ${to_moc} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+    if( Qt5Core_VERSION_STRING )
+        qt5_wrap_cpp(_mocced ${to_moc} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+    else()
+        qt4_wrap_cpp(_mocced ${to_moc} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+    endif()
 	set(${mocced} ${${mocced}} ${_mocced})
 endmacro()
 
 include(CheckIncludeFiles)
+include(FindPackageHandleStandardArgs)
 
 if( NOT CMAKE_MODULE_PATH )
     set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules" )
@@ -153,7 +158,7 @@ macro(mz_check_include_files FILE VAR)
 	else()
 		mz_debug_message("Using native check_include_files")
 		
-		CHECK_INCLUDE_FILES( ${FILE} ${VAR} )
+        check_include_files( ${FILE} ${VAR} )
 	endif()
 endmacro()
 
