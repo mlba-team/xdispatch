@@ -26,11 +26,11 @@ BEGIN
     BEGIN
         BLOCK "040904E4"
 		BEGIN
-			VALUE "CompanyName", "${XDISPATCH_MAINTAINER} \251 2010-2012,  Apple Inc. \251 2008-2009\0"
+			VALUE "CompanyName", "${XDISPATCH_MAINTAINER} \251 2010-2013\0"
 			VALUE "FileDescription", "libxdispatch C++ Interface\0"
 			VALUE "FileVersion", VER_FILEVERSION_STR
 			VALUE "InternalName", "libxdispatch\0"
-			VALUE "LegalCopyright", "${XDISPATCH_MAINTAINER} \251 2010-2012,  Apple Inc. \251 2008-2009\0"
+			VALUE "LegalCopyright", "${XDISPATCH_MAINTAINER} \251 2010-2013\0"
 			VALUE "OriginalFilename", "libxdispatch.dll\0"
 			VALUE "ProductName", "${XDISPATCH_SUMMARY}\0"
 			VALUE "ProductVersion", VER_PRODUCTVERSION_STR

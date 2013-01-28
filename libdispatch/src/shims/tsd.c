@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2010 Apple Inc. All rights reserved.
- * Copyright (c) 2011-2012 MLBA-Team. All rights reserved.
+ * Copyright (c) 2011-2013 MLBA-Team. All rights reserved.
  *
  * @APPLE_APACHE_LICENSE_HEADER_START@
  *
