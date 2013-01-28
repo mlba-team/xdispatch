@@ -29,7 +29,7 @@ set( IS_A_RELEASE ON )
 
 # obtain the version info using subversion
 find_package(Subversion)
-if(SUBVERSION_FOUND)
+if(SUBVERSION_FOUND AND NOT IS_A_RELEASE)
     Subversion_WC_INFO(${PROJECT_SOURCE_DIR} XDISPATCH)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package/revision.in ${CMAKE_CURRENT_SOURCE_DIR}/package/revision)
 elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/package/revision) # use (hopefully) cached version
