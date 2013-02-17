@@ -62,6 +62,7 @@ public:
       */
     XDISPATCH_DEPRECATED( synclock(const std::string&, const bool auto_lock = false ) );
     synclock(const synclock&, const bool auto_lock = false );
+    synclock(const synclock*, const bool auto_lock = false );
     synclock(const semaphore &, const bool auto_lock = false );
     ~synclock();
 

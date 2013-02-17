@@ -62,6 +62,18 @@ synclock::synclock(const synclock &other, const bool auto_lock)
     this->lock();
 }
 
+synclock::synclock(const synclock* other, const bool auto_lock)
+  : _semaphore(other->_semaphore), _lock_active(false)  {
+  XDISPATCH_ASSERT(other);
+  // this could have ugly side-effects like the semaphore
+  // getting assigned a new value but the old one not getting released
+  // so we need to ensure that no lock is currently active
+  XDISPATCH_ASSERT(! other->_lock_active);
+
+  if(auto_lock)
+    this->lock();
+}
+
 synclock::synclock(const std::string& key, const bool auto_lock)
   : _semaphore(1), _lock_active(false)  {
 
