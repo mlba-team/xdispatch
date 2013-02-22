@@ -23,6 +23,8 @@
 #ifndef XDISPATCH_SCOPED_PTER_H_
 #define XDISPATCH_SCOPED_PTER_H_
 
+#include <memory>
+
 /**
  * @addtogroup xdispatch
  * @{
