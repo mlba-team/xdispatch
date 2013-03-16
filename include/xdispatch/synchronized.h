@@ -64,7 +64,7 @@ public:
     synclock(const synclock&, const bool auto_lock = false );
     synclock(const synclock*, const bool auto_lock = false );
     synclock(const semaphore &, const bool auto_lock = false );
-    ~synclock();
+    virtual ~synclock();
 
     operator bool() const;
     synclock& operator= (const synclock&);
