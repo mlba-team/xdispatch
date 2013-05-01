@@ -90,13 +90,46 @@
 
   @endcode
 
+  @remarks You can suppress features by adding one of the following
+    definitions to your compiler:
+    <ul>
+        <li>
+            XDISPATCH_NO_BLOCKS to completely disable block support
+            regardless of the compiler support
+        </li>
+        <li>
+            XDISPATCH_NO_LAMBDAS to completely disable C++11 lambda
+            support regardless of the compiler support
+        </li>
+        <li>
+            XDISPATCH_NO_FUNCTION to completely disable C++11 std::function
+            support regardless of the compiler support. Please note
+            this also disables lambda support automatically
+        </li>
+    </ul>
+
   @see XDISPATCH_BLOCK
   */
 
 #ifndef XDISPATCH_DOXYGEN_RUN
 
+#ifdef XDISPATCH_NO_BLOCKS
+# define XDISPATCH_HAS_BLOCKS 0
+#endif
+
+#ifdef XDISPATCH_NO_LAMBDAS
+# define XDISPATCH_HAS_LAMBDAS 0
+#endif
+
+#ifdef XDISPATCH_NO_FUNCTION
+# undef XDISPATCH_HAS_LAMBDAS
+# define XDISPATCH_HAS_LAMBDAS 0
+# define XDISPATCH_HAS_FUNCTION 0
+#endif
+
+
 // clang 2.0, gcc 4.3 from mac os 10.6
-#ifdef __BLOCKS__
+#if defined(__BLOCKS__) && !defined(XDISPATCH_NO_BLOCKS)
 # include <Block.h>
 # include <stddef.h>
 # define XDISPATCH_BLOCK ^
@@ -105,11 +138,13 @@
 # endif // XDISPATCH_NO_KEYWORDS
   //typedef void (^dispatch_block_t)(void);
  typedef void (^dispatch_iteration_block_t)(size_t);
-# define XDISPATCH_HAS_BLOCKS 1
-# if defined(__cplusplus) && !defined(__clang__)
-#  warning "Sadly blocks are currently broken in C++ on this platform, we recommend using gcc 4.5.1 or clang 2.0 instead"
+# ifndef XDISPATCH_HAS_BLOCKS
+#  define XDISPATCH_HAS_BLOCKS 1
 # endif
-#endif // __BLOCKS__
+# if defined(__cplusplus) && !defined(__clang__)
+#  warning "Sadly blocks are currently broken in C++ on this platform, we recommend using gcc 4.5.1+ or clang 2.0+ instead"
+# endif
+#endif // defined(__BLOCKS__) && !defined(XDISPATCH_NO_BLOCKS)
 
 // visual studio 2010
 #if _MSC_VER >= 1600
@@ -125,8 +160,12 @@ __XDISPATCH_BEGIN_NAMESPACE
  typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
 __XDISPATCH_END_NAMESPACE
 
-# define XDISPATCH_HAS_LAMBDAS 1
-# define XDISPATCH_HAS_FUNCTION 1
+# ifndef XDISPATCH_HAS_LAMBDAS
+#  define XDISPATCH_HAS_LAMBDAS 1
+# endif
+# ifndef XDISPATCH_HAS_FUNCTION
+#  define XDISPATCH_HAS_FUNCTION 1
+# endif
 
 // visual studio 2008 sp1
 #elif _MSC_VER >= 1500
@@ -138,7 +177,9 @@ __XDISPATCH_BEGIN_NAMESPACE
  typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
 __XDISPATCH_END_NAMESPACE
 
-# define XDISPATCH_HAS_FUNCTION 1
+# ifndef XDISPATCH_HAS_FUNCTION
+#  define XDISPATCH_HAS_FUNCTION 1
+# endif
 
 // g++,clang++ / gnu compiler collection
 #elif defined(__GNUC__) || defined(__clang__)
@@ -151,7 +192,9 @@ __XDISPATCH_END_NAMESPACE
 #    define $ [=]
 #   endif // XDISPATCH_NO_KEYWORDS
 #  endif // XDISPATCH_HAS_BLOCKS
-#  define XDISPATCH_HAS_LAMBDAS 1
+#  ifndef XDISPATCH_HAS_LAMBDAS
+#   define XDISPATCH_HAS_LAMBDAS 1
+#  endif
 # endif // __GXX_EXPERIMENTAL_CXX0X__
 
 #  ifdef _LIBCPP_VERSION

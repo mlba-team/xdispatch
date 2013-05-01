@@ -98,7 +98,7 @@ class XDISPATCH_EXPORT timer : public source {
           queue at the given time. This is quite similar to using xdispatch::queue::after()
           */
         static void single_shot(struct tm*, const xdispatch::queue&, xdispatch::operation*);
-#ifdef XDISPATCH_HAS_BLOCKS
+#if XDISPATCH_HAS_BLOCKS
         /**
           Creates a single shot timer executing the given block on the given
           queue at the given time. This is quite similar to using xdispatch::queue::after()

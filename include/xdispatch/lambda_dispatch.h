@@ -47,7 +47,7 @@ void XDISPATCH_EXPORT _xdispatch_source_set_cancel_handler(dispatch_source_t, xd
 
 #endif
 
-#if defined(XDISPATCH_HAS_LAMBDAS) && !defined(XDISPATCH_HAS_BLOCKS)
+#if XDISPATCH_HAS_LAMBDAS && !(XDISPATCH_HAS_BLOCKS)
 
 inline void dispatch_async(dispatch_queue_t queue, const xdispatch::lambda_function& block){
     xdispatch::queue( queue ).async( block );
