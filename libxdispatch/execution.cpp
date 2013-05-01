@@ -53,19 +53,26 @@ void _xdispatch_run_operation(void* dt){
     operation* w = static_cast<operation*>(dt);
     XDISPATCH_ASSERT(w);
 
-    try {
+    try
+    {
         (*w)();
-    } catch(const std::exception& e) {
-        std::cerr << "##################################################################" << std::endl;
-        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
-        std::cerr << "           not supported, please make sure to catch them before:\n" << std::endl;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "##################################################################"   << std::endl;
+        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'"      << std::endl;
+        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is"     << std::endl;
+        std::cerr << "           not recommended, please make sure to catch them before:\n" << std::endl;
         std::cerr << e.what() << std::endl;
+        std::cerr << "##################################################################"   << std::endl;
+        throw;
+    }
+    catch(...)
+    {
         std::cerr << "##################################################################" << std::endl;
-        std::terminate();
-    } catch(...) {
-        std::cerr << "##################################################################" << std::endl;
-        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
-        std::cerr << "           not supported, please make sure to catch them before!" << std::endl;
+        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'"    << std::endl;
+        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is"   << std::endl;
+        std::cerr << "           not recommended, please make sure to catch them before!" << std::endl;
         std::cerr << "##################################################################" << std::endl;
         std::terminate();
     }
@@ -80,19 +87,26 @@ void _xdispatch_run_iter_wrap(void* dt, size_t index){
     iteration_wrap* wrap = static_cast<iteration_wrap*>(dt);
     XDISPATCH_ASSERT(wrap);
 
-    try {
+    try
+    {
         ( *(wrap->operation()) )(index);
-    } catch(const std::exception& e) {
+    }
+    catch(const std::exception& e)
+    {
         std::cerr << "##################################################################" << std::endl;
-        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
-        std::cerr << "           not supported, please make sure to catch them before:\n" << std::endl;
+        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'"    << std::endl;
+        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is"   << std::endl;
+        std::cerr << "           not recommended, please make sure to catch them before:\n" << std::endl;
         std::cerr << e.what() << std::endl;
         std::cerr << "##################################################################" << std::endl;
-        std::terminate();
-    } catch(...) {
+        throw;
+    }
+    catch(...)
+    {
         std::cerr << "##################################################################" << std::endl;
-        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
-        std::cerr << "           not supported, please make sure to catch them before!" << std::endl;
+        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'"    << std::endl;
+        std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is"   << std::endl;
+        std::cerr << "           not recommended, please make sure to catch them before!" << std::endl;
         std::cerr << "##################################################################" << std::endl;
         std::terminate();
     }
