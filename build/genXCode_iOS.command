@@ -41,8 +41,8 @@ function make_release {
 
 	echo "== configuring target system '$TARGET(Release)'"
 	cmake	-D CMAKE_BUILD_TYPE=Release \
-			-D CMAKE_TOOLCHAIN_FILE="$BASE_DIR/$SCRIPT_DIR/iOS.cmake" \	
-			-G"$GENERATOR" \			
+			-D CMAKE_TOOLCHAIN_FILE="$BASE_DIR/$SCRIPT_DIR/iOS.cmake" \
+			-G"$GENERATOR" \
 			$BASE_DIR/
 }
 
