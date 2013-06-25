@@ -131,6 +131,7 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
 endif()
 
 # add new exec target
+mz_add_flag(GCC -Wno-unused-private-field)
 if( IOS )
     add_library(xdispatch_tests STATIC main_ios.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
 else()
