@@ -8,6 +8,7 @@ CMAKE_FLAGS = \
 	-DCMAKE_BUILD_TYPE=Release	\
 	-DSTATIC_KQUEUE=ON \
 	-DSTATIC_WORKQUEUE=ON \
+    -DXDISPATCH_DOCS=ON
 
 %:
 	dh --with quilt $@ --buildsystem=cmake
