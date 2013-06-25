@@ -6,9 +6,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,6 @@
 *
 * @MLBA_OPEN_LICENSE_HEADER_END@
 */
-
 
 
 #ifndef QBLOCKRUNNABLE_H_
@@ -32,9 +31,9 @@
  */
 
 QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
-
-QT_MODULE(Dispatch)
+QT_BEGIN_NAMESPACE QT_MODULE(
+    Dispatch
+)
 
 #if XDISPATCH_HAS_BLOCKS
 /**
@@ -44,33 +43,47 @@ QT_MODULE(Dispatch)
   Please see the documentation for QRunnable for the
   functionality of the autoDelete flags as well.
   */
-class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
+class Q_DISPATCH_EXPORT QBlockRunnable
+    : public QRunnable
+{
+public:
+    /**
+      Constructs a new QBlockRunnable using the given block, e.g.
 
-    public:
-        /**
-          Constructs a new QBlockRunnable using the given block, e.g.
+      @code
+      QBlockRunnable task(^{cout << "Hello World\n";});
+      @endcode
+      */
+    QBlockRunnable (
+        dispatch_block_t b
+    )
+        : QRunnable(),
+          _block( Block_copy( b ) ) { }
 
-          @code
-          QBlockRunnable task(^{cout << "Hello World\n";});
-          @endcode
-          */
-        QBlockRunnable(dispatch_block_t b)
-            : QRunnable(), _block(Block_copy(b)) {}
-        QBlockRunnable(const QBlockRunnable& other)
-            : QRunnable(other), _block(Block_copy(other._block)) {}
-        virtual ~QBlockRunnable() {
-            Block_release(_block);
-        }
 
-        virtual void run(){
-            _block();
-        };
+    QBlockRunnable (
+        const QBlockRunnable &other
+    )
+        : QRunnable( other ),
+          _block( Block_copy( other._block ) ) { }
 
-    private:
-        dispatch_block_t _block;
 
+    virtual ~QBlockRunnable ()
+    {
+        Block_release( _block );
+    }
+
+    virtual void run()
+    {
+        _block();
+    }
+
+private:
+    dispatch_block_t _block;
 };
-#endif
+
+
+#endif // if XDISPATCH_HAS_BLOCKS
 #if XDISPATCH_HAS_FUNCTION
 /**
   Provides a QRunnable Implementation for use with
@@ -79,33 +92,47 @@ class Q_DISPATCH_EXPORT QBlockRunnable : public QRunnable {
   Please see the documentation for QRunnable for the
   functionality of the autoDelete flags as well.
   */
-class Q_DISPATCH_EXPORT QLambdaRunnable : public QRunnable {
+class Q_DISPATCH_EXPORT QLambdaRunnable
+    : public QRunnable
+{
+public:
+    /**
+      Constructs a new QBlockRunnable using the given lambda, e.g.
 
-    public:
-        /**
-          Constructs a new QBlockRunnable using the given lambda, e.g.
+      @code
+      QLambdaRunnable task([]{cout << "Hello World\n";});
+      @endcode
+      */
+    QLambdaRunnable (
+        const xdispatch::lambda_function &b
+    )
+        : QRunnable(),
+          _function( b ) { }
 
-          @code
-          QLambdaRunnable task([]{cout << "Hello World\n";});
-          @endcode
-          */
-        QLambdaRunnable(const xdispatch::lambda_function& b)
-            : QRunnable(), _function(b) {}
-        QLambdaRunnable(const QLambdaRunnable& other)
-            : QRunnable(other), _function(other._function) {}
-        virtual ~QLambdaRunnable() {
-          // empty
-        }
 
-        virtual void run(){
-            _function();
-        }
+    QLambdaRunnable (
+        const QLambdaRunnable &other
+    )
+        : QRunnable( other ),
+          _function( other._function ) { }
 
-    private:
-        xdispatch::lambda_function _function;
 
+    virtual ~QLambdaRunnable ()
+    {
+        // empty
+    }
+
+    virtual void run()
+    {
+        _function();
+    }
+
+private:
+    xdispatch::lambda_function _function;
 };
-#endif
+
+
+#endif // if XDISPATCH_HAS_FUNCTION
 
 
 QT_END_NAMESPACE

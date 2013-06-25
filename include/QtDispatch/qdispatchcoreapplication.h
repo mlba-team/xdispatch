@@ -19,7 +19,6 @@
 */
 
 
-
 #ifndef QDISPATCH_COREAPPLICATION_H_
 #define QDISPATCH_COREAPPLICATION_H_
 
@@ -34,9 +33,9 @@
  */
 
 QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
-
-QT_MODULE(Dispatch)
+QT_BEGIN_NAMESPACE QT_MODULE(
+    Dispatch
+)
 
 /**
  @class QDispatchCoreApplication
@@ -46,33 +45,48 @@ QT_MODULE(Dispatch)
  QDispatch::mainQueue().
  */
 #ifdef Q_OS_MAC
-class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QDispatchApplication {
+class Q_DISPATCH_EXPORT QDispatchCoreApplication
+    : public QDispatchApplication
+{
+    Q_OBJECT
 
-        Q_OBJECT
 
-    public:
-        QDispatchCoreApplication(int& argc, char** argv);
+public:
+    QDispatchCoreApplication (
+        int &argc,
+        char **argv
+    );
 
-    private:
-        Q_DISABLE_COPY(QDispatchCoreApplication)
 
+private:
+    Q_DISABLE_COPY( QDispatchCoreApplication )
 };
-#else
-class Q_DISPATCH_EXPORT QDispatchCoreApplication : public QCoreApplication {
 
-        Q_OBJECT
 
-    public:
-        QDispatchCoreApplication(int& argc, char** argv);
-        ~QDispatchCoreApplication();
+#else // ifdef Q_OS_MAC
+class Q_DISPATCH_EXPORT QDispatchCoreApplication
+    : public QCoreApplication
+{
+    Q_OBJECT
 
-    private:
-        Q_DISABLE_COPY(QDispatchCoreApplication)
+
+public:
+    QDispatchCoreApplication (
+        int &argc,
+        char **argv
+    );
+    ~QDispatchCoreApplication ();
+
+
+private:
+    Q_DISABLE_COPY( QDispatchCoreApplication )
 };
-#endif
+
+
+#endif // ifdef Q_OS_MAC
 
 QT_END_NAMESPACE
-QT_END_HEADER
+    QT_END_HEADER
 
 /** @} */
 

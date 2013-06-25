@@ -1,4 +1,3 @@
-
 /*
 * Copyright (c) 2011-2013 MLBA-Team. All rights reserved.
 *
@@ -29,7 +28,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <string>
@@ -41,49 +40,76 @@ class XDISPATCH_EXPORT queue;
 /**
  The base class of all xdispatch classes
  */
-class XDISPATCH_EXPORT object {
+class XDISPATCH_EXPORT object
+{
+protected:
+    object ();
 
-    protected:
-        object();
 
-    public:
-        virtual ~object();
-        /**
-         Resumes the invocation of operations
-         or blocks assigned to the object
-         */
-        virtual void resume();
-        /**
-         Suspends the invocation of operations or blocks
-         assigned to the object. The object will be suspended
-         as soon as the currently executed operation or block
-         finished.
+public:
+    virtual ~object ();
+    /**
+     Resumes the invocation of operations
+     or blocks assigned to the object
+     */
+    virtual void resume();
 
-         @remarks Calls to suspend() should be balanced with calls
-          to resume() to continue an object
-          */
-        virtual void suspend();
-        /**
-         Sets the target queue of this object, i.e. the queue
-         all items concerning this object will be dispatched on in turn.
+    /**
+     Suspends the invocation of operations or blocks
+     assigned to the object. The object will be suspended
+     as soon as the currently executed operation or block
+     finished.
 
-         @remarks This has no effect on the global queues and the main queue.
-        */
-        virtual void target_queue(const queue&);
-        /**
-         @returns the native dispatch object associated to
-         the xdispatch object
-         */
-        virtual dispatch_object_t native() const = 0;
+     @remarks Calls to suspend() should be balanced with calls
+      to resume() to continue an object
+      */
+    virtual void suspend();
 
-        bool operator ==(const object&);
-        bool operator !=(const object&);
-        bool operator ==(const dispatch_object_t&);
-        bool operator !=(const dispatch_object_t&);
+    /**
+     Sets the target queue of this object, i.e. the queue
+     all items concerning this object will be dispatched on in turn.
+
+     @remarks This has no effect on the global queues and the main queue.
+    */
+    virtual void target_queue(
+        const queue &
+    );
+
+    /**
+     @returns the native dispatch object associated to
+     the xdispatch object
+     */
+    virtual dispatch_object_t native() const = 0;
+
+    bool operator == (
+        const object &
+    );
+
+    bool operator != (
+        const object &
+    );
+
+    bool operator == (
+        const dispatch_object_t &
+    );
+
+    bool operator != (
+        const dispatch_object_t &
+    );
 };
 
-XDISPATCH_EXPORT bool operator ==(const dispatch_object_t&, const object&);
-XDISPATCH_EXPORT bool operator !=(const dispatch_object_t&, const object&);
+
+XDISPATCH_EXPORT bool
+operator == (
+    const dispatch_object_t &,
+    const object &
+);
+
+XDISPATCH_EXPORT bool
+operator != (
+    const dispatch_object_t &,
+    const object &
+);
 
 class queue;
 
@@ -122,7 +148,12 @@ static const uint64_t usec_per_sec = USEC_PER_SEC;
     Three priority classes used for the three standard
     global queues
     */
-enum queue_priority { HIGH =2, DEFAULT =1, LOW =0 };
+enum queue_priority
+{
+    HIGH = 2, DEFAULT = 1, LOW = 0
+};
+
+
 /**
     Returns the main queue. This is the queue running
     within the main thread. Thus normally only items put
@@ -130,7 +161,9 @@ enum queue_priority { HIGH =2, DEFAULT =1, LOW =0 };
     @remarks Never delete the returned queue!
     @return NULL if something went wrong
     */
-XDISPATCH_EXPORT queue main_queue();
+XDISPATCH_EXPORT queue
+main_queue();
+
 /**
     Returns the global queue associated to the given
     Priority p.
@@ -141,33 +174,56 @@ XDISPATCH_EXPORT queue main_queue();
     @remarks Never delete the returned queue!
     @return NULL if something went wrong
     */
-XDISPATCH_EXPORT queue global_queue(queue_priority p = DEFAULT);
+XDISPATCH_EXPORT queue
+global_queue(
+    queue_priority p = DEFAULT
+);
+
 /**
     @return The queue the current operation
         is executed on.
     */
-XDISPATCH_EXPORT queue current_queue();
+XDISPATCH_EXPORT queue
+current_queue();
+
 /**
     @return The given tm converted to a time
     */
-XDISPATCH_EXPORT time as_dispatch_time(struct tm*);
+XDISPATCH_EXPORT time
+as_dispatch_time(
+    struct tm *
+);
+
 /**
     @return The given time converted to a dispatch time
     */
-inline dispatch_time_t as_native_dispatch_time(const time& t) {
+inline dispatch_time_t as_native_dispatch_time(
+    const time &t
+)
+{
     return t;
 }
+
 
 /**
     @return The given dispatch_time_t as time_t
     */
-XDISPATCH_EXPORT struct tm as_struct_tm(const time& t);
+XDISPATCH_EXPORT struct tm
+as_struct_tm(
+    const time &t
+);
+
 /**
     @return A dispatch_time_t representing the given delay
     @param delay The delay in nanoseconds
     @param base The base to add the delay to, defaults to the current time
     */
-XDISPATCH_EXPORT time as_delayed_time(uint64_t delay, time base = time_now);
+XDISPATCH_EXPORT time
+as_delayed_time(
+    uint64_t delay,
+    time base = time_now
+);
+
 /**
     Enters the dispatching loop for the main thread.
     Call this somewhere within the main thread to enable
@@ -178,7 +234,8 @@ XDISPATCH_EXPORT time as_delayed_time(uint64_t delay, time base = time_now);
     or call exec() on a QDispatchApplication object do not need to call this.
     @see dispatch_main()
     */
-XDISPATCH_EXPORT void exec();
+XDISPATCH_EXPORT void
+exec();
 
 __XDISPATCH_END_NAMESPACE
 

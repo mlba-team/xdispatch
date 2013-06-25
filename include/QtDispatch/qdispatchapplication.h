@@ -19,7 +19,6 @@
 */
 
 
-
 #ifndef QDISPATCH_APPLICATION_H_
 #define QDISPATCH_APPLICATION_H_
 
@@ -32,9 +31,9 @@
  */
 
 QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
-
-QT_MODULE(Dispatch)
+QT_BEGIN_NAMESPACE QT_MODULE(
+    Dispatch
+)
 
 /**
  Provides a QApplication implementation internally executing
@@ -42,21 +41,27 @@ QT_MODULE(Dispatch)
  main thread by dispatching to the main_queue obtained by calling
  QDispatch::mainQueue().
  */
-class Q_DISPATCH_EXPORT QDispatchApplication : public QApplication {
+class Q_DISPATCH_EXPORT QDispatchApplication
+    : public QApplication
+{
+    Q_OBJECT
 
-        Q_OBJECT
 
-    public:
-        QDispatchApplication(int& argc, char** argv);
-        ~QDispatchApplication();
+public:
+    QDispatchApplication (
+        int &argc,
+        char **argv
+    );
+    ~QDispatchApplication ();
 
-    private:
-        Q_DISABLE_COPY(QDispatchApplication)
 
+private:
+    Q_DISABLE_COPY( QDispatchApplication )
 };
 
+
 QT_END_NAMESPACE
-QT_END_HEADER
+    QT_END_HEADER
 
 /** @} */
 

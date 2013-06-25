@@ -1,4 +1,3 @@
-
 /*
 * Copyright (c) 2011-2013 MLBA-Team. All rights reserved.
 *
@@ -29,7 +28,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <iostream>
@@ -48,114 +47,161 @@ class operation;
 
   @see dispatch_once
   */
-class XDISPATCH_EXPORT once {
+class XDISPATCH_EXPORT once
+{
+public:
+    /**
+      Creates a new once object, marked
+      as not having been executed yet
+      */
+    once ();
+    /**
+      Creates a new once object, the
+      execution state is shared with
+      the given dispatch_once_t object.
+      */
+    once (
+        dispatch_once_t *
+    );
 
-    public:
-        /**
-          Creates a new once object, marked
-          as not having been executed yet
-          */
-        once();
-        /**
-          Creates a new once object, the
-          execution state is shared with
-          the given dispatch_once_t object.
-          */
-        once( dispatch_once_t* );
+    /**
+     @returns the native dispatch object associated to
+     the xdispatch object
+     */
+    dispatch_once_t * native_once() const;
 
-        /**
-         @returns the native dispatch object associated to
-         the xdispatch object
-         */
-        dispatch_once_t* native_once() const;
+    /**
+      Executes the given operation when the
+      once object has not executed any operation
+      on before and on the current or any other
+      thread.
 
-        /**
-          Executes the given operation when the
-          once object has not executed any operation
-          on before and on the current or any other
-          thread.
+      @remarks In constrast to the other xdispatch
+        classes, this method receives heap allocated
+        operations and will not take posession of the
+        operation
+        */
+    void operator () (
+        operation &
+    );
 
-          @remarks In constrast to the other xdispatch
-            classes, this method receives heap allocated
-            operations and will not take posession of the
-            operation
-            */
-        void operator()(operation&);
-  #if XDISPATCH_HAS_BLOCKS
-        /**
-          Similar to operator()(operation&)
+#if XDISPATCH_HAS_BLOCKS
+    /**
+      Similar to operator()(operation&)
 
-          Will wrap the given block as operation
-          and try to execute it on the once object
+      Will wrap the given block as operation
+      and try to execute it on the once object
 
-          @see operator()(operation&)
-          */
-        inline void operator()(dispatch_block_t b) {
-            once_block op(b);
-            operator()( op );
+      @see operator()(operation&)
+      */
+    inline void operator () (
+        dispatch_block_t b
+    )
+    {
+        once_block op( b );
+
+        operator () ( op );
+    }
+
+#endif // if XDISPATCH_HAS_BLOCKS
+#if XDISPATCH_HAS_FUNCTION
+    /**
+      Similar to operator()(operation&)
+
+      Will wrap the given function as operation
+      and try to execute it on the once object
+
+      @see operator()(operation&)
+      */
+    inline void operator () (
+        const lambda_function &b
+    )
+    {
+        once_function op( b );
+
+        operator () ( op );
+    }
+
+#endif // if XDISPATCH_HAS_FUNCTION
+
+
+private:
+    dispatch_once_t _once_obj;
+    dispatch_once_t *_once;
+
+#if XDISPATCH_HAS_BLOCKS
+    // we define our own block class
+    // as the block_operation does a
+    // copy of the stored block, something
+    // we do not need in here
+    class once_block
+        : public operation
+    {
+public:
+        once_block (
+            dispatch_block_t b
+        )
+            : operation(),
+              _block( b ) { }
+
+
+        void operator () ()
+        {
+            _block();
         }
-  #endif
-  #if XDISPATCH_HAS_FUNCTION
-        /**
-          Similar to operator()(operation&)
 
-          Will wrap the given function as operation
-          and try to execute it on the once object
+private:
+        dispatch_block_t _block;
+    };
 
-          @see operator()(operation&)
-          */
-        inline void operator()(const lambda_function& b) {
-            once_function op(b);
-            operator()( op );
+
+#endif // if XDISPATCH_HAS_BLOCKS
+#if XDISPATCH_HAS_FUNCTION
+    // we define our own function class
+    // as the function_operation does a
+    // copy of the stored block, something
+    // we do not need in here
+    class once_function
+        : public operation
+    {
+public:
+        once_function (
+            const lambda_function &b
+        )
+            : operation(),
+              _function( b ) { }
+
+
+        void operator () ()
+        {
+            _function();
         }
-  #endif
 
-    private:
-        dispatch_once_t _once_obj;
-        dispatch_once_t* _once;
+private:
+        const lambda_function &_function;
+    };
 
-  #if XDISPATCH_HAS_BLOCKS
-        // we define our own block class
-        // as the block_operation does a
-        // copy of the stored block, something
-        // we do not need in here
-        class once_block : public operation {
-            public:
-                once_block(dispatch_block_t b)
-                    : operation(), _block( b ) {}
 
-                void operator()() {
-                    _block();
-                }
+#endif // if XDISPATCH_HAS_FUNCTION
 
-            private:
-                dispatch_block_t _block;
-        };
-  #endif
-  #if XDISPATCH_HAS_FUNCTION
-        // we define our own function class
-        // as the function_operation does a
-        // copy of the stored block, something
-        // we do not need in here
-        class once_function : public operation {
-            public:
-                once_function(const lambda_function& b)
-                    : operation(), _function( b ) {}
-
-                void operator()() {
-                    _function();
-                }
-
-            private:
-                const lambda_function& _function;
-        };
-  #endif
-
-        friend XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once& );
+    friend XDISPATCH_EXPORT std::ostream & operator << (
+        std::ostream &,
+        const once &
+    );
 };
 
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once* );
-XDISPATCH_EXPORT std::ostream& operator<<(std::ostream&, const once& );
+
+XDISPATCH_EXPORT std::ostream &
+operator << (
+    std::ostream &,
+    const once *
+);
+
+XDISPATCH_EXPORT std::ostream &
+operator << (
+    std::ostream &,
+    const once &
+);
 
 __XDISPATCH_END_NAMESPACE
 

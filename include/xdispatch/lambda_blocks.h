@@ -7,9 +7,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +22,8 @@
 
 /* When building on 10.6 with gcc 4.5.1 we can bypass
     Apple's lambda functions implementation in C++ as we have lambdas.
-	This prevents a lot of errors from occuring
-	*/
+  This prevents a lot of errors from occuring
+  */
 
 #ifndef XDISPATCH_LAMBDA_BLOCKS_H_
 #define XDISPATCH_LAMBDA_BLOCKS_H_
@@ -34,7 +34,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 /**
@@ -113,118 +113,120 @@
 
 #ifndef XDISPATCH_DOXYGEN_RUN
 
-#ifdef XDISPATCH_NO_BLOCKS
-# define XDISPATCH_HAS_BLOCKS 0
-#endif
+ # ifdef XDISPATCH_NO_BLOCKS
+  #  define XDISPATCH_HAS_BLOCKS 0
+ # endif
 
-#ifdef XDISPATCH_NO_LAMBDAS
-# define XDISPATCH_HAS_LAMBDAS 0
-#endif
+ # ifdef XDISPATCH_NO_LAMBDAS
+  #  define XDISPATCH_HAS_LAMBDAS 0
+ # endif
 
-#ifdef XDISPATCH_NO_FUNCTION
-# undef XDISPATCH_HAS_LAMBDAS
-# define XDISPATCH_HAS_LAMBDAS 0
-# define XDISPATCH_HAS_FUNCTION 0
-#endif
+ # ifdef XDISPATCH_NO_FUNCTION
+  #  undef XDISPATCH_HAS_LAMBDAS
+  #  define XDISPATCH_HAS_LAMBDAS 0
+  #  define XDISPATCH_HAS_FUNCTION 0
+ # endif // ifdef XDISPATCH_NO_FUNCTION
 
 
 // clang 2.0, gcc 4.3 from mac os 10.6
-#if defined(__BLOCKS__) && !defined(XDISPATCH_NO_BLOCKS)
-# include <Block.h>
-# include <stddef.h>
-# define XDISPATCH_BLOCK ^
-# ifndef XDISPATCH_NO_KEYWORDS
-#  define $ ^
-# endif // XDISPATCH_NO_KEYWORDS
-  //typedef void (^dispatch_block_t)(void);
- typedef void (^dispatch_iteration_block_t)(size_t);
-# ifndef XDISPATCH_HAS_BLOCKS
-#  define XDISPATCH_HAS_BLOCKS 1
-# endif
-# if defined(__cplusplus) && !defined(__clang__)
-#  warning "Sadly blocks are currently broken in C++ on this platform, we recommend using gcc 4.5.1+ or clang 2.0+ instead"
-# endif
-#endif // defined(__BLOCKS__) && !defined(XDISPATCH_NO_BLOCKS)
+ # if defined ( __BLOCKS__ ) && !defined ( XDISPATCH_NO_BLOCKS )
+  #  include <Block.h>
+  #  include <stddef.h>
+  #  define XDISPATCH_BLOCK ^
+  #  ifndef XDISPATCH_NO_KEYWORDS
+   #   define $ ^
+  #  endif // XDISPATCH_NO_KEYWORDS
+// typedef void (^dispatch_block_t)(void);
+typedef void (^dispatch_iteration_block_t)(
+    size_t
+);
+  #  ifndef XDISPATCH_HAS_BLOCKS
+   #   define XDISPATCH_HAS_BLOCKS 1
+  #  endif
+  #  if defined ( __cplusplus ) && !defined ( __clang__ )
+   #   warning "Sadly blocks are currently broken in C++ on this platform, we recommend using gcc 4.5.1+ or clang 2.0+ instead"
+  #  endif
+ # endif // defined(__BLOCKS__) && !defined(XDISPATCH_NO_BLOCKS)
 
 // visual studio 2010
-#if _MSC_VER >= 1600
+ # if _MSC_VER >= 1600
 
-# include <functional>
-# define XDISPATCH_BLOCK [=]
-# ifndef XDISPATCH_NO_KEYWORDS
-#  define $ [=]
-# endif
+  #  include <functional>
+  #  define XDISPATCH_BLOCK [ = ]
+  #  ifndef XDISPATCH_NO_KEYWORDS
+   #   define $ [ = ]
+  #  endif
 
 __XDISPATCH_BEGIN_NAMESPACE
- typedef ::std::tr1::function< void (void) > lambda_function;
- typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+typedef ::std::tr1::function< void ( void ) > lambda_function;
+typedef ::std::tr1::function< void ( size_t ) > iteration_lambda_function;
 __XDISPATCH_END_NAMESPACE
 
-# ifndef XDISPATCH_HAS_LAMBDAS
-#  define XDISPATCH_HAS_LAMBDAS 1
-# endif
-# ifndef XDISPATCH_HAS_FUNCTION
-#  define XDISPATCH_HAS_FUNCTION 1
-# endif
+  #  ifndef XDISPATCH_HAS_LAMBDAS
+   #   define XDISPATCH_HAS_LAMBDAS 1
+  #  endif
+  #  ifndef XDISPATCH_HAS_FUNCTION
+   #   define XDISPATCH_HAS_FUNCTION 1
+  #  endif
 
 // visual studio 2008 sp1
-#elif _MSC_VER >= 1500
+ # elif _MSC_VER >= 1500
 
-# include <functional>
+  #  include <functional>
 
 __XDISPATCH_BEGIN_NAMESPACE
- typedef ::std::tr1::function< void (void) > lambda_function;
- typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+typedef ::std::tr1::function< void ( void ) > lambda_function;
+typedef ::std::tr1::function< void ( size_t ) > iteration_lambda_function;
 __XDISPATCH_END_NAMESPACE
 
-# ifndef XDISPATCH_HAS_FUNCTION
-#  define XDISPATCH_HAS_FUNCTION 1
-# endif
+  #  ifndef XDISPATCH_HAS_FUNCTION
+   #   define XDISPATCH_HAS_FUNCTION 1
+  #  endif
 
 // g++,clang++ / gnu compiler collection
-#elif defined(__GNUC__) || defined(__clang__)
+ # elif defined ( __GNUC__ ) || defined ( __clang__ )
 
 // gcc 4.5 with c++0x enabled
-# if defined(__GXX_EXPERIMENTAL_CXX0X_) || defined(_LIBCPP_VERSION)
-#  ifndef XDISPATCH_HAS_BLOCKS
-#   define XDISPATCH_BLOCK [=]
-#   ifndef XDISPATCH_NO_KEYWORDS
-#    define $ [=]
-#   endif // XDISPATCH_NO_KEYWORDS
-#  endif // XDISPATCH_HAS_BLOCKS
-#  ifndef XDISPATCH_HAS_LAMBDAS
-#   define XDISPATCH_HAS_LAMBDAS 1
-#  endif
-# endif // __GXX_EXPERIMENTAL_CXX0X__
+  #  if defined ( __GXX_EXPERIMENTAL_CXX0X_ ) || defined ( _LIBCPP_VERSION )
+   #   ifndef XDISPATCH_HAS_BLOCKS
+    #    define XDISPATCH_BLOCK [ = ]
+    #    ifndef XDISPATCH_NO_KEYWORDS
+     #     define $ [ = ]
+    #    endif // XDISPATCH_NO_KEYWORDS
+   #   endif // XDISPATCH_HAS_BLOCKS
+   #   ifndef XDISPATCH_HAS_LAMBDAS
+    #    define XDISPATCH_HAS_LAMBDAS 1
+   #   endif
+  #  endif // __GXX_EXPERIMENTAL_CXX0X__
 
-#  ifdef _LIBCPP_VERSION
-#   include <functional>
-
-__XDISPATCH_BEGIN_NAMESPACE
- typedef ::std::function< void (void) > lambda_function;
- typedef ::std::function< void (size_t) > iteration_lambda_function;
-__XDISPATCH_END_NAMESPACE
-#  else
-#   include <tr1/functional>
+  #  ifdef _LIBCPP_VERSION
+   #   include <functional>
 
 __XDISPATCH_BEGIN_NAMESPACE
- typedef ::std::tr1::function< void (void) > lambda_function;
- typedef ::std::tr1::function< void (size_t) > iteration_lambda_function;
+typedef ::std::function< void ( void ) > lambda_function;
+typedef ::std::function< void ( size_t ) > iteration_lambda_function;
 __XDISPATCH_END_NAMESPACE
-#  endif
+  #  else // ifdef _LIBCPP_VERSION
+   #   include <tr1/functional>
 
-# define XDISPATCH_HAS_FUNCTION 1
+__XDISPATCH_BEGIN_NAMESPACE
+typedef ::std::tr1::function< void ( void ) > lambda_function;
+typedef ::std::tr1::function< void ( size_t ) > iteration_lambda_function;
+__XDISPATCH_END_NAMESPACE
+  #  endif // ifdef _LIBCPP_VERSION
 
-#else
+  #  define XDISPATCH_HAS_FUNCTION 1
 
-# error "Unsupported compiler version"
+ # else // if _MSC_VER >= 1600
 
-#endif
+  #  error "Unsupported compiler version"
+
+ # endif // if _MSC_VER >= 1600
 
 #endif /* XDISPATCH_DOXYGEN_RUN */
 
 #ifdef XDISPATCH_DOXYGEN_RUN
-# define $ [=]
+ # define $ [ = ]
 #endif
 
 /** @} */

@@ -19,7 +19,6 @@
 */
 
 
-
 #ifndef SYNCHRONIZED_H_
 #define SYNCHRONIZED_H_
 
@@ -29,7 +28,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <string>
@@ -50,51 +49,70 @@ class XDISPATCH_EXPORT synclock;
   @see synchronized
   @see synchronize
   */
-class XDISPATCH_EXPORT synclock {
-
+class XDISPATCH_EXPORT synclock
+{
 public:
-    synclock();
+    synclock ();
     /**
      This function will be removed in future versions.
 
      @deprecated Please manage your synclock manually instead or use synchronized
      @see synchronized
       */
-    XDISPATCH_DEPRECATED( synclock(const std::string&, const bool auto_lock = false ) );
-    synclock(const synclock&, const bool auto_lock = false );
-    synclock(const synclock*, const bool auto_lock = false );
-    synclock(const semaphore &, const bool auto_lock = false );
-    virtual ~synclock();
+    XDISPATCH_DEPRECATED( synclock (
+            const std::string &,
+            const bool auto_lock = false
+        ) );
+    synclock (
+        const synclock &,
+        const bool auto_lock = false
+    );
+    synclock (
+        const synclock *,
+        const bool auto_lock = false
+    );
+    synclock (
+        const semaphore &,
+        const bool auto_lock = false
+    );
+    virtual ~synclock ();
 
-    operator bool() const;
-    synclock& operator= (const synclock&);
+    operator bool () const;
+    synclock & operator = (
+        const synclock &
+    );
 
-    synclock& unlock();
-    synclock& lock();
+    synclock & unlock();
+
+    synclock & lock();
+
 
 private:
     semaphore _semaphore;
     bool _lock_active;
-
 };
 
 
 /**
  @see synchronized
  */
-XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
+XDISPATCH_EXPORT void
+init_semaphore_for_synclock(
+    void *
+);
 
 
-# define XDISPATCH_CONCAT(A,B) A ## B
-# define XDISPATCH_LOCK_VAR(X) XDISPATCH_CONCAT(xd_synclock_, X)
-# define XDISPATCH_LOCK_VAR_SEM(X) XDISPATCH_CONCAT( _xd_synclock_sem_, X)
-# define XDISPATCH_LOCK_VAR_ONCE(X) XDISPATCH_CONCAT( _xd_synclock_once_, X)
-# define XDISPATCH_SYNC_HEADER( lock ) for( \
-  ::xdispatch::synclock XDISPATCH_LOCK_VAR(__LINE__)( lock, true ) ; \
-  XDISPATCH_LOCK_VAR(__LINE__) ; \
-  XDISPATCH_LOCK_VAR(__LINE__).unlock() \
-  )
-# define XDISPATCH_SYNC_DECL( id ) \
+#define XDISPATCH_CONCAT( A, B ) A##B
+#define XDISPATCH_LOCK_VAR( X ) XDISPATCH_CONCAT( xd_synclock_, X )
+#define XDISPATCH_LOCK_VAR_SEM( X ) XDISPATCH_CONCAT( _xd_synclock_sem_, X )
+#define XDISPATCH_LOCK_VAR_ONCE( X ) XDISPATCH_CONCAT( _xd_synclock_once_, X )
+#define XDISPATCH_SYNC_HEADER( lock ) \
+    for( \
+        ::xdispatch::synclock XDISPATCH_LOCK_VAR( __LINE__ )( lock, true ); \
+        XDISPATCH_LOCK_VAR( __LINE__ ); \
+        XDISPATCH_LOCK_VAR( __LINE__ ).unlock() \
+    )
+#define XDISPATCH_SYNC_DECL( id ) \
     static ::xdispatch::semaphore XDISPATCH_LOCK_VAR_SEM( id ); \
     static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ) = 0; \
     dispatch_once_f( &XDISPATCH_LOCK_VAR_ONCE( id ), &XDISPATCH_LOCK_VAR_SEM( id ), ::xdispatch::init_semaphore_for_synclock ); \
@@ -108,7 +126,7 @@ XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
 
    @see synchronize( lock )
    */
-#  define XDISPATCH_SYNCHRONIZE( lock ) XDISPATCH_SYNC_HEADER( lock )
+#define XDISPATCH_SYNCHRONIZE( lock ) XDISPATCH_SYNC_HEADER( lock )
 
 /**
    Same as synchronized( lock )
@@ -118,7 +136,7 @@ XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
 
    @see synchronized( lock )
    */
-#  define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNC_DECL( __COUNTER__ )
+#define XDISPATCH_SYNCHRONIZED XDISPATCH_SYNC_DECL( __COUNTER__ )
 
 /**
   @def synchronize( lock )
@@ -270,14 +288,14 @@ XDISPATCH_EXPORT void init_semaphore_for_synclock(void*);
   @see synchronize
   */
 #ifndef XDISPATCH_NO_KEYWORDS
-# ifndef synchronize
-#  define synchronize( lock ) XDISPATCH_SYNCHRONIZE(lock)
-# endif
+ # ifndef synchronize
+  #  define synchronize( lock ) XDISPATCH_SYNCHRONIZE( lock )
+ # endif
 
-# ifndef synchronized
-#  define synchronized XDISPATCH_SYNCHRONIZED
-# endif
-#endif
+ # ifndef synchronized
+  #  define synchronized XDISPATCH_SYNCHRONIZED
+ # endif
+#endif // ifndef XDISPATCH_NO_KEYWORDS
 
 __XDISPATCH_END_NAMESPACE
 

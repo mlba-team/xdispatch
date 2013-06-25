@@ -1,4 +1,3 @@
-
 /*
 * Copyright (c) 2011-2013 MLBA-Team. All rights reserved.
 *
@@ -29,7 +28,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
-#error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <string>
@@ -47,27 +46,41 @@ __XDISPATCH_BEGIN_NAMESPACE
   */
 class XDISPATCH_EXPORT operation
 {
-    public:
-        operation() : auto_del(true){}
-        virtual ~operation(){}
+public:
+    operation ()
+        : auto_del( true ){ }
 
-        virtual void operator()() = 0;
 
-        /**
-          Change the auto_delete flag to prevent
-          the iteration from being deleted after
-          finishing its execution. Defaults to true
-          */
-        virtual void auto_delete(bool a){ auto_del = a; }
-        /**
-          @return the current auto_delete flag
-          @see set_auto_delete();
-          */
-        virtual bool auto_delete() const { return auto_del; }
+    virtual ~operation (){ }
 
-    private:
-        bool auto_del;
+
+    virtual void operator () () = 0;
+
+    /**
+      Change the auto_delete flag to prevent
+      the iteration from being deleted after
+      finishing its execution. Defaults to true
+      */
+    virtual void auto_delete(
+        bool a
+    )
+    {
+        auto_del = a;
+    }
+
+    /**
+      @return the current auto_delete flag
+      @see set_auto_delete();
+      */
+    virtual bool auto_delete() const
+    {
+        return auto_del;
+    }
+
+private:
+    bool auto_del;
 };
+
 
 /**
   @see operation
@@ -78,62 +91,101 @@ class XDISPATCH_EXPORT operation
   */
 class XDISPATCH_EXPORT iteration_operation
 {
-    public:
-        iteration_operation() : auto_del(true){}
-        virtual ~iteration_operation(){}
+public:
+    iteration_operation ()
+        : auto_del( true ){ }
 
-        virtual void operator()(size_t index) = 0;
-        /**
-          Change the auto_delete flag to prevent
-          the iteration from being deleted after
-          finishing its execution. Defaults to true
-          */
-        virtual void auto_delete(bool a){ auto_del = a; }
-        /**
-          @return the current auto_delete flag
-          @see set_auto_delete();
-          */
-        virtual bool auto_delete() const { return auto_del; }
 
-    private:
-        bool auto_del;
+    virtual ~iteration_operation (){ }
+
+
+    virtual void operator () (
+        size_t index
+    ) = 0;
+
+    /**
+      Change the auto_delete flag to prevent
+      the iteration from being deleted after
+      finishing its execution. Defaults to true
+      */
+    virtual void auto_delete(
+        bool a
+    )
+    {
+        auto_del = a;
+    }
+
+    /**
+      @return the current auto_delete flag
+      @see set_auto_delete();
+      */
+    virtual bool auto_delete() const
+    {
+        return auto_del;
+    }
+
+private:
+    bool auto_del;
 };
+
 
 /**
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as operation
   */
-template <class T>  class ptr_operation : public operation
+template< class T >
+class ptr_operation
+    : public operation
 {
-    public:
-        ptr_operation(T* object, void(T::*function)())
-            : obj(object), func(function) {}
-        virtual void operator()() {
-            (*obj.*func)();
-        }
+public:
+    ptr_operation (
+        T *object,
+        void( T::*function )()
+    )
+        : obj( object ),
+          func( function ) { }
 
-    private:
-        T* obj;
-        void (T::*func)();
+
+    virtual void operator () ()
+    {
+        ( *obj.*func )();
+    }
+
+private:
+    T *obj;
+    void (T::*func)();
 };
+
 
 /**
   Provides a template functor to wrap
   a function pointer to a memberfunction of an object as iteration_operation
   */
-template <class T> class  ptr_iteration_operation : public iteration_operation
+template< class T >
+class ptr_iteration_operation
+    : public iteration_operation
 {
-    public:
+public:
+    ptr_iteration_operation (
+        T *object,
+        void( T::*function )( size_t )
+    )
+        : obj( object ),
+          func( function ) { }
 
-        ptr_iteration_operation(T* object, void(T::*function)(size_t))
-            : obj(object), func(function) {}
-        virtual void operator()(size_t index) {
-            (*obj.*func)(index);
-        }
 
-    private:
-        T* obj;
-        void (T::*func)(size_t);
+    virtual void operator () (
+        size_t index
+    )
+    {
+        ( *obj.*func )( index );
+    }
+
+private:
+    T *obj;
+    void (T::*func)(
+        size_t
+    );
 };
 
 
@@ -142,43 +194,78 @@ template <class T> class  ptr_iteration_operation : public iteration_operation
   A simple operation for wrapping the given
   block as an xdispatch::operation
   */
-class block_operation : public operation {
-    public:
-        block_operation(dispatch_block_t b)
-            : operation(), _block(Block_copy(b)) {}
-        block_operation(const block_operation& other)
-            : operation(other), _block(Block_copy(other._block)) {}
-        ~block_operation() {
-            Block_release(_block);
-        }
+class block_operation
+    : public operation
+{
+public:
+    block_operation (
+        dispatch_block_t b
+    )
+        : operation(),
+          _block( Block_copy( b ) ) { }
 
-        void operator ()(){
-            _block();
-        };
 
-    private:
-        dispatch_block_t _block;
+    block_operation (
+        const block_operation &other
+    )
+        : operation( other ),
+          _block( Block_copy( other._block ) ) { }
+
+
+    ~block_operation ()
+    {
+        Block_release( _block );
+    }
+
+    void operator () ()
+    {
+        _block();
+    }
+
+private:
+    dispatch_block_t _block;
 };
+
 
 /**
   A simple iteration operation needed when
   applying a block several times
   */
-class block_iteration_operation : public iteration_operation {
-    public:
-        block_iteration_operation(dispatch_iteration_block_t b)
-            : iteration_operation(), _block(Block_copy(b)) {}
-        block_iteration_operation(const block_iteration_operation& other)
-            : iteration_operation(other), _block(Block_copy(other._block)) {}
-        ~block_iteration_operation() { Block_release(_block); }
+class block_iteration_operation
+    : public iteration_operation
+{
+public:
+    block_iteration_operation (
+        dispatch_iteration_block_t b
+    )
+        : iteration_operation(),
+          _block( Block_copy( b ) ) { }
 
-        void operator ()(size_t index){
-            _block(index);
-        };
 
-    private:
-        dispatch_iteration_block_t _block;
+    block_iteration_operation (
+        const block_iteration_operation &other
+    )
+        : iteration_operation( other ),
+          _block( Block_copy( other._block ) ) { }
+
+
+    ~block_iteration_operation ()
+    {
+        Block_release( _block );
+    }
+
+    void operator () (
+        size_t index
+    )
+    {
+        _block( index );
+    }
+
+private:
+    dispatch_iteration_block_t _block;
 };
+
+
 #endif // XDISPATCH_HAS_BLOCKS
 
 #if XDISPATCH_HAS_FUNCTION
@@ -186,41 +273,74 @@ class block_iteration_operation : public iteration_operation {
   A simple operation for wrapping the given
   function as an xdispatch::operation
   */
-class function_operation : public operation {
-    public:
-        function_operation(const lambda_function& b)
-            : operation(), _function(b) {}
-        function_operation(const function_operation& other)
-            : operation(other), _function(other._function) {}
-        ~function_operation() {}
+class function_operation
+    : public operation
+{
+public:
+    function_operation (
+        const lambda_function &b
+    )
+        : operation(),
+          _function( b ) { }
 
-        void operator ()(){
-           _function();
-        };
 
-    private:
-        lambda_function _function;
+    function_operation (
+        const function_operation &other
+    )
+        : operation( other ),
+          _function( other._function ) { }
+
+
+    ~function_operation () { }
+
+
+    void operator () ()
+    {
+        _function();
+    }
+
+private:
+    lambda_function _function;
 };
+
 
 /**
   A simple iteration operation needed when
   applying a function object several times
   */
-class function_iteration_operation : public iteration_operation {
-    public:
-        function_iteration_operation(const iteration_lambda_function b)
-            : iteration_operation(), _function(b) {}
-        function_iteration_operation(const function_iteration_operation& other)
-            : iteration_operation(other), _function(other._function) {}
-        ~function_iteration_operation() {}
+class function_iteration_operation
+    : public iteration_operation
+{
+public:
+    function_iteration_operation (
+        const iteration_lambda_function b
+    )
+        : iteration_operation(),
+          _function( b ) { }
 
-        void operator ()(size_t index){
-            _function(index);
-        };
 
-    private:
-        iteration_lambda_function _function;
+    function_iteration_operation (
+        const function_iteration_operation &other
+    )
+        : iteration_operation( other ),
+          _function( other._function ) { }
+
+
+    ~function_iteration_operation () { }
+
+
+    void operator () (
+        size_t index
+    )
+    {
+        _function( index );
+    }
+
+private:
+    iteration_lambda_function _function;
 };
+
+
 #endif // XDISPATCH_HAS_FUNCTION
 
 __XDISPATCH_END_NAMESPACE
