@@ -77,7 +77,7 @@ macro(mz_auto_format _TARGET)
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     )
   endif()
-  if( MZ_CPPLINT_BIN AND MZ_DO_CPPLINT )
+  if( MZ_CPPLINT_BIN AND MZ_DO_CPPLINT AND NOT __MZ_NO_CPPLINT )
     add_library(${_new_target_lint} STATIC ${CMAKE_CURRENT_BINARY_DIR}/lint_step.c)
     set_target_properties(${_new_target_lint} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_custom_command(
@@ -92,7 +92,12 @@ macro(mz_auto_format _TARGET)
   mz_debug_message("NEW_TARGET=${_new_target_format};${_new_target_lint}, WORKING_DIRECTORY=${CMAKE_CURRENT_LIST_DIR}")
 endmacro()
 
-macro(mz_auto_header _TARGET _HEADER)
-   set(__MZ_AUTOFORMAT_ADD_CONFIG "cmt_insert_file_header=${_HEADER}")
+macro(mz_auto_format_c _TARGET)
+   set(__MZ_NO_CPPLINT TRUE)
+   mz_auto_format(${_TARGET} ${ARGN})
+endmacro()
+
+macro(mz_auto_format_cxx _TARGET)
+   set(__MZ_NO_CPPLINT TRUE)
    mz_auto_format(${_TARGET} ${ARGN})
 endmacro()
