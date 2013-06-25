@@ -131,9 +131,16 @@ public:
        @param times The number of times the operation will be executed
        */
     void apply(
-        iteration_operation *,
-        size_t times
+        size_t times,
+        iteration_operation *
     );
+
+    inline void XDISPATCH_DEPRECATED(
+        apply(iteration_operation * op, size_t times)
+    )
+    {
+        apply( times, op );
+    }
 
 #if XDISPATCH_HAS_BLOCKS
     /**
@@ -142,14 +149,24 @@ public:
     Will wrap the given block in an operation and put it on the
     queue.
 
-    @see apply(iteration_operation*, size_t times)
+    @see apply(size_t times, iteration_operation*)
     */
     inline void apply(
-        dispatch_iteration_block_t b,
-        size_t times
+        size_t times,
+        dispatch_iteration_block_t b
     )
     {
-        apply( new block_iteration_operation( b ), times );
+        apply( times, new block_iteration_operation( b ) );
+    }
+
+    inline void XDISPATCH_DEPRECATED(
+        apply(
+            dispatch_iteration_block_t b,
+            size_t times
+        )
+    )
+    {
+        apply( times, b );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -160,14 +177,24 @@ public:
     Will wrap the given function in an operation and put it on the
     queue.
 
-    @see apply(iteration_operation*, size_t times)
+    @see apply(size_t times, iteration_operation*)
     */
     inline void apply(
-        const iteration_lambda_function &b,
-        size_t times
+        size_t times,
+        const iteration_lambda_function &b
     )
     {
-        apply( new function_iteration_operation( b ), times );
+        apply( times, new function_iteration_operation( b ) );
+    }
+
+    inline void XDISPATCH_DEPRECATED(
+        apply(
+            const iteration_lambda_function &b,
+            size_t times
+        )
+    )
+    {
+        apply( times, b );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION

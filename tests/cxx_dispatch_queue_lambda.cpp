@@ -43,9 +43,9 @@ extern "C" void cxx_dispatch_queue_lambda(){
     xdispatch::queue q = xdispatch::global_queue(xdispatch::HIGH);
     MU_ASSERT_NOT_NULL(q.native());
 
-    q.apply([=](size_t i){
+    q.apply(RUN_TIMES, [=](size_t i){
       dispatch_atomic_inc(worker);
-    }, RUN_TIMES);
+    });
 
     xdispatch::global_queue(xdispatch::LOW).async([=]{
         MU_ASSERT_EQUAL(*worker,RUN_TIMES);

@@ -72,7 +72,7 @@ extern "C" void cxx_dispatch_mainqueue(){
     xdispatch::queue q = xdispatch::main_queue();
     MU_ASSERT_NOT_NULL(q.native());
 
-    xdispatch::global_queue().apply(new inc(worker), RUN_TIMES);
+    xdispatch::global_queue().apply(RUN_TIMES, new inc(worker));
     q.async(new cleanup(worker));
 
     xdispatch::exec();

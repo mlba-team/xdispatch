@@ -127,7 +127,7 @@ extern "C" void cxx_synchronized() {
     MU_MESSAGE("Testing 'synchronized' keyword (apply)");
     xdispatch::iteration_operation* test11 = new SynchronizedRun;
     watch.reset ();
-    xdispatch::global_queue().apply(test11, ITERATIONS);
+    xdispatch::global_queue().apply(ITERATIONS, test11);
     duration_synchronized = watch.elapsed() / (double)ITERATIONS;
     MU_ASSERT_EQUAL_STR(current_string->str(), reference_string.str());
     MU_MESSAGE("%f us per Iteration", duration_synchronized);
@@ -162,7 +162,7 @@ extern "C" void cxx_synchronized() {
     MU_MESSAGE("Testing 'synchronize' keyword (apply)");
     xdispatch::iteration_operation* test21 = new SynchronizeRun;
     watch.reset();
-    xdispatch::global_queue().apply(test21, ITERATIONS);
+    xdispatch::global_queue().apply(ITERATIONS, test21);
     duration_synchronize = watch.elapsed() / (double)ITERATIONS;
     MU_ASSERT_EQUAL_STR(current_string->str(), reference_string.str());
     MU_MESSAGE("%f us per Iteration", duration_synchronize);
@@ -201,7 +201,7 @@ extern "C" void cxx_synchronized() {
     MU_MESSAGE("Testing with normal mutex (apply)");
     xdispatch::iteration_operation* mutexRun = new MutexRun;
     watch.reset();
-    xdispatch::global_queue().apply(mutexRun, ITERATIONS);
+    xdispatch::global_queue().apply(ITERATIONS, mutexRun);
     duration_mutex = watch.elapsed() / (double)ITERATIONS;
     MU_ASSERT_EQUAL_STR(current_string->str(), reference_string.str());
     MU_MESSAGE("%f us per Iteration", duration_mutex);

@@ -61,7 +61,7 @@ extern "C" void cxx_dispatch_semaphore(){
     MU_BEGIN_TEST(cxx_dispatch_semaphore);
     xdispatch::semaphore* dsema = new xdispatch::semaphore(1);
 
-    xdispatch::queue("cxx_dispatch_semaphore").apply(new acquire_inc(dsema, total), LAPS);
+    xdispatch::queue("cxx_dispatch_semaphore").apply(LAPS, new acquire_inc(dsema, total));
 
 	delete dsema;
 

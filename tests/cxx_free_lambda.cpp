@@ -72,9 +72,9 @@ static void dispatch_outer(){
     BeFreed outer;
     BeFreed2 inner;
 
-    xdispatch::global_queue().apply([=](size_t i){
+    xdispatch::global_queue().apply(10, [=](size_t i){
          inner.someFunction();
-    }, 10);
+    });
 
     xdispatch::main_queue().async([=]{
         outer.someFunction();

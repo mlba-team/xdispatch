@@ -116,8 +116,8 @@ void queue::async(
 
 
 void queue::apply(
-    iteration_operation *op,
-    size_t times
+    size_t times,
+    iteration_operation *op
 )
 {
     iteration_wrap wrap( op, times );
