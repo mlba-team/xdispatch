@@ -1,21 +1,22 @@
 /*
-* Copyright (c) 2010 MLBA. All rights reserved.
+* MUnit_runner.h
 *
-* @MLBA_OPEN_LICENSE_HEADER_START@
+* Copyright (c) 2010 MLBA.
+* All rights reserved.
 *
+* @LICENSE_HEADER_START@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
+* @LICENSE_HEADER_END@
 */
 
 #ifndef MUNIT_RUNNER_H_
@@ -24,11 +25,14 @@
 /**
   Will print a help information
   */
-void MU_printHelp();
+void
+MU_printHelp();
+
 /**
   Will print a list of cmake compatible add_test() calls
   */
-void MU_printTestsCTest();
+void
+MU_printTestsCTest();
 
 /**
   Provides a fully implenented main
@@ -36,18 +40,28 @@ void MU_printTestsCTest();
   and automatically selecting a specific, single
   test or printing the help
  */
-int MU_main(int argc, char* argv[]);
+int
+MU_main(
+    int argc,
+    char *argv[]
+);
 
 /**
   Will run the test with the given number,
   counting starts at 1
   */
-int MU_runTest(int no);
+int
+MU_runTest(
+    int no
+);
 
 /**
   Will run the test with the given name
   */
-int MU_runTestName(const char* name);
+int
+MU_runTestName(
+    const char *name
+);
 
 /**
   Will run all tests and return the return
@@ -55,21 +69,28 @@ int MU_runTestName(const char* name);
   if all tests succeeded.
   @param bin The path to the test binary
   @param keep_running Pass true to force running of all tests,
-					  false if you want to stop after the first failure
+            false if you want to stop after the first failure
   */
-int MU_runAllTests(const char* bin, char keep_running);
+int
+MU_runAllTests(
+    const char *bin,
+    char keep_running
+);
 
 /**
   Will print a list of all available tests
   */
-void MU_printTests();
+void
+MU_printTests();
 
-typedef void (*MU_messageHandler)(const char*);
+typedef void (*MU_messageHandler)(
+    const char *
+);
 
 /**
  * Will initialize the framework and install the given handler
  * for printing messages
  */
-void MU_initFramework(MU_messageHandler);
+void MU_initFramework( MU_messageHandler );
 
 #endif /* MUNIT_RUNNER_H_ */

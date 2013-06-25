@@ -1,8 +1,10 @@
 /*
-* Copyright (c) 2011-2013 MLBA-Team. All rights reserved.
+* qdispatchgroup.cpp
 *
-* @MLBA_OPEN_LICENSE_HEADER_START@
+* Copyright (c) 2011-2013 MLBA-Team.
+* All rights reserved.
 *
+* @LICENSE_HEADER_START@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -14,8 +16,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*
-* @MLBA_OPEN_LICENSE_HEADER_END@
+* @LICENSE_HEADER_END@
 */
 
 

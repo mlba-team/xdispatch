@@ -1,8 +1,10 @@
 #
-# Copyright (c) 2011-2013 MLBA-Team. All rights reserved.
+# CMakeLists.txt
 #
-# @MLBA_OPEN_LICENSE_HEADER_START@
+# Copyright (c) 2011-2013 MLBA-Team.
+# All rights reserved.
 #
+# @LICENSE_HEADER_START@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,8 +16,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# @MLBA_OPEN_LICENSE_HEADER_END@
+# @LICENSE_HEADER_END@
 #
 
 cmake_minimum_required(VERSION 2.8)
@@ -35,7 +36,7 @@ enable_testing()
 if(NOT HAS_MZ_GLOBAL)
 
 	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
-	include(build/global.cmake)
+    include(build/global.cmake)
 	
 	# We need to ouput everything into the same directory
     set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
