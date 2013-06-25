@@ -135,6 +135,9 @@ public:
         iteration_operation *
     );
 
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
     inline void XDISPATCH_DEPRECATED(
         apply(iteration_operation * op, size_t times)
     )
@@ -159,6 +162,9 @@ public:
         apply( times, new block_iteration_operation( b ) );
     }
 
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
     inline void XDISPATCH_DEPRECATED(
         apply(
             dispatch_iteration_block_t b,
@@ -187,6 +193,9 @@ public:
         apply( times, new function_iteration_operation( b ) );
     }
 
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
     inline void XDISPATCH_DEPRECATED(
         apply(
             const iteration_lambda_function &b,
@@ -210,14 +219,51 @@ public:
        the queue.
        */
     void after(
-        operation *,
-        struct tm *time
+        struct tm *time,
+        operation *
     );
 
+    /**
+    Applies the given operation for async execution
+    in this queue after the given time and returns immediately.
+    The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
+
+    @param time The time to wait until the operation is applied to
+    the queue.
+    */
     void after(
-        operation *,
-        dispatch_time_t time
+        dispatch_time_t time,
+        operation *
     );
+
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
+    inline void XDISPATCH_DEPRECATED(
+        after(
+            operation * op,
+            struct tm *time
+        )
+    )
+    {
+        after( time, op );
+    }
+
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
+    inline void XDISPATCH_DEPRECATED(
+        after(
+            operation * op,
+            dispatch_time_t time
+        )
+    )
+    {
+        after( time, op );
+    }
 
 #if XDISPATCH_HAS_BLOCKS
     /**
@@ -226,19 +272,50 @@ public:
     queue.
     */
     inline void after(
-        dispatch_block_t b,
-        struct tm *time
+        struct tm *time,
+        dispatch_block_t b
     )
     {
-        after( new block_operation( b ), time );
+        after( time, new block_operation( b ) );
     }
 
+    /**
+    Same as dispatch_after(operation*, time_t).
+    Will wrap the given block in an operation and put it on the
+    queue.
+    */
     inline void after(
-        dispatch_block_t b,
-        dispatch_time_t time
+        dispatch_time_t time,
+        dispatch_block_t b
     )
     {
-        after( new block_operation( b ), time );
+        after( time, new block_operation( b ) );
+    }
+
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
+    inline void XDISPATCH_DEPRECATED(
+        after(
+            dispatch_block_t b,
+            struct tm *time
+        )
+    )
+    {
+        after( b, time );
+    }
+
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
+    inline void XDISPATCH_DEPRECATED(
+        after(
+            dispatch_block_t b,
+            dispatch_time_t time
+        )
+    )
+    {
+        after( b, time );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -249,19 +326,50 @@ public:
     queue.
     */
     inline void after(
-        const lambda_function &b,
-        struct tm *time
+        struct tm *time,
+        const lambda_function &b
     )
     {
-        after( new function_operation( b ), time );
+        after( time, new function_operation( b ) );
     }
 
+    /**
+    Same as dispatch_after(operation*, time_t).
+    Will wrap the given function in an operation and put it on the
+    queue.
+    */
     inline void after(
-        const lambda_function &b,
-        dispatch_time_t time
+        dispatch_time_t time,
+        const lambda_function &b
     )
     {
-        after( new function_operation( b ), time );
+        after( time, new function_operation( b ) );
+    }
+
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
+    inline void XDISPATCH_DEPRECATED(
+        after(
+            const lambda_function &b,
+            struct tm *time
+        )
+    )
+    {
+        after( b, time );
+    }
+
+    /**
+     * @deprecated Use the version with swapped arguments instead
+     */
+    inline void XDISPATCH_DEPRECATED(
+        after(
+            const lambda_function &b,
+            dispatch_time_t time
+        )
+    )
+    {
+        after( b, time );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION

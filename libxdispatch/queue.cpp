@@ -127,17 +127,17 @@ void queue::apply(
 
 
 void queue::after(
-    operation *op,
-    struct tm *time
+    struct tm *time,
+    operation *op
 )
 {
-    after( op, as_dispatch_time( time ) );
+    after( as_dispatch_time( time ), op );
 }
 
 
 void queue::after(
-    operation *op,
-    dispatch_time_t time
+    dispatch_time_t time,
+    operation *op
 )
 {
     dispatch_after_f( time, d->native, op, _xdispatch_run_operation );

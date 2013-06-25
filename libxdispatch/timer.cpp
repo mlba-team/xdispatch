@@ -128,7 +128,7 @@ void timer::single_shot(
     xdispatch::operation *op
 )
 {
-    xdispatch::queue( q ).after( op, t );
+    xdispatch::queue( q ).after( t, op );
 }
 
 
@@ -138,7 +138,7 @@ void timer::single_shot(
     xdispatch::operation *op
 )
 {
-    xdispatch::queue( q ).after( op, t );
+    xdispatch::queue( q ).after( t, op );
 }
 
 
