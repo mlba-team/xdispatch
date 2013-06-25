@@ -1,4 +1,4 @@
-xdispatch (${XDISPATCH_VERSION}-0ubuntu1) oneiric; urgency=low
+xdispatch (${XDISPATCH_VERSION}-0ubuntu1) precise; urgency=low
 
   * Unstable build of trunk revision ${XDISPATCH_WC_REVISION}
 
