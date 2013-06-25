@@ -99,7 +99,7 @@ public:
         dispatch_block_t b
     )
     {
-        async( new block_operation( b ) );
+        async( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -114,7 +114,7 @@ public:
         const lambda_function &b
     )
     {
-        async( new function_operation( b ) );
+        async( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION
@@ -159,7 +159,7 @@ public:
         dispatch_iteration_block_t b
     )
     {
-        apply( times, new block_iteration_operation( b ) );
+        apply( times, make_function_iteration_operation( b ) );
     }
 
     /**
@@ -190,7 +190,7 @@ public:
         const iteration_lambda_function &b
     )
     {
-        apply( times, new function_iteration_operation( b ) );
+        apply( times, make_function_iteration_operation( b ) );
     }
 
     /**
@@ -276,7 +276,7 @@ public:
         dispatch_block_t b
     )
     {
-        after( time, new block_operation( b ) );
+        after( time, make_function_operation( b ) );
     }
 
     /**
@@ -289,7 +289,7 @@ public:
         dispatch_block_t b
     )
     {
-        after( time, new block_operation( b ) );
+        after( time, make_function_operation( b ) );
     }
 
     /**
@@ -330,7 +330,7 @@ public:
         const lambda_function &b
     )
     {
-        after( time, new function_operation( b ) );
+        after( time, make_function_operation( b ) );
     }
 
     /**
@@ -343,7 +343,7 @@ public:
         const lambda_function &b
     )
     {
-        after( time, new function_operation( b ) );
+        after( time, make_function_operation( b ) );
     }
 
     /**
@@ -395,7 +395,7 @@ public:
         dispatch_block_t b
     )
     {
-        sync( new block_operation( b ) );
+        sync( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -409,7 +409,7 @@ public:
         const lambda_function &b
     )
     {
-        sync( new function_operation( b ) );
+        sync( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION
@@ -442,7 +442,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        finalizer( new block_operation( b ), q );
+        finalizer( make_function_operation( b ), q );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -457,7 +457,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        finalizer( new function_operation( b ), q );
+        finalizer( make_function_operation( b ), q );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION

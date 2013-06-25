@@ -85,7 +85,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        async( new block_operation( b ), q );
+        async( make_function_operation( b ), q );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -99,7 +99,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        async( new function_operation( b ), q );
+        async( make_function_operation( b ), q );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION
@@ -159,7 +159,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        notify( new block_operation( b ), q );
+        notify( make_function_operation( b ), q );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -181,7 +181,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        notify( new function_operation( b ), q );
+        notify( make_function_operation( b ), q );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION

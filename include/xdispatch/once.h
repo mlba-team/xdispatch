@@ -132,7 +132,7 @@ private:
 
 #if XDISPATCH_HAS_BLOCKS
     // we define our own block class
-    // as the block_operation does a
+    // as the function_operation does a
     // copy of the stored block, something
     // we do not need in here
     class once_block

@@ -237,7 +237,7 @@ public:
         dispatch_block_t b
     )
     {
-        handler( new block_operation( b ) );
+        handler( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -252,7 +252,7 @@ public:
         const lambda_function &b
     )
     {
-        handler( new function_operation( b ) );
+        handler( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION
@@ -349,7 +349,7 @@ public:
         dispatch_block_t b
     )
     {
-        cancel_handler( new block_operation( b ) );
+        cancel_handler( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -366,7 +366,7 @@ public:
         const lambda_function &b
     )
     {
-        cancel_handler( new function_operation( b ) );
+        cancel_handler( make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_FUNCTION

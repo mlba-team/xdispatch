@@ -190,96 +190,17 @@ private:
 };
 
 
-#if XDISPATCH_HAS_BLOCKS
-/**
-  A simple operation for wrapping the given
-  block as an xdispatch::operation
-  */
-class block_operation
-    : public operation
-{
-public:
-    block_operation (
-        dispatch_block_t b
-    )
-        : operation(),
-          _block( Block_copy( b ) ) { }
-
-
-    block_operation (
-        const block_operation &other
-    )
-        : operation( other ),
-          _block( Block_copy( other._block ) ) { }
-
-
-    ~block_operation ()
-    {
-        Block_release( _block );
-    }
-
-    void operator () ()
-    {
-        _block();
-    }
-
-private:
-    dispatch_block_t _block;
-};
-
-
-/**
-  A simple iteration operation needed when
-  applying a block several times
-  */
-class block_iteration_operation
-    : public iteration_operation
-{
-public:
-    block_iteration_operation (
-        dispatch_iteration_block_t b
-    )
-        : iteration_operation(),
-          _block( Block_copy( b ) ) { }
-
-
-    block_iteration_operation (
-        const block_iteration_operation &other
-    )
-        : iteration_operation( other ),
-          _block( Block_copy( other._block ) ) { }
-
-
-    ~block_iteration_operation ()
-    {
-        Block_release( _block );
-    }
-
-    void operator () (
-        size_t index
-    )
-    {
-        _block( index );
-    }
-
-private:
-    dispatch_iteration_block_t _block;
-};
-
-
-#endif // XDISPATCH_HAS_BLOCKS
-
-#if XDISPATCH_HAS_FUNCTION
 /**
   A simple operation for wrapping the given
   function as an xdispatch::operation
   */
+template< typename _Func >
 class function_operation
     : public operation
 {
 public:
     function_operation (
-        const lambda_function &b
+        const _Func &b
     )
         : operation(),
           _function( b ) { }
@@ -301,20 +222,30 @@ public:
     }
 
 private:
-    lambda_function _function;
+    _Func _function;
 };
+
+
+template< typename _Func >
+inline function_operation< _Func > * make_function_operation(
+    const _Func &f
+)
+{
+    return new function_operation< _Func > ( f );
+}
 
 
 /**
   A simple iteration operation needed when
   applying a function object several times
   */
+template< typename _Func >
 class function_iteration_operation
     : public iteration_operation
 {
 public:
     function_iteration_operation (
-        const iteration_lambda_function b
+        const _Func b
     )
         : iteration_operation(),
           _function( b ) { }
@@ -338,11 +269,99 @@ public:
     }
 
 private:
-    iteration_lambda_function _function;
+    _Func _function;
 };
 
 
-#endif // XDISPATCH_HAS_FUNCTION
+template< typename _Func >
+inline function_iteration_operation< _Func > * make_function_iteration_operation(
+    const _Func &f
+)
+{
+    return new function_iteration_operation< _Func > ( f );
+}
+
+
+#if XDISPATCH_HAS_BLOCKS
+/**
+  A simple operation for wrapping the given
+  block as an xdispatch::operation
+  */
+template< >
+class function_operation< dispatch_block_t >
+    : public operation
+{
+public:
+    function_operation (
+        dispatch_block_t b
+    )
+        : operation(),
+          _block( Block_copy( b ) ) { }
+
+
+    function_operation (
+        const function_operation &other
+    )
+        : operation( other ),
+          _block( Block_copy( other._block ) ) { }
+
+
+    ~function_operation ()
+    {
+        Block_release( _block );
+    }
+
+    void operator () ()
+    {
+        _block();
+    }
+
+private:
+    dispatch_block_t _block;
+};
+
+
+/**
+  A simple iteration operation needed when
+  applying a block several times
+  */
+template< >
+class function_iteration_operation< dispatch_iteration_block_t >
+    : public iteration_operation
+{
+public:
+    function_iteration_operation (
+        dispatch_iteration_block_t b
+    )
+        : iteration_operation(),
+          _block( Block_copy( b ) ) { }
+
+
+    function_iteration_operation (
+        const function_iteration_operation &other
+    )
+        : iteration_operation( other ),
+          _block( Block_copy( other._block ) ) { }
+
+
+    ~function_iteration_operation ()
+    {
+        Block_release( _block );
+    }
+
+    void operator () (
+        size_t index
+    )
+    {
+        _block( index );
+    }
+
+private:
+    dispatch_iteration_block_t _block;
+};
+
+
+#endif // XDISPATCH_HAS_BLOCKS
 
 __XDISPATCH_END_NAMESPACE
 

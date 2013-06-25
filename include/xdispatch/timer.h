@@ -130,7 +130,7 @@ public:
         dispatch_block_t b
     )
     {
-        single_shot( t, q, new block_operation( b ) );
+        single_shot( t, q, make_function_operation( b ) );
     }
 
     /**
@@ -143,7 +143,7 @@ public:
         dispatch_block_t b
     )
     {
-        single_shot( t, q, new block_operation( b ) );
+        single_shot( t, q, make_function_operation( b ) );
     }
 
 #endif // if XDISPATCH_HAS_BLOCKS
@@ -157,7 +157,7 @@ public:
         const lambda_function &b
     )
     {
-        single_shot( t, q, new function_operation( b ) );
+        single_shot( t, q, make_function_operation( b ) );
     }
 
     /**
@@ -170,7 +170,7 @@ public:
         const lambda_function &b
     )
     {
-        single_shot( t, q, new function_operation( b ) );
+        single_shot( t, q, make_function_operation( b ) );
     }
 
     timer & operator = (
