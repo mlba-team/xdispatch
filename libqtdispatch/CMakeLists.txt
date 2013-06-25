@@ -85,6 +85,7 @@ else()
 endif()
 
 mz_target_props(QtDispatch)
+mz_auto_format(QtDispatch)
 set_property(TARGET QtDispatch PROPERTY VERSION ${XDISPATCH_VERSION})
 
 if(IOS)

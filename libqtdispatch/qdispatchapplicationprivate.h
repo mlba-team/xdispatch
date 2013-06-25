@@ -26,59 +26,80 @@
 #include <QEvent>
 
 extern "C" {
-	/* copied from libdispatch/private.h */
-	typedef void (_dispatch_main_q_handler_4QT)(void);
-	DISPATCH_EXPORT void _dispatch_main_queue_callback_4QT();
-	DISPATCH_EXPORT void _dispatch_register_signal_handler_4QT(_dispatch_main_q_handler_4QT);
+/* copied from libdispatch/private.h */
+typedef void (_dispatch_main_q_handler_4QT)(
+    void
+);
+DISPATCH_EXPORT void
+_dispatch_main_queue_callback_4QT();
+
+DISPATCH_EXPORT void _dispatch_register_signal_handler_4QT( _dispatch_main_q_handler_4QT );
 }
 
 QT_BEGIN_HEADER
-QT_BEGIN_NAMESPACE
+    QT_BEGIN_NAMESPACE
 
-class QDispatchEvent : public QEvent {
+class QDispatchEvent
+    : public QEvent
+{
 public:
-	QDispatchEvent() : QEvent(TYPECONSTANT) {}
+    QDispatchEvent ()
+        : QEvent( TYPECONSTANT ) { }
 
-	static QEvent::Type TYPECONSTANT;
+
+    static QEvent::Type TYPECONSTANT;
 };
 
-class QDispatchLibBridge : public QObject {
 
+class QDispatchLibBridge
+    : public QObject
+{
 public:
-	QDispatchLibBridge() : QObject(NULL) {}
+    QDispatchLibBridge ()
+        : QObject( NULL ) { }
 
-	bool event(QEvent* e){
-		if(e->type() != QDispatchEvent::TYPECONSTANT)
-			return false;
 
-		_dispatch_main_queue_callback_4QT();
-		return true;
-	}
+    bool event(
+        QEvent *e
+    )
+    {
+        if( e->type() != QDispatchEvent::TYPECONSTANT )
+            return false;
 
-	static void handleNewItem(){
-		qApp->postEvent(QDispatchLibBridge::instance, new QDispatchEvent());
-	}
+        _dispatch_main_queue_callback_4QT();
+        return true;
+    }
 
-	static void registerCallback(){
+    static void handleNewItem()
+    {
+        qApp->postEvent( QDispatchLibBridge::instance, new QDispatchEvent() );
+    }
+
+    static void registerCallback()
+    {
         QDispatchEvent::TYPECONSTANT = QEvent::Type( QEvent::registerEventType() );
-		instance = new QDispatchLibBridge();
-		_dispatch_register_signal_handler_4QT(handleNewItem);
 
-                // there might be another job pending
-                // make sure that it is processed
-                handleNewItem();
-	}
+        instance = new QDispatchLibBridge();
+        _dispatch_register_signal_handler_4QT( handleNewItem );
 
-	static void removeCallback(){
-		delete instance;
-	}
+        // there might be another job pending
+        // make sure that it is processed
+        handleNewItem();
+    }
 
-	static QDispatchLibBridge* instance;
+    static void removeCallback()
+    {
+        delete instance;
+    }
+
+    static QDispatchLibBridge *instance;
+
 
 private:
 };
 
+
 QT_END_NAMESPACE
-QT_END_HEADER
+    QT_END_HEADER
 
 #endif /* QDISPATCH_APPLICATIONPRIVATE_H_ */

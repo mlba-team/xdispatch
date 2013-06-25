@@ -6,9 +6,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,44 +24,72 @@
 #include "../include/QtDispatch/qiterationrunnable.h"
 #include "../include/xdispatch/dispatch"
 
-class RunnableOperation : public xdispatch::operation {
+class RunnableOperation
+    : public xdispatch::operation
+{
 public:
-    RunnableOperation(QRunnable* r) : runnable(r) {
-        Q_ASSERT(r);
+    RunnableOperation (
+        QRunnable *r
+    )
+        : runnable( r )
+    {
+        Q_ASSERT( r );
     }
-    ~RunnableOperation(){
-        if(runnable->autoDelete())
+
+    ~RunnableOperation ()
+    {
+        if( runnable->autoDelete() )
             delete runnable;
     }
 
-    void operator ()(){
+    void operator () ()
+    {
         runnable->run();
     }
 
 private:
-    RunnableOperation(const RunnableOperation&) {}
+    RunnableOperation (
+        const RunnableOperation &
+    ) { }
 
-    QRunnable* runnable;
+
+    QRunnable *runnable;
 };
 
-class IterationRunnableOperation : public xdispatch::iteration_operation {
+
+class IterationRunnableOperation
+    : public xdispatch::iteration_operation
+{
 public:
-    IterationRunnableOperation(QIterationRunnable* r) : runnable(r) {
-        Q_ASSERT(r);
+    IterationRunnableOperation (
+        QIterationRunnable *r
+    )
+        : runnable( r )
+    {
+        Q_ASSERT( r );
     }
-    ~IterationRunnableOperation(){
-        if(runnable->autoDelete())
+
+    ~IterationRunnableOperation ()
+    {
+        if( runnable->autoDelete() )
             delete runnable;
     }
 
-    void operator ()(size_t index){
-        runnable->run(index);
+    void operator () (
+        size_t index
+    )
+    {
+        runnable->run( index );
     }
 
 private:
-    IterationRunnableOperation(const IterationRunnableOperation&) {}
+    IterationRunnableOperation (
+        const IterationRunnableOperation &
+    ) { }
 
-    QIterationRunnable* runnable;
+
+    QIterationRunnable *runnable;
 };
+
 
 #endif /* QRUNNABLE_OPERATIONS_H_ */

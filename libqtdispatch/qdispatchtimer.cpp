@@ -30,64 +30,115 @@
 QT_BEGIN_NAMESPACE
 
 
-using namespace xdispatch;
+using xdispatch::timer;
 
-QDispatchTimer::QDispatchTimer(int msec, QObject* parent) : QObject(parent), timer(NSEC_PER_MSEC*msec){
-    Q_ASSERT(msec > 0);
-}
-
-QDispatchTimer::QDispatchTimer(const xdispatch::timer& t, QObject* parent) : QObject(parent), timer(t){
-
-}
-
-QDispatchTimer::QDispatchTimer(const QDispatchTimer & other) : QObject(), timer(other){
-
-}
-
-QDispatchTimer::~QDispatchTimer(){
-
-}
-
-void QDispatchTimer::setInterval(int msec){
-    timer::interval(msec* NSEC_PER_MSEC);
-}
-
-void QDispatchTimer::setTargetQueue(const xdispatch::queue& q){
-    timer::target_queue(q);
-}
-
-void QDispatchTimer::setHandler(QRunnable* r){
-    timer::handler(new RunnableOperation(r));
-}
-
-void QDispatchTimer::setLatency(int usec){
-    timer::latency(NSEC_PER_USEC* usec);
-}
-
-void QDispatchTimer::singleShot(dispatch_time_t t, const xdispatch::queue& q, QRunnable* r){
-    xdispatch::timer::single_shot(t, q, new RunnableOperation(r));
-}
-
-void QDispatchTimer::singleShot(const QTime& t, const xdispatch::queue& q, QRunnable* r){
-    xdispatch::timer::single_shot(QDispatch::asDispatchTime(t), q, new RunnableOperation(r));
+QDispatchTimer::QDispatchTimer (
+    int msec,
+    QObject *parent
+)
+    : QObject( parent ),
+      timer( NSEC_PER_MSEC * msec )
+{
+    Q_ASSERT( msec > 0 );
 }
 
 
-QDispatchTimer* QDispatchTimer::current(){
-    timer* curr = timer::current();
-    return static_cast<QDispatchTimer*>(curr);
+QDispatchTimer::QDispatchTimer (
+    const xdispatch::timer &t,
+    QObject *parent
+)
+    : QObject( parent ),
+      timer( t ){ }
+
+
+QDispatchTimer::QDispatchTimer (
+    const QDispatchTimer &other
+)
+    : QObject(),
+      timer( other ){ }
+
+
+QDispatchTimer::~QDispatchTimer (){ }
+
+
+void QDispatchTimer::setInterval(
+    int msec
+)
+{
+    timer::interval( msec * NSEC_PER_MSEC );
 }
 
-void QDispatchTimer::start(){
+
+void QDispatchTimer::setTargetQueue(
+    const xdispatch::queue &q
+)
+{
+    timer::target_queue( q );
+}
+
+
+void QDispatchTimer::setHandler(
+    QRunnable *r
+)
+{
+    timer::handler( new RunnableOperation( r ) );
+}
+
+
+void QDispatchTimer::setLatency(
+    int usec
+)
+{
+    timer::latency( NSEC_PER_USEC * usec );
+}
+
+
+void QDispatchTimer::singleShot(
+    dispatch_time_t t,
+    const xdispatch::queue &q,
+    QRunnable *r
+)
+{
+    xdispatch::timer::single_shot( t, q, new RunnableOperation( r ) );
+}
+
+
+void QDispatchTimer::singleShot(
+    const QTime &t,
+    const xdispatch::queue &q,
+    QRunnable *r
+)
+{
+    xdispatch::timer::single_shot( QDispatch::asDispatchTime( t ), q, new RunnableOperation( r ) );
+}
+
+
+QDispatchTimer * QDispatchTimer::current()
+{
+    timer *curr = timer::current();
+
+    return static_cast< QDispatchTimer * > ( curr );
+}
+
+
+void QDispatchTimer::start()
+{
     timer::start();
 }
 
-void QDispatchTimer::stop(){
+
+void QDispatchTimer::stop()
+{
     timer::stop();
 }
 
-Q_DISPATCH_EXPORT bool QDispatchTimer::operator ==(const QDispatchTimer& b) {
-    return *(static_cast<timer*>(this)) == static_cast<timer>(b);
+
+Q_DISPATCH_EXPORT bool QDispatchTimer::operator == (
+    const QDispatchTimer &b
+)
+{
+    return *( static_cast< timer * > ( this ) ) == static_cast< timer > ( b );
 }
+
 
 QT_END_NAMESPACE
