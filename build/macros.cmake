@@ -152,6 +152,7 @@ include(CheckIncludeFiles)
 include(FindPackageHandleStandardArgs)
 
 if( NOT CMAKE_MODULE_PATH )
+    cmake_policy(SET CMP0017 OLD)
     set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules" )
 endif()
 
@@ -281,7 +282,7 @@ macro(mz_find_checkout_library _NAME SYS _VERSION SVN _REPOSITORY _DEST_DIR _INC
         foreach(_DIR ${_INC_DIR})
             get_filename_component(_DIR_ABS ${_DIR} ABSOLUTE)
             list(APPEND ${_NAME_UPPER}_INCLUDE_DIRS "${_DIR_ABS}")
-            mz_message("Add ${_DIR_ABS} to ${${_NAME_UPPER}_INCLUDE_DIRS}")
+            mz_debug_message("Adding ${_DIR_ABS} to ${${_NAME_UPPER}_INCLUDE_DIRS}")
         endforeach(_DIR)
         set(${_NAME_UPPER}_LIBRARIES ${_TARGET} ${ARGN})
         set(${_NAME_UPPER}_FOUND TRUE)

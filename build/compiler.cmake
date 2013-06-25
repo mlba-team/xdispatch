@@ -367,8 +367,13 @@ mz_message("User is: ${MZ_USER_STRING}")
 
 # optional C++0x/c++11 features on gcc (on vs2010 this is enabled by default)
 if(MZ_IS_GCC AND MZ_HAS_CXX0X) # AND NOT DARWIN)
-    mz_add_cxx_flag(GCC -std=gnu++11)
+    mz_add_cxx_flag(GCC -std=c++11 -fgnu-keywords)
     mz_message("forcing C++11 support on this platform")
+endif()
+
+# work around an issue with gcc > 4.7 and eigen3
+if(NOT MZ_IS_CLANG AND COMPILER_VERSION STRGREATER "47")
+    mz_add_cxx_flag(GCC -Wno-enum-compare -Wno-unused-local-typedefs)
 endif()
 
 # compiler flags
