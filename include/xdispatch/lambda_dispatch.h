@@ -65,7 +65,7 @@ inline void dispatch_after(
     const xdispatch::lambda_function &block
 )
 {
-    xdispatch::queue( queue ).after( block, when );
+    xdispatch::queue( queue ).after( when, block );
 }
 
 
@@ -84,7 +84,7 @@ inline void dispatch_apply(
     const xdispatch::iteration_lambda_function &block
 )
 {
-    xdispatch::queue( queue ).apply( block, iterations );
+    xdispatch::queue( queue ).apply( iterations, block );
 }
 
 
