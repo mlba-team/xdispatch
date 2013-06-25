@@ -595,7 +595,7 @@ static uintptr_t _dispatch_queue_serial_numbers = 10;
 
 // Note to later developers: ensure that any initialization changes are
 // made for statically allocated queues (i.e. _dispatch_main_q).
-inline void
+void
 	_dispatch_queue_init(dispatch_queue_t dq)
 {
 	dq->do_vtable = &_dispatch_queue_vtable;
