@@ -25,42 +25,55 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-void _xdispatch_source_set_event_handler(dispatch_source_t src, xdispatch::operation* op){
-
-    pointer<native_source_wrapper>::shared wrapper = native_source_wrapper::atomic_get ( src );
+void _xdispatch_source_set_event_handler(
+    dispatch_source_t src,
+    xdispatch::operation *op
+)
+{
+    pointer< native_source_wrapper >::shared wrapper = native_source_wrapper::atomic_get( src );
     wrapper->event_operation( op );
-
 }
 
-void _xdispatch_source_set_cancel_handler(dispatch_source_t src, xdispatch::operation* op){
 
-    pointer<native_source_wrapper>::shared wrapper = native_source_wrapper::atomic_get ( src );
+void _xdispatch_source_set_cancel_handler(
+    dispatch_source_t src,
+    xdispatch::operation *op
+)
+{
+    pointer< native_source_wrapper >::shared wrapper = native_source_wrapper::atomic_get( src );
     wrapper->cancel_operation( op );
-
 }
+
 
 extern "C"
-void native_source_wrapper__run_event_operation(void* dt) {
+void native_source_wrapper__run_event_operation(
+    void *dt
+)
+{
     if( !dt )
         return;
 
-    XDISPATCH_ASSERT(dt);
-    native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
-    XDISPATCH_ASSERT(wrap);
+    XDISPATCH_ASSERT( dt );
+    native_source_wrapper *wrap = static_cast< native_source_wrapper * > ( dt );
+    XDISPATCH_ASSERT( wrap );
 
-    XDISPATCH_ASSERT(wrap->_op);
+    XDISPATCH_ASSERT( wrap->_op );
     _xdispatch_run_operation( wrap->_op.get() );
 }
 
+
 extern "C"
-void native_source_wrapper__run_cancel_operation(void* dt) {
+void native_source_wrapper__run_cancel_operation(
+    void *dt
+)
+{
     if( !dt )
         return;
 
-    XDISPATCH_ASSERT(dt);
-    native_source_wrapper* wrap = static_cast<native_source_wrapper*>(dt);
-    XDISPATCH_ASSERT(wrap);
+    XDISPATCH_ASSERT( dt );
+    native_source_wrapper *wrap = static_cast< native_source_wrapper * > ( dt );
+    XDISPATCH_ASSERT( wrap );
 
-    XDISPATCH_ASSERT(wrap->_cancel_op);
+    XDISPATCH_ASSERT( wrap->_cancel_op );
     _xdispatch_run_operation( wrap->_cancel_op.get() );
 }

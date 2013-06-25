@@ -6,9 +6,9 @@
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,36 +26,61 @@ __XDISPATCH_USE_NAMESPACE
 // to be called by the once() handler
 
 extern "C"
-void _xdispatch_once_operation(void* blk){
-    operation* op = (operation*)blk;
-    (*op)();
+void _xdispatch_once_operation(
+    void *blk
+)
+{
+    operation *op = reinterpret_cast< operation * > ( blk );
+
+    ( *op )();
 }
+
 
 // class implementation
 
-once::once()
-    : _once_obj(0), _once(&_once_obj) {
+once::once ()
+    : _once_obj( 0 ),
+      _once( &_once_obj ) { }
 
+
+once::once (
+    dispatch_once_t *dot
+)
+    : _once_obj( 0 ),
+      _once( dot )
+{
+    XDISPATCH_ASSERT( dot );
 }
 
-once::once(dispatch_once_t * dot)
-    : _once_obj(0), _once(dot) {
-    XDISPATCH_ASSERT(dot);
-}
 
-void once::operator ()(operation& op) {
+void once::operator () (
+    operation &op
+)
+{
     dispatch_once_f( _once, &op, _xdispatch_once_operation );
 }
 
-dispatch_once_t* once::native_once() const {
+
+dispatch_once_t * once::native_once() const
+{
     return _once;
 }
 
-std::ostream& xdispatch::operator<<(std::ostream& stream, const once* q){
-    return operator<<(stream, *q);
+
+std::ostream & xdispatch::operator << (
+    std::ostream &stream,
+    const once *q
+)
+{
+    return operator << ( stream, *q );
 }
 
-std::ostream& xdispatch::operator<<(std::ostream& stream, const once& q){
-    stream << "xdispatch::once (" << (q._once == 0 ? "not" : "") << " executed)";
+
+std::ostream & xdispatch::operator << (
+    std::ostream &stream,
+    const once &q
+)
+{
+    stream << "xdispatch::once (" << ( q._once == 0 ? "not" : "" ) << " executed)";
     return stream;
 }

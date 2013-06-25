@@ -53,6 +53,7 @@ add_library(${NAME} ${XDISPATCH_BUILD_TYPE} ${CXX_INCL} ${CXX} ${RES_FILE})
 message("-- linking xdispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})
 mz_target_props(${NAME})
+mz_auto_format(${NAME})
 
 set_property(TARGET xdispatch PROPERTY VERSION ${XDISPATCH_VERSION})
 set_property(TARGET xdispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})

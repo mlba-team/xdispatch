@@ -24,53 +24,70 @@ __XDISPATCH_USE_NAMESPACE
 
 #ifndef _WIN32
 
-extern "C" int __attribute((constructor)) init(void);
-extern "C" void __attribute((destructor)) cleanup(void);
+extern "C" int
+__attribute(
+    ( constructor )
+) init( void );
 
-#else
+extern "C" void
+__attribute(
+    ( destructor )
+) cleanup( void );
 
-extern "C" int init();
-extern "C" void cleanup();
+#else // ifndef _WIN32
 
-// DllMain - see http://msdn.microsoft.com/en-us/library/ms682596%28v=vs.85%29.aspx
+extern "C" int
+init();
+
+extern "C" void
+cleanup();
+
+// DllMain - see
+// http://msdn.microsoft.com/en-us/library/ms682596%28v=vs.85%29.aspx
 BOOL WINAPI DllMain(
-    HINSTANCE hinstDLL,  // handle to DLL module
-    DWORD fdwReason,     // reason for calling function
-    LPVOID lpReserved )  // reserved
+    HINSTANCE hinstDLL, // handle to DLL module
+    DWORD fdwReason, // reason for calling function
+    LPVOID lpReserved
+) // reserved
 {
     // Perform actions based on the reason for calling.
     switch( fdwReason )
     {
-    case DLL_PROCESS_ATTACH:
-        // Initialize once for each new process.
-        // Return FALSE to fail DLL load.
-        if(init() < 0)
-            return FALSE;
-        break;
+     case DLL_PROCESS_ATTACH:
 
-    case DLL_PROCESS_DETACH:
-        // Perform any necessary cleanup.
-        cleanup();
-        break;
+         // Initialize once for each new process.
+         // Return FALSE to fail DLL load.
+         if( init() < 0 )
+             return FALSE;
 
-    case DLL_THREAD_DETACH:
-        // Perform cleanup on a per thread base
-        break;
-    }
-    return TRUE;  // Successful DLL_PROCESS_ATTACH.
-}
+         break;
 
-#endif
+     case DLL_PROCESS_DETACH:
+         // Perform any necessary cleanup.
+         cleanup();
+         break;
+
+     case DLL_THREAD_DETACH:
+         // Perform cleanup on a per thread base
+         break;
+    } // switch
+
+    return TRUE; // Successful DLL_PROCESS_ATTACH.
+} // DllMain
+
+
+#endif // ifndef _WIN32
 
 // declared within synchronized.cpp
-void init_synchronized_feature();
+void
+init_synchronized_feature();
 
-extern "C" int init(){
-    init_synchronized_feature ();
+extern "C" int init()
+{
+    init_synchronized_feature();
 
     return 0;
 }
 
-extern "C" void cleanup(){
 
-}
+extern "C" void cleanup(){ }
