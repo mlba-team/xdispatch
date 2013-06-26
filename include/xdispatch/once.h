@@ -52,6 +52,14 @@ class XDISPATCH_EXPORT once
 {
 public:
     /**
+     * Method for running a simple function pointer on a once object
+     */
+    static void simple( dispatch_once_t *, dispatch_function_t, void * = NULL );
+    /**
+     * Method for running a simple function pointer on a once object
+     */
+    static void simple( once &, dispatch_function_t, void * = NULL );
+    /**
       Creates a new once object, marked
       as not having been executed yet
       */

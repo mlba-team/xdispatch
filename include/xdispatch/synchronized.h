@@ -116,7 +116,7 @@ init_semaphore_for_synclock(
 #define XDISPATCH_SYNC_DECL( id ) \
     static ::xdispatch::semaphore XDISPATCH_LOCK_VAR_SEM( id ); \
     static dispatch_once_t XDISPATCH_LOCK_VAR_ONCE( id ) = 0; \
-    dispatch_once_f( &XDISPATCH_LOCK_VAR_ONCE( id ), &XDISPATCH_LOCK_VAR_SEM( id ), ::xdispatch::init_semaphore_for_synclock ); \
+    ::xdispatch::once::simple( &XDISPATCH_LOCK_VAR_ONCE( id ), ::xdispatch::init_semaphore_for_synclock, &XDISPATCH_LOCK_VAR_SEM( id ) ); \
     XDISPATCH_SYNC_HEADER( XDISPATCH_LOCK_VAR_SEM( id ) )
 
 /**

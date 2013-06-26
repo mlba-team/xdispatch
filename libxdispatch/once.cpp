@@ -39,6 +39,26 @@ void _xdispatch_once_operation(
 
 // class implementation
 
+void once::simple(
+    dispatch_once_t *obj,
+    dispatch_function_t func,
+    void *data
+)
+{
+    dispatch_once_f( obj, data, func );
+}
+
+
+void once::simple(
+    once &obj,
+    dispatch_function_t func,
+    void *data
+)
+{
+    dispatch_once_f( obj.native_once(), data, func );
+}
+
+
 once::once ()
     : _once_obj( 0 ),
       _once( &_once_obj ) { }
