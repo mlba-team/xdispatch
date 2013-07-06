@@ -578,15 +578,17 @@ manager_main(void *unused __attribute__ ((unused)))
             if ((sem_timedwait_rv = sem_timedwait(&scoreboard.sb_sem, &ts)) != 0)
             {
                 sem_timedwait_rv = errno; // used for ETIMEDOUT below
-                if (errno != ETIMEDOUT)
+                if (errno != ETIMEDOUT) {
                     dbg_perror("sem_timedwait()");
+                }
             }
 
             dbg_puts("manager is awake");
         } else {
             dbg_puts("manager is suspending");
-            if (sem_wait(&scoreboard.sb_sem) != 0)
+            if (sem_wait(&scoreboard.sb_sem) != 0) {
                 dbg_perror("sem_wait()");
+            }
             dbg_puts("manager is resuming");
         }
         
