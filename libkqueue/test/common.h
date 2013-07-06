@@ -52,7 +52,6 @@
 #else
 # include "../include/sys/event.h"
 # include "../src/windows/platform.h"
-# define HAVE_EVFILT_USER 1
 #endif
 
 struct test_context;
@@ -60,15 +59,14 @@ struct test_context;
 struct unit_test {
     const char *ut_name;
     int         ut_enabled;
-    int         ut_concurrent;
     void      (*ut_func)(struct test_context *);
 };
 
+#define MAX_TESTS 50
 struct test_context {
-    struct unit_test tests[50]; //TODO: use MAX_TESTS instead of magic number 
+    struct unit_test tests[MAX_TESTS];
     char *cur_test_id;
     int iterations;
-    int concurrency;
     int iteration;
     int kqfd;
 
@@ -85,9 +83,8 @@ void test_evfilt_read(struct test_context *);
 void test_evfilt_signal(struct test_context *);
 void test_evfilt_vnode(struct test_context *);
 void test_evfilt_timer(struct test_context *);
-void test_evfilt_timer_concurrent(struct test_context *);
 void test_evfilt_proc(struct test_context *);
-#if HAVE_EVFILT_USER
+#ifdef EVFILT_USER
 void test_evfilt_user(struct test_context *);
 #endif
 

@@ -14,6 +14,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+mz_use_default_compiler_settings()
+
 #files
 if(UNIX)
     set(SRC
@@ -26,6 +28,9 @@ if(UNIX)
         timer.c
         vnode.c
         user.c
+    )
+    mz_add_c_flag(GCC
+        -g -O0 -Wall -Werror
     )
 else()
     set(SRC
@@ -47,14 +52,11 @@ include_directories(
 )
 
 if(UNIX)
-    add_definitions(
-        -rdynamic
-    )
     set(LIBS pthread rt)
 else()
     set(LIBS wsock32)
 endif()
 
-add_executable(libkqueue-test ${SRC})
-target_link_libraries(libkqueue-test kqueue ${LIBS})
-set_target_properties(libkqueue-test PROPERTIES DEBUG_POSTFIX "D")
+add_executable(kqueue-test ${SRC})
+target_link_libraries(kqueue-test kqueue ${LIBS})
+set_target_properties(kqueue-test PROPERTIES DEBUG_POSTFIX "D")

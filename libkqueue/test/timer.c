@@ -117,7 +117,7 @@ test_kevent_timer_disable_and_enable(struct test_context *ctx)
     kevent_cmp(&kev, &ret);
 }
 
-#if HAVE_EV_DISPATCH
+#ifdef EV_DISPATCH
 void
 test_kevent_timer_dispatch(struct test_context *ctx)
 {
@@ -153,7 +153,7 @@ test_kevent_timer_dispatch(struct test_context *ctx)
     sleep(1);
     test_no_kevents(ctx->kqfd);
 }
-#endif  /* HAVE_EV_DISPATCH */
+#endif  /* EV_DISPATCH */
 
 void
 test_evfilt_timer(struct test_context *ctx)
@@ -164,19 +164,7 @@ test_evfilt_timer(struct test_context *ctx)
     test(kevent_timer_oneshot, ctx);
     test(kevent_timer_periodic, ctx);
     test(kevent_timer_disable_and_enable, ctx);
-#if HAVE_EV_DISPATCH
+#ifdef EV_DISPATCH
     test(kevent_timer_dispatch, ctx);
 #endif
-}
-
-void
-test_evfilt_timer_concurrent(struct test_context *ctx)
-{
-    struct kevent kev, ret;
-
-    kevent_add(ctx->kqfd, &kev, ctx->iteration, EVFILT_TIMER, EV_ADD | EV_ONESHOT, 0, 100, NULL);
-    kevent_get(&ret, ctx->kqfd);
-    /* Do not compare ret and kev, because it may be triggered by a
-       different thread's kevent stucture */
-
 }
