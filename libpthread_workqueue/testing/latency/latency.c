@@ -283,9 +283,8 @@ void _print_statistics()
     
 	printf("Test is done, run time was %.3f seconds, %.1fM events generated and processed.\n", (double)((double)(real_end - real_start) / (double) NANOSECONDS_PER_SECOND), total_events/1000000.0); 
 	
-    //FIXME - casting from mytime_t (u_long) to int will truncate the result
-	printf("Global dispatch queue aggregate statistics for %d queues: %dM events, min = %d ns, avg = %.1f ns, max = %d ns\n",
-           global_stats_used, global_statistics.count/1000000, (int) global_statistics.min, global_statistics.avg, (int) global_statistics.max);
+	printf("Global dispatch queue aggregate statistics for %d queues: %dM events, min = %lu ns, avg = %.1f ns, max = %lu ns\n",
+           global_stats_used, global_statistics.count/1000000, global_statistics.min, global_statistics.avg, global_statistics.max);
     
     printf("\nDistribution:\n");
     for (i = 0; i < DISTRIBUTION_BUCKETS; i++)

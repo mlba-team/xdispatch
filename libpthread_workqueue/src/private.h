@@ -41,18 +41,24 @@
 # include "windows/platform.h"
 #else
 # include "posix/platform.h"
+# if __linux__
+#  include "linux/platform.h"
+# endif
+# if defined(__sun)
+#  include "solaris/platform.h"
+# endif
 #endif
 
 #include "pthread_workqueue.h"
 #include "debug.h"
 
 /* The maximum number of workqueues that can be created.
-   This is based on libdispatch only needing 6 workqueues.
+   This is based on libdispatch only needing 8 workqueues.
    */
 #define PTHREAD_WORKQUEUE_MAX 31
 
 /* The total number of priority levels. */
-#define WORKQ_NUM_PRIOQUEUE 3
+#define WORKQ_NUM_PRIOQUEUE 4
 
 /* Signatures/magic numbers.  */
 #define PTHREAD_WORKQUEUE_SIG       0xBEBEBEBE
@@ -60,7 +66,11 @@
 
 /* Whether to use real-time threads for the workers if available */
 
-extern int USE_RT_THREADS;
+extern unsigned int PWQ_RT_THREADS;
+extern unsigned int PWQ_SPIN_THREADS;
+
+/* A limit of the number of cpu:s that we view as available, useful when e.g. using processor sets */
+extern unsigned int PWQ_ACTIVE_CPU;
 
 #if __GNUC__
 #define fastpath(x)     ((__typeof__(x))__builtin_expect((long)(x), ~0l))
@@ -73,6 +83,42 @@ extern int USE_RT_THREADS;
 #define CACHELINE_SIZE	64
 #define ROUND_UP_TO_CACHELINE_SIZE(x)	(((x) + (CACHELINE_SIZE - 1)) & ~(CACHELINE_SIZE - 1))
 
+/* We should perform a hardware pause when using the optional busy waiting, see: 
+   http://software.intel.com/en-us/articles/ap949-using-spin-loops-on-intel-pentiumr-4-processor-and-intel-xeonr-processor/ 
+ rep/nop / 0xf3+0x90 are the same as the symbolic 'pause' instruction
+ */
+
+#if defined(__i386__) || defined(__x86_64__) || defined(__i386) || defined(__amd64)
+
+#if defined(__SUNPRO_CC)
+
+#define _hardware_pause()  asm volatile("rep; nop\n");
+
+#elif defined(__GNUC__)
+
+#define _hardware_pause()  __asm__ __volatile__("pause");
+
+#elif defined(_WIN32)
+
+#define _hardware_pause() do { __asm{_emit 0xf3}; __asm {_emit 0x90}; } while (0)
+
+#else
+
+#define _hardware_pause() __asm__("pause")
+
+#endif
+
+/* XXX-FIXME this is a stub, need to research what ARM assembly to use */
+#elif defined(__ARM_EABI__)
+
+#define _hardware_pause() __asm__("")
+
+#else
+
+#error Need to define _hardware_pause() for this architure
+
+#endif 
+
 /*
  * The work item cache, has three different optional implementations:
  * 1. No cache, just normal malloc/free using the standard malloc library in use
@@ -81,8 +127,11 @@ extern int USE_RT_THREADS;
  * 3. TSD based cache, modelled on libdispatch continuation implementation, can lead to imbalance with assymetric 
  *    producer/consumer threads as allocated memory is cached by the thread freeing it
  */
-
-#define WITEM_CACHE_TYPE 1 // Set to 1, 2 or 3 to specify witem cache implementation to use
+#if defined(__sun)
+#define WITEM_CACHE_TYPE 2 // Use libumem on Solaris by default
+#else
+#define WITEM_CACHE_TYPE 1 // Otherwise fallback to normal malloc/free - change specify witem cache implementation to use
+#endif
 
 struct work {
     STAILQ_ENTRY(work)   item_entry; 
@@ -93,16 +142,6 @@ struct work {
 #if (WITEM_CACHE_TYPE == 3)
 	struct work *volatile wi_next;
 #endif
-};
-
-struct worker {
-    LIST_ENTRY(worker)   entries;
-    pthread_t            tid;
-    enum {
-        WORKER_STATE_SLEEPING,
-        WORKER_STATE_RUNNING,
-        WORKER_STATE_ZOMBIE,
-    } state;
 };
 
 struct _pthread_workqueue {
@@ -120,6 +159,9 @@ struct _pthread_workqueue {
 
 /* manager.c */
 int manager_init(void);
+unsigned long manager_peek(const char *);
+void manager_suspend(void);
+void manager_resume(void);
 void manager_workqueue_create(struct _pthread_workqueue *);
 void manager_workqueue_additem(struct _pthread_workqueue *, struct work *);
 

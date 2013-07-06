@@ -29,6 +29,6 @@
 #ifndef _PTWQ_POSIX_THREAD_INFO_H
 #define _PTWQ_POSIX_THREAD_INFO_H 1
 
-int threads_runnable(unsigned int *threads_running);
+int threads_runnable(unsigned int *threads_running, unsigned int *threads_total);
 
 #endif  /* _PTWQ_POSIX_THREAD_INFO_H */

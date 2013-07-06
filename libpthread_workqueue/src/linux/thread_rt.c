@@ -26,7 +26,10 @@
  *
  */
 
-int threads_runnable(unsigned int *threads_running, unsigned int *threads_total)
-{
-    return -1;
+#include "platform.h"
+#include "private.h"
+
+void ptwq_set_current_thread_priority(int priority  __attribute__ ((unused)))
+{    
+    return;
 }

@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2011, Joakim Johansson <jocke@tbricks.com>
- *
+ * Copyright (c) 2012, Joakim Johansson <jocke@tbricks.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +25,56 @@
  *
  */
 
-int threads_runnable(unsigned int *threads_running, unsigned int *threads_total)
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <kstat.h>
+#include <sys/sysinfo.h>
+
+#include "../private.h"
+
+static int previous_runque = 0, previous_updates = 0; // we assume we are only called by the manager thread
+
+unsigned int
+solaris_get_runqueue_length(void)
 {
-    return -1;
+    kstat_ctl_t *kc;
+    kstat_t *ksp;
+    sysinfo_t sysinfo;
+    unsigned int run_queue = 0;
+    
+    if (!(kc = kstat_open())){
+        perror("kstat_open");
+        return 0;
+    }
+    
+    if (!(ksp = kstat_lookup(kc, "unix", 0, "sysinfo"))){
+        perror("kstat_lookup");
+        return 0;
+    }
+    
+    if (kstat_read(kc, ksp, &sysinfo) == -1) {
+        perror("kstat_read");
+        return 0;
+    }
+    
+    previous_runque = sysinfo.runque - previous_runque;
+    previous_updates = sysinfo.updates - previous_updates;
+    
+    if (previous_updates != 0)
+    {
+        run_queue = (previous_runque/previous_updates);
+        dbg_printf("runqueue = %u, updates = %u, ratio = %u", previous_runque, previous_updates, run_queue);
+    }
+
+    previous_runque = sysinfo.runque;
+    previous_updates = sysinfo.updates;
+    
+    if (kstat_close(kc) != 0){
+        perror("kstat_close");
+        return 0;
+    }
+
+    return run_queue;
 }

@@ -39,6 +39,8 @@ else()
 	file(GLOB SRC 
 		src/posix/*.h
 		src/posix/*.c
+                src/linux/*.h
+                src/linux/*.c
 		src/*.h
 		src/*.c
 	)
@@ -63,14 +65,14 @@ include_directories(
 #library (static or shared)
 option(STATIC_WORKQUEUE "Enable to build libpthread_workqueue as static lib" OFF)
 if(STATIC_WORKQUEUE)
-	message("-- building libpthread_workqueue as static lib")
+    message("-- building libpthread_workqueue as static lib")
     add_definitions(-DMAKE_STATIC)
     add_library(pthread_workqueue STATIC ${SRC} ${INCL})
 else()
     add_library(pthread_workqueue SHARED ${SRC} ${INCL})
 endif()
 if(NOT WIN32)
-	target_link_libraries(pthread_workqueue pthread)
+    target_link_libraries(pthread_workqueue pthread rt)
 endif()
 set_target_properties(pthread_workqueue PROPERTIES DEBUG_POSTFIX "D")
 

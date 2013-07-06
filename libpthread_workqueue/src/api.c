@@ -29,6 +29,7 @@
 
 #include "private.h"
 
+unsigned int PWQ_ACTIVE_CPU = 0;
 int DEBUG_WORKQUEUE = 0;
 char *WORKQUEUE_DEBUG_IDENT = "WQ";
 
@@ -62,9 +63,14 @@ pthread_workqueue_init_np(void)
     DEBUG_WORKQUEUE = 0;
 #else
     DEBUG_WORKQUEUE = (getenv("PWQ_DEBUG") == NULL) ? 0 : 1;
-# ifndef _WIN32
-    USE_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
-# endif
+#endif
+
+#ifndef _WIN32
+    PWQ_RT_THREADS = (getenv("PWQ_RT_THREADS") == NULL) ? 0 : 1;
+    PWQ_ACTIVE_CPU = (getenv("PWQ_ACTIVE_CPU") == NULL) ? 0 : atoi(getenv("PWQ_ACTIVE_CPU"));
+    
+    if (getenv("PWQ_SPIN_THREADS") != NULL)
+        PWQ_SPIN_THREADS =  atoi(getenv("PWQ_SPIN_THREADS"));
 #endif
 
     if (manager_init() < 0)
@@ -101,7 +107,7 @@ pthread_workqueue_create_np(pthread_workqueue_t *workqp,
 
     manager_workqueue_create(workq);
 
-    dbg_printf("created queue %p", workq);
+    dbg_printf("created queue %p", (void *) workq);
 
     *workqp = workq;
     return (0);
@@ -115,7 +121,7 @@ pthread_workqueue_additem_np(pthread_workqueue_t workq,
 {
     struct work *witem;
     
-    if (valid_workq(workq) == 0)
+    if ((valid_workq(workq) == 0) || (workitem_func == NULL))
         return (EINVAL);
 
     witem = witem_alloc(workitem_func, workitem_arg);
@@ -127,7 +133,7 @@ pthread_workqueue_additem_np(pthread_workqueue_t workq,
 
     manager_workqueue_additem(workq, witem);
 
-    dbg_printf("added item %p to queue %p", witem, workq);
+    dbg_printf("added item %p to queue %p", (void *) witem, (void *) workq);
 
     return (0);
 }
@@ -192,6 +198,7 @@ pthread_workqueue_attr_setqueuepriority_np(
             case WORKQ_HIGH_PRIOQUEUE:
             case WORKQ_DEFAULT_PRIOQUEUE:
             case WORKQ_LOW_PRIOQUEUE:
+            case WORKQ_BG_PRIOQUEUE:
                 attr->queueprio = qprio;
                 return (0);
             default:
@@ -199,4 +206,26 @@ pthread_workqueue_attr_setqueuepriority_np(
         }
     } else
         return (EINVAL);
+}
+
+unsigned long VISIBLE
+pthread_workqueue_peek_np(const char *key)
+{
+    return manager_peek(key);
+}
+
+void VISIBLE
+pthread_workqueue_suspend_np(void)
+{
+#ifndef _WIN32
+    manager_suspend();
+#endif
+}
+
+void VISIBLE
+pthread_workqueue_resume_np(void)
+{
+#ifndef _WIN32
+    manager_resume();
+#endif
 }

@@ -26,58 +26,11 @@
  *
  */
 
-#include "platform.h"
-#include "private.h"
+// Default POSIX implementation doesn't support it, platform-specific code does though.
 
-#if defined(__sun)
-
-#include <stdio.h>
-#include <pthread.h>
-#include <sys/types.h>
-#include <sys/signal.h>
-#include <sys/procset.h>
-#include <sys/priocntl.h>
-#include <sys/rtpriocntl.h>
-#include <sys/tspriocntl.h>
-#include <sys/iapriocntl.h>
-#include <sys/fsspriocntl.h>
-#include <sys/fxpriocntl.h>
-
-// Set the RT priority - it is inveresed from the queue priorities, higher is better
-// We give '0' to low prio queues and the highest possible for the 'high' prio queue (currently 2)
+#if !(defined(__linux__) || defined(__sun))
 
 void ptwq_set_current_thread_priority(int priority)
-{
-    long retval = 0;
-
-    dbg_printf("reconfiguring thread for priority level=%u", priority);
-
-    switch (priority)
-    {
-        case WORKQ_LOW_PRIOQUEUE:
-            retval = priocntl(P_LWPID, P_MYID, PC_SETXPARMS, "TS", 0); // run low prio queues as time sharing
-            break;
-        case WORKQ_DEFAULT_PRIOQUEUE:
-            retval = priocntl(P_LWPID, P_MYID, PC_SETXPARMS, "RT", RT_KY_PRI, WORKQ_NUM_PRIOQUEUE - priority - 1, 0);
-            break;
-        case WORKQ_HIGH_PRIOQUEUE:
-            retval = priocntl(P_LWPID, P_MYID, PC_SETXPARMS, "RT", RT_KY_PRI, WORKQ_NUM_PRIOQUEUE - priority - 1, 0);
-            break;
-        default:
-            dbg_printf("Unknown priority level = %u", priority);
-            break;
-    }
-    
-
-    if (retval != 0)
-        dbg_perror("priocntl()");
-
-    return;
-}
-
-#else
-
-void ptwq_set_current_thread_priority(int priority  __attribute__ ((unused)))
 {    
     return;
 }

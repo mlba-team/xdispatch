@@ -51,6 +51,7 @@ typedef struct {
 #define WORKQ_HIGH_PRIOQUEUE       0
 #define WORKQ_DEFAULT_PRIOQUEUE    1
 #define WORKQ_LOW_PRIOQUEUE        2
+#define WORKQ_BG_PRIOQUEUE         3
 
 #if defined(__cplusplus)
 	extern "C" {
@@ -84,9 +85,12 @@ int _PWQ_EXPORT pthread_workqueue_getovercommit_np(pthread_workqueue_t workq,
 
 void _PWQ_EXPORT pthread_workqueue_main_np(void);
 
-#ifdef MAKE_STATIC
 int _PWQ_EXPORT pthread_workqueue_init_np(void);
-#endif
+
+/* NOTE: these are not part of the Darwin API */
+unsigned long _PWQ_EXPORT pthread_workqueue_peek_np(const char *);
+void _PWQ_EXPORT pthread_workqueue_suspend_np(void);
+void _PWQ_EXPORT pthread_workqueue_resume_np(void);
 
 #if defined(__cplusplus)
 	}

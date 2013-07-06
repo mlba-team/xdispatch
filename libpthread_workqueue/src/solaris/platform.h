@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2011, Joakim Johansson <jocke@tbricks.com>
- *
+ * Copyright (c) 2012, Joakim Johansson <jocke@tbricks.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +25,13 @@
  *
  */
 
-int threads_runnable(unsigned int *threads_running, unsigned int *threads_total)
-{
-    return -1;
-}
+#ifndef _LIBPWQ_SOLARIS_PLATFORM_H
+#define _LIBPWQ_SOLARIS_PLATFORM_H
+
+/*
+ * Platform-specific functions for Solaris
+ */
+
+unsigned int solaris_get_runqueue_length(void);
+
+#endif /* _LIBPWQ_SOLARIS_PLATFORM_H */

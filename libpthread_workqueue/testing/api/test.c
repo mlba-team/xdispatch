@@ -6,7 +6,7 @@
 #if !defined(_WIN32)
 # include <sys/wait.h>
 # if !defined(NO_CONFIG_H)
-#  include "config.h"
+#  include "../../config.h"
 # endif
 # include <semaphore.h>
 #else
@@ -257,12 +257,27 @@ run_overcommit_test(pthread_workqueue_t wq)
     puts("ok\n");
 }
 
+/* Test suspend and resume functions */
+void
+run_suspend_test(void)
+{
+    puts("suspending..");
+	pthread_workqueue_suspend_np();
+	pthread_workqueue_suspend_np();
+    sleep(3);
+    puts("resuming..");
+	pthread_workqueue_resume_np();
+	pthread_workqueue_resume_np();
+}
+
 int main() {
     pthread_workqueue_t wq;
     int rv;
 
-#ifdef MAKE_STATIC
 	pthread_workqueue_init_np();
+
+#ifdef __linux__
+    printf("runqueue length=%d\n", linux_get_runqueue_length());
 #endif
 
     sem_init(&test_complete, 0, 0);
@@ -274,6 +289,8 @@ int main() {
     if (rv != 0)
         err(1, "failed");
     printf("ok\n");
+
+    run_suspend_test();
 
     printf("stress test.. ");
     run_stress_test(wq, 25);

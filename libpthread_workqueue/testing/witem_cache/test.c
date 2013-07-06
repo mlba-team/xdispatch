@@ -33,8 +33,8 @@
 
 #include <time.h>
 
-#include "config.h"
-#include "src/private.h"
+#include "../../config.h"
+#include "../../src/private.h"
 
 #if HAVE_ERR_H
 # include <err.h>
