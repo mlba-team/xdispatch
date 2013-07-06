@@ -82,7 +82,7 @@ void QDispatchQueue::apply(
 )
 {
     Q_ASSERT( runnable );
-    apply( new IterationRunnableOperation( runnable ), times );
+    apply( times, new IterationRunnableOperation( runnable ) );
 }
 
 
@@ -102,7 +102,7 @@ void QDispatchQueue::after(
 )
 {
     Q_ASSERT( r );
-    after( new RunnableOperation( r ), t );
+    after( t, new RunnableOperation( r ) );
 }
 
 
