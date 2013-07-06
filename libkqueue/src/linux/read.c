@@ -175,6 +175,7 @@ evfilt_read_knote_create(struct filter *filt, struct knote *kn)
             (void) close(evfd);
             return (-1);
         }
+
         kn->kdata.kn_eventfd = evfd;
 
         if (epoll_ctl(kn->kn_epollfd, EPOLL_CTL_ADD, kn->kdata.kn_eventfd, &ev) < 0) {

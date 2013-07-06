@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include "config.h"
 #include "tree.h"
 
 /* Maximum events returnable in a single kevent() call */
@@ -212,5 +213,18 @@ int         map_replace(struct map *, int, void *, void *);
 void       *map_lookup(struct map *, int);
 void       *map_delete(struct map *, int);
 void        map_free(struct map *);
+
+/* DEADWOOD: No longer needed due to the un-smerging of POSIX and Linux
+
+int  posix_evfilt_user_init(struct filter *);
+void posix_evfilt_user_destroy(struct filter *);
+int  posix_evfilt_user_copyout(struct kevent *, struct knote *, void *ptr UNUSED);
+int  posix_evfilt_user_knote_create(struct filter *, struct knote *);
+int  posix_evfilt_user_knote_modify(struct filter *, struct knote *, const struct kevent *);
+int  posix_evfilt_user_knote_delete(struct filter *, struct knote *);
+int  posix_evfilt_user_knote_enable(struct filter *, struct knote *);
+int  posix_evfilt_user_knote_disable(struct filter *, struct knote *);
+
+*/
 
 #endif  /* ! _KQUEUE_PRIVATE_H */

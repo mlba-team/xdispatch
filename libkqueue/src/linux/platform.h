@@ -19,10 +19,22 @@
 
 struct filter;
 
+#include <sys/syscall.h>
 #include <sys/epoll.h>
 #include <sys/queue.h>
 #include <sys/inotify.h>
-#include <sys/eventfd.h>
+#if HAVE_SYS_EVENTFD_H
+# include <sys/eventfd.h>
+#else
+# define eventfd(a,b) syscall(SYS_eventfd, (a), (b))
+
+  static inline int eventfd_write(int fd, uint64_t val) {
+      if (write(fd, &val, sizeof(val)) < (ssize_t) sizeof(val))
+          return (-1);
+      else
+          return (0);
+  }
+#endif
 #if HAVE_SYS_TIMERFD_H
 # include <sys/timerfd.h>
 #endif
@@ -32,7 +44,6 @@ struct filter;
  */
 # define _GNU_SOURCE
 # include <linux/unistd.h>
-# include <sys/syscall.h>
 # include <unistd.h>
 #ifndef __ANDROID__
 extern long int syscall (long int __sysno, ...);
