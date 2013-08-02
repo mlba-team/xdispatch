@@ -57,7 +57,7 @@ void Qt_early_dispatch1_lambda();
 void Qt_early_dispatch2_lambda();
 #endif
 
-#if TEST_BLOCKS
+#if TEST_CXX_BLOCKS
 void Qt_runnable_blocks();
 void Qt_dispatch_cascade_blocks();
 void Qt_dispatch_group2_blocks();

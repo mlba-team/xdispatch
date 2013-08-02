@@ -57,7 +57,7 @@ void test_dispatch_once();
 void dispatch_socket_read_write();
 #endif
 
-#if TEST_LAMBDA && !TEST_BLOCKS
+#if TEST_LAMBDA && !TEST_C_BLOCKS
 void dispatch_apply_lambda();
 void dispatch_after_lambda();
 void dispatch_group_lambda();
@@ -115,7 +115,7 @@ static void register_tests(){
     MU_REGISTER_TEST(dispatch_socket_read_write);
 #endif
 
-#if TEST_LAMBDA && !TEST_BLOCKS
+#if TEST_LAMBDA && !TEST_C_BLOCKS
     MU_REGISTER_TEST(dispatch_apply_lambda);
     MU_REGISTER_TEST(dispatch_after_lambda);
     MU_REGISTER_TEST(dispatch_group_lambda);
@@ -130,7 +130,7 @@ static void register_tests(){
 # endif
 #endif
 
-#if TEST_BLOCKS
+#if TEST_C_BLOCKS
     MU_REGISTER_TEST(dispatch_plusplus_blocks);
     MU_REGISTER_TEST(dispatch_apply_blocks);
     MU_REGISTER_TEST(dispatch_after_blocks);
