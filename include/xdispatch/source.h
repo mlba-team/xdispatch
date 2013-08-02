@@ -238,7 +238,7 @@ public:
         const _Func &b
     )
     {
-        handler( ::xdispatch_make_operation( b ) );
+        handler( ::xdispatch::make_operation( b ) );
     }
 
     /**
@@ -334,7 +334,7 @@ public:
         const _Func &b
     )
     {
-        cancel_handler( ::xdispatch_make_operation( b ) );
+        cancel_handler( ::xdispatch::make_operation( b ) );
     }
 
 private:

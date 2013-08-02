@@ -133,7 +133,7 @@ public:
         const xdispatch::queue &q = xdispatch::global_queue()
     )
     {
-        notify( ::xdispatch_make_operation( b ), q );
+        notify( ::xdispatch::make_operation( b ), q );
     }
 
     /**

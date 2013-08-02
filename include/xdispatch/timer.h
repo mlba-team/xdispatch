@@ -130,7 +130,7 @@ public:
         const _Func &b
     )
     {
-        single_shot( t, q, ::xdispatch_make_operation( b ) );
+        single_shot( t, q, ::xdispatch::make_operation( b ) );
     }
 
     /**
@@ -144,7 +144,7 @@ public:
         const _Func &b
     )
     {
-        single_shot( t, q, ::xdispatch_make_operation( b ) );
+        single_shot( t, q, ::xdispatch::make_operation( b ) );
     }
 
     timer & operator = (

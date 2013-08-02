@@ -85,7 +85,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        async( ::xdispatch_make_operation( b ), q );
+        async( ::xdispatch::make_operation( b ), q );
     }
 
     /**
@@ -143,7 +143,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        notify( ::xdispatch_make_operation( b ), q );
+        notify( ::xdispatch::make_operation( b ), q );
     }
 
     /**

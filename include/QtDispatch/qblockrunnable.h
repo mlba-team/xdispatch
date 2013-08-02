@@ -140,10 +140,14 @@ QT_END_HEADER
 
 /** @} */
 
+__XDISPATCH_BEGIN_NAMESPACE
+
 Q_DISPATCH_EXPORT xdispatch::operation *
-xdispatch_make_operation(
+make_operation(
     QRunnable *
 );
+
+__XDISPATCH_END_NAMESPACE
 
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
@@ -170,26 +174,33 @@ inline typename std::enable_if<
 }
 
 
+__XDISPATCH_BEGIN_NAMESPACE
+
 template< typename _Func >
 inline typename std::enable_if<
     std::is_convertible< _Func, QRunnable * >::value,
     xdispatch::operation
->::type * xdispatch_make_operation(
+>::type * make_operation(
     const _Func &f
 )
 {
-    return xdispatch_make_operation( static_cast< QRunnable * > ( f ) );
+    return make_operation( static_cast< QRunnable * > ( f ) );
 }
+
+__XDISPATCH_END_NAMESPACE
 
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
-inline xdispatch::operation * xdispatch_make_operation(
+__XDISPATCH_BEGIN_NAMESPACE
+
+inline xdispatch::operation * make_operation(
     QRunnable *f
 )
 {
-    return xdispatch_make_operation( f );
+    return make_operation( f );
 }
 
+__XDISPATCH_END_NAMESPACE
 
 inline QRunnable * QDispatchMakeRunnable(
     QRunnable *r

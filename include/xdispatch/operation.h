@@ -201,15 +201,13 @@ private:
 };
 
 
-__XDISPATCH_END_NAMESPACE
-
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
 template< typename _Func >
 inline typename std::enable_if<
     !std::is_pointer< _Func >::value,
     xdispatch::operation
->::type * xdispatch_make_operation(
+>::type * make_operation(
     const _Func &f
 )
 {
@@ -220,7 +218,7 @@ template< typename _Func >
 inline typename std::enable_if<
     std::is_convertible< _Func, xdispatch::operation * >::value,
     xdispatch::operation
->::type * xdispatch_make_operation(
+>::type * make_operation(
     const _Func &f
 )
 {
@@ -228,7 +226,7 @@ inline typename std::enable_if<
 }
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
-inline xdispatch::operation * xdispatch_make_operation(
+inline xdispatch::operation * make_operation(
     xdispatch::operation *f
 )
 {
@@ -239,7 +237,7 @@ inline xdispatch::operation * xdispatch_make_operation(
  # if XDISPATCH_HAS_FUNCTION
   #  if XDISPATCH_TR1_FUNCTIONAL
 
-inline xdispatch::operation * xdispatch_make_operation(
+inline xdispatch::operation * make_operation(
     const ::std::tr1::function< void(void) > &f
 )
 {
@@ -249,7 +247,7 @@ inline xdispatch::operation * xdispatch_make_operation(
 
   #  elif XDISPATCH_CPP11_FUNCTIONAL
 
-inline xdispatch::operation * xdispatch_make_operation(
+inline xdispatch::operation * make_operation(
     const ::std::function< void(void) > &f
 )
 {
@@ -262,7 +260,7 @@ inline xdispatch::operation * xdispatch_make_operation(
 
  # if XDISPATCH_HAS_BLOCKS
 
-inline xdispatch::operation * xdispatch_make_operation(
+inline xdispatch::operation * make_operation(
     dispatch_block_t b
 )
 {
@@ -273,8 +271,6 @@ inline xdispatch::operation * xdispatch_make_operation(
  # endif // if XDISPATCH_HAS_BLOCKS
 
 #endif // if XDISPATCH_CPP11_TYPE_TRAITS
-
-__XDISPATCH_BEGIN_NAMESPACE
 
 /**
   A simple iteration operation needed when
@@ -346,15 +342,13 @@ private:
 };
 
 
-__XDISPATCH_END_NAMESPACE
-
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
 template< typename _Func >
 inline typename std::enable_if<
     !std::is_pointer< _Func >::value,
     xdispatch::iteration_operation
->::type * xdispatch_make_iteration_operation(
+>::type * make_iteration_operation(
     const _Func &f
 )
 {
@@ -365,7 +359,7 @@ template< typename _Func >
 inline typename std::enable_if<
     std::is_convertible< _Func, xdispatch::iteration_operation * >::value,
     xdispatch::iteration_operation
->::type * xdispatch_make_iteration_operation(
+>::type * make_iteration_operation(
     const _Func &f
 )
 {
@@ -373,7 +367,7 @@ inline typename std::enable_if<
 }
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
-inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+inline xdispatch::iteration_operation * make_iteration_operation(
     xdispatch::iteration_operation *f
 )
 {
@@ -383,7 +377,7 @@ inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
 
  # if XDISPATCH_TR1_FUNCTIONAL
 
-inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+inline xdispatch::iteration_operation * make_iteration_operation(
     const ::std::tr1::function< void(size_t) > &f
 )
 {
@@ -395,7 +389,7 @@ inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
 
  # if XDISPATCH_CPP11_FUNCTIONAL
 
-inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+inline xdispatch::iteration_operation * make_iteration_operation(
     const ::std::function< void(size_t) > &f
 )
 {
@@ -407,7 +401,6 @@ inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
 
 #endif // if XDISPATCH_CPP11_TYPE_TRAITS
 
-__XDISPATCH_BEGIN_NAMESPACE
 
 #if XDISPATCH_HAS_BLOCKS
 /**
@@ -488,7 +481,7 @@ private:
 };
 
 
-inline xdispatch::operation * xdispatch_make_operation(
+inline xdispatch::operation * make_operation(
     dispatch_block_t b
 )
 {
@@ -496,7 +489,7 @@ inline xdispatch::operation * xdispatch_make_operation(
 }
 
 
-inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+inline xdispatch::iteration_operation * make_iteration_operation(
     dispatch_iteration_block_t b
 )
 {

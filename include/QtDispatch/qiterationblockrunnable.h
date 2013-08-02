@@ -144,10 +144,14 @@ QT_END_HEADER
 
 /** @} */
 
+__XDISPATCH_BEGIN_NAMESPACE
+
 Q_DISPATCH_EXPORT xdispatch::iteration_operation *
-xdispatch_make_iteration_operation(
+make_iteration_operation(
     QIterationRunnable *
 );
+
+__XDISPATCH_END_NAMESPACE
 
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
@@ -162,17 +166,20 @@ inline typename std::enable_if<
     return new QDispatchIterationRunnable< _Func > ( f );
 }
 
+__XDISPATCH_BEGIN_NAMESPACE
 
 template< typename _Func >
 inline typename std::enable_if<
     std::is_convertible< _Func, QIterationRunnable * >::value,
     xdispatch::iteration_operation
->::type * xdispatch_make_iteration_operation(
+>::type * make_iteration_operation(
     const _Func &f
 )
 {
-    return xdispatch_make_iteration_operation( static_cast< QIterationRunnable * > ( f ) );
+    return make_iteration_operation( static_cast< QIterationRunnable * > ( f ) );
 }
+
+__XDISPATCH_END_NAMESPACE
 
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 

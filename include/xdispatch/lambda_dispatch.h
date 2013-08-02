@@ -41,7 +41,7 @@
 
 /// provide block specific libdispatch functions as well
 
-#ifdef __cplusplus
+#if (defined __cplusplus) && !XDISPATCH_HAS_BLOCKS
 
 // needed for dispatch_source_t compatibility
 void XDISPATCH_EXPORT _xdispatch_source_set_event_handler( dispatch_source_t, xdispatch::operation * op );
@@ -111,7 +111,7 @@ inline void dispatch_source_set_event_handler(
     const _Func &handler
 )
 {
-    _xdispatch_source_set_event_handler( source, xdispatch_make_operation( handler ) );
+    _xdispatch_source_set_event_handler( source, xdispatch::make_operation( handler ) );
 }
 
 template < typename _Func >
@@ -120,7 +120,7 @@ inline void dispatch_source_set_cancel_handler(
     const _Func &cancel_handler
 )
 {
-    _xdispatch_source_set_cancel_handler( source, xdispatch_make_operation( cancel_handler ) );
+    _xdispatch_source_set_cancel_handler( source, xdispatch::make_operation( cancel_handler ) );
 }
 
 template < typename _Func >
@@ -135,7 +135,7 @@ inline void dispatch_once(
 }
 
 
-#endif // ifdef __cplusplus
+#endif
 
 /** @} */
 

@@ -99,7 +99,7 @@ public:
         const _Func &b
     )
     {
-        async( ::xdispatch_make_operation( b ) );
+        async( ::xdispatch::make_operation( b ) );
     }
 
     /**
@@ -143,7 +143,7 @@ public:
         const _Func &b
     )
     {
-        apply( times, ::xdispatch_make_iteration_operation( b ) );
+        apply( times, ::xdispatch::make_iteration_operation( b ) );
     }
 
     /**
@@ -229,7 +229,7 @@ public:
         const _Func &b
     )
     {
-        after( time, ::xdispatch_make_operation( b ) );
+        after( time, ::xdispatch::make_operation( b ) );
     }
 
     /**
@@ -243,7 +243,7 @@ public:
         const _Func &b
     )
     {
-        after( time, ::xdispatch_make_operation( b ) );
+        after( time, ::xdispatch::make_operation( b ) );
     }
 
     /**
@@ -296,7 +296,7 @@ public:
         const _Func &b
     )
     {
-        sync( ::xdispatch_make_operation( b ) );
+        sync( ::xdispatch::make_operation( b ) );
     }
 
     /**
@@ -328,7 +328,7 @@ public:
         const queue &q = global_queue()
     )
     {
-        finalizer( ::xdispatch_make_operation( b ), q );
+        finalizer( ::xdispatch::make_operation( b ), q );
     }
 
     /**
