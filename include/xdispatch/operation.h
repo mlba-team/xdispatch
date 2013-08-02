@@ -201,6 +201,56 @@ private:
 };
 
 
+#if XDISPATCH_HAS_BLOCKS
+/**
+  A simple operation for wrapping the given
+  block as an xdispatch::operation
+  */
+template< >
+class function_operation< dispatch_block_t >
+    : public operation
+{
+public:
+    function_operation (
+        dispatch_block_t b
+    )
+        : operation(),
+          _block( Block_copy( b ) ) { }
+
+
+    function_operation (
+        const function_operation &other
+    )
+        : operation( other ),
+          _block( Block_copy( other._block ) ) { }
+
+
+    ~function_operation ()
+    {
+        Block_release( _block );
+    }
+
+    void operator () ()
+    {
+        _block();
+    }
+
+private:
+    dispatch_block_t _block;
+};
+
+
+inline xdispatch::operation * make_operation(
+    dispatch_block_t b
+)
+{
+    return new xdispatch::function_operation< dispatch_block_t > ( b );
+}
+
+
+#endif // XDISPATCH_HAS_BLOCKS
+
+
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
 template< typename _Func >
@@ -235,17 +285,8 @@ inline xdispatch::operation * make_operation(
 
 
  # if XDISPATCH_HAS_FUNCTION
-  #  if XDISPATCH_TR1_FUNCTIONAL
 
-inline xdispatch::operation * make_operation(
-    const ::std::tr1::function< void(void) > &f
-)
-{
-    return new xdispatch::function_operation< ::std::tr1::function< void(void) > > ( f );
-}
-
-
-  #  elif XDISPATCH_CPP11_FUNCTIONAL
+  #  if XDISPATCH_CPP11_FUNCTIONAL
 
 inline xdispatch::operation * make_operation(
     const ::std::function< void(void) > &f
@@ -255,20 +296,19 @@ inline xdispatch::operation * make_operation(
 }
 
 
-  #  endif // if XDISPATCH_TR1_FUNCTIONAL
- # endif // if XDISPATCH_HAS_FUNCTION
-
- # if XDISPATCH_HAS_BLOCKS
+  #  elif XDISPATCH_TR1_FUNCTIONAL
 
 inline xdispatch::operation * make_operation(
-    dispatch_block_t b
+    const ::std::tr1::function< void(void) > &f
 )
 {
-    return new xdispatch::function_operation< dispatch_block_t > ( b );
+    return new xdispatch::function_operation< ::std::tr1::function< void(void) > > ( f );
 }
 
 
- # endif // if XDISPATCH_HAS_BLOCKS
+  #  endif // if XDISPATCH_CPP11_FUNCTIONAL
+ # endif // if XDISPATCH_HAS_FUNCTION
+
 
 #endif // if XDISPATCH_CPP11_TYPE_TRAITS
 
@@ -342,103 +382,7 @@ private:
 };
 
 
-#if XDISPATCH_CPP11_TYPE_TRAITS
-
-template< typename _Func >
-inline typename std::enable_if<
-    !std::is_pointer< _Func >::value,
-    xdispatch::iteration_operation
->::type * make_iteration_operation(
-    const _Func &f
-)
-{
-    return new xdispatch::function_iteration_operation< _Func > ( f );
-}
-
-template< typename _Func >
-inline typename std::enable_if<
-    std::is_convertible< _Func, xdispatch::iteration_operation * >::value,
-    xdispatch::iteration_operation
->::type * make_iteration_operation(
-    const _Func &f
-)
-{
-    return static_cast< xdispatch::iteration_operation * > ( f );
-}
-#else // if XDISPATCH_CPP11_TYPE_TRAITS
-
-inline xdispatch::iteration_operation * make_iteration_operation(
-    xdispatch::iteration_operation *f
-)
-{
-    return f;
-}
-
-
- # if XDISPATCH_TR1_FUNCTIONAL
-
-inline xdispatch::iteration_operation * make_iteration_operation(
-    const ::std::tr1::function< void(size_t) > &f
-)
-{
-    return new xdispatch::function_iteration_operation< ::std::tr1::function< void(size_t) > > ( f );
-}
-
-
- # endif // if XDISPATCH_TR1_FUNCTIONAL
-
- # if XDISPATCH_CPP11_FUNCTIONAL
-
-inline xdispatch::iteration_operation * make_iteration_operation(
-    const ::std::function< void(size_t) > &f
-)
-{
-    return new xdispatch::function_iteration_operation< ::std::function< void(size_t) > > ( f );
-}
-
-
- # endif // if XDISPATCH_CPP11_FUNCTIONAL
-
-#endif // if XDISPATCH_CPP11_TYPE_TRAITS
-
-
 #if XDISPATCH_HAS_BLOCKS
-/**
-  A simple operation for wrapping the given
-  block as an xdispatch::operation
-  */
-template< >
-class function_operation< dispatch_block_t >
-    : public operation
-{
-public:
-    function_operation (
-        dispatch_block_t b
-    )
-        : operation(),
-          _block( Block_copy( b ) ) { }
-
-
-    function_operation (
-        const function_operation &other
-    )
-        : operation( other ),
-          _block( Block_copy( other._block ) ) { }
-
-
-    ~function_operation ()
-    {
-        Block_release( _block );
-    }
-
-    void operator () ()
-    {
-        _block();
-    }
-
-private:
-    dispatch_block_t _block;
-};
 
 
 /**
@@ -481,14 +425,6 @@ private:
 };
 
 
-inline xdispatch::operation * make_operation(
-    dispatch_block_t b
-)
-{
-    return new xdispatch::function_operation< dispatch_block_t > ( b );
-}
-
-
 inline xdispatch::iteration_operation * make_iteration_operation(
     dispatch_iteration_block_t b
 )
@@ -498,6 +434,65 @@ inline xdispatch::iteration_operation * make_iteration_operation(
 
 
 #endif // XDISPATCH_HAS_BLOCKS
+
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+
+template< typename _Func >
+inline typename std::enable_if<
+    !std::is_pointer< _Func >::value,
+    xdispatch::iteration_operation
+>::type * make_iteration_operation(
+    const _Func &f
+)
+{
+    return new xdispatch::function_iteration_operation< _Func > ( f );
+}
+
+template< typename _Func >
+inline typename std::enable_if<
+    std::is_convertible< _Func, xdispatch::iteration_operation * >::value,
+    xdispatch::iteration_operation
+>::type * make_iteration_operation(
+    const _Func &f
+)
+{
+    return static_cast< xdispatch::iteration_operation * > ( f );
+}
+#else // if XDISPATCH_CPP11_TYPE_TRAITS
+
+inline xdispatch::iteration_operation * make_iteration_operation(
+    xdispatch::iteration_operation *f
+)
+{
+    return f;
+}
+
+
+ # if XDISPATCH_CPP11_FUNCTIONAL
+
+inline xdispatch::iteration_operation * make_iteration_operation(
+    const ::std::function< void(size_t) > &f
+)
+{
+    return new xdispatch::function_iteration_operation< ::std::function< void(size_t) > > ( f );
+}
+
+
+ # elif XDISPATCH_TR1_FUNCTIONAL
+
+inline xdispatch::iteration_operation * make_iteration_operation(
+    const ::std::tr1::function< void(size_t) > &f
+)
+{
+    return new xdispatch::function_iteration_operation< ::std::tr1::function< void(size_t) > > ( f );
+}
+
+
+ # endif // if XDISPATCH_CPP11_FUNCTIONAL
+
+#endif // if XDISPATCH_CPP11_TYPE_TRAITS
+
 
 __XDISPATCH_END_NAMESPACE
 

@@ -187,20 +187,20 @@ __XDISPATCH_END_NAMESPACE
   #  if XDISPATCH_TR1_FUNCTIONAL
 
 inline QIterationRunnable * QDispatchMakeIterationRunnable(
-    const ::std::tr1::function< void(void) > &f
+    const ::std::tr1::function< void(size_t) > &f
 )
 {
-    return new QDispatchIterationRunnable< ::std::tr1::function< void(void) > > ( f );
+    return new QDispatchIterationRunnable< ::std::tr1::function< void(size_t) > > ( f );
 }
 
 
   #  elif XDISPATCH_CPP11_FUNCTIONAL
 
 inline QIterationRunnable * QDispatchMakeIterationRunnable(
-    const ::std::function< void(void) > &f
+    const ::std::function< void(size_t) > &f
 )
 {
-    return new QDispatchIterationRunnable< ::std::function< void(void) > > ( f );
+    return new QDispatchIterationRunnable< ::std::function< void(size_t) > > ( f );
 }
 
 

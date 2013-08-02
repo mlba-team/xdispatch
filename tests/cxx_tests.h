@@ -46,7 +46,7 @@ void cxx_dispatch_once1();
 void cxx_synchronized();
 void cxx_dispatch_fibo();
 
-#if TEST_BLOCKS
+#if TEST_CXX_BLOCKS
 void cxx_dispatch_cascade_blocks();
 void cxx_dispatch_group_blocks();
 void cxx_dispatch_once2_blocks();

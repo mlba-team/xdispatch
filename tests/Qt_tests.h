@@ -99,7 +99,7 @@ static void register_qt_tests(){
   MU_REGISTER_TEST(Qt_early_dispatch2_lambda);
 #endif
 
-#if TEST_BLOCKS
+#if TEST_CXX_BLOCKS
     MU_REGISTER_TEST(Qt_runnable_blocks);
     MU_REGISTER_TEST(Qt_dispatch_queue_blocks);
     MU_REGISTER_TEST(Qt_dispatch_mainqueue_blocks);

@@ -50,61 +50,66 @@
 
 // detect enabled featureset
 
-#if __cplusplus
-# include <utility>
-#endif
 
 #if defined __BLOCKS__
  # define XDISPATCH_HAS_BLOCKS 1
 #endif
 
-#if defined _LIBCPP_VERSION
- # define XDISPATCH_STL_LIBCPP 1
- # define XDISPATCH_STL "libc++"
-#endif
+#if __cplusplus
+ # include <utility>
 
-#if defined __GLIBCXX__
- # define XDISPATCH_STL_GLIBCXX 1
- # define XDISPATCH_STL "libstdc++"
-#endif
+ # if defined _LIBCPP_VERSION
+  #  define XDISPATCH_STL_LIBCPP 1
+  #  define XDISPATCH_STL "libc++"
+ # endif
 
-#if ( __cplusplus >= 201103L )
- # define XDISPATCH_CPP11 1
-#endif
+ # if defined __GLIBCXX__
+  #  define XDISPATCH_STL_GLIBCXX 1
+  #  define XDISPATCH_STL "libstdc++"
+ # endif
 
-#if ( defined __GXX_EXPERIMENTAL_CXX0X_ )
- # define XDISPATCH_CPP11 1
-#endif
+ # if ( __cplusplus >= 201103L )
+  #  define XDISPATCH_CPP11 1
+ # endif
 
-#if XDISPATCH_COMPILER_MSVC2010
- # define XDISPATCH_CPP11 1
- # define XDISPATCH_CPP11_TYPE_TRAITS 1
- # define XDISPATCH_CPP11_MEMORY 1
- # define XDISPATCH_CPP11_FUNCTIONAL 1
-#endif // if XDISPATCH_COMPILER_MSVC2010
+ # if ( defined __GXX_EXPERIMENTAL_CXX0X_ )
+  #  define XDISPATCH_CPP11 1
+ # endif
 
-#if XDISPATCH_COMPILER_MSVC2008SP1
- # define XDISPATCH_TR1_FUNCTIONAL 1
- # include <functional>
-#endif
+ # if XDISPATCH_COMPILER_MSVC2010
+  #  define XDISPATCH_CPP11 1
+  #  define XDISPATCH_CPP11_TYPE_TRAITS 1
+  #  define XDISPATCH_CPP11_MEMORY 1
+  #  define XDISPATCH_CPP11_FUNCTIONAL 1
+ # endif // if XDISPATCH_COMPILER_MSVC2010
 
-#if XDISPATCH_STL_LIBCPP && XDISPATCH_CPP11
- # define XDISPATCH_CPP11_TYPE_TRAITS 1
- # define XDISPATCH_CPP11_MEMORY 1
- # define XDISPATCH_CPP11_FUNCTIONAL 1
-#endif // if XDISPATCH_STL_LIBCPP && XDISPATCH_CPP11
+ # if XDISPATCH_COMPILER_MSVC2008SP1
+  #  define XDISPATCH_TR1_FUNCTIONAL 1
+  #  include <functional>
+ # endif // if XDISPATCH_COMPILER_MSVC2008SP1
 
-#if XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
- # define XDISPATCH_CPP11_TYPE_TRAITS 1
- # define XDISPATCH_CPP11_MEMORY 1
- # define XDISPATCH_CPP11_FUNCTIONAL 1
-#endif // if XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
+ # if XDISPATCH_STL_LIBCPP && XDISPATCH_CPP11
+  #  define XDISPATCH_CPP11_TYPE_TRAITS 1
+  #  define XDISPATCH_CPP11_MEMORY 1
+  #  define XDISPATCH_CPP11_FUNCTIONAL 1
+ # endif // if XDISPATCH_STL_LIBCPP && XDISPATCH_CPP11
 
-#if ( !XDISPATCH_CPP11 ) && __GLIBCXX__
- # define XDISPATCH_TR1_FUNCTIONAL 1
- # include <tr1/functional>
-#endif
+ # if XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
+  #  define XDISPATCH_CPP11_TYPE_TRAITS 1
+  #  define XDISPATCH_CPP11_MEMORY 1
+  #  define XDISPATCH_CPP11_FUNCTIONAL 1
+ # endif // if XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
 
+ # if __GLIBCXX__ < 20120322 || ( !XDISPATCH_CPP11 )
+  #  define XDISPATCH_TR1_FUNCTIONAL 1
+  #  include <tr1/functional>
+ # endif // if __GLIBCXX__ < 20120322
+
+ # if XDISPATCH_TR1_FUNCTIONAL || XDISPATCH_CPP11_FUNCTIONAL
+  #  define XDISPATCH_HAS_FUNCTION 1
+ # endif
+
+#endif // if __cplusplus
 
 // user control of enabled featureset
 

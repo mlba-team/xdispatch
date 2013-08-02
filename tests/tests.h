@@ -72,7 +72,7 @@ void test_dispatch_read_lambda();
 # endif
 #endif
 
-#if TEST_BLOCKS
+#if TEST_C_BLOCKS
 void dispatch_plusplus_blocks();
 void dispatch_apply_blocks();
 void dispatch_after_blocks();

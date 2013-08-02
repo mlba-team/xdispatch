@@ -116,9 +116,6 @@ typedef void (^dispatch_block_t)(
 typedef void (^dispatch_iteration_block_t)(
     size_t
 );
- # if defined ( __cplusplus ) && !defined ( __clang__ )
-  #  warning "Sadly blocks are currently broken in C++ on this platform, we recommend using clang 2.0+ instead"
- # endif
 #endif // if XDISPATCH_HAS_BLOCKS
 
 /** @} */

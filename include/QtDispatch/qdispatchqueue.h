@@ -85,7 +85,7 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         after(
             QRunnable * r,
             const QTime &time
@@ -126,7 +126,7 @@ public:
      * @deprecated Use the version with swapped arguments instead
      */
     template< typename _Func >
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         after(
             const _Func &b,
             const QTime &time

@@ -191,16 +191,6 @@ __XDISPATCH_END_NAMESPACE
 
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
-__XDISPATCH_BEGIN_NAMESPACE
-
-inline xdispatch::operation * make_operation(
-    QRunnable *f
-)
-{
-    return make_operation( f );
-}
-
-__XDISPATCH_END_NAMESPACE
 
 inline QRunnable * QDispatchMakeRunnable(
     QRunnable *r

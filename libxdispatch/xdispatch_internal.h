@@ -54,9 +54,9 @@
  # define XDISPATCH_EXPORT __declspec( dllexport )
  # define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
 #elif XDISPATCH_COMPILER_GCC || XDISPATCH_COMPILER_CLANG
-# define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
+ # define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
  # define XDISPATCH_DEPRECATED( F ) __attribute__ ( ( __deprecated__ ) ) F
-#endif
+#endif // if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
 
 #include <assert.h>
 #include <stdexcept>

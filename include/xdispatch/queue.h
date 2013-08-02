@@ -122,8 +122,8 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    XDISPATCH_DEPRECATED( inline void 
-        apply(iteration_operation * op, size_t times)
+    XDISPATCH_DEPRECATED( inline void
+        apply( iteration_operation * op, size_t times )
     )
     {
         apply( times, op );
@@ -150,7 +150,7 @@ public:
      * @deprecated Use the version with swapped arguments instead
      */
     template< typename _Func >
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         apply(
             const _Func &b,
             size_t times
@@ -195,7 +195,7 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         after(
             operation * op,
             struct tm *time
@@ -208,7 +208,7 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         after(
             operation * op,
             dispatch_time_t time
@@ -250,7 +250,7 @@ public:
      * @deprecated Use the version with swapped arguments instead
      */
     template< typename _Func >
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         after(
             const _Func &b,
             struct tm *time
@@ -264,7 +264,7 @@ public:
      * @deprecated Use the version with swapped arguments instead
      */
     template< typename _Func >
-    XDISPATCH_DEPRECATED( inline void 
+    XDISPATCH_DEPRECATED( inline void
         after(
             const _Func &b,
             dispatch_time_t time

@@ -30,6 +30,15 @@
 
 #ifndef __XDISPATCH_INDIRECT__
  # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # include "dispatch.h"
+#endif
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+ # include <type_traits>
+#endif
+
+#if XDISPATCH_CPP11_FUNCTIONAL
+ # include <functional>
 #endif
 
 #include <iostream>
@@ -101,6 +110,7 @@ public:
 
       @see operator()(operation&)
       */
+#if XDISPATCH_CPP11_TYPE_TRAITS
     template< typename _Func >
     inline typename std::enable_if< std::is_base_of< operation, _Func >::value, void >::type operator () (
         _Func &b
@@ -120,6 +130,49 @@ public:
 
         operator () ( static_cast< operation & > ( op ) );
     }
+
+#else // if XDISPATCH_CPP11_TYPE_TRAITS
+
+ # if XDISPATCH_HAS_BLOCKS
+    inline void operator () (
+        dispatch_block_t b
+    )
+    {
+        once_op< dispatch_block_t > op( b );
+
+        operator () ( static_cast< operation & > ( op ) );
+    }
+
+ # endif // if XDISPATCH_HAS_BLOCKS
+
+ # if XDISPATCH_HAS_FUNCTION
+  #  if XDISPATCH_CPP11_FUNCTIONAL
+
+    inline void operator () (
+        const ::std::function< void(void) > &f
+    )
+    {
+        once_op< const ::std::function< void(void) > > op( f );
+
+        operator () ( static_cast< operation & > ( op ) );
+    }
+
+  #  elif XDISPATCH_TR1_FUNCTIONAL
+
+    inline void operator () (
+        const ::std::tr1::function< void(void) > &f
+    )
+    {
+        once_op< const ::std::tr1::function< void(void) > > op( f );
+
+        operator () ( static_cast< operation & > ( op ) );
+    }
+
+  #  endif // if XDISPATCH_CPP11_FUNCTIONAL
+
+ # endif // if XDISPATCH_HAS_FUNCTION
+#endif // if XDISPATCH_CPP11_TYPE_TRAITS
+
 
 private:
     dispatch_once_t _once_obj;

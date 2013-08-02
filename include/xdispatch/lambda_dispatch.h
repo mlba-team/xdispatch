@@ -41,13 +41,13 @@
 
 /// provide block specific libdispatch functions as well
 
-#if (defined __cplusplus) && !XDISPATCH_HAS_BLOCKS
+#if ( defined __cplusplus ) && !XDISPATCH_HAS_BLOCKS
 
 // needed for dispatch_source_t compatibility
 void XDISPATCH_EXPORT _xdispatch_source_set_event_handler( dispatch_source_t, xdispatch::operation * op );
 void XDISPATCH_EXPORT _xdispatch_source_set_cancel_handler( dispatch_source_t, xdispatch::operation * op );
 
-template < typename _Func >
+template< typename _Func >
 inline void dispatch_async(
     dispatch_queue_t queue,
     const _Func &block
@@ -56,7 +56,8 @@ inline void dispatch_async(
     xdispatch::queue( queue ).async( block );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_after(
     dispatch_time_t when,
     dispatch_queue_t queue,
@@ -66,7 +67,8 @@ inline void dispatch_after(
     xdispatch::queue( queue ).after( when, block );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_sync(
     dispatch_queue_t queue,
     const _Func &block
@@ -75,7 +77,8 @@ inline void dispatch_sync(
     xdispatch::queue( queue ).sync( block );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_apply(
     size_t iterations,
     dispatch_queue_t queue,
@@ -85,7 +88,8 @@ inline void dispatch_apply(
     xdispatch::queue( queue ).apply( iterations, block );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_group_async(
     dispatch_group_t group,
     dispatch_queue_t queue,
@@ -95,7 +99,8 @@ inline void dispatch_group_async(
     xdispatch::group( group ).async( block, queue );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_group_notify(
     dispatch_group_t group,
     dispatch_queue_t queue,
@@ -105,7 +110,8 @@ inline void dispatch_group_notify(
     xdispatch::group( group ).notify( block, queue );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_source_set_event_handler(
     dispatch_source_t source,
     const _Func &handler
@@ -114,7 +120,8 @@ inline void dispatch_source_set_event_handler(
     _xdispatch_source_set_event_handler( source, xdispatch::make_operation( handler ) );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_source_set_cancel_handler(
     dispatch_source_t source,
     const _Func &cancel_handler
@@ -123,7 +130,8 @@ inline void dispatch_source_set_cancel_handler(
     _xdispatch_source_set_cancel_handler( source, xdispatch::make_operation( cancel_handler ) );
 }
 
-template < typename _Func >
+
+template< typename _Func >
 inline void dispatch_once(
     dispatch_once_t *predicate,
     const _Func &block
@@ -135,7 +143,7 @@ inline void dispatch_once(
 }
 
 
-#endif
+#endif // if ( defined __cplusplus ) && !XDISPATCH_HAS_BLOCKS
 
 /** @} */
 
