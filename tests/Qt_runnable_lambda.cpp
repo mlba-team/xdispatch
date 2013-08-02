@@ -37,8 +37,8 @@ public:
 };
 
 
-static QIterationLambdaRunnable* iter_block_run = NULL;
-static QLambdaRunnable* block_run = NULL;
+static QIterationRunnable* iter_block_run = NULL;
+static QRunnable* block_run = NULL;
 
 static void exec_runnables() {
     
@@ -68,11 +68,11 @@ extern "C" void Qt_runnable_lambda(){
 
 
     counter = 0;
-    iter_block_run = new QIterationLambdaRunnable([=](size_t index){
+    iter_block_run = QDispatchMakeIterationRunnable([=](size_t index){
         counter += index;
     });
     
-    block_run = new QLambdaRunnable([=]{
+    block_run = QDispatchMakeRunnable([=]{
         counter += 5;
     });
     

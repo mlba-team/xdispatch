@@ -75,34 +75,18 @@ public:
         const queue &q = global_queue()
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    Same as dispatch(operation* r, ...)
-    Will wrap the given block in an operation and put it on the queue.
-    */
-    inline void async(
-        dispatch_block_t b,
-        const queue &q = global_queue()
-    )
-    {
-        async( make_function_operation( b ), q );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     Same as dispatch(operation* r, ...)
     Will wrap the given function in an operation and put it on the queue.
     */
+    template< typename _Func >
     inline void async(
-        const lambda_function &b,
+        const _Func &b,
         const queue &q = global_queue()
     )
     {
-        async( make_function_operation( b ), q );
+        async( ::xdispatch_make_operation( b ), q );
     }
-
-#endif // if XDISPATCH_HAS_FUNCTION
 
     /**
     Waits until the given time has passed
@@ -141,51 +125,28 @@ public:
         const queue &q = global_queue()
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    This function schedules a notification block to be submitted to the specified
-    queue once all blocks associated with the dispatch group have completed.
-
-    If no blocks are associated with the dispatch group (i.e. the group is empty)
-    then the notification block will be submitted immediately.
-
-    The group will be empty at the time the notification block is submitted to
-    the target queue. The group may either be deleted
-    or reused for additional operations.
-    @see dispatch() for more information.
-    */
-    inline void notify(
-        dispatch_block_t b,
-        const queue &q = global_queue()
-    )
-    {
-        notify( make_function_operation( b ), q );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     This function schedules a notification function to be submitted to the specified
     queue once all operations associated with the dispatch group have completed.
 
-    If no operations are associated with the dispatch group (i.e. the group is empty)
-    then the notification block will be submitted immediately.
+    If no blocks are associated with the dispatch group (i.e. the group is empty)
+    then the notification function will be submitted immediately.
 
     The group will be empty at the time the notification function is submitted to
     the target queue. The group may either be deleted
     or reused for additional operations.
     @see dispatch() for more information.
     */
+    template< typename _Func >
     inline void notify(
-        const lambda_function &b,
+        const _Func &b,
         const queue &q = global_queue()
     )
     {
-        notify( make_function_operation( b ), q );
+        notify( ::xdispatch_make_operation( b ), q );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
+    /**
        @returns The dispatch_object_t object associated with this
        C++ object. Use this, if you need to use the plain C Interface
        of libdispatch.

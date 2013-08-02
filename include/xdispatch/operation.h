@@ -28,11 +28,18 @@
  * @{
  */
 
-#ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
-#endif
+#include "platform.h"
+#include "dispatch_decl.h"
 
 #include <string>
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+ # include <type_traits>
+#endif
+
+#if XDISPATCH_CPP11_FUNCTIONAL
+ # include <functional>
+#endif
 
 __XDISPATCH_BEGIN_NAMESPACE
 
@@ -131,66 +138,6 @@ private:
 
 
 /**
-  Provides a template functor to wrap
-  a function pointer to a memberfunction of an object as operation
-  */
-template< class T >
-class ptr_operation
-    : public operation
-{
-public:
-    ptr_operation (
-        T *object,
-        void( T::*function )()
-    )
-        : obj( object ),
-          func( function ) { }
-
-
-    virtual void operator () ()
-    {
-        ( *obj.*func )();
-    }
-
-private:
-    T *obj;
-    void (T::*func)();
-};
-
-
-/**
-  Provides a template functor to wrap
-  a function pointer to a memberfunction of an object as iteration_operation
-  */
-template< class T >
-class ptr_iteration_operation
-    : public iteration_operation
-{
-public:
-    ptr_iteration_operation (
-        T *object,
-        void( T::*function )( size_t )
-    )
-        : obj( object ),
-          func( function ) { }
-
-
-    virtual void operator () (
-        size_t index
-    )
-    {
-        ( *obj.*func )( index );
-    }
-
-private:
-    T *obj;
-    void (T::*func)(
-        size_t
-    );
-};
-
-
-/**
   A simple operation for wrapping the given
   function as an xdispatch::operation
   */
@@ -226,14 +173,108 @@ private:
 };
 
 
+/**
+  Provides a template functor to wrap
+  a function pointer to a memberfunction of an object as operation
+  */
+template< class T >
+class ptr_operation
+    : public operation
+{
+public:
+    ptr_operation (
+        T *object,
+        void( T::*function )()
+    )
+        : obj( object ),
+          func( function ) { }
+
+
+    virtual void operator () ()
+    {
+        ( *obj.*func )();
+    }
+
+private:
+    T *obj;
+    void (T::*func)();
+};
+
+
+__XDISPATCH_END_NAMESPACE
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+
 template< typename _Func >
-inline function_operation< _Func > * make_function_operation(
+inline typename std::enable_if<
+    !std::is_pointer< _Func >::value,
+    xdispatch::operation
+>::type * xdispatch_make_operation(
     const _Func &f
 )
 {
-    return new function_operation< _Func > ( f );
+    return new xdispatch::function_operation< _Func > ( f );
 }
 
+template< typename _Func >
+inline typename std::enable_if<
+    std::is_convertible< _Func, xdispatch::operation * >::value,
+    xdispatch::operation
+>::type * xdispatch_make_operation(
+    const _Func &f
+)
+{
+    return static_cast< xdispatch::operation * > ( f );
+}
+#else // if XDISPATCH_CPP11_TYPE_TRAITS
+
+inline xdispatch::operation * xdispatch_make_operation(
+    xdispatch::operation *f
+)
+{
+    return f;
+}
+
+
+ # if XDISPATCH_HAS_FUNCTION
+  #  if XDISPATCH_TR1_FUNCTIONAL
+
+inline xdispatch::operation * xdispatch_make_operation(
+    const ::std::tr1::function< void(void) > &f
+)
+{
+    return new xdispatch::function_operation< ::std::tr1::function< void(void) > > ( f );
+}
+
+
+  #  elif XDISPATCH_CPP11_FUNCTIONAL
+
+inline xdispatch::operation * xdispatch_make_operation(
+    const ::std::function< void(void) > &f
+)
+{
+    return new xdispatch::function_operation< ::std::function< void(void) > > ( f );
+}
+
+
+  #  endif // if XDISPATCH_TR1_FUNCTIONAL
+ # endif // if XDISPATCH_HAS_FUNCTION
+
+ # if XDISPATCH_HAS_BLOCKS
+
+inline xdispatch::operation * xdispatch_make_operation(
+    dispatch_block_t b
+)
+{
+    return new xdispatch::function_operation< dispatch_block_t > ( b );
+}
+
+
+ # endif // if XDISPATCH_HAS_BLOCKS
+
+#endif // if XDISPATCH_CPP11_TYPE_TRAITS
+
+__XDISPATCH_BEGIN_NAMESPACE
 
 /**
   A simple iteration operation needed when
@@ -273,14 +314,100 @@ private:
 };
 
 
+/**
+  Provides a template functor to wrap
+  a function pointer to a memberfunction of an object as iteration_operation
+  */
+template< class T >
+class ptr_iteration_operation
+    : public iteration_operation
+{
+public:
+    ptr_iteration_operation (
+        T *object,
+        void( T::*function )( size_t )
+    )
+        : obj( object ),
+          func( function ) { }
+
+
+    virtual void operator () (
+        size_t index
+    )
+    {
+        ( *obj.*func )( index );
+    }
+
+private:
+    T *obj;
+    void (T::*func)(
+        size_t
+    );
+};
+
+
+__XDISPATCH_END_NAMESPACE
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+
 template< typename _Func >
-inline function_iteration_operation< _Func > * make_function_iteration_operation(
+inline typename std::enable_if<
+    !std::is_pointer< _Func >::value,
+    xdispatch::iteration_operation
+>::type * xdispatch_make_iteration_operation(
     const _Func &f
 )
 {
-    return new function_iteration_operation< _Func > ( f );
+    return new xdispatch::function_iteration_operation< _Func > ( f );
 }
 
+template< typename _Func >
+inline typename std::enable_if<
+    std::is_convertible< _Func, xdispatch::iteration_operation * >::value,
+    xdispatch::iteration_operation
+>::type * xdispatch_make_iteration_operation(
+    const _Func &f
+)
+{
+    return static_cast< xdispatch::iteration_operation * > ( f );
+}
+#else // if XDISPATCH_CPP11_TYPE_TRAITS
+
+inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+    xdispatch::iteration_operation *f
+)
+{
+    return f;
+}
+
+
+ # if XDISPATCH_TR1_FUNCTIONAL
+
+inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+    const ::std::tr1::function< void(size_t) > &f
+)
+{
+    return new xdispatch::function_iteration_operation< ::std::tr1::function< void(size_t) > > ( f );
+}
+
+
+ # endif // if XDISPATCH_TR1_FUNCTIONAL
+
+ # if XDISPATCH_CPP11_FUNCTIONAL
+
+inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+    const ::std::function< void(size_t) > &f
+)
+{
+    return new xdispatch::function_iteration_operation< ::std::function< void(size_t) > > ( f );
+}
+
+
+ # endif // if XDISPATCH_CPP11_FUNCTIONAL
+
+#endif // if XDISPATCH_CPP11_TYPE_TRAITS
+
+__XDISPATCH_BEGIN_NAMESPACE
 
 #if XDISPATCH_HAS_BLOCKS
 /**
@@ -359,6 +486,22 @@ public:
 private:
     dispatch_iteration_block_t _block;
 };
+
+
+inline xdispatch::operation * xdispatch_make_operation(
+    dispatch_block_t b
+)
+{
+    return new xdispatch::function_operation< dispatch_block_t > ( b );
+}
+
+
+inline xdispatch::iteration_operation * xdispatch_make_iteration_operation(
+    dispatch_iteration_block_t b
+)
+{
+    return new xdispatch::function_iteration_operation< dispatch_iteration_block_t > ( b );
+}
 
 
 #endif // XDISPATCH_HAS_BLOCKS

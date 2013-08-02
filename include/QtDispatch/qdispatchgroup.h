@@ -23,11 +23,12 @@
 #ifndef QDISPATCH_GROUP_H_
 #define QDISPATCH_GROUP_H_
 
-#include <QObject>
-#include <QScopedPointer>
-
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
+
+#include <QObject>
+#include <QScopedPointer>
+#include <xdispatch/dispatch>
 
 /**
  * @addtogroup qtdispatch
@@ -123,46 +124,32 @@ public:
         const xdispatch::queue & = xdispatch::global_queue()
     );
 
-#if XDISPATCH_HAS_BLOCKS
     /**
      @see notify(QRunnable* r, const xdispatch::queue&);
      */
+    template< typename _Func >
     inline void notify(
-        dispatch_block_t b,
+        const _Func &b,
         const xdispatch::queue &q = xdispatch::global_queue()
     )
     {
-        notify( new QBlockRunnable( b ), q );
+        notify( ::xdispatch_make_operation( b ), q );
     }
 
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
-     @see notify(QRunnable* r, const xdispatch::queue&);
+      Activates the allFinished() signal or this QDispatchGroup. Needs to
+      be called everytime all scheduled work on the group finished and new work
+      was submitted which was not finished yet.
+
+      Note: All installed notification handlers will be disabled
+            and all other QDispatchGroup objects working on the same group
+            will stop to emit the signal, i.e. only one QDispatchGroup object
+            can emit the signal at a time.
+
+      Note2: When assigning a new notification handler by using notify()
+             the signal of this object will be enabled by default
+
      */
-    inline void notify(
-        const xdispatch::lambda_function &b,
-        const xdispatch::queue &q = xdispatch::global_queue()
-    )
-    {
-        notify( new QLambdaRunnable( b ), q );
-    }
-
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-         Activates the allFinished() signal or this QDispatchGroup. Needs to
-         be called everytime all scheduled work on the group finished and new work
-         was submitted which was not finished yet.
-
-         Note: All installed notification handlers will be disabled
-               and all other QDispatchGroup objects working on the same group
-               will stop to emit the signal, i.e. only one QDispatchGroup object
-               can emit the signal at a time.
-
-         Note2: When assigning a new notification handler by using notify()
-                the signal of this object will be enabled by default
-
-        */
     void enableAllFinishedSignal();
 
 

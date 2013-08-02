@@ -41,7 +41,7 @@ extern "C" void Qt_dispatch_current_lambda(){
         QTest::qSleep(10);
         MU_MESSAGE("Queue should be global default queue");
         qDebug() << QDispatch::currentQueue();
-        QDispatch::mainQueue().async(new QLambdaRunnable([=]{
+        QDispatch::mainQueue().async(QDispatchMakeRunnable([=]{
             QTest::qSleep(10);
             MU_MESSAGE("Queue should be main queue");
             qDebug() << QDispatch::currentQueue();

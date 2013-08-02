@@ -23,10 +23,11 @@
 #ifndef QDISPATCH_QUEUE
 #define QDISPATCH_QUEUE
 
-#include <QObject>
-
 #include "qdispatchglobal.h"
 #include "qblockrunnable.h"
+
+#include <QObject>
+#include <xdispatch/dispatch>
 
 /**
  * @addtogroup qtdispatch
@@ -78,88 +79,65 @@ public:
     );
     ~QDispatchQueue ();
 
+    using xdispatch::queue::async;
+    using xdispatch::queue::apply;
+
     /**
-    Applies the given QRunnable for async execution
-    in this queue and returns immediately.
-    */
-    void async(
+     * @deprecated Use the version with swapped arguments instead
+     */
+    XDISPATCH_DEPRECATED( inline void 
+        after(
+            QRunnable * r,
+            const QTime &time
+        )
+    )
+    {
+        after( time, r );
+    }
+
+    /**
+   Applies the given QRunnable for async execution
+   in this queue after the given time and returns immediately
+   @param time The time to wait until the QRunnable is applied to
+   the queue.
+   */
+    void after(
+        const QTime &time,
         QRunnable *
     );
 
-    using xdispatch::queue::async;
-    /**
-    Applies the given QRunnable for async execution
-    in this queue and returns immediately.
-
-    In case the autoDelete() flag of the passed QIterationRunnable
-    is set to true it is ensured that the runnable will be deleted
-    after being executed the requested number of times
-
-    @param times The number of times the QRunnable will be executed
-    */
-    void apply(
-        QIterationRunnable *,
-        int times
-    );
-
-    using xdispatch::queue::apply;
-    /**
-    Applies the given QRunnable for async execution
-    in this queue after the given time and returns immediately
-    @param time The time to wait until the QRunnable is applied to
-    the queue.
-    */
-    void after(
-        QRunnable *,
-        const QTime &time
-    );
-
-    void after(
-        QRunnable *,
-        dispatch_time_t time
-    );
-
     using xdispatch::queue::after;
-#if XDISPATCH_HAS_BLOCKS
+
     /**
     Same as after().
     Will wrap the given block in a QRunnable and put it on the
     queue.
     */
+    template< typename _Func >
     inline void after(
-        dispatch_block_t b,
-        const QTime &time
+        const QTime &time,
+        const _Func &b
     )
     {
-        after( new QBlockRunnable( b ), time );
+        after( time, QDispatchMakeRunnable( b ) );
     }
 
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
-    Same as after().
-    Will wrap the given function in a QRunnable and put it on the
-    queue.
-    */
-    inline void after(
-        const xdispatch::lambda_function &b,
-        const QTime &time
+     * @deprecated Use the version with swapped arguments instead
+     */
+    template< typename _Func >
+    XDISPATCH_DEPRECATED( inline void 
+        after(
+            const _Func &b,
+            const QTime &time
+        )
     )
     {
-        after( new QLambdaRunnable( b ), time );
+        after( time, QDispatchMakeRunnable( b ) );
     }
-
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Applies the given QRunnable for execution
-       int his queue and blocks until the QRunnable
-       was executed
-       */
-    void sync(
-        QRunnable *
-    );
 
     using xdispatch::queue::sync;
+
     /**
     Sets the given runnable as finalizer for this
     queue. A finalizer is called before destroying
@@ -180,32 +158,21 @@ public:
         const xdispatch::queue & = xdispatch::global_queue()
     );
 
-#if XDISPATCH_HAS_BLOCKS
+    template< typename _Func >
     inline void setFinalizer(
-        dispatch_block_t b,
+        const _Func &b,
         const xdispatch::queue &q = xdispatch::global_queue()
     )
     {
-        setFinalizer( new QBlockRunnable( b ), q );
+        setFinalizer( QDispatchMakeRunnable( b ), q );
     }
 
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
-    inline void setFinalizer(
-        const xdispatch::lambda_function &b,
-        const xdispatch::queue &q = xdispatch::global_queue()
-    )
-    {
-        setFinalizer( new QLambdaRunnable( b ), q );
-    }
+    /**
+    Sets the target queue of this queue, i.e. the queue
+    all items of this queue will be dispatched on in turn.
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Sets the target queue of this queue, i.e. the queue
-       all items of this queue will be dispatched on in turn.
-
-       @remarks This has no effect on the global queues and the main queue.
-       */
+    @remarks This has no effect on the global queues and the main queue.
+    */
     void setTarget(
         const xdispatch::queue &
     );

@@ -48,35 +48,14 @@
  # define DISPATCH_SOURCE_HAS_WRITE 1
 #endif // ifdef __APPLE__
 
+#include "platform.h"
+#include "dispatch_decl.h"
+
 #if defined ( __cplusplus )
-
- # ifndef XDISPATCH_EXPORT
-  #  ifdef _WIN32
-   #   ifndef __GNUC__
-    #    pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
-   #   endif
-   #   ifdef XDISPATCH_MAKEDLL
-    #    define XDISPATCH_EXPORT __declspec( dllexport )
-   #   else
-    #    define XDISPATCH_EXPORT __declspec( dllimport )
-   #   endif
-   #   define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
-  #  else // ifdef _WIN32
-   #   define XDISPATCH_EXPORT __attribute__( ( visibility( "default" ) ) )
-   #   define XDISPATCH_DEPRECATED( F ) F __attribute__ ( ( deprecated ) )
-  #  endif // ifdef _WIN32
- # endif // ifndef XDISPATCH_EXPORT
-
-
- # define __XDISPATCH_BEGIN_NAMESPACE \
-    namespace xdispatch \
-    {
- # define __XDISPATCH_END_NAMESPACE \
-    }
 
  # define __XDISPATCH_INDIRECT__
  # include "pointer.h"
- # include "lambda_blocks.h"
+ # include "blocks.h"
  # include "base.h"
  # include "operation.h"
  # include "semaphore.h"
@@ -93,11 +72,6 @@
 
 #endif /* defined(__cplusplus) */
 
-/*
-#ifdef _WIN32
-# pragma warning(default: 4251) // re-enable warning C4251 - we do not want to influence other code
-#endif
-*/
 
 /** @} */
 

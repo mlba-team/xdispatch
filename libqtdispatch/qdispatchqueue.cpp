@@ -67,51 +67,13 @@ QDispatchQueue::QDispatchQueue (
 QDispatchQueue::~QDispatchQueue (){ }
 
 
-void QDispatchQueue::async(
+void QDispatchQueue::after(
+    const QTime &t,
     QRunnable *runnable
 )
 {
     Q_ASSERT( runnable );
-    async( new RunnableOperation( runnable ) );
-}
-
-
-void QDispatchQueue::apply(
-    QIterationRunnable *runnable,
-    int times
-)
-{
-    Q_ASSERT( runnable );
-    apply( times, new IterationRunnableOperation( runnable ) );
-}
-
-
-void QDispatchQueue::after(
-    QRunnable *runnable,
-    const QTime &t
-)
-{
-    Q_ASSERT( runnable );
-    after( runnable, QDispatch::asDispatchTime( t ) );
-}
-
-
-void QDispatchQueue::after(
-    QRunnable *r,
-    dispatch_time_t t
-)
-{
-    Q_ASSERT( r );
-    after( t, new RunnableOperation( r ) );
-}
-
-
-void QDispatchQueue::sync(
-    QRunnable *runnable
-)
-{
-    Q_ASSERT( runnable );
-    sync( new RunnableOperation( runnable ) );
+    after( QDispatch::asDispatchTime( t ), runnable );
 }
 
 

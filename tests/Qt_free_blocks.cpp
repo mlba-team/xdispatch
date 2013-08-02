@@ -74,9 +74,9 @@ static void Qt_dispatch_outer(){
     QtBeFreed outer;
     QtBeFreed2 inner;
 
-    QDispatch::globalQueue().apply(new QIterationBlockRunnable(^(size_t i){
+    QDispatch::globalQueue().apply(10, new QIterationBlockRunnable(^(size_t i){
          inner.someFunction();
-    }), 10);
+    }));
 
     QDispatch::mainQueue().async(new QBlockRunnable(^{
         outer.someFunction();

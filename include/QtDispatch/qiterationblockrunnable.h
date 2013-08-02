@@ -27,6 +27,14 @@
 
 #include "qdispatchglobal.h"
 
+#if XDISPATCH_CPP11_TYPE_TRAITS
+ # include <type_traits>
+#endif
+
+#if XDISPATCH_CPP11_FUNCTIONAL
+ # include <functional>
+#endif
+
 /**
  * @addtogroup qtdispatch
  * @{
@@ -37,6 +45,44 @@ QT_BEGIN_NAMESPACE QT_MODULE(
     Dispatch
 )
 
+/**
+  A simple class for wrapping a callable
+  as a QIterationRunnable
+  */
+template< typename _Func >
+class QDispatchIterationRunnable
+    : public QIterationRunnable
+{
+public:
+    QDispatchIterationRunnable (
+        const _Func &b
+    )
+        : QIterationRunnable(),
+          _function( b ) { }
+
+
+    QDispatchIterationRunnable (
+        const QDispatchIterationRunnable< _Func > &other
+    )
+        : QIterationRunnable( other ),
+          _function( other._function ) { }
+
+
+    ~QDispatchIterationRunnable () { }
+
+
+    void run(
+        size_t index
+    )
+    {
+        _function( index );
+    }
+
+private:
+    _Func _function;
+};
+
+
 #if XDISPATCH_HAS_BLOCKS
 /**
 Provides a QIterationRunnable implementation for use with
@@ -45,7 +91,8 @@ blocks on clang or Apple's gcc 4.2
 Please see the documentation for QRunnable for the
 functionality of the autoDelete flags as well.
 */
-class Q_DISPATCH_EXPORT QIterationBlockRunnable
+template< >
+class QDispatchIterationRunnable< dispatch_block_t >
     : public QIterationRunnable
 {
 public:
@@ -56,21 +103,21 @@ public:
     QIterationBlockRunnable task((size_t index){cout << "Hello World at" << index << "\n";}, 3);
     @endcode
     */
-    QIterationBlockRunnable (
+    QDispatchIterationRunnable (
         dispatch_iteration_block_t b
     )
         : QIterationRunnable(),
           _block( Block_copy( b ) ) { }
 
 
-    QIterationBlockRunnable (
-        const QIterationBlockRunnable &other
+    QDispatchIterationRunnable (
+        const QDispatchIterationRunnable< dispatch_block_t > &other
     )
         : QIterationRunnable( other ),
           _block( Block_copy( other._block ) ) { }
 
 
-    virtual ~QIterationBlockRunnable ()
+    virtual ~QDispatchIterationRunnable ()
     {
         Block_release( _block );
     }
@@ -87,61 +134,84 @@ private:
 };
 
 
+typedef QDispatchIterationRunnable< dispatch_block_t > QIterationBlockRunnable;
+
 #endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
-/**
-Provides a QIteration Implementation for use with
-lambda functions in C++0x
-
-Please see the documentation for QRunnable for the
-functionality of the autoDelete flags as well.
-*/
-class Q_DISPATCH_EXPORT QIterationLambdaRunnable
-    : public QIterationRunnable
-{
-public:
-    /**
-    Constructs a new QBlockRunnable using the given lambda, e.g.
-
-    @code
-    QIterationLambdaRunnable task([](size_t index){cout << "Hello World at" << index << "\n";}, 3);
-    @endcode
-    */
-    QIterationLambdaRunnable (
-        const xdispatch::iteration_lambda_function &b
-    )
-        : QIterationRunnable(),
-          _function( b ) { }
-
-
-    QIterationLambdaRunnable (
-        const QIterationLambdaRunnable &other
-    )
-        : QIterationRunnable( other ),
-          _function( other._function ) { }
-
-
-    virtual ~QIterationLambdaRunnable () { }
-
-
-    virtual inline void run(
-        size_t index
-    )
-    {
-        _function( index );
-    }
-
-private:
-    xdispatch::iteration_lambda_function _function;
-};
-
-
-#endif // if XDISPATCH_HAS_FUNCTION
 
 
 QT_END_NAMESPACE
 QT_END_HEADER
 
 /** @} */
+
+Q_DISPATCH_EXPORT xdispatch::iteration_operation *
+xdispatch_make_iteration_operation(
+    QIterationRunnable *
+);
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+
+template< typename _Func >
+inline typename std::enable_if<
+    !std::is_pointer< _Func >::value,
+    QIterationRunnable
+>::type * QDispatchMakeIterationRunnable(
+    const _Func &f
+)
+{
+    return new QDispatchIterationRunnable< _Func > ( f );
+}
+
+
+template< typename _Func >
+inline typename std::enable_if<
+    std::is_convertible< _Func, QIterationRunnable * >::value,
+    xdispatch::iteration_operation
+>::type * xdispatch_make_iteration_operation(
+    const _Func &f
+)
+{
+    return xdispatch_make_iteration_operation( static_cast< QIterationRunnable * > ( f ) );
+}
+
+#else // if XDISPATCH_CPP11_TYPE_TRAITS
+
+ # if XDISPATCH_HAS_FUNCTION
+  #  if XDISPATCH_TR1_FUNCTIONAL
+
+inline QIterationRunnable * QDispatchMakeIterationRunnable(
+    const ::std::tr1::function< void(void) > &f
+)
+{
+    return new QDispatchIterationRunnable< ::std::tr1::function< void(void) > > ( f );
+}
+
+
+  #  elif XDISPATCH_CPP11_FUNCTIONAL
+
+inline QIterationRunnable * QDispatchMakeIterationRunnable(
+    const ::std::function< void(void) > &f
+)
+{
+    return new QDispatchIterationRunnable< ::std::function< void(void) > > ( f );
+}
+
+
+  #  endif // if XDISPATCH_TR1_FUNCTIONAL
+ # endif // if XDISPATCH_HAS_FUNCTION
+
+#endif // if XDISPATCH_CPP11_TYPE_TRAITS
+
+#if XDISPATCH_HAS_BLOCKS
+
+inline QIterationRunnable * QDispatchMakeIterationRunnable(
+    dispatch_iteration_block_t b
+)
+{
+    return new QIterationBlockRunnable( b );
+}
+
+
+#endif // if XDISPATCH_HAS_BLOCKS
 
 #endif /* QITERATIONBLOCKRUNNABLE_H_ */

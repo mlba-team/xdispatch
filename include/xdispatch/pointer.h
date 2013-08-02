@@ -32,6 +32,7 @@
 
 #ifndef __XDISPATCH_INDIRECT__
  # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # include "platform.h"
 #endif
 
 // Note: This header provides some memory management classes
@@ -41,7 +42,7 @@
 // way they are used within xdispatch
 
 // MSVC 2010
-#if _MSC_VER >= 1600
+#if XDISPATCH_COMPILER_MSVC2010
 
  # include <memory>
 
@@ -58,8 +59,8 @@ struct pointer
 
 __XDISPATCH_END_NAMESPACE
 
-// MSVC 2008
-#elif _MSC_VER >= 1500
+
+#elif XDISPATCH_COMPILER_MSVC2008SP1
 
  # include <memory>
 
@@ -76,8 +77,8 @@ struct pointer
 
 __XDISPATCH_END_NAMESPACE
 
-// gcc 4.5+ with c++0x/c++11 enabled
-#elif defined ( __GXX_EXPERIMENTAL_CXX0X_ ) || defined ( _LIBCPP_VERSION )
+
+#elif XDISPATCH_CPP11_MEMORY
 
  # include <memory>
 
@@ -115,7 +116,7 @@ struct pointer
 
 __XDISPATCH_END_NAMESPACE
 
-#endif // if _MSC_VER >= 1600
+#endif // if XDISPATCH_COMPILER_MSVC2010
 
 /** @} */
 

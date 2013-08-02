@@ -30,6 +30,7 @@
 
 #ifndef __XDISPATCH_INDIRECT__
  # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # include "dispatch.h"
 #endif
 
 #include "any.h"
@@ -226,39 +227,23 @@ public:
         xdispatch::operation *
     );
 
-#if XDISPATCH_HAS_BLOCKS
     /**
     Sets the handler to dispatch each time the source
     becomes ready. You can use data() to obtain a pointer
     to data provided by the source and possibly being the
     reason for the handler to be dispatched.
     */
-    virtual inline void handler(
-        dispatch_block_t b
+    template< typename _Func >
+    inline void handler(
+        const _Func &b
     )
     {
-        handler( make_function_operation( b ) );
+        handler( ::xdispatch_make_operation( b ) );
     }
 
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
-    Sets the handler to dispatch each time the source
-    becomes ready. You can use data() to obtain a pointer
-    to data provided by the source and possibly being the
-    reason for the handler to be dispatched.
+    Sets the queue the handler will be executed on
     */
-    virtual inline void handler(
-        const lambda_function &b
-    )
-    {
-        handler( make_function_operation( b ) );
-    }
-
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Sets the queue the handler will be executed on
-       */
     void target_queue(
         const xdispatch::queue &
     );
@@ -336,24 +321,6 @@ public:
         xdispatch::operation *
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    Sets the cancellation handler block for the given dispatch source.
-
-    The cancellation handler (if specified) is submitted to the source's
-    target queue in response to a call to dispatch_source_cancel when the
-    system has released all references to the source's underlying handle
-    and the source's event handler block has returned.
-    */
-    virtual inline void cancel_handler(
-        dispatch_block_t b
-    )
-    {
-        cancel_handler( make_function_operation( b ) );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     Sets the cancellation handler function for the given dispatch source.
 
@@ -362,15 +329,13 @@ public:
     system has released all references to the source's underlying handle
     and the source's event handler block has returned.
     */
-    virtual inline void cancel_handler(
-        const lambda_function &b
+    template< typename _Func >
+    inline void cancel_handler(
+        const _Func &b
     )
     {
-        cancel_handler( make_function_operation( b ) );
+        cancel_handler( ::xdispatch_make_operation( b ) );
     }
-
-#endif // if XDISPATCH_HAS_FUNCTION
-
 
 private:
     source (

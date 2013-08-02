@@ -36,6 +36,7 @@
 
 #ifndef __XDISPATCH_INDIRECT__
  # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+ # include "dispatch.h"
 #endif
 
 /// provide block specific libdispatch functions as well
@@ -46,89 +47,86 @@
 void XDISPATCH_EXPORT _xdispatch_source_set_event_handler( dispatch_source_t, xdispatch::operation * op );
 void XDISPATCH_EXPORT _xdispatch_source_set_cancel_handler( dispatch_source_t, xdispatch::operation * op );
 
-#endif // ifdef __cplusplus
-
-#if XDISPATCH_HAS_LAMBDAS && !( XDISPATCH_HAS_BLOCKS )
-
+template < typename _Func >
 inline void dispatch_async(
     dispatch_queue_t queue,
-    const xdispatch::lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::queue( queue ).async( block );
 }
 
-
+template < typename _Func >
 inline void dispatch_after(
     dispatch_time_t when,
     dispatch_queue_t queue,
-    const xdispatch::lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::queue( queue ).after( when, block );
 }
 
-
+template < typename _Func >
 inline void dispatch_sync(
     dispatch_queue_t queue,
-    const xdispatch::lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::queue( queue ).sync( block );
 }
 
-
+template < typename _Func >
 inline void dispatch_apply(
     size_t iterations,
     dispatch_queue_t queue,
-    const xdispatch::iteration_lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::queue( queue ).apply( iterations, block );
 }
 
-
+template < typename _Func >
 inline void dispatch_group_async(
     dispatch_group_t group,
     dispatch_queue_t queue,
-    const xdispatch::lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::group( group ).async( block, queue );
 }
 
-
+template < typename _Func >
 inline void dispatch_group_notify(
     dispatch_group_t group,
     dispatch_queue_t queue,
-    const xdispatch::lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::group( group ).notify( block, queue );
 }
 
-
+template < typename _Func >
 inline void dispatch_source_set_event_handler(
     dispatch_source_t source,
-    const xdispatch::lambda_function &handler
+    const _Func &handler
 )
 {
-    _xdispatch_source_set_event_handler( source, new xdispatch::function_operation( handler ) );
+    _xdispatch_source_set_event_handler( source, xdispatch_make_operation( handler ) );
 }
 
-
+template < typename _Func >
 inline void dispatch_source_set_cancel_handler(
     dispatch_source_t source,
-    const xdispatch::lambda_function &cancel_handler
+    const _Func &cancel_handler
 )
 {
-    _xdispatch_source_set_cancel_handler( source, new xdispatch::function_operation( cancel_handler ) );
+    _xdispatch_source_set_cancel_handler( source, xdispatch_make_operation( cancel_handler ) );
 }
 
-
+template < typename _Func >
 inline void dispatch_once(
     dispatch_once_t *predicate,
-    const xdispatch::lambda_function &block
+    const _Func &block
 )
 {
     xdispatch::once o( predicate );
@@ -137,7 +135,7 @@ inline void dispatch_once(
 }
 
 
-#endif // if XDISPATCH_HAS_LAMBDAS && !( XDISPATCH_HAS_BLOCKS )
+#endif // ifdef __cplusplus
 
 /** @} */
 

@@ -213,7 +213,7 @@ void QDispatchSource::signal(
     if( obj == NULL )
         obj = d->type;
 
-    d->target.async( new QDispatchNotifySource( obj, &d->storage, d->handler ) );
+    d->target.async( static_cast< QRunnable * > ( new QDispatchNotifySource( obj, &d->storage, d->handler ) ) );
 }
 
 

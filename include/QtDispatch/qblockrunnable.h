@@ -23,8 +23,17 @@
 #ifndef QBLOCKRUNNABLE_H_
 #define QBLOCKRUNNABLE_H_
 
-#include <QRunnable>
 #include "qdispatchglobal.h"
+
+#include <QRunnable>
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+ # include <type_traits>
+#endif
+
+#if XDISPATCH_CPP11_FUNCTIONAL
+ # include <functional>
+#endif
 
 /**
  * @addtogroup qtdispatch
@@ -36,6 +45,42 @@ QT_BEGIN_NAMESPACE QT_MODULE(
     Dispatch
 )
 
+/**
+  A simple class for wrapping a callable
+  as a QRunnable
+  */
+template< typename _Func >
+class QDispatchRunnable
+    : public QRunnable
+{
+public:
+    QDispatchRunnable (
+        const _Func &b
+    )
+        : QRunnable(),
+          _function( b ) { }
+
+
+    QDispatchRunnable (
+        const QDispatchRunnable< _Func > &other
+    )
+        : QRunnable( other ),
+          _function( other._function ) { }
+
+
+    ~QDispatchRunnable () { }
+
+
+    void run()
+    {
+        _function();
+    }
+
+private:
+    _Func _function;
+};
+
+
 #if XDISPATCH_HAS_BLOCKS
 /**
   Provides a QRunnable Implementation for use with
@@ -44,7 +89,8 @@ QT_BEGIN_NAMESPACE QT_MODULE(
   Please see the documentation for QRunnable for the
   functionality of the autoDelete flags as well.
   */
-class Q_DISPATCH_EXPORT QBlockRunnable
+template< >
+class Q_DISPATCH_EXPORT QDispatchRunnable< dispatch_block_t >
     : public QRunnable
 {
 public:
@@ -55,26 +101,26 @@ public:
       QBlockRunnable task(^{cout << "Hello World\n";});
       @endcode
       */
-    QBlockRunnable (
+    QDispatchRunnable (
         dispatch_block_t b
     )
         : QRunnable(),
           _block( Block_copy( b ) ) { }
 
 
-    QBlockRunnable (
-        const QBlockRunnable &other
+    QDispatchRunnable (
+        const QDispatchRunnable< dispatch_block_t > &other
     )
         : QRunnable( other ),
           _block( Block_copy( other._block ) ) { }
 
 
-    virtual ~QBlockRunnable ()
+    ~QDispatchRunnable ()
     {
         Block_release( _block );
     }
 
-    virtual void run()
+    void run()
     {
         _block();
     }
@@ -84,61 +130,113 @@ private:
 };
 
 
+typedef QDispatchRunnable< dispatch_block_t > QBlockRunnable;
+
 #endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
-/**
-  Provides a QRunnable Implementation for use with
-  lambda functions in C++0x
-
-  Please see the documentation for QRunnable for the
-  functionality of the autoDelete flags as well.
-  */
-class Q_DISPATCH_EXPORT QLambdaRunnable
-    : public QRunnable
-{
-public:
-    /**
-      Constructs a new QBlockRunnable using the given lambda, e.g.
-
-      @code
-      QLambdaRunnable task([]{cout << "Hello World\n";});
-      @endcode
-      */
-    QLambdaRunnable (
-        const xdispatch::lambda_function &b
-    )
-        : QRunnable(),
-          _function( b ) { }
-
-
-    QLambdaRunnable (
-        const QLambdaRunnable &other
-    )
-        : QRunnable( other ),
-          _function( other._function ) { }
-
-
-    virtual ~QLambdaRunnable ()
-    {
-        // empty
-    }
-
-    virtual void run()
-    {
-        _function();
-    }
-
-private:
-    xdispatch::lambda_function _function;
-};
-
-
-#endif // if XDISPATCH_HAS_FUNCTION
 
 
 QT_END_NAMESPACE
 QT_END_HEADER
 
 /** @} */
+
+Q_DISPATCH_EXPORT xdispatch::operation *
+xdispatch_make_operation(
+    QRunnable *
+);
+
+#if XDISPATCH_CPP11_TYPE_TRAITS
+
+template< typename _Func >
+inline typename std::enable_if<
+    !std::is_pointer< _Func >::value,
+    QRunnable
+>::type * QDispatchMakeRunnable(
+    const _Func &f
+)
+{
+    return new QDispatchRunnable< _Func > ( f );
+}
+
+template< typename _Func >
+inline typename std::enable_if<
+    std::is_convertible< _Func, QRunnable * >::value,
+    QRunnable
+>::type * QDispatchMakeRunnable(
+    const _Func &f
+)
+{
+    return static_cast< QRunnable * > ( f );
+}
+
+
+template< typename _Func >
+inline typename std::enable_if<
+    std::is_convertible< _Func, QRunnable * >::value,
+    xdispatch::operation
+>::type * xdispatch_make_operation(
+    const _Func &f
+)
+{
+    return xdispatch_make_operation( static_cast< QRunnable * > ( f ) );
+}
+
+#else // if XDISPATCH_CPP11_TYPE_TRAITS
+
+inline xdispatch::operation * xdispatch_make_operation(
+    QRunnable *f
+)
+{
+    return xdispatch_make_operation( f );
+}
+
+
+inline QRunnable * QDispatchMakeRunnable(
+    QRunnable *r
+)
+{
+    return r;
+}
+
+
+ # if XDISPATCH_HAS_FUNCTION
+  #  if XDISPATCH_TR1_FUNCTIONAL
+
+inline QRunnable * QDispatchMakeRunnable(
+    const ::std::tr1::function< void(void) > &f
+)
+{
+    return new QDispatchRunnable< ::std::tr1::function< void(void) > > ( f );
+}
+
+
+  #  elif XDISPATCH_CPP11_FUNCTIONAL
+
+inline QRunnable * QDispatchMakeRunnable(
+    const ::std::function< void(void) > &f
+)
+{
+    return new QDispatchRunnable< ::std::function< void(void) > > ( f );
+}
+
+
+  #  endif // if XDISPATCH_TR1_FUNCTIONAL
+ # endif // if XDISPATCH_HAS_FUNCTION
+
+
+#endif // if XDISPATCH_CPP11_TYPE_TRAITS
+
+#if XDISPATCH_HAS_BLOCKS
+
+inline QRunnable * QDispatchMakeRunnable(
+    dispatch_block_t b
+)
+{
+    return new QBlockRunnable( b );
+}
+
+
+#endif // if XDISPATCH_HAS_BLOCKS
+
 
 #endif /* QBLOCKRUNNABLE_H_ */

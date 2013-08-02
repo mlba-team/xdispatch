@@ -300,23 +300,6 @@ public:
         QRunnable *
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-     Sets the given block as handler that will be executed each time
-     the source has become ready.
-
-     @see data() and the source type's documentation on how to obtain
-            information about the reason the source has become ready
-     */
-    inline void setHandler(
-        dispatch_block_t b
-    )
-    {
-        setHandler( new QBlockRunnable( b ) );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
      Sets the given function as handler that will be executed each time
      the source has become ready.
@@ -324,18 +307,18 @@ public:
      @see data() and the source type's documentation on how to obtain
             information about the reason the source has become ready
      */
+    template< typename _Func >
     inline void setHandler(
-        const xdispatch::lambda_function &b
+        const _Func &b
     )
     {
-        setHandler( new QLambdaRunnable( b ) );
+        setHandler( QDispatchMakeRunnable( b ) );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-         @returns The queue the handler will be dispatched on.
-           Defaults to QDispatch::globalQueue();
-        */
+    /**
+      @returns The queue the handler will be dispatched on.
+        Defaults to QDispatch::globalQueue();
+     */
     QDispatchQueue targetQueue() const;
 
     /**

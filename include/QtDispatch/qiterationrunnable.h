@@ -23,8 +23,9 @@
 #ifndef QITERATIONRUNNABLE_H_
 #define QITERATIONRUNNABLE_H_
 
-#include <QRunnable>
 #include "qdispatchglobal.h"
+
+#include <QRunnable>
 
 /**
  * @addtogroup qtdispatch

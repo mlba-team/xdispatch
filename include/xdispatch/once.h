@@ -82,38 +82,17 @@ public:
     /**
       Executes the given operation when the
       once object has not executed any operation
-      on before and on the current or any other
-      thread.
+      before, both the current or any other thread.
 
       @remarks In constrast to the other xdispatch
-        classes, this method receives heap allocated
-        operations and will not take posession of the
-        operation
+        classes, this method receives a reference to
+        operations only and will not take posession
+        of the operation
         */
     void operator () (
         operation &
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-      Similar to operator()(operation&)
-
-      Will wrap the given block as operation
-      and try to execute it on the once object
-
-      @see operator()(operation&)
-      */
-    inline void operator () (
-        dispatch_block_t b
-    )
-    {
-        once_block op( b );
-
-        operator () ( op );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
       Similar to operator()(operation&)
 
@@ -122,76 +101,55 @@ public:
 
       @see operator()(operation&)
       */
-    inline void operator () (
-        const lambda_function &b
+    template< typename _Func >
+    inline typename std::enable_if< std::is_base_of< operation, _Func >::value, void >::type operator () (
+        _Func &b
     )
     {
-        once_function op( b );
+        once_op< _Func > op( b );
 
-        operator () ( op );
+        operator () ( static_cast< operation & > ( op ) );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
+    template< typename _Func >
+    inline typename std::enable_if< !std::is_base_of< operation, _Func >::value, void >::type operator () (
+        const _Func &b
+    )
+    {
+        once_op< const _Func > op( b );
 
+        operator () ( static_cast< operation & > ( op ) );
+    }
 
 private:
     dispatch_once_t _once_obj;
     dispatch_once_t *_once;
 
-#if XDISPATCH_HAS_BLOCKS
-    // we define our own block class
+    // we define our own operation class
     // as the function_operation does a
-    // copy of the stored block, something
+    // copy of the stored function, something
     // we do not need in here
-    class once_block
+    template< typename _Func >
+    class once_op
         : public operation
     {
 public:
-        once_block (
-            dispatch_block_t b
+        once_op (
+            _Func &b
         )
             : operation(),
-              _block( b ) { }
+              _func( b ) { }
 
 
         void operator () ()
         {
-            _block();
+            _func();
         }
 
 private:
-        dispatch_block_t _block;
+        _Func &_func;
     };
 
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
-    // we define our own function class
-    // as the function_operation does a
-    // copy of the stored block, something
-    // we do not need in here
-    class once_function
-        : public operation
-    {
-public:
-        once_function (
-            const lambda_function &b
-        )
-            : operation(),
-              _function( b ) { }
-
-
-        void operator () ()
-        {
-            _function();
-        }
-
-private:
-        const lambda_function &_function;
-    };
-
-
-#endif // if XDISPATCH_HAS_FUNCTION
 
     friend XDISPATCH_EXPORT std::ostream & operator << (
         std::ostream &,

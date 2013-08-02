@@ -88,48 +88,32 @@ public:
         operation *
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    Same as async(operation*).
-    Will put the given block on the queue.
-
-    @see async(operation*)
-    */
-    inline void async(
-        dispatch_block_t b
-    )
-    {
-        async( make_function_operation( b ) );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     Same as async(operation*).
     Will put the given function on the queue.
 
     @see async(operation*)
     */
+    template< typename _Func >
     inline void async(
-        const lambda_function &b
+        const _Func &b
     )
     {
-        async( make_function_operation( b ) );
+        async( ::xdispatch_make_operation( b ) );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Applies the given iteration_operation for async execution
-       in this queue and returns immediately.
+    /**
+    Applies the given iteration_operation for async execution
+    in this queue and returns immediately.
 
-         The operation will be deleted as soon
-         as it was executed the requested number of times.
-         To change this behaviour, set the auto_delete flag
-         of the operation.
-         @see operation::auto_delete()
+      The operation will be deleted as soon
+      as it was executed the requested number of times.
+      To change this behaviour, set the auto_delete flag
+      of the operation.
+      @see operation::auto_delete()
 
-       @param times The number of times the operation will be executed
-       */
+    @param times The number of times the operation will be executed
+    */
     void apply(
         size_t times,
         iteration_operation *
@@ -138,45 +122,13 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    inline void XDISPATCH_DEPRECATED(
+    XDISPATCH_DEPRECATED( inline void 
         apply(iteration_operation * op, size_t times)
     )
     {
         apply( times, op );
     }
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    Same as apply(iteration_operation*, size_t times).
-
-    Will wrap the given block in an operation and put it on the
-    queue.
-
-    @see apply(size_t times, iteration_operation*)
-    */
-    inline void apply(
-        size_t times,
-        dispatch_iteration_block_t b
-    )
-    {
-        apply( times, make_function_iteration_operation( b ) );
-    }
-
-    /**
-     * @deprecated Use the version with swapped arguments instead
-     */
-    inline void XDISPATCH_DEPRECATED(
-        apply(
-            dispatch_iteration_block_t b,
-            size_t times
-        )
-    )
-    {
-        apply( times, b );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     Same as apply(iteration_operation*, size_t times).
 
@@ -185,39 +137,40 @@ public:
 
     @see apply(size_t times, iteration_operation*)
     */
+    template< typename _Func >
     inline void apply(
         size_t times,
-        const iteration_lambda_function &b
+        const _Func &b
     )
     {
-        apply( times, make_function_iteration_operation( b ) );
+        apply( times, ::xdispatch_make_iteration_operation( b ) );
     }
 
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    inline void XDISPATCH_DEPRECATED(
+    template< typename _Func >
+    XDISPATCH_DEPRECATED( inline void 
         apply(
-            const iteration_lambda_function &b,
+            const _Func &b,
             size_t times
         )
     )
     {
-        apply( times, b );
+        apply< _Func > ( times, b );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Applies the given operation for async execution
-       in this queue after the given time and returns immediately.
-       The queue will take possession of the
-       operation and handle the deletion. To change this behaviour,
-       set the auto_delete flag of the operation.
-       @see operation::auto_delete();
+    /**
+    Applies the given operation for async execution
+    in this queue after the given time and returns immediately.
+    The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
 
-       @param time The time to wait until the operation is applied to
-       the queue.
-       */
+    @param time The time to wait until the operation is applied to
+    the queue.
+    */
     void after(
         struct tm *time,
         operation *
@@ -242,7 +195,7 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    inline void XDISPATCH_DEPRECATED(
+    XDISPATCH_DEPRECATED( inline void 
         after(
             operation * op,
             struct tm *time
@@ -255,7 +208,7 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    inline void XDISPATCH_DEPRECATED(
+    XDISPATCH_DEPRECATED( inline void 
         after(
             operation * op,
             dispatch_time_t time
@@ -265,18 +218,18 @@ public:
         after( time, op );
     }
 
-#if XDISPATCH_HAS_BLOCKS
     /**
     Same as dispatch_after(operation*, time_t).
-    Will wrap the given block in an operation and put it on the
+    Will wrap the given function in an operation and put it on the
     queue.
     */
+    template< typename _Func >
     inline void after(
         struct tm *time,
-        dispatch_block_t b
+        const _Func &b
     )
     {
-        after( time, make_function_operation( b ) );
+        after( time, ::xdispatch_make_operation( b ) );
     }
 
     /**
@@ -284,20 +237,22 @@ public:
     Will wrap the given block in an operation and put it on the
     queue.
     */
+    template< typename _Func >
     inline void after(
         dispatch_time_t time,
-        dispatch_block_t b
+        const _Func &b
     )
     {
-        after( time, make_function_operation( b ) );
+        after( time, ::xdispatch_make_operation( b ) );
     }
 
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    inline void XDISPATCH_DEPRECATED(
+    template< typename _Func >
+    XDISPATCH_DEPRECATED( inline void 
         after(
-            dispatch_block_t b,
+            const _Func &b,
             struct tm *time
         )
     )
@@ -308,9 +263,10 @@ public:
     /**
      * @deprecated Use the version with swapped arguments instead
      */
-    inline void XDISPATCH_DEPRECATED(
+    template< typename _Func >
+    XDISPATCH_DEPRECATED( inline void 
         after(
-            dispatch_block_t b,
+            const _Func &b,
             dispatch_time_t time
         )
     )
@@ -318,152 +274,66 @@ public:
         after( b, time );
     }
 
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
-    Same as dispatch_after(operation*, time_t).
-    Will wrap the given function in an operation and put it on the
-    queue.
+    Applies the given operation for execution
+    in this queue and blocks until the operation
+    was executed. The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
     */
-    inline void after(
-        struct tm *time,
-        const lambda_function &b
-    )
-    {
-        after( time, make_function_operation( b ) );
-    }
-
-    /**
-    Same as dispatch_after(operation*, time_t).
-    Will wrap the given function in an operation and put it on the
-    queue.
-    */
-    inline void after(
-        dispatch_time_t time,
-        const lambda_function &b
-    )
-    {
-        after( time, make_function_operation( b ) );
-    }
-
-    /**
-     * @deprecated Use the version with swapped arguments instead
-     */
-    inline void XDISPATCH_DEPRECATED(
-        after(
-            const lambda_function &b,
-            struct tm *time
-        )
-    )
-    {
-        after( b, time );
-    }
-
-    /**
-     * @deprecated Use the version with swapped arguments instead
-     */
-    inline void XDISPATCH_DEPRECATED(
-        after(
-            const lambda_function &b,
-            dispatch_time_t time
-        )
-    )
-    {
-        after( b, time );
-    }
-
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Applies the given operation for execution
-       in this queue and blocks until the operation
-       was executed. The queue will take possession of the
-       operation and handle the deletion. To change this behaviour,
-       set the auto_delete flag of the operation.
-       @see operation::auto_delete();
-       */
     void sync(
         operation *
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    Same as dispatch_sync(operation*).
-    Will wrap the given block in an operation and put it on the
-    queue.
-    */
-    inline void sync(
-        dispatch_block_t b
-    )
-    {
-        sync( make_function_operation( b ) );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     Same as dispatch_sync(operation*).
     Will wrap the given function in an operation and put it on the
     queue.
     */
+    template< typename _Func >
     inline void sync(
-        const lambda_function &b
+        const _Func &b
     )
     {
-        sync( make_function_operation( b ) );
+        sync( ::xdispatch_make_operation( b ) );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       Sets the given operation as finalizer for this
-       queue. A finalizer is called before destroying
-       a queue, i.e. if all queue objects
-       representing the queue were deleted and all
-       pending work on a queue was dispatched. The queue will take possession of the
-       operation and handle the deletion. To change this behaviour,
-       set the auto_delete flag of the operation.
-       @see operation::auto_delete();
+    /**
+    Sets the given operation as finalizer for this
+    queue. A finalizer is called before destroying
+    a queue, i.e. if all queue objects
+    representing the queue were deleted and all
+    pending work on a queue was dispatched. The queue will take possession of the
+    operation and handle the deletion. To change this behaviour,
+    set the auto_delete flag of the operation.
+    @see operation::auto_delete();
 
-       When not passing a queue, the finalizer operation
-       will be executed on the queue itself.
-       */
+    When not passing a queue, the finalizer operation
+    will be executed on the queue itself.
+    */
     void finalizer(
         operation *,
         const queue & = global_queue()
     );
 
-#if XDISPATCH_HAS_BLOCKS
-    /**
-    Same as set_finalizer(operation*, queue*).
-    Will wrap the given block in an operation and store
-    it as finalizer.
-    */
-    inline void finalizer(
-        dispatch_block_t b,
-        const queue &q = global_queue()
-    )
-    {
-        finalizer( make_function_operation( b ), q );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-#if XDISPATCH_HAS_FUNCTION
     /**
     Same as set_finalizer(operation*, queue*).
     Will wrap the given function in an operation and store
     it as finalizer.
     */
+    template< typename _Func >
     inline void finalizer(
-        const lambda_function &b,
+        const _Func &b,
         const queue &q = global_queue()
     )
     {
-        finalizer( make_function_operation( b ), q );
+        finalizer( ::xdispatch_make_operation( b ), q );
     }
 
-#endif // if XDISPATCH_HAS_FUNCTION
-       /**
-       @return The label of the queue that was used while creating it
-       */
+    /**
+    @return The label of the queue that was used while creating it
+    */
     const std::string & label() const;
 
     /**

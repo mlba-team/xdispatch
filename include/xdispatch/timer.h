@@ -119,58 +119,32 @@ public:
         xdispatch::operation *
     );
 
-#if XDISPATCH_HAS_BLOCKS
     /**
-      Creates a single shot timer executing the given block on the given
+      Creates a single shot timer executing the given function on the given
       queue at the given time. This is quite similar to using xdispatch::queue::after()
       */
+    template< typename _Func >
     static void single_shot(
         dispatch_time_t t,
         const xdispatch::queue &q,
-        dispatch_block_t b
+        const _Func &b
     )
     {
-        single_shot( t, q, make_function_operation( b ) );
-    }
-
-    /**
-      Creates a single shot timer executing the given block on the given
-      queue at the given time. This is quite similar to using xdispatch::queue::after()
-      */
-    static void single_shot(
-        struct tm *t,
-        const xdispatch::queue &q,
-        dispatch_block_t b
-    )
-    {
-        single_shot( t, q, make_function_operation( b ) );
-    }
-
-#endif // if XDISPATCH_HAS_BLOCKS
-       /**
-         Creates a single shot timer executing the given function on the given
-         queue at the given time. This is quite similar to using xdispatch::queue::after()
-         */
-    static void single_shot(
-        dispatch_time_t t,
-        const xdispatch::queue &q,
-        const lambda_function &b
-    )
-    {
-        single_shot( t, q, make_function_operation( b ) );
+        single_shot( t, q, ::xdispatch_make_operation( b ) );
     }
 
     /**
       Creates a single shot timer executing the given function on the given
       queue at the given time. This is quite similar to using xdispatch::queue::after()
       */
+    template< typename _Func >
     static void single_shot(
         struct tm *t,
         const xdispatch::queue &q,
-        const lambda_function &b
+        const _Func &b
     )
     {
-        single_shot( t, q, make_function_operation( b ) );
+        single_shot( t, q, ::xdispatch_make_operation( b ) );
     }
 
     timer & operator = (

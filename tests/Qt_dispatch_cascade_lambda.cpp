@@ -40,14 +40,14 @@ extern "C" void Qt_dispatch_cascade_lambda(){
 
 	int no = 0;
 	
-    q.async(new QLambdaRunnable([=]{
+    q.async(QDispatchMakeRunnable([=]{
 		int no2 = no+100;
         QDispatchQueue c = QDispatch::currentQueue();
-        c.async(new QLambdaRunnable([=]{
+        c.async(QDispatchMakeRunnable([=]{
 			int no3 = no2+20;
-            QDispatch::currentQueue().async(new QLambdaRunnable([=]{
+            QDispatch::currentQueue().async(QDispatchMakeRunnable([=]{
 				int no4 = no3+3 ;
-                QDispatch::currentQueue().async(new QLambdaRunnable([=]{
+                QDispatch::currentQueue().async(QDispatchMakeRunnable([=]{
 					MU_ASSERT_EQUAL(no4,123);
 					MU_PASS("And Out");
 				}));

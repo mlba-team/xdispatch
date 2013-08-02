@@ -73,11 +73,11 @@ static void Qt_dispatch_outer(){
     QtBeFreed outer;
     QtBeFreed2 inner;
 
-    QDispatch::globalQueue().apply(new QIterationLambdaRunnable([=](size_t i){
+    QDispatch::globalQueue().apply( 10, QDispatchMakeIterationRunnable([=](size_t i){
          inner.someFunction();
-    }), 10);
+    }));
 
-    QDispatch::mainQueue().async(new QLambdaRunnable([=]{
+    QDispatch::mainQueue().async(QDispatchMakeRunnable([=]{
         outer.someFunction();
     }));
 }

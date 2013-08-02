@@ -41,9 +41,12 @@ public:
             delete worker;
             //MU_MESSAGE("Deleted worker");
             MU_MESSAGE("System usage should be zero");
-            QDispatch::mainQueue().after([=]{
-                MU_PASS("");
-            }, QTime::currentTime().addSecs(5));
+            QDispatch::mainQueue().after(
+                QTime::currentTime().addSecs(5),
+                [=]{
+                    MU_PASS("");
+                }
+            );
         }
     }
 

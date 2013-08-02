@@ -39,11 +39,14 @@ extern "C" void Qt_dispatch_semaphore_lambda(){
     MU_BEGIN_TEST(Qt_dispatch_semaphore_lambda);
 	QDispatchSemaphore* dsema = new QDispatchSemaphore(1);
 
-    QDispatchQueue("Qt_dispatch_semaphore").apply([=](size_t idx) {
-        dsema->try_acquire(DISPATCH_TIME_FOREVER);
-		total++;
-		dsema->release();
-	}, LAPS);
+    QDispatchQueue("Qt_dispatch_semaphore").apply(
+        LAPS,
+        [=](size_t idx) {
+            dsema->try_acquire(DISPATCH_TIME_FOREVER);
+            total++;
+            dsema->release();
+        }
+    );
 
 	delete dsema;
 

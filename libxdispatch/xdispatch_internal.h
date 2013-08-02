@@ -47,16 +47,16 @@
  # define __XDISPATCH_INDIRECT__
 #endif
 
-#ifdef _WIN32
- # ifndef __GNUC__
-  #  pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
- # endif
+#include "../include/xdispatch/platform.h"
+
+#if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
+ # pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
  # define XDISPATCH_EXPORT __declspec( dllexport )
  # define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
-#else // ifdef _WIN32
- # define XDISPATCH_EXPORT __attribute__( ( visibility( "default" ) ) )
- # define XDISPATCH_DEPRECATED( F ) F __attribute__ ( ( deprecated ) )
-#endif // ifdef _WIN32
+#elif XDISPATCH_COMPILER_GCC || XDISPATCH_COMPILER_CLANG
+# define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
+ # define XDISPATCH_DEPRECATED( F ) __attribute__ ( ( __deprecated__ ) ) F
+#endif
 
 #include <assert.h>
 #include <stdexcept>
@@ -69,7 +69,7 @@
     }
 
 #include "../include/xdispatch/pointer.h"
-#include "../include/xdispatch/lambda_blocks.h"
+#include "../include/xdispatch/blocks.h"
 #include "../include/xdispatch/base.h"
 #include "../include/xdispatch/operation.h"
 #include "../include/xdispatch/semaphore.h"

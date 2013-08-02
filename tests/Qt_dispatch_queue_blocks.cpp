@@ -46,9 +46,9 @@ extern "C" void Qt_dispatch_queue_blocks(){
     QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
     MU_ASSERT_NOT_NULL(q.native());
 
-    q.apply(new QIterationBlockRunnable(^(size_t i){
+    q.apply(RUN_TIMES, new QIterationBlockRunnable(^(size_t i){
 			dispatch_atomic_inc(worker);
-	}),RUN_TIMES);
+	}));
 
     QDispatch::globalQueue(QDispatch::LOW).async(new QBlockRunnable(^{
 			MU_ASSERT_EQUAL(*worker,RUN_TIMES);

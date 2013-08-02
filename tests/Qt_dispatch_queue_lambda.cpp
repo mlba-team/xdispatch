@@ -46,11 +46,11 @@ extern "C" void Qt_dispatch_queue_lambda(){
     QDispatchQueue q = QDispatch::globalQueue(QDispatch::DEFAULT);
     MU_ASSERT_NOT_NULL(q.native());
 
-    q.apply(new QIterationLambdaRunnable([=](size_t i){
+    q.apply(RUN_TIMES, QDispatchMakeIterationRunnable([=](size_t i){
 			dispatch_atomic_inc(worker);
-	}),RUN_TIMES);
+	}));
 
-    QDispatch::globalQueue(QDispatch::LOW).async(new QLambdaRunnable([=]{
+    QDispatch::globalQueue(QDispatch::LOW).async(QDispatchMakeRunnable([=]{
 			MU_ASSERT_EQUAL(*worker,RUN_TIMES);
 			MU_PASS("Queue executed");
 		}));
