@@ -34,8 +34,7 @@ enable_testing()
 
 # check if mz_tools is available
 if(NOT HAS_MZ_GLOBAL)
-
-	set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
+    set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
     include(build/global.cmake)
 	
 	# We need to ouput everything into the same directory

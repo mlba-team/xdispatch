@@ -107,7 +107,7 @@
 #include "../platform/platform.h"
 
 /* now include the libdispatch headers */
-#define DISPATCH_API_VERSION 20090501+071
+#define DISPATCH_API_VERSION 20090501+080
 
 #ifndef __DISPATCH_INDIRECT__
 #define __DISPATCH_INDIRECT__

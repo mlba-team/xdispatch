@@ -131,6 +131,10 @@ inline void dispatch_source_set_cancel_handler(
 }
 
 
+ # ifdef dispatch_once
+  #  undef dispatch_once
+ # endif
+
 template< typename _Func >
 inline void dispatch_once(
     dispatch_once_t *predicate,
