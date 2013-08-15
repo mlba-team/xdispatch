@@ -56,14 +56,12 @@
 #endif
 
 #if __cplusplus
- # include <utility>
+ # include <cstddef>
 
  # if defined _LIBCPP_VERSION
   #  define XDISPATCH_STL_LIBCPP 1
   #  define XDISPATCH_STL "libc++"
- # endif
-
- # if defined __GLIBCXX__
+ # elif defined __GLIBCXX__
   #  define XDISPATCH_STL_GLIBCXX 1
   #  define XDISPATCH_STL "libstdc++"
  # endif
@@ -81,9 +79,7 @@
   #  define XDISPATCH_CPP11_TYPE_TRAITS 1
   #  define XDISPATCH_CPP11_MEMORY 1
   #  define XDISPATCH_CPP11_FUNCTIONAL 1
- # endif // if XDISPATCH_COMPILER_MSVC2010
-
- # if XDISPATCH_COMPILER_MSVC2008SP1
+ # elif XDISPATCH_COMPILER_MSVC2008SP1
   #  define XDISPATCH_TR1_FUNCTIONAL 1
   #  include <functional>
  # endif // if XDISPATCH_COMPILER_MSVC2008SP1
@@ -92,15 +88,11 @@
   #  define XDISPATCH_CPP11_TYPE_TRAITS 1
   #  define XDISPATCH_CPP11_MEMORY 1
   #  define XDISPATCH_CPP11_FUNCTIONAL 1
- # endif // if XDISPATCH_STL_LIBCPP && XDISPATCH_CPP11
-
- # if XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
+ # elif XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
   #  define XDISPATCH_CPP11_TYPE_TRAITS 1
   #  define XDISPATCH_CPP11_MEMORY 1
   #  define XDISPATCH_CPP11_FUNCTIONAL 1
- # endif // if XDISPATCH_CPP11 && __GLIBCXX__ >= 20120322
-
- # if __GLIBCXX__ < 20120322 || ( !XDISPATCH_CPP11 )
+ # elif __GLIBCXX__ < 20120322 || ( !XDISPATCH_CPP11 )
   #  define XDISPATCH_TR1_FUNCTIONAL 1
   #  include <tr1/functional>
  # endif // if __GLIBCXX__ < 20120322
