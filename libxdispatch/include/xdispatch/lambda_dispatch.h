@@ -130,6 +130,9 @@ inline void dispatch_source_set_cancel_handler(
     _xdispatch_source_set_cancel_handler( source, xdispatch::make_operation( cancel_handler ) );
 }
 
+# ifdef dispatch_once
+ #  undef dispatch_once
+# endif
 
 template< typename _Func >
 inline void dispatch_once(
