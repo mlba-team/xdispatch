@@ -64,7 +64,7 @@
  # elif defined __GLIBCXX__
   #  define XDISPATCH_STL_GLIBCXX 1
   #  define XDISPATCH_STL "libstdc++"
- # endif
+ # endif // if defined _LIBCPP_VERSION
 
  # if ( __cplusplus >= 201103L )
   #  define XDISPATCH_CPP11 1

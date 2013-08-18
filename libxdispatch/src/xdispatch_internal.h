@@ -23,11 +23,8 @@
 #ifndef XDISPATCH_INTERNAL_H_
 #define XDISPATCH_INTERNAL_H_
 
-#ifdef HAVE_NATIVE_DISPATCH_H
- # include <dispatch/dispatch.h>
-#else
- # include "../include/dispatch/dispatch.h"
-#endif
+
+#include <dispatch/dispatch.h>
 
 #ifndef NSEC_PER_MSEC
  # define NSEC_PER_MSEC 1000000ll
@@ -81,8 +78,8 @@
 #include "../include/xdispatch/timer.h"
 #include "../include/xdispatch/lambda_dispatch.h"
 
-#include "../libdispatch/platform/platform.h"
-#include "../libdispatch/src/shims/hardware.h"
+#include "../../libdispatch/platform/platform.h"
+#include "../../libdispatch/src/shims/hardware.h"
 
 #include "execution.h"
 

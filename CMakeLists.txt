@@ -125,6 +125,7 @@ if(NOT FORCE_OWN_LIBDISPATCH)
     endif()
 else()
     mz_add_library(dispatch libdispatch)
+    include_directories(libdispatch/include)
     set(LIBS ${LIBS} dispatch)
 endif()
 
@@ -156,48 +157,32 @@ else()
 endif()
 
 if(XDISPATCH_QT_SUPPORT)
+    include_directories(libxdispatch/include)
     mz_add_library(QtDispatch libqtdispatch)
-endif()
-
-# copy the includes to a specific folder
-# to mimic a proper installation. This is
-# due to us needing different headers on different
-# platforms (especially Darwin)
-if(APPLE OR NOT FORCE_OWN_LIBDISPATCH)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/xdispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
-    if(XDISPATCH_QT_SUPPORT)
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/QtDispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
-    endif()
-    if(FORCE_OWN_LIBDISPATCH)
-        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/dispatch DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)
-    endif()
-    include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
-else()
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+    include_directories(libqtdispatch/include)
 endif()
 
 # custom test framework for xdispatch
 if(BUILD_XDISPATCH_TESTS)
-	mz_add_executable(tests tests)
+    mz_add_executable(tests tests)
 endif()
 
 # documentation
 option(XDISPATCH_DOCS "Set to add a documentation ('Docs') target" OFF)
 if(XDISPATCH_DOCS)
-	include(docs/docgen.cmake)
+    include(docs/docgen.cmake)
 endif()
 
 # packaging
 
 if(APPLE)
-	include(package/osx/pkg.cmake)
+    include(package/osx/pkg.cmake)
 elseif(UNIX)
-	include(package/rpm/rpm.cmake)
-	include(package/debian/deb.cmake)	
+    include(package/rpm/rpm.cmake)
+    include(package/debian/deb.cmake)
     include(package/ubuntu/deb.cmake)
 else() # Windows ...
-	include(package/windows/zip.cmake)
+    include(package/windows/zip.cmake)
 endif()
 	
 

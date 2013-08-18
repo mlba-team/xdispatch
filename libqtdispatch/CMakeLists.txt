@@ -19,29 +19,29 @@
 # @LICENSE_HEADER_END@
 #
 
-file(GLOB QSRC *.h *.cpp)
-file(GLOB QHEADER *.h)
+file(GLOB QSRC src/*.h src/*.cpp)
+file(GLOB QHEADER src/*.h)
 file(GLOB QINCLUDE_H
-    ../include/QtDispatch/*.h
-    ../include/QtDispatch/QBlockRunnable
-    ../include/QtDispatch/QDispatch
-    ../include/QtDispatch/QDispatchApplication
-    ../include/QtDispatch/QDispatchCoreApplication
-    ../include/QtDispatch/QDispatchGroup
-    ../include/QtDispatch/QDispatchQueue
-    ../include/QtDispatch/QDispatchSemaphore
-    ../include/QtDispatch/QDispatchSource
-    ../include/QtDispatch/QDispatchTimer
-    ../include/QtDispatch/QIterationBlockRunnable
-    ../include/QtDispatch/QIterationRunnable
-    ../include/QtDispatch/QtDispatch
+    include/QtDispatch/*.h
+    include/QtDispatch/QBlockRunnable
+    include/QtDispatch/QDispatch
+    include/QtDispatch/QDispatchApplication
+    include/QtDispatch/QDispatchCoreApplication
+    include/QtDispatch/QDispatchGroup
+    include/QtDispatch/QDispatchQueue
+    include/QtDispatch/QDispatchSemaphore
+    include/QtDispatch/QDispatchSource
+    include/QtDispatch/QDispatchTimer
+    include/QtDispatch/QIterationBlockRunnable
+    include/QtDispatch/QIterationRunnable
+    include/QtDispatch/QtDispatch
 )
-file(GLOB QINCLUDE ../include/QtDispatch/Q*)
+file(GLOB QINCLUDE include/QtDispatch/Q*)
 
 # include qt headers (if found)	
-INCLUDE_DIRECTORIES(
-	${QT_QTCORE_INCLUDE_DIR}
-	${QT_QTNETWORK_INCLUDE_DIR}
+include_directories(
+    ${QT_QTCORE_INCLUDE_DIR}
+    ${QT_QTNETWORK_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
@@ -50,15 +50,15 @@ mz_add_definition(QT_MAKEDLL)
 
 # assume an installation
 include_directories(
-    ../include
+    include
 )
 
 # moc qt files
 mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
 if(XDISPATCH_USE_QT5)
-    qt5_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+    qt5_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 else()
-    qt4_generate_moc(qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+    qt4_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 endif()
 set(QMOC ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 
@@ -95,7 +95,7 @@ if(IOS)
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
-    install(DIRECTORY ../include/QtDispatch
+    install(DIRECTORY include/QtDispatch
                 DESTINATION include
                 PATTERN "*.svn" EXCLUDE)
                 
@@ -112,7 +112,7 @@ else()
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
-    install(DIRECTORY ../include/QtDispatch
+    install(DIRECTORY include/QtDispatch
                 DESTINATION include
                 COMPONENT libQtDispatch-dev
                 PATTERN "*.svn" EXCLUDE)

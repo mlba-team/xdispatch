@@ -29,8 +29,8 @@ set(NAME xdispatch)
 project(${NAME})
 
 # core lib
-file(GLOB CXX_INCL ../include/xdispatch/*.h ../include/xdispatch/dispatch)
-file(GLOB CXX *.cpp *.h)
+file(GLOB CXX_INCL include/xdispatch/*.h include/xdispatch/dispatch)
+file(GLOB CXX src/*.cpp src/*.h)
 source_group(xdispatch FILES ${CXX_INCL})
 source_group(cxx FILES ${CXX})
   
@@ -64,7 +64,7 @@ if(IOS)
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
-    install(DIRECTORY ../include/xdispatch
+    install(DIRECTORY include/xdispatch
                 DESTINATION include
                 PATTERN "*.svn" EXCLUDE)                
 		
@@ -81,7 +81,7 @@ else()
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
                 ARCHIVE DESTINATION lib)
-    install(DIRECTORY ../include/xdispatch
+    install(DIRECTORY include/xdispatch
                 DESTINATION include
                 COMPONENT libxdispatch-dev
                 PATTERN "*.svn" EXCLUDE)
