@@ -21,6 +21,8 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
+FIND_PACKAGE(xdispatch REQUIRED)
+
 FIND_PATH(
 	QTDISPATCH_INCLUDE_DIRS
 	NAMES
@@ -31,8 +33,8 @@ FIND_PATH(
 	/usr/local/include
 	/usr/include
 	/opt/local/include
-	$ENV{SystemDrive}/QtDispatch/include
-	$ENV{ProgramFiles}/QtDispatch/include
+	$ENV{SystemDrive}/xdispatch/include
+	$ENV{ProgramFiles}/xdispatch/include
 )
 
 set(CMAKE_FIND_FRAMEWORK LAST)
@@ -47,8 +49,8 @@ FIND_LIBRARY(
 	/usr/local/lib
 	/usr/lib
 	/opt/local/lib	
-	$ENV{SystemDrive}/QtDispatch/lib
-	$ENV{ProgramFiles}/QtDispatch/lib
+	$ENV{SystemDrive}/xdispatch/lib
+	$ENV{ProgramFiles}/xdispatch/lib
 )
 
 FIND_LIBRARY(
@@ -61,21 +63,23 @@ FIND_LIBRARY(
 	/usr/local/lib
 	/usr/lib
 	/opt/local/lib	
-	$ENV{SystemDrive}/QtDispatch/lib
-	$ENV{ProgramFiles}/QtDispatch/lib
+	$ENV{SystemDrive}/xdispatch/lib
+	$ENV{ProgramFiles}/xdispatch/lib
 )
 
 IF (QTDISPATCH_LIBRARY_DEBUG AND NOT QTDISPATCH_LIBRARY_RELEASE)
-	SET(QTDISPATCH_LIBRARIES ${QTDISPATCH_LIBRARY_DEBUG})
+	SET(QTDISPATCH_LIBRARIES ${QTDISPATCH_LIBRARY_DEBUG} ${XDISPATCH_LIBRARY_DEBUG})
 ENDIF ()
 
 IF (QTDISPATCH_LIBRARY_RELEASE AND NOT QTDISPATCH_LIBRARY_DEBUG)
-	SET(QTDISPATCH_LIBRARIES ${QTDISPATCH_LIBRARY_RELEASE})
+	SET(QTDISPATCH_LIBRARIES ${QTDISPATCH_LIBRARY_RELEASE} ${XDISPATCH_LIBRARY_RELEASE})
 ENDIF ()
 
 IF (QTDISPATCH_LIBRARY_DEBUG AND QTDISPATCH_LIBRARY_RELEASE)
 	SET(QTDISPATCH_LIBRARIES debug ${QTDISPATCH_LIBRARY_DEBUG} optimized ${QTDISPATCH_LIBRARY_RELEASE})
 ENDIF ()
+
+set(QTDISPATCH_INCLUDE_DIRS ${QTDISPATCH_INCLUDE_DIRS} ${XDISPATCH_INCLUDE_DIRS})
 
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(
 	QtDispatch
