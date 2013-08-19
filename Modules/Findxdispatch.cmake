@@ -21,7 +21,10 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
-FIND_PACKAGE(dispatch REQUIRED)
+FIND_PACKAGE(dispatch)
+if(NOT DISPATCH_FOUND)
+    return()
+endif()
 
 FIND_PATH(
 	XDISPATCH_INCLUDE_DIRS

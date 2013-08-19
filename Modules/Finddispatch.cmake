@@ -22,7 +22,7 @@
 ##
 
 FIND_PATH(
-	XDISPATCH_INCLUDE_DIRS
+    DISPATCH_INCLUDE_DIRS
 	NAMES
 	dispatch/dispatch.h
 	HINTS

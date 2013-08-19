@@ -21,7 +21,10 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
-FIND_PACKAGE(xdispatch REQUIRED)
+FIND_PACKAGE(xdispatch)
+if(NOT XDISPATCH_FOUND)
+    return()
+endif()
 
 FIND_PATH(
 	QTDISPATCH_INCLUDE_DIRS
