@@ -116,6 +116,18 @@ typedef void (^dispatch_block_t)(
 typedef void (^dispatch_iteration_block_t)(
     size_t
 );
+ # define XDISPATCH_BLOCK ^
+ # ifndef XDISPATCH_NO_KEYWORDS
+  #  define $ ^
+ # endif
+
+#elif XDISPATCH_HAS_LAMBDAS
+
+ # define XDISPATCH_BLOCK [ = ]
+ # ifndef XDISPATCH_NO_KEYWORDS
+  #  define $ [ = ]
+ # endif
+
 #endif // if XDISPATCH_HAS_BLOCKS
 
 /** @} */

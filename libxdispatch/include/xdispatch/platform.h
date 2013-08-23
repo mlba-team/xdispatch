@@ -84,6 +84,10 @@
   #  include <functional>
  # endif // if XDISPATCH_COMPILER_MSVC2008SP1
 
+ # if XDISPATCH_CPP11
+  #  define XDISPATCH_HAS_LAMBDAS 1
+ # endif
+
  # if XDISPATCH_STL_LIBCPP && XDISPATCH_CPP11
   #  define XDISPATCH_CPP11_TYPE_TRAITS 1
   #  define XDISPATCH_CPP11_MEMORY 1
