@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ##
-# Copyright (c) 2008-2012 Marius Zwicker
+# Copyright (c) 2008-2013 Marius Zwicker
 # All rights reserved.
 # 
 # @LICENSE_HEADER_START:Apache@
@@ -23,19 +23,8 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
-#######################################################################
-#
-#  Configure Codeblocks/QtCreator project files
-#  (c) 2012 Marius Zwicker
-#
-#  Pass 'Release' as argument to build without debug flags
-#
-#######################################################################
-
-BUILD_DIR="QtCreator_ProjectFiles"
-RELEASE_DIR="Release_$BUILD_DIR"
-GENERATOR="CodeBlocks - Unix Makefiles"
-TARGET="Qt Creator"
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/util.sh $@
+
+MZ_CMAKETOOLS_cmake="-D CMAKE_TOOLCHAIN_FILE=\"$DIR/RaspberryPi.cmake\""
+
+source $DIR/genMakefiles.sh $@

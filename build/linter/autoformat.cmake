@@ -24,12 +24,18 @@
 ## no need to change anything beyond here
 ########################################################################
 
+if( MZ_TOOLS_PATH )
+  set(MZ_TOOLS_LINTER_PATH ${MZ_TOOLS_PATH}/linter)
+else()
+  set(MZ_TOOLS_LINTER_PATH ${CMAKE_CURRENT_LIST_DIR})
+endif()
+
 find_program(
     MZ_UNCRUSTIFY_BIN
     uncrustify
 )
 if(NOT WINDOWS)
-  set(MZ_CPPLINT_BIN ${MZ_TOOLS_PATH}/cpplint.py CACHE PATH "Path to cpplint" FORCE)
+  set(MZ_CPPLINT_BIN ${MZ_TOOLS_LINTER_PATH}/cpplint.py CACHE PATH "Path to cpplint" FORCE)
 endif()
 
 if( MZ_IS_RELEASE )
@@ -43,7 +49,7 @@ endif()
 macro(mz_auto_format _TARGET)
   set(_sources ${ARGN})
   list(LENGTH _sources arg_count)
-  configure_file(${MZ_TOOLS_PATH}/autoformat.cfg.in ${CMAKE_BINARY_DIR}/autoformat.cfg)
+  configure_file(${MZ_TOOLS_LINTER_PATH}/autoformat.cfg.in ${CMAKE_BINARY_DIR}/autoformat.cfg)
 
   if( NOT arg_count GREATER 0 )
     mz_debug_message("Autoformat was no files given, using the target's sources")
@@ -58,7 +64,7 @@ macro(mz_auto_format _TARGET)
   set(_sources2 "")
   foreach(file ${_sources})
     get_filename_component(abs_file ${file} ABSOLUTE)
-    if( ${file} MATCHES ".+(cpp|cxx|hpp|h|c)$" )
+    if( ${file} MATCHES ".+\\.(cpp|cxx|hpp|h|c|vert|glsl|frag|cl)$" AND NOT ${file} MATCHES "(ui_|moc_|qrc_).+" )
         set(_sources2 ${_sources2} ${abs_file})
     endif()
   endforeach()
@@ -72,7 +78,7 @@ macro(mz_auto_format _TARGET)
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/format_step.c
         COMMAND ${MZ_UNCRUSTIFY_BIN} -c ${CMAKE_BINARY_DIR}/autoformat.cfg --no-backup --mtime ${_sources2}
-        COMMAND ${CMAKE_COMMAND} -E copy ${MZ_TOOLS_PATH}/autoformat.c.in ${CMAKE_CURRENT_BINARY_DIR}/format_step.c
+        COMMAND ${CMAKE_COMMAND} -E copy ${MZ_TOOLS_LINTER_PATH}/autoformat.c.in ${CMAKE_CURRENT_BINARY_DIR}/format_step.c
         DEPENDS ${_sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     )
@@ -82,8 +88,8 @@ macro(mz_auto_format _TARGET)
     set_target_properties(${_new_target_lint} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lint_step.c
-        COMMAND ${MZ_CPPLINT_BIN} --root=${CMAKE_CURRENT_LIST_DIR} --filter=${CPPLINT_FILTERS} ${_sources2}
-        COMMAND ${CMAKE_COMMAND} -E copy ${MZ_TOOLS_PATH}/autoformat.c.in ${CMAKE_CURRENT_BINARY_DIR}/lint_step.c
+        COMMAND ${MZ_CPPLINT_BIN} --root=${CMAKE_CURRENT_LIST_DIR} --filter=${CPPLINT_FILTERS} --output=eclipse ${_sources2}
+        COMMAND ${CMAKE_COMMAND} -E copy ${MZ_TOOLS_LINTER_PATH}/autoformat.c.in ${CMAKE_CURRENT_BINARY_DIR}/lint_step.c
         DEPENDS ${_sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     )

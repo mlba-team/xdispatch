@@ -876,7 +876,7 @@ def Error(filename, linenum, category, confidence, message):
       sys.stderr.write('%s(%s):  %s  [%s] [%d]\n' % (
           filename, linenum, message, category, confidence))
     elif _cpplint_state.output_format == 'eclipse':
-      sys.stderr.write('%s:%s: warning: %s  [%s] [%d]\n' % (
+      sys.stderr.write('%s:%s: error: %s  [%s] [%d]\n' % (
           filename, linenum, message, category, confidence))
     else:
       sys.stderr.write('%s:%s:  %s  [%s] [%d]\n' % (

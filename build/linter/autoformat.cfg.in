@@ -912,13 +912,13 @@ nl_if_leave_one_liners                    = false    # false/true
 nl_oc_msg_leave_one_liner                 = false    # false/true
 
 # Add or remove newlines at the start of the file
-nl_start_of_file                          = remove   # ignore/add/remove/force
+nl_start_of_file                          = ignore   # ignore/add/remove/force
 
 # The number of newlines at the start of the file (only used if nl_start_of_file is 'add' or 'force'
 nl_start_of_file_min                      = 0        # number
 
 # Add or remove newline at the end of the file
-nl_end_of_file                            = remove   # ignore/add/remove/force
+nl_end_of_file                            = ignore   # ignore/add/remove/force
 
 # The number of newlines at the end of the file (only used if nl_end_of_file is 'add' or 'force')
 nl_end_of_file_min                        = 0        # number
@@ -1455,13 +1455,13 @@ mod_remove_empty_return                   = false    # false/true
 #
 
 # Try to wrap comments at cmt_width columns
-cmt_width                                 = 80       # number
+cmt_width                                 = 4000       # number
 
 # Set the comment reflow mode (default: 0)
 # 0: no reflowing (apart from the line wrapping due to cmt_width)
 # 1: no touching at all
 # 2: full reflow
-cmt_reflow_mode                           = 2        # number
+cmt_reflow_mode                           = 0       # number
 
 # If false, disable all multi-line comment changes, including cmt_width. keyword substitution, and leading chars.
 # Default is true.
@@ -1598,3 +1598,4 @@ pp_define_at_level                        = false    # false/true
 # all tokens are separated by any mix of ',' commas, '=' equal signs
 # and whitespace (space, tab)
 #
+

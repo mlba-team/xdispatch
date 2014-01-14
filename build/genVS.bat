@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 ##
-# Copyright (c) 2008-2013 Marius Zwicker
+# Copyright (c) 2008-2012 Marius Zwicker
 # All rights reserved.
 # 
 # @LICENSE_HEADER_START:Apache@
@@ -23,9 +23,19 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
-MZ_CMAKETOOLS_compiler=clang
-MZ_CMAKETOOLS_generator=xcode
-MZ_CMAKETOOLS_mode=debug
+#######################################################################
+#
+#  Configure ninja project files
+#  (c) 2012 Marius Zwicker
+#
+#  Pass 'Release' as argument to build without debug flags
+#
+#######################################################################
+
+BUILD_DIR="Ninja"
+RELEASE_DIR="Release_$BUILD_DIR"
+GENERATOR="Ninja"
+TARGET="Ninja"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/generator.sh $@
+source $DIR/util.sh $@

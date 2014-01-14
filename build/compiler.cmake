@@ -31,6 +31,8 @@
 #                moment cmake was executed
 #                e.g. Mo, 27 Feb 2012 19:47:23 +0100
 # MZ_USER_STRING a string containing the current username
+# MZ_COMPILER_VERSION a string denoting the compiler version,
+#                e.g. with gcc 4.5.1 this is "45"
 #
 # PROVIDED MACROS
 # -----------------------
@@ -356,7 +358,7 @@ endif() #MZ_COMPILER_TEST_HAS_RUN
 
 # determine current date and time
 if(WINDOWS)
-    execute_process(COMMAND "date" "/T" OUTPUT_VARIABLE MZ_DATE_STRING)
+    execute_process(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE MZ_DATE_STRING)
     set(MZ_USER_STRING $ENV{USERNAME})
 else() # Sun, 11 Dec 2011 12:07:00 +0200
     execute_process(COMMAND "date" "+%a, %d %b %Y %T %z" OUTPUT_VARIABLE MZ_DATE_STRING)

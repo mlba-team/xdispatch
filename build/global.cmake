@@ -60,7 +60,9 @@ if(NOT HAS_MZ_GLOBAL)
   
   # macros
   include("${MZ_TOOLS_PATH}/macros.cmake")
-  include("${MZ_TOOLS_PATH}/autoformat.cmake")
+
+  # linter and autoformatting
+  include("${MZ_TOOLS_PATH}/linter/autoformat.cmake")
 
 # EOF: global.cmake
 endif() 

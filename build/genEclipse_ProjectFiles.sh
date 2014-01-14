@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ##
-# Copyright (c) 2008-2012 Marius Zwicker
+# Copyright (c) 2008-2013 Marius Zwicker
 # All rights reserved.
 # 
 # @LICENSE_HEADER_START:Apache@
@@ -23,19 +23,9 @@
 # @LICENSE_HEADER_END:Apache@
 ##
 
-#######################################################################
-#
-#  Configure Eclipse project files
-#  (c) 2012 Marius Zwicker
-#
-#  Pass 'Release' as argument to build without debug flags
-#
-#######################################################################
-
-BUILD_DIR="Eclipse_ProjectFiles"
-RELEASE_DIR="Release_$BUILD_DIR"
-GENERATOR="Eclipse CDT4 - Unix Makefiles"
-TARGET="Eclipse CDT"
+MZ_CMAKETOOLS_generator=eclipse
+MZ_CMAKETOOLS_compiler=gcc
+MZ_CMAKETOOLS_mode=debug
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source $DIR/util.sh $@
+source $DIR/generator.sh $@

@@ -25,17 +25,17 @@
 
 #######################################################################
 #
-#  Configure Codeblocks/QtCreator project files
+#  Configure ninja project files
 #  (c) 2012 Marius Zwicker
 #
 #  Pass 'Release' as argument to build without debug flags
 #
 #######################################################################
 
-BUILD_DIR="QtCreator_Ninja"
+BUILD_DIR="Ninja"
 RELEASE_DIR="Release_$BUILD_DIR"
-GENERATOR="CodeBlocks - Ninja"
-TARGET="Qt Creator"
+GENERATOR="Ninja"
+TARGET="Ninja"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/util.sh $@
