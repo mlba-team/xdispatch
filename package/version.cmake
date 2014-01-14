@@ -27,15 +27,21 @@
 ## Create all version info
 ##
 
-# obtain the version info using subversion
-find_package(Subversion)
-if(SUBVERSION_FOUND AND NOT IS_A_RELEASE)
-    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} XDISPATCH)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/package/revision.in ${CMAKE_CURRENT_SOURCE_DIR}/package/revision)
-elseif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/package/revision) # use (hopefully) cached version
-    file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/package/revision XDISPATCH_WC_REVISION LIMIT_COUNT 1)
+# is this a ci triggered build?
+if( $ENV{BUILD_NUMBER} )
+    set( XDISPATCH_BUILD_NO "b$ENV{BUILD_NUMBER}" )
+# if not use git for version info (or at least try to)
 else()
-	set(XDISPATCH_WC_REVISION "")
+    find_package(Git)
+    if(GIT_FOUND)
+        # we use a short hash
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} log --pretty=format:%h -n 1
+            OUTPUT_VARIABLE XDISPATCH_WC_REVISION
+        )
+    else() # fallback, no revision use date&time
+        set(XDISPATCH_WC_REVISION "")
+    endif()
 endif()
 
 # Variables referring to the system the packaging took place at
@@ -60,26 +66,26 @@ endif()
 set( XDISPATCH_VERSION_MAJOR            0)
 set( XDISPATCH_VERSION_MINOR            8)
 set( XDISPATCH_VERSION_PATCH            0)
-if( NOT IS_A_RELEASE )
+if( NOT XDISPATCH_BUILD_NO )
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set( XDISPATCH_VERSION_SUFFIX       devel${XDISPATCH_WC_REVISION})
+    set( XDISPATCH_VERSION_SUFFIX   devel${XDISPATCH_WC_REVISION})
     message("-- Configuring release version")
   else()
-    set( XDISPATCH_VERSION_SUFFIX       devel)
+    set( XDISPATCH_VERSION_SUFFIX   devel)
   endif()
-endif()
-set( XDISPATCH_LIBRARY_NAME		xdispatch)
-set( XDISPATCH_SUMMARY			"Userspace implementation of grand central dispatch")
-set( XDISPATCH_MAINTAINER		"Marius Zwicker")
-set( XDISPATCH_LICENSE			"Apache License, Version 2.0")
-set( XDISPATCH_DESCRIPTION		"Provides an userspace implementation of the grand central dispatch api introduced with Mac OS X 10.6. Additionally a platform independent C++ interface is included")
-if( NOT IS_A_RELEASE )
-  set( XDISPATCH_VERSION 			${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH}~${XDISPATCH_VERSION_SUFFIX})
-  set( XDISPATCH_DLL_VERSION 		${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_WC_REVISION} )
+  set( XDISPATCH_VERSION            ${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH}~${XDISPATCH_VERSION_SUFFIX})
+  set( XDISPATCH_DLL_VERSION        ${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_WC_REVISION} )
 else()
-  set( XDISPATCH_VERSION 			${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH})
-  set( XDISPATCH_DLL_VERSION 		${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},0)
+    set( XDISPATCH_VERSION_SUFFIX   ${XDISPATCH_BUILD_NO} )
+    set( XDISPATCH_VERSION          ${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH})
+    set( XDISPATCH_DLL_VERSION      ${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_BUILD_NO})
 endif()
+set( XDISPATCH_LIBRARY_NAME     xdispatch)
+set( XDISPATCH_SUMMARY          "Userspace implementation of grand central dispatch")
+set( XDISPATCH_MAINTAINER       "Marius Zwicker")
+set( XDISPATCH_LICENSE          "Apache License, Version 2.0")
+set( XDISPATCH_DESCRIPTION      "Provides an userspace implementation of the grand central dispatch api introduced with Mac OS X 10.6. Additionally a platform independent C++ interface is included")
+
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "userspace implementation of grand central dispatch")
 set( CPACK_PACKAGE_VENDOR 		"www.mlba-team.de")
 set( CPACK_RESOURCE_FILE_LICENSE 	"${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
@@ -158,9 +164,9 @@ endif()
 set( CPACK_PACKAGE_VERSION_MAJOR 	"${XDISPATCH_VERSION_MAJOR}")
 set( CPACK_PACKAGE_VERSION_MINOR 	"${XDISPATCH_VERSION_MINOR}")
 set( CPACK_PACKAGE_VERSION_PATCH 	"${XDISPATCH_VERSION_PATCH}")
-set( CPACK_PACKAGE_VERSION 		"${XDISPATCH_VERSION}")
-set( CPACK_PACKAGE_FILE_NAME 		"${XDISPATCH_LIBRARY_NAME}_${CPACK_PACKAGE_VERSION}_${PACKAGE_NAME}_${PACKAGE_ARCH}")
+set( CPACK_PACKAGE_VERSION 		    "${XDISPATCH_VERSION}")
+set( CPACK_PACKAGE_FILE_NAME 		"${XDISPATCH_LIBRARY_NAME}_${XDISPATCH_VERSION}_${XDISPATCH_SUFFIX}_${PACKAGE_NAME}_${PACKAGE_ARCH}")
 
 
 # some debugging output
-message("-- version information for '${XDISPATCH_VERSION}'")
+message("-- version information for '${XDISPATCH_VERSION} (${XDISPATCH_VERSION_SUFFIX})'")
