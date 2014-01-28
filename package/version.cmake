@@ -37,6 +37,7 @@ else()
         # we use a short hash
         execute_process(
             COMMAND ${GIT_EXECUTABLE} log --pretty=format:%h -n 1
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../
             OUTPUT_VARIABLE XDISPATCH_WC_REVISION
         )
     else() # fallback, no revision use date&time

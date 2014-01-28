@@ -109,7 +109,7 @@ init_semaphore_for_synclock(
 #define XDISPATCH_LOCK_VAR_ONCE( X ) XDISPATCH_CONCAT( _xd_synclock_once_, X )
 #define XDISPATCH_SYNC_HEADER( lock ) \
     for( \
-        ::xdispatch::synclock XDISPATCH_LOCK_VAR( __LINE__ )( lock, true ); \
+        ::xdispatch::synclock XDISPATCH_LOCK_VAR( __LINE__ ) ( lock, true ); \
         XDISPATCH_LOCK_VAR( __LINE__ ); \
         XDISPATCH_LOCK_VAR( __LINE__ ).unlock() \
     )

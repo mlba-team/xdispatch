@@ -30,9 +30,7 @@
 
 #include "xdispatch_internal.h"
 
-__XDISPATCH_USE_NAMESPACE
-
-object::object () { }
+__XDISPATCH_USE_NAMESPACE object::object () { }
 
 
 object::~object () { }
@@ -140,6 +138,10 @@ queue xdispatch::global_queue(
 
 queue xdispatch::current_queue()
 {
+#ifdef __APPLE__
+    // disable deprecation warning for get_current_queue
+ # pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     return queue( dispatch_get_current_queue() );
 }
 
@@ -198,3 +200,5 @@ void xdispatch::exec()
 {
     dispatch_main();
 }
+
+

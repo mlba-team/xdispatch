@@ -29,6 +29,11 @@
 #include "../libdispatch/platform/platform.h"
 #include "../libdispatch/platform/atomic.h"
 
+#ifdef __APPLE__
+    // disable deprecation warning for get_current_queue
+ # pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

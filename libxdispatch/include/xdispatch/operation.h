@@ -361,7 +361,9 @@ class ptr_iteration_operation
 public:
     ptr_iteration_operation (
         T *object,
-        void( T::*function )( size_t )
+        void( T::*function )(
+            size_t
+        )
     )
         : obj( object ),
           func( function ) { }

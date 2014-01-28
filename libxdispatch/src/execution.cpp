@@ -23,9 +23,7 @@
 #include <stdlib.h>
 #include "xdispatch_internal.h"
 
-__XDISPATCH_USE_NAMESPACE
-
-iteration_wrap::iteration_wrap (
+__XDISPATCH_USE_NAMESPACE iteration_wrap::iteration_wrap (
     iteration_operation *o,
     size_t ct
 )
@@ -52,6 +50,14 @@ iteration_operation * iteration_wrap::operation()
 bool iteration_wrap::deref()
 {
     return dispatch_atomic_dec( &ref ) == 0;
+}
+
+
+void set_debugger_threadname()
+{
+#ifdef DEBUG
+
+#endif
 }
 
 
@@ -126,3 +132,5 @@ void _xdispatch_run_iter_wrap(
         std::terminate();
     }
 } // _xdispatch_run_iter_wrap
+
+
