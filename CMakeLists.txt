@@ -125,7 +125,6 @@ if(NOT FORCE_OWN_LIBDISPATCH)
     endif()
 else()
     mz_add_library(dispatch libdispatch)
-    include_directories(libdispatch/include)
     set(LIBS ${LIBS} dispatch)
 endif()
 
@@ -134,32 +133,17 @@ mz_add_library(xdispatch libxdispatch)
 
 
 # Qt Extension if Qt is available
-if( Qt5Core_VERSION_STRING )
-    option(XDISPATCH_USE_QT5 "Enable to link against Qt5 instead of Qt4" ON)
-else()
-    option(XDISPATCH_USE_QT5 "Enable to link against Qt5 instead of Qt4" OFF)
-endif()
+# new: Qt5 is separated into modules
+find_package(Qt5Core QUIET)
 
-if(XDISPATCH_USE_QT5)
-    # new: Qt5 is separated into modules
-    find_package(Qt5Core)
-else()
-    if(NOT QT4_FOUND)
-        find_package(Qt4 COMPONENTS QtGui QtMain QtCore QtNetwork QtTest)
-        include(${QT_USE_FILE})
-    endif()
-endif()
-
-if( QT4_FOUND OR Qt5Core_VERSION_STRING )
+if( Qt5Core_VERSION )
 	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
 else()
 	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
 endif()
 
-include_directories(libxdispatch/include)
 if(XDISPATCH_QT_SUPPORT)
     mz_add_library(QtDispatch libqtdispatch)
-    include_directories(libqtdispatch/include)
 endif()
 
 # custom test framework for xdispatch

@@ -33,9 +33,9 @@
  */
 
 extern "C" void Qt_dispatch_source_network_lambda(){
-	char* argv = QString("test").toAscii().data();
-	int argc = 1;
-    QDispatchApplication app(argc,&argv);
+    char argv[] = "test";
+    int argc = 1;
+    QDispatchApplication app(argc, (char**)&argv);
 
         MU_BEGIN_TEST(Qt_dispatch_source_network_lambda);
 

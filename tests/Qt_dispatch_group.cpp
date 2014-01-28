@@ -87,9 +87,9 @@ class Foo : public QRunnable {
 extern "C" void Qt_dispatch_group1() {
     bool res;
     QDispatchGroup* group;
-    char* argv = QString("test").toAscii().data();
+    char argv[] = "test";
     int argc = 1;
-    QDispatchCoreApplication app(argc,&argv);
+    QDispatchCoreApplication app(argc, (char**)&argv);
 
     MU_BEGIN_TEST(Qt_dispatch_group1);
 

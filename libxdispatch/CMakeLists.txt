@@ -56,8 +56,11 @@ target_link_libraries(${NAME} ${LIBS})
 mz_target_props(${NAME})
 mz_auto_format(${NAME})
 
-set_property(TARGET xdispatch PROPERTY VERSION ${XDISPATCH_VERSION})
-set_property(TARGET xdispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
+set_target_properties( xdispatch PROPERTIES
+    VERSION ${XDISPATCH_VERSION}
+    SOVERSION ${XDISPATCH_VERSION}
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
+)
 
 if(IOS)
     install(TARGETS xdispatch

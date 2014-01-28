@@ -30,9 +30,9 @@
  */
 
 extern "C" void Qt_dispatch_cascade_blocks(){
-	char* argv = QString("test").toAscii().data();
+    char argv[] = "test";
 	int argc = 1;
-    QApplication app(argc,&argv);
+    QApplication app(argc, (char**)&argv);
 	
     MU_BEGIN_TEST(Qt_dispatch_cascade_blocks);
 

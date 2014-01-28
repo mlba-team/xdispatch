@@ -100,10 +100,13 @@ add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM_OS} ${PLATFORM} ${
 # link this target with all needed libraries
 message("-- linking dispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})
-set_target_properties(${NAME} PROPERTIES DEBUG_POSTFIX "D")
 
-set_property(TARGET dispatch PROPERTY VERSION ${XDISPATCH_VERSION})
-set_property(TARGET dispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
+set_target_properties( dispatch PROPERTIES
+    DEBUG_POSTFIX "D"
+    VERSION ${XDISPATCH_VERSION}
+    SOVERSION ${XDISPATCH_VERSION}
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
+)
 
 # finally create the config.h
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config/config.h)

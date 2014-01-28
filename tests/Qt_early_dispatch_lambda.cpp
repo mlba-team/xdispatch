@@ -38,9 +38,9 @@ extern "C" void Qt_early_dispatch1_lambda(){
     MU_ASSERT_NOT_NULL( q.native() );
     q.async( [=]{ MU_PASS(""); } );
 
-	char* argv = QString("test").toAscii().data();
-	int argc = 1;
-    QDispatchApplication app(argc,&argv);
+    char argv[] = "test";
+    int argc = 1;
+    QDispatchApplication app(argc, (char**)&argv);
 
 	app.exec();
 	MU_END_TEST;
@@ -53,9 +53,9 @@ extern "C" void Qt_early_dispatch2_lambda(){
     MU_ASSERT_NOT_NULL( q.native() );
     q.async( [=]{ MU_PASS(""); } );
 
-    char* argv = QString("test").toAscii().data();
+    char argv[] = "test";
     int argc = 1;
-    QDispatchCoreApplication app(argc,&argv);
+    QDispatchCoreApplication app(argc, (char**)&argv);
 
     app.exec();
     MU_END_TEST;

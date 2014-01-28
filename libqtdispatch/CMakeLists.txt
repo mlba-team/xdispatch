@@ -40,8 +40,6 @@ file(GLOB QINCLUDE include/QtDispatch/Q*)
 
 # include qt headers (if found)	
 include_directories(
-    ${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTNETWORK_INCLUDE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
@@ -78,17 +76,17 @@ else()
 endif()
 
 add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QMOC} ${QINCLUDE_H} ${RES_FILE})
-set_property(TARGET QtDispatch PROPERTY SOVERSION ${XDISPATCH_VERSION})
-if(XDISPATCH_USE_QT5)
-    target_link_libraries(QtDispatch xdispatch)
-    qt5_use_modules(QtDispatch Widgets Network)
-else()
-    target_link_libraries(QtDispatch xdispatch ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
-endif()
+
+target_link_libraries(QtDispatch xdispatch)
+qt5_use_modules(QtDispatch Widgets Network)
 
 mz_target_props(QtDispatch)
 mz_auto_format(QtDispatch)
-set_property(TARGET QtDispatch PROPERTY VERSION ${XDISPATCH_VERSION})
+set_target_properties( QtDispatch PROPERTIES
+    VERSION ${XDISPATCH_VERSION}
+    SOVERSION ${XDISPATCH_VERSION}
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
+)
 
 if(IOS)
     install(TARGETS QtDispatch

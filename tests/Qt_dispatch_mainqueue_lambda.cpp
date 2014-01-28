@@ -20,7 +20,8 @@
 * @LICENSE_HEADER_END@
 */
 
-#include <QtCore/QTime>
+#include <QTime>
+#include <QString>
 #include <QtDispatch/QtDispatch>
 
 #include "Qt_tests.h"
@@ -60,9 +61,9 @@ private:
  */
 
 extern "C" void Qt_dispatch_mainqueue_lambda(){
-	char* argv = QString("test").toAscii().data();
+    char argv[] = "test";
 	int argc = 1;
-    QDispatchApplication app(argc,&argv);
+    QDispatchApplication app(argc, (char**)&argv);
 
     MU_BEGIN_TEST(Qt_dispatch_mainqueue_lambda);
 

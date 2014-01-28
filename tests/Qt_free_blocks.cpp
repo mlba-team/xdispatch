@@ -86,9 +86,9 @@ static void Qt_dispatch_outer(){
 extern "C" void Qt_free_blocks(){
     MU_BEGIN_TEST(Qt_free_blocks);
 
-    char* argv = QString("test").toAscii().data();
+    char argv[] = "test";
     int argc = 1;
-    QDispatchApplication app(argc,&argv);
+    QDispatchApplication app(argc, (char**)&argv);
 
 
     Qt_dispatch_outer();

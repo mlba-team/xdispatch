@@ -29,9 +29,9 @@
  */
 
 extern "C" void Qt_dispatch_cascade_lambda(){
-	char* argv = QString("test").toAscii().data();
-	int argc = 1;
-    QApplication app(argc,&argv);
+    char argv[] = "test";
+    int argc = 1;
+    QApplication app(argc, (char**)&argv);
 	
     MU_BEGIN_TEST(Qt_dispatch_cascade_lambda);
 

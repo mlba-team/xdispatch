@@ -98,11 +98,11 @@ if(XDISPATCH_QT_SUPPORT)
     mz_add_definition(XDISPATCH_QT_SUPPORT=1)
 
     # we need to manually define mocced files
-    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group_blocks.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_blocks.moc)
-    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group_lambda.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_lambda.moc)
-    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal_blocks.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_blocks.moc)
-    qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal_lambda.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_lambda.moc)
-    #qt4_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_device.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc)
+    qt5_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group_blocks.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_blocks.moc)
+    qt5_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_group_lambda.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_lambda.moc)
+    qt5_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal_blocks.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_blocks.moc)
+    qt5_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_signal_lambda.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_signal_lambda.moc)
+    #qt5_generate_moc(${CMAKE_CURRENT_SOURCE_DIR}/Qt_dispatch_source_device.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_source_device.moc)
     set(TESTMOC ${TESTMOC}
         ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_lambda.moc
         ${CMAKE_CURRENT_BINARY_DIR}/moc_Qt_dispatch_group_blocks.moc
@@ -113,12 +113,7 @@ if(XDISPATCH_QT_SUPPORT)
 
     #message("### COOL ${TEST_QTDISPATCH}")
 
-    set(TEST_LIB ${TEST_LIB} ${QT_LIBRARIES} QtDispatch)
-	
-    include_directories(
-        ${QT_QTCORE_INCLUDE_DIR}
-        ${QT_QTTEST_INCLUDE_DIR}
-    )
+    set(TEST_LIB ${TEST_LIB} QtDispatch)
 endif()
 
 # includes
@@ -142,6 +137,10 @@ if( IOS )
     add_library(xdispatch_tests STATIC main_ios.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
 else()
     add_executable(xdispatch_tests main.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
+endif()
+
+if( XDISPATCH_QT_SUPPORT )
+    qt5_use_modules(xdispatch_tests Widgets Network Test)
 endif()
 
 # manifest (somehow we need one when using mingw - but only for this binary !?
