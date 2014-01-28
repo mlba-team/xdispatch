@@ -1,7 +1,7 @@
 #
 # CMakeLists.txt
 # 
-# Copyright (c) 2011-2013 MLBA-Team.
+# Copyright (c) 2011-2014 MLBA-Team
 # All rights reserved.
 # 
 # @LICENSE_HEADER_START@
