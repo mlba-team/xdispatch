@@ -1,6 +1,6 @@
 xdispatch (${XDISPATCH_VERSION}-0ubuntu1) precise; urgency=low
 
-  * Unstable build of trunk revision ${XDISPATCH_WC_REVISION}
+  * Unstable build of master commit ${XDISPATCH_WC_REVISION}
 
  -- Marius Zwicker <marius@mlba-team.de>  ${MZ_DATE_STRING}
 

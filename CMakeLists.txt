@@ -159,15 +159,16 @@ endif()
 
 # packaging
 
-if(APPLE)
-    include(package/osx/pkg.cmake)
-elseif(UNIX)
-    include(package/rpm/rpm.cmake)
-    include(package/debian/deb.cmake)
-    include(package/ubuntu/deb.cmake)
-else() # Windows ...
-    include(package/windows/zip.cmake)
+if( XDISPATCH_INCLUDE_PACKAGING )
+    if(APPLE)
+        include(package/osx/pkg.cmake)
+    elseif(UNIX)
+        include(package/rpm/rpm.cmake)
+        include(package/debian/deb.cmake)
+        include(package/ubuntu/deb.cmake)
+    else() # Windows ...
+        include(package/windows/zip.cmake)
+    endif()
+                
+    include(CPack)
 endif()
-	
-
-include(CPack)
