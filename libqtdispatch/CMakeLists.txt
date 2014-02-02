@@ -53,11 +53,7 @@ include_directories(
 
 # moc qt files
 mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
-if(XDISPATCH_USE_QT5)
-    qt5_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
-else()
-    qt4_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
-endif()
+qt5_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 set(QMOC ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 
 source_group(src FILES ${QSRC} ${QHEADER})
@@ -87,6 +83,13 @@ set_target_properties( QtDispatch PROPERTIES
     SOVERSION ${XDISPATCH_VERSION}
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
 )
+if( MZ_IS_CLANG )
+    set_target_properties( QtDispatch PROPERTIES
+        # supress a warning with Qt5 and clang deprecating 'register'
+        INTERFACE_COMPILE_DEFINITIONS register={};
+        COMPILE_FLAGS -Dregister={};
+    )
+endif()
 
 if(IOS)
     install(TARGETS QtDispatch
