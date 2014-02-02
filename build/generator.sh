@@ -29,9 +29,9 @@ cat <<EOF
 $0
 ==============================================
 
-This file generates a Project Configuration for
-building the configured Project at a default directory
-(c) 2009-2013 Marius Zwicker
+This file generates a project configuration for configuring
+cmake using a predefined directory naming scheme
+(c) 2009-2014 Marius Zwicker
 
 Valid arguments:
 	'help' show this list
@@ -47,6 +47,7 @@ Can also be selected using environment variables:
 	MZ_CMAKETOOLS_generator=..
 	MZ_CMAKETOOLS_cmake=..
 	MZ_CMAKETOOLS_name=..
+
 EOF
 }
 
@@ -210,6 +211,10 @@ do
 			;;
 		cmake)
 			my_cmake=${value}
+			;;
+		help)
+			help
+			exit 0
 			;;
 		*)
 			echo "-- WARNING: Unknown flag ${type}, skipping"

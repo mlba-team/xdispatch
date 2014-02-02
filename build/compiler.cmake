@@ -241,7 +241,7 @@ function(__MZ_COMPILER_IS_CLANG _OUTPUT _OUTPUT_VERSION)
   endif()
 
   string(
-    REGEX REPLACE "(.*) version ([0-9])\\.([0-9])(\\.[0-9])?(\\-[0-9])?(~mlba)? \(.+\)" "\\2\\3"
+    REGEX MATCH "[0-9]\\.[0-9](\\.[0-9])?(\\-[0-9])?"
     _MZ_CLANG_VERSION ${_MZ_CLANG_VERSION}
   )
   
@@ -358,7 +358,7 @@ endif() #MZ_COMPILER_TEST_HAS_RUN
 
 # determine current date and time
 if(WINDOWS)
-    execute_process(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE MZ_DATE_STRING)
+    execute_process(COMMAND "date" "/T" OUTPUT_VARIABLE MZ_DATE_STRING)
     set(MZ_USER_STRING $ENV{USERNAME})
 else() # Sun, 11 Dec 2011 12:07:00 +0200
     execute_process(COMMAND "date" "+%a, %d %b %Y %T %z" OUTPUT_VARIABLE MZ_DATE_STRING)
@@ -380,7 +380,6 @@ if( (NOT MZ_IS_CLANG) AND MZ_COMPILER_VERSION STRGREATER "47")
 endif()
 
 # compiler flags
-mz_add_definition(${CMAKE_SYSTEM_PROCESSOR}=1)
 mz_add_flag(GCC -Wall -Werror -Wno-unused-function)
 if(WINDOWS)
     mz_add_definition(WIN32=1 WINDOWS=1)
