@@ -53,13 +53,16 @@ bool iteration_wrap::deref()
 }
 
 
-void set_debugger_threadname()
+inline void set_debugger_threadname( const std::string& name = std::string() )
 {
-#ifdef DEBUG
-
+#if (defined DEBUG) && (defined __APPLE__ || defined __linux__)
+#  if (defined __linux__)
+    prctl(PR_SET_NAME, (unsigned long)( name.c_str() ), 0, 0, 0);
+#  elif (defined __APPLE__)
+    pthread_setname_np( name.c_str() );
+#  endif
 #endif
 }
-
 
 extern "C"
 void _xdispatch_run_operation(
@@ -72,7 +75,9 @@ void _xdispatch_run_operation(
 
     try
     {
+        set_debugger_threadname( xdispatch::current_queue().label() );
         ( *w )();
+        set_debugger_threadname();
     }
     catch( const std::exception &e )
     {
@@ -110,7 +115,9 @@ void _xdispatch_run_iter_wrap(
 
     try
     {
+        set_debugger_threadname( xdispatch::current_queue().label() );
         ( *( wrap->operation() ) )( index );
+        set_debugger_threadname();
     }
     catch( const std::exception &e )
     {
