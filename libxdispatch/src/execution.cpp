@@ -23,6 +23,10 @@
 #include <stdlib.h>
 #include "xdispatch_internal.h"
 
+#if (defined __linux__)
+#include <sys/prctl.h>
+#endif
+
 __XDISPATCH_USE_NAMESPACE iteration_wrap::iteration_wrap (
     iteration_operation *o,
     size_t ct
