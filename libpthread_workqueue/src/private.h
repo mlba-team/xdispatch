@@ -88,7 +88,7 @@ extern unsigned int PWQ_ACTIVE_CPU;
  rep/nop / 0xf3+0x90 are the same as the symbolic 'pause' instruction
  */
 
-#if defined(__i386__) || defined(__x86_64__) || defined(__i386) || defined(__amd64)
+#if defined(__i386__) || defined(__x86_64__) || defined(__i386) || defined(__amd64) || defined(_M_IX86)
 
 #if defined(__SUNPRO_CC)
 

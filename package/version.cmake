@@ -37,12 +37,20 @@ else()
     if(GIT_FOUND)
         # we use a short hash
         execute_process(
-            COMMAND ${GIT_EXECUTABLE} log --pretty=format:%h -n 1
+            COMMAND ${GIT_EXECUTABLE} describe --always --dirty
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../
             OUTPUT_VARIABLE XDISPATCH_WC_REVISION
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} rev-list --count HEAD
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../
+            OUTPUT_VARIABLE XDISPATCH_WC_NUMBER
+            OUTPUT_STRIP_TRAILING_WHITESPACE
         )
     else() # fallback, no revision use date&time
         set(XDISPATCH_WC_REVISION "")
+        set(XDISPATCH_WC_NUMBER "0")
     endif()
 endif()
 
@@ -70,13 +78,14 @@ set( XDISPATCH_VERSION_MINOR            8)
 set( XDISPATCH_VERSION_PATCH            0)
 if( NOT XDISPATCH_BUILD_NO )
   if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set( XDISPATCH_VERSION_SUFFIX   devel${XDISPATCH_WC_REVISION})
-    message("-- Configuring release version")
+    set( XDISPATCH_VERSION_SUFFIX   "release-${XDISPATCH_WC_REVISION}")
+    message( "-- Configuring release version")
   else()
-    set( XDISPATCH_VERSION_SUFFIX   devel)
+    set( XDISPATCH_VERSION_SUFFIX   "devel-${XDISPATCH_WC_REVISION}")
+    message( "-- Configuring devel version")
   endif()
   set( XDISPATCH_VERSION            ${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH}~${XDISPATCH_VERSION_SUFFIX})
-  set( XDISPATCH_DLL_VERSION        ${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_WC_REVISION} )
+  set( XDISPATCH_DLL_VERSION        ${XDISPATCH_VERSION_MAJOR},${XDISPATCH_VERSION_MINOR},${XDISPATCH_VERSION_PATCH},${XDISPATCH_WC_NUMBER} )
 else()
     set( XDISPATCH_VERSION_SUFFIX   ${XDISPATCH_BUILD_NO} )
     set( XDISPATCH_VERSION          ${XDISPATCH_VERSION_MAJOR}.${XDISPATCH_VERSION_MINOR}.${XDISPATCH_VERSION_PATCH})

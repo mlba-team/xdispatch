@@ -51,6 +51,14 @@ knote_new(void)
     return (res);
 }
 
+void knote_retain(struct knote *kn)
+{
+  assert(kn->kn_ref > 0);
+  atomic_inc(&kn->kn_ref);
+  dbg_printf("incrementing refcount of knote %p rc=%d", kn, kn->kn_ref);
+
+}
+
 void
 knote_release(struct knote *kn)
 {
@@ -61,7 +69,12 @@ knote_release(struct knote *kn)
             dbg_printf("freeing knote at %p", kn);
             free(kn);
         } else {
-            dbg_puts("this should never happen");
+          struct filter *filt = knote_get_filter(kn);
+          dbg_printf("deleting knote at %p", kn);
+          kn->kn_flags |= KNFL_KNOTE_DELETED;
+          filt->kn_delete(filt, kn);
+          dbg_printf("freeing knote at %p", kn);
+          free(kn);
         }
     } else {
         dbg_printf("decrementing refcount of knote %p rc=%d", kn, kn->kn_ref);
@@ -99,9 +112,9 @@ knote_delete(struct filter *filt, struct knote *kn)
     }
     pthread_rwlock_unlock(&filt->kf_knote_mtx);
 
-    filt->kn_delete(filt, kn); //XXX-FIXME check return value
-
     kn->kn_flags |= KNFL_KNOTE_DELETED;
+
+    filt->kn_delete(filt, kn);
 
     knote_release(kn);
 

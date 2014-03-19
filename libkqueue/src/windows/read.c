@@ -16,75 +16,45 @@
 
 #include "../common/private.h"
 
-static VOID CALLBACK
-evfilt_read_callback(void *param, BOOLEAN fired)
+static void
+evfilt_read_callback(struct knote *kn)
 {
-    WSANETWORKEVENTS events;
     struct kqueue *kq;
-    struct knote *kn;
     int rv;
 
-    assert(param);
-
-    if (fired) {
-        dbg_puts("called, but event was not triggered(?)");
-        return;
-    }
-    
-    assert(param);
-    kn = (struct knote*)param;
-    // FIXME: check if knote is pending destroyed
+    assert(kn);
     kq = kn->kn_kq;
     assert(kq);
 
-    /* Retrieve the socket events and update the knote */
-    rv = WSAEnumNetworkEvents(
-            (SOCKET) kn->kev.ident, 
-            kn->data.handle,
-                &events);
-    if (rv != 0) {
-        dbg_wsalasterror("WSAEnumNetworkEvents");
-        return; //fIXME: should crash or invalidate the knote
-    }
-    /* FIXME: check for errors somehow..
-    if (events.lNetworkEvents & FD_ACCEPT) 
-        kn->kev.flags |= EV
-    */
-
-
-    if (!PostQueuedCompletionStatus(kq->kq_iocp, 1, (ULONG_PTR) 0, (LPOVERLAPPED) param)) {
-        dbg_lasterror("PostQueuedCompletionStatus()");
+    if (kn->kn_mux->kev.fflags & NOTE_MUX_READABLE) {
+      dbg_printf("==== posting read knote %p", kn);
+      if (!windows_kqueue_post(kq, kn)) {
         return;
-        /* FIXME: need more extreme action */
+      }
+    } else {
+      dbg_printf("==== read knote not readable?? %p", kn);
     }
-
-    /* DEADWOOD 
-    kn = (struct knote *) param;
-    evt_signal(kn->kn_kq->kq_loop, EVT_WAKEUP, kn);
-    */
 }
 
-#if FIXME
-static intptr_t
-get_eof_offset(int fd)
+static void 
+evfilt_write_callback(struct knote *kn)
 {
-    off_t curpos;
-    struct stat sb;
+  struct kqueue *kq;
+  int rv;
 
-    curpos = lseek(fd, 0, SEEK_CUR);
-    if (curpos == (off_t) -1) {
-        dbg_perror("lseek(2)");
-        curpos = 0;
-    }
-    if (fstat(fd, &sb) < 0) {
-        dbg_perror("fstat(2)");
-        sb.st_size = 1;
-    }
+  assert(kn);
+  kq = kn->kn_kq;
+  assert(kq);
 
-    dbg_printf("curpos=%zu size=%zu\n", curpos, sb.st_size);
-    return (sb.st_size - curpos); //FIXME: can overflow
+  if (kn->kn_mux->kev.fflags & NOTE_MUX_WRITABLE) {
+    dbg_printf("==== posting read knote %p", kn);
+    if (!windows_kqueue_post(kq, kn)) {
+      return;
+    }
+  } else {
+    dbg_printf("==== read knote not readable?? %p", kn);
+  }
 }
-#endif
 
 int
 evfilt_read_copyout(struct kevent *dst, struct knote *src, void *ptr)
@@ -115,98 +85,146 @@ evfilt_read_copyout(struct kevent *dst, struct knote *src, void *ptr)
 }
 
 int
-evfilt_read_knote_create(struct filter *filt, struct knote *kn)
+evfilt_write_copyout(struct kevent *dst, struct knote *src, void *ptr)
 {
-    HANDLE evt;
-    int rv;
+  unsigned long bufsize;
 
-    if (windows_get_descriptor_type(kn) < 0)
-            return (-1);
+  //struct event_buf * const ev = (struct event_buf *) ptr;
 
-    /* Create an auto-reset event object */
-    evt = CreateEvent(NULL, FALSE, FALSE, NULL);
-    if (evt == NULL) {
-        dbg_lasterror("CreateEvent()");
-        return (-1);
-    }
+  /* TODO: handle regular files
+  if (src->flags & KNFL_REGULAR_FILE) { ... } */
 
-    rv = WSAEventSelect(
-                (SOCKET) kn->kev.ident, 
-                evt, 
-                FD_READ | FD_ACCEPT | FD_CLOSE);
-    if (rv != 0) {
-        dbg_wsalasterror("WSAEventSelect()");
-        CloseHandle(evt);
-        return (-1);
-    }
-    
-    /* TODO: handle regular files in addition to sockets */
+  memcpy(dst, &src->kev, sizeof(*dst));
+  dst->data = 1;
 
-    /* TODO: handle in copyout
-    if (kn->kev.flags & EV_ONESHOT || kn->kev.flags & EV_DISPATCH)
-        kn->data.events |= EPOLLONESHOT;
-    if (kn->kev.flags & EV_CLEAR)
-        kn->data.events |= EPOLLET;
-    */
-
-    kn->data.handle = evt;
-
-    if (RegisterWaitForSingleObject(&kn->kn_event_whandle, evt, 
-	    evfilt_read_callback, kn, INFINITE, 0) == 0) {
-        dbg_puts("RegisterWaitForSingleObject failed");
-        CloseHandle(evt);
-        return (-1);
-    }
-
-    return (0);
+  return (0);
+}
+int
+evfilt_rw_knote_create(struct filter *filt, struct knote *kn)
+{
+  struct knote *kn_mux = knote_lookup(filt->kf_rw_mux, kn->kev.ident);
+  int rv = 0;
+  if (kn_mux == NULL) {
+    struct kevent mux_kev = kn->kev;
+    mux_kev.flags = 0;
+    mux_kev.fflags = filt->kf_rw_flag;
+    rv = filter_knote_create(filt->kf_rw_mux, &kn_mux, &kn->kev);
+    if (rv)
+      return rv;
+    assert(kn_mux != NULL);
+  } else {
+    struct kevent mux_kev = kn_mux->kev;
+    mux_kev.flags = 0;
+    mux_kev.fflags |= filt->kf_rw_flag;
+    rv = filt->kf_rw_mux->kn_modify(filt->kf_rw_mux, kn_mux, &mux_kev);
+    if (rv<0)
+      return rv;
+    knote_retain(kn_mux); // balace refcount wrt create path
+  }
+  kn->kn_mux = kn_mux;
+  kn->kn_flags = kn->kn_mux->kn_flags; // copy over socket type
+  knote_retain(kn->kn_mux); // we keep a long lived reference to mux knote
+  if (filt->kf_rw_flag == NOTE_MUX_READ) {
+    kn_mux->kn_mux_kn_read = kn;
+    knote_retain(kn->kn_mux->kn_mux_kn_read); // mux keeps a long lived reference to read
+  } else if(filt->kf_rw_flag == NOTE_MUX_WRITE) {
+    kn_mux->kn_mux_kn_write = kn;
+    knote_retain(kn->kn_mux->kn_mux_kn_write); // mux keeps a long lived reference to read
+  } else {
+    assert(0 && "MUX misuse");
+  }
+  knote_release(kn_mux); // release the reference we got from create or lookup 
+  return (rv);
 }
 
 int
-evfilt_read_knote_modify(struct filter *filt, struct knote *kn, 
+evfilt_rw_knote_modify(struct filter *filt, struct knote *kn, 
         const struct kevent *kev)
 {
     return (-1); /* STUB */
 }
 
 int
-evfilt_read_knote_delete(struct filter *filt, struct knote *kn)
+evfilt_rw_knote_delete(struct filter *filt, struct knote *kn)
 {
-    if (kn->data.handle == NULL || kn->kn_event_whandle == NULL)
-        return (0);
-
-	if(!UnregisterWaitEx(kn->kn_event_whandle, INVALID_HANDLE_VALUE)) {
-		dbg_lasterror("UnregisterWait()");
-		return (-1);
-	}
-	if (!WSACloseEvent(kn->data.handle)) {
-		dbg_wsalasterror("WSACloseEvent()");
-		return (-1);
-	}
-
-    kn->data.handle = NULL;
-    return (0);
+  assert(kn->kn_mux);
+  if (filt->kf_rw_flag == NOTE_MUX_READ) {
+    assert(kn == kn->kn_mux->kn_mux_kn_read);
+    knote_release(kn->kn_mux->kn_mux_kn_read);
+    kn->kn_mux->kn_mux_kn_read = NULL;
+  } else if (filt->kf_rw_flag == NOTE_MUX_WRITE) {
+    assert(kn == kn->kn_mux->kn_mux_kn_write);
+    knote_release(kn->kn_mux->kn_mux_kn_write);
+    kn->kn_mux->kn_mux_kn_write = NULL;
+  } else {
+    assert(0 && "MUX misuse");
+  }
+  if (kn->kn_mux->kn_mux_kn_read || kn->kn_mux->kn_mux_kn_write) {
+    knote_release(kn->kn_mux);
+  } else {
+    knote_delete(filt->kf_rw_mux, kn->kn_mux);
+  }
+  kn->kn_mux = (void*)42;
+  return (0);
 }
 
 int
-evfilt_read_knote_enable(struct filter *filt, struct knote *kn)
+evfilt_rw_knote_enable(struct filter *filt, struct knote *kn)
 {
-    return evfilt_read_knote_create(filt, kn);
+  struct kevent mux_kev = kn->kn_mux->kev;
+  int rv = 0;
+  mux_kev.flags = 0;
+  mux_kev.fflags |= filt->kf_rw_flag;
+  rv = filt->kf_rw_mux->kn_modify(filt->kf_rw_mux, kn->kn_mux, &mux_kev);
+  return (rv);
 }
 
 int
-evfilt_read_knote_disable(struct filter *filt, struct knote *kn)
+evfilt_rw_knote_disable(struct filter *filt, struct knote *kn)
 {
-    return evfilt_read_knote_delete(filt, kn);
+  struct kevent mux_kev = kn->kn_mux->kev;
+  int rv = 0;
+  mux_kev.flags = 0;
+  mux_kev.fflags &= ~filt->kf_rw_flag;
+  rv = filt->kf_rw_mux->kn_modify(filt->kf_rw_mux, kn->kn_mux, &mux_kev);
+  return (rv);
+}
+
+int
+evfilt_read_init(struct filter *filt)
+{
+  filt->kf_rw_mux = &filt->kf_kqueue->kq_rw_mux;
+  filt->kf_rw_flag = NOTE_MUX_READ;
+  filt->kf_rw_callback = evfilt_read_callback;
+}
+
+int
+evfilt_write_init(struct filter *filt)
+{
+  filt->kf_rw_mux = &filt->kf_kqueue->kq_rw_mux;
+  filt->kf_rw_flag = NOTE_MUX_WRITE;
+  filt->kf_rw_callback = evfilt_write_callback;
 }
 
 const struct filter evfilt_read = {
-    EVFILT_READ,
-    NULL,
-    NULL,
-    evfilt_read_copyout,
-    evfilt_read_knote_create,
-    evfilt_read_knote_modify,
-    evfilt_read_knote_delete,
-    evfilt_read_knote_enable,
-    evfilt_read_knote_disable,         
+  EVFILT_READ,
+  evfilt_read_init,
+  NULL,
+  evfilt_read_copyout,
+  evfilt_rw_knote_create,
+  evfilt_rw_knote_modify,
+  evfilt_rw_knote_delete,
+  evfilt_rw_knote_enable,
+  evfilt_rw_knote_disable,
+};
+const struct filter evfilt_write = {
+  EVFILT_READ,
+  evfilt_write_init,
+  NULL,
+  evfilt_write_copyout,
+  evfilt_rw_knote_create,
+  evfilt_rw_knote_modify,
+  evfilt_rw_knote_delete,
+  evfilt_rw_knote_enable,
+  evfilt_rw_knote_disable,
 };

@@ -87,8 +87,9 @@ evfilt_user_knote_modify(struct filter *filt, struct knote *kn,
 
     if ((!(kn->kev.flags & EV_DISABLE)) && kev->fflags & NOTE_TRIGGER) {
         kn->kev.fflags |= NOTE_TRIGGER;
-		if (!PostQueuedCompletionStatus(kn->kn_kq->kq_iocp, 1, (ULONG_PTR) 0, (LPOVERLAPPED) kn)) {
-			dbg_lasterror("PostQueuedCompletionStatus()");
+        dbg_printf("==== posting user knote %p", kn);
+
+		if (!windows_kqueue_post(kn->kn_kq, kn)) {
 			return (-1);
 		}
     }

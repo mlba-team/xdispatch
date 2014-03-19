@@ -1,3 +1,4 @@
 /*.txt.user
 /package/debian/changelog
 /package/ubuntu/changelog
+/libkqueue/config.h

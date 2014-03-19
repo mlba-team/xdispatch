@@ -35,7 +35,7 @@ struct evfilt_data;
 
 #if defined(_WIN32)
 # include "../windows/platform.h"
-# include "../common/queue.h"
+//# include "../common/queue.h"
 # if !defined(NDEBUG) && !defined(__GNUC__)
 #  include <crtdbg.h>
 # endif
@@ -186,14 +186,16 @@ extern const struct kqueue_vtable kqops;
 struct knote * knote_lookup(struct filter *, uintptr_t);
 //DEADWOOD: struct knote * knote_get_by_data(struct filter *filt, intptr_t);
 struct knote * knote_new(void);
-#define knote_retain(kn) atomic_inc(&kn->kn_ref)
+void knote_retain(struct knote *);
 void knote_release(struct knote *);
 void knote_insert(struct filter *, struct knote *);
 int  knote_delete(struct filter *, struct knote *);
 int  knote_init(void);
 int  knote_disable(struct filter *, struct knote *);
-#define knote_get_filter(knt) &((knt)->kn_kq->kq_filt[(knt)->kev.filter])
+#define knote_get_filter(knt) &((knt)->kn_kq->kq_filt[~(knt)->kev.filter])
 
+int         filter_instantiate(struct kqueue *kq, struct filter *dst, const struct filter *src);
+int         filter_knote_create(struct filter *filt, struct knote **knp, struct kevent *src);
 int         filter_lookup(struct filter **, struct kqueue *, short);
 int      	filter_register_all(struct kqueue *);
 void     	filter_unregister_all(struct kqueue *);

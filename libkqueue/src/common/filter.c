@@ -31,6 +31,7 @@ extern const struct filter evfilt_proc;
 extern const struct filter evfilt_timer;
 extern const struct filter evfilt_user;
 
+
 static int
 filter_register(struct kqueue *kq, short filter, const struct filter *src)
 {
@@ -43,6 +44,13 @@ filter_register(struct kqueue *kq, short filter, const struct filter *src)
         return (-1);
 
     dst = &kq->kq_filt[filt];
+    return filter_instantiate(kq, dst, src);
+}
+
+int filter_instantiate(struct kqueue *kq, struct filter *dst, const struct filter *src)
+{
+    int rv = 0;
+
     memcpy(dst, src, sizeof(*src));
     dst->kf_kqueue = kq;
     RB_INIT(&dst->kf_knote);
@@ -151,6 +159,31 @@ filter_lookup(struct filter **filt, struct kqueue *kq, short id)
     }
 
     return (0);
+}
+
+int
+filter_knote_create(struct filter *filt, struct knote **knp, struct kevent *src)
+{
+  struct knote *kn;
+  *knp = NULL;
+  if ((kn = knote_new()) == NULL) {
+    errno = ENOENT;
+    return (-1);
+  }
+  memcpy(&kn->kev, src, sizeof(kn->kev));
+  kn->kev.flags &= ~EV_ENABLE;
+  kn->kev.flags |= EV_ADD;//FIXME why?
+  kn->kn_kq = filt->kf_kqueue;
+  assert(filt->kn_create);
+  if (filt->kn_create(filt, kn) < 0) {
+    knote_release(kn);
+    errno = EFAULT;
+    return (-1);
+  }
+  knote_insert(filt, kn);
+  dbg_printf("created kevent %s knote %p", kevent_dump(src), kn);
+  *knp = kn;
+  return 0;
 }
 
 const char *
