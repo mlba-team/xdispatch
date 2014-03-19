@@ -96,7 +96,7 @@
   #  define XDISPATCH_CPP11_TYPE_TRAITS 1
   #  define XDISPATCH_CPP11_MEMORY 1
   #  define XDISPATCH_CPP11_FUNCTIONAL 1
- # elif __GLIBCXX__ < 20120322 || ( !XDISPATCH_CPP11 )
+ # elif __GLIBCXX__ < 20120322 && ( !XDISPATCH_CPP11 )
   #  define XDISPATCH_TR1_FUNCTIONAL 1
   #  include <tr1/functional>
  # endif // if __GLIBCXX__ < 20120322

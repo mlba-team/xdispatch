@@ -27,6 +27,10 @@ void __attribute((destructor)) cleanup(void);
 
 #else
 
+# if STATIC_KQUEUE
+void libkqueue_thread_attach();
+void libkqueue_thread_detach();
+# endif
 int init();
 void cleanup();
 

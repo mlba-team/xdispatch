@@ -35,7 +35,7 @@ struct evfilt_data;
 
 #if defined(_WIN32)
 # include "../windows/platform.h"
-# include "../common/queue.h"
+//# include "../common/queue.h"
 # if !defined(NDEBUG) && !defined(__GNUC__)
 #  include <crtdbg.h>
 # endif
