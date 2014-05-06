@@ -52,7 +52,9 @@ BOOL WINAPI DllMain(
 
     case DLL_PROCESS_DETACH:
         // Perform any necessary cleanup.
-        cleanup();
+#ifdef BOZZO_HACK
+      cleanup();
+#endif
         break;
 
     case DLL_THREAD_ATTACH:
@@ -73,7 +75,9 @@ BOOL WINAPI DllMain(
         if(val) _dispatch_cache_cleanup2(val);
 		*/
 # if STATIC_KQUEUE
+#ifdef BOZZO_HACK
 		libkqueue_thread_detach();
+#endif
 # endif
     }
         break;
