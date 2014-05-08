@@ -36,16 +36,30 @@ static __thread struct event_buf iocp_buf;
  * Per-thread evt event buffer used to ferry data between
  * kevent_wait() and kevent_copyout().
  */
-#define iocp_buf (*( (struct event_buf*)TlsGetValue(event_buf_tls) ))
+#define iocp_buf (*_iocp_buf())
 static DWORD event_buf_tls;
 
 
 // workaround for implicit TLS initialization
 // bug on Windows prior to Windows Vista
+struct event_buf* _libkqueue_thread_attach(){
+  struct event_buf* ev_buf = malloc(sizeof(struct event_buf));
+  assert(ev_buf);
+  TlsSetValue(event_buf_tls, ev_buf);
+  return ev_buf;
+}
+
 void libkqueue_thread_attach(){
-	struct event_buf* ev_buf = malloc(sizeof(struct event_buf));
-	assert(ev_buf);
-	TlsSetValue(event_buf_tls, ev_buf);
+  _libkqueue_thread_attach();
+}
+
+struct event_buf *_iocp_buf() {
+  struct event_buf* ev_buf = ((struct event_buf*)TlsGetValue(event_buf_tls));
+  if (!ev_buf) {
+    dbg_puts("AAARrrr, no iocp_buf? fixing up missing libkqueue_thread_attach");
+    ev_buf = _libkqueue_thread_attach();
+  }
+  return ev_buf;
 }
 
 void libkqueue_thread_detach(){
