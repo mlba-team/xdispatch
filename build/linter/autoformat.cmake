@@ -1,11 +1,11 @@
 ##################################################
 #
-#	BUILD/AUTOFORMAT.CMAKE
+# BUILD/AUTOFORMAT.CMAKE
 #
-# 	Provides an easy mean to reformat a file using
+#   Provides an easy mean to reformat a file using
 #   uncrustify and the settings as defined in autoformat.cfg
 #
-#	Copyright (c) 2013 Marius Zwicker
+# Copyright (c) 2013 Marius Zwicker
 #
 #
 #

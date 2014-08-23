@@ -52,6 +52,7 @@ include_directories(
 )
 
 # moc qt files
+set( CMAKE_AUTOMOC OFF )
 mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
 qt5_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
 set(QMOC ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
