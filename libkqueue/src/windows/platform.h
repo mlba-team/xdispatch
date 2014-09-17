@@ -99,6 +99,7 @@ int     windows_filter_init(struct kqueue *, struct filter *);
 void    windows_filter_free(struct kqueue *, struct filter *);
 int     windows_get_descriptor_type(struct knote *);
 
+int     windows_kqueue_post(struct kqueue *, struct knote *);
 /*
  * GCC-compatible branch prediction macros
  */

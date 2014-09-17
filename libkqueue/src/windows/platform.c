@@ -159,6 +159,19 @@ windows_kqueue_init(struct kqueue *kq)
     return (0);
 }
 
+int
+windows_kqueue_post(struct kqueue *kq, struct knote *kn)
+{
+  knote_retain(kn); // this pairs with windows_kevent_copyout
+  if (!PostQueuedCompletionStatus(kq->kq_iocp, 1, (ULONG_PTR)0, (LPOVERLAPPED)kn)) {
+    dbg_lasterror("PostQueuedCompletionStatus()");
+    knote_release(kn);
+    return -1;
+    /* FIXME: need more extreme action */
+  }
+  return 0;
+}
+
 void
 windows_kqueue_free(struct kqueue *kq)
 {
@@ -197,6 +210,7 @@ windows_kevent_wait(struct kqueue *kq, int no, const struct timespec *timeout)
             &iocp_buf.bytes, &iocp_buf.key, &iocp_buf.overlap, 
             timeout_ms);
     if (success) {
+      dbg_printf("======= dequeued knote %p", iocp_buf.overlap);
         return (1);
     } else {
         if (GetLastError() == WAIT_TIMEOUT) {
@@ -220,6 +234,7 @@ windows_kevent_copyout(struct kqueue *kq, int nready,
 
     //FIXME: not true for EVFILT_IOCP
     kn = (struct knote *) iocp_buf.overlap;
+    assert(kn);
     filt = &kq->kq_filt[~(kn->kev.filter)];
     rv = filt->kf_copyout(eventlist, kn, &iocp_buf);
     if (slowpath(rv < 0)) {
@@ -229,6 +244,7 @@ windows_kevent_copyout(struct kqueue *kq, int nready,
     } else {
         nret = 1;
     }
+    knote_release(kn); // this pairs with windows_kqueue_post()
 
     /*
      * Certain flags cause the associated knote to be deleted

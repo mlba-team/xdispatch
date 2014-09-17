@@ -52,10 +52,11 @@ evfilt_read_callback(void *param, BOOLEAN fired)
     */
 
 
-    if (!PostQueuedCompletionStatus(kq->kq_iocp, 1, (ULONG_PTR) 0, (LPOVERLAPPED) param)) {
-        dbg_lasterror("PostQueuedCompletionStatus()");
-        return;
-        /* FIXME: need more extreme action */
+
+    dbg_printf("==== posting read knote %p", kn);
+    if (!windows_kqueue_post(kq, kn)) {
+      return;
+      /* FIXME: need more extreme action */
     }
 
     /* DEADWOOD 
@@ -157,7 +158,7 @@ evfilt_read_knote_create(struct filter *filt, struct knote *kn)
         CloseHandle(evt);
         return (-1);
     }
-
+    knote_retain(kn); // OS knows about the knote, keep it around
     return (0);
 }
 
@@ -184,6 +185,7 @@ evfilt_read_knote_delete(struct filter *filt, struct knote *kn)
 	}
 
     kn->data.handle = NULL;
+    knote_release(kn);
     return (0);
 }
 
