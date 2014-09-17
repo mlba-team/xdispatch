@@ -37,7 +37,8 @@ static __thread struct event_buf iocp_buf;
  * kevent_wait() and kevent_copyout().
  */
 #define iocp_buf (*_iocp_buf())
-static DWORD event_buf_tls;
+static DWORD event_buf_tls = 0;
+static int event_buf_tls_init = 0;
 
 
 // workaround for implicit TLS initialization
@@ -54,6 +55,8 @@ void libkqueue_thread_attach(){
 }
 
 struct event_buf *_iocp_buf() {
+  if (!event_buf_tls_init)
+    libkqueue_process_attach();
   struct event_buf* ev_buf = ((struct event_buf*)TlsGetValue(event_buf_tls));
   if (!ev_buf) {
     dbg_puts("AAARrrr, no iocp_buf? fixing up missing libkqueue_thread_attach");
@@ -70,6 +73,7 @@ void libkqueue_thread_detach(){
 
 void libkqueue_process_attach(){
 	event_buf_tls = TlsAlloc();
+        event_buf_tls_init = 1;
 	libkqueue_thread_attach();
 }
 
