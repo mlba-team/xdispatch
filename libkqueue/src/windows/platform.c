@@ -84,6 +84,7 @@ void libkqueue_process_attach(){
 const struct filter evfilt_proc = EVFILT_NOTIMPL;
 const struct filter evfilt_vnode = EVFILT_NOTIMPL;
 const struct filter evfilt_signal = EVFILT_NOTIMPL;
+extern const struct filter evfilt_mux;
 
 const struct kqueue_vtable kqops = {
     windows_kqueue_init,
@@ -151,7 +152,7 @@ windows_kqueue_init(struct kqueue *kq)
     }
 #endif
 
-	if(filter_register_all(kq) < 0) {
+    if (filter_instantiate(kq, &kq->kq_rw_mux, &evfilt_mux) < 0 || filter_register_all(kq) < 0) {
 		CloseHandle(kq->kq_iocp);
 		return (-1);
 	}
@@ -214,7 +215,7 @@ windows_kevent_wait(struct kqueue *kq, int no, const struct timespec *timeout)
         return (1);
     } else {
         if (GetLastError() == WAIT_TIMEOUT) {
-            dbg_puts("no events within the given timeout");
+            dbg_printf("no events within the given timeout");
             return (0);
         }
         dbg_lasterror("GetQueuedCompletionStatus");

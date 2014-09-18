@@ -64,22 +64,31 @@
 #define KQUEUE_PLATFORM_SPECIFIC \
 	HANDLE kq_iocp; \
 	HANDLE kq_synthetic_event; \
-	struct filter *kq_filt_ref[EVFILT_SYSCOUNT]; \
+	struct filter *kq_filt_ref[EVFILT_SYSCOUNT+1]; \
+	struct filter kq_rw_mux; \
     size_t kq_filt_count
 
 /*
  * Additional members of struct filter
  */
-/*
 #define FILTER_PLATFORM_SPECIFIC \
-	HANDLE kf_event_handle
-*/
+	struct filter *kf_rw_mux; \
+        unsigned int   kf_rw_flag; \
+        void(*kf_rw_callback)(struct knote *)
 
 /*
  * Additional members for struct knote
  */
 #define KNOTE_PLATFORM_SPECIFIC \
-	HANDLE kn_event_whandle
+	HANDLE kn_event_whandle; /* handle for timer and mux */ \
+        struct knote *kn_mux;    /* mux note for read and write */ \
+        struct knote *kn_mux_kn_read; /* read note for mux callback */ \
+        struct knote *kn_mux_kn_write /* write note for mux callback */
+
+#define NOTE_MUX_READ     0x01000000
+#define NOTE_MUX_WRITE    0x02000000
+#define NOTE_MUX_READABLE 0x00000001
+#define NOTE_MUX_WRITABLE 0x00000002
 
 /*
  * Some datatype forward declarations
@@ -100,6 +109,7 @@ void    windows_filter_free(struct kqueue *, struct filter *);
 int     windows_get_descriptor_type(struct knote *);
 
 int     windows_kqueue_post(struct kqueue *, struct knote *);
+
 /*
  * GCC-compatible branch prediction macros
  */
