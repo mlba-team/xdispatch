@@ -137,22 +137,9 @@ kevent_copyin_one(struct kqueue *kq, const struct kevent *src)
     dbg_printf("knote_lookup: ident %d == %p", (int)src->ident, kn);
     if (kn == NULL) {
         if (src->flags & EV_ADD) {
-            if ((kn = knote_new()) == NULL) {
-                errno = ENOENT;
-                return (-1);
-            }
-            memcpy(&kn->kev, src, sizeof(kn->kev));
-            kn->kev.flags &= ~EV_ENABLE;
-            kn->kev.flags |= EV_ADD;//FIXME why?
-			kn->kn_kq = kq;
-            assert(filt->kn_create);
-            if (filt->kn_create(filt, kn) < 0) {
-                knote_release(kn);
-                errno = EFAULT;
-                return (-1);
-            } 
-            knote_insert(filt, kn);
-            dbg_printf("created kevent %s", kevent_dump(src));
+          rv = filter_knote_create(filt, &kn, src);
+          if (rv)
+            return (rv);
 
 /* XXX- FIXME Needs to be handled in kn_create() to prevent races */
             if (src->flags & EV_DISABLE) {

@@ -161,6 +161,31 @@ filter_lookup(struct filter **filt, struct kqueue *kq, short id)
     return (0);
 }
 
+int
+filter_knote_create(struct filter *filt, struct knote **knp, struct kevent *src)
+{
+  struct knote *kn;
+  *knp = NULL;
+  if ((kn = knote_new()) == NULL) {
+    errno = ENOENT;
+    return (-1);
+  }
+  memcpy(&kn->kev, src, sizeof(kn->kev));
+  kn->kev.flags &= ~EV_ENABLE;
+  kn->kev.flags |= EV_ADD;//FIXME why?
+  kn->kn_kq = filt->kf_kqueue;
+  assert(filt->kn_create);
+  if (filt->kn_create(filt, kn) < 0) {
+    knote_release(kn);
+    errno = EFAULT;
+    return (-1);
+  }
+  knote_insert(filt, kn);
+  dbg_printf("created kevent %s", kevent_dump(src));
+  *knp = kn;
+  return 0;
+}
+
 const char *
 filter_name(short filt)
 {
