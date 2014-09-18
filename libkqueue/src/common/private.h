@@ -192,7 +192,7 @@ void knote_insert(struct filter *, struct knote *);
 int  knote_delete(struct filter *, struct knote *);
 int  knote_init(void);
 int  knote_disable(struct filter *, struct knote *);
-#define knote_get_filter(knt) &((knt)->kn_kq->kq_filt[(knt)->kev.filter])
+#define knote_get_filter(knt) &((knt)->kn_kq->kq_filt[~(knt)->kev.filter])
 
 int         filter_instantiate(struct kqueue *kq, struct filter *dst, const struct filter *src);
 int         filter_knote_create(struct filter *filt, struct knote **knp, struct kevent *src);
