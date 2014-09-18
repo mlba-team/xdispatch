@@ -181,7 +181,7 @@ filter_knote_create(struct filter *filt, struct knote **knp, struct kevent *src)
     return (-1);
   }
   knote_insert(filt, kn);
-  dbg_printf("created kevent %s", kevent_dump(src));
+  dbg_printf("created kevent %s knote %p", kevent_dump(src), kn);
   *knp = kn;
   return 0;
 }
