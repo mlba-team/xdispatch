@@ -230,11 +230,16 @@ windows_kevent_copyout(struct kqueue *kq, int nready,
 {
     struct filter *filt;
 	struct knote* kn;
-    int rv, nret;
+    int rv, nret = 0;
 
     //FIXME: not true for EVFILT_IOCP
     kn = (struct knote *) iocp_buf.overlap;
     assert(kn);
+    if (kn->kn_flags & KNFL_KNOTE_DELETED) {
+      dbg_printf("Dropping deleted knote %p", kn);
+      knote_release(kn);
+      return 0;
+    }
     filt = &kq->kq_filt[~(kn->kev.filter)];
     rv = filt->kf_copyout(eventlist, kn, &iocp_buf);
     if (slowpath(rv < 0)) {
