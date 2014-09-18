@@ -241,6 +241,11 @@ windows_kevent_copyout(struct kqueue *kq, int nready,
       knote_release(kn);
       return 0;
     }
+    if (kn->kev.flags & EV_DISABLE) {
+      dbg_printf("Dropping disabled knote %p", kn);
+      knote_release(kn);
+      return 0;
+    }
     filt = &kq->kq_filt[~(kn->kev.filter)];
     rv = filt->kf_copyout(eventlist, kn, &iocp_buf);
     if (slowpath(rv < 0)) {
