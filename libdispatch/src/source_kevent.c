@@ -915,7 +915,7 @@ _dispatch_run_timers2(unsigned int timer)
 			_dispatch_timer_list_update(ds);
 			continue;
 		}
-		if (!ds->ds_timer.target) {
+        if (!ds->ds_timer.target || !ds->ds_timer.interval) {
 			// no configured timers on the list
 			break;
 		}
