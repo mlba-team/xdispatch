@@ -26,92 +26,60 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-class queue::data
-{
-public:
-    data (){ }
-
-
-    data (
-        const data &other
-    )
-        : native( other.native ),
-          label( other.label )
-    {
-        XDISPATCH_ASSERT( native );
-        dispatch_retain( native );
-    }
-
-    ~data ()
-    {
-        if( native )
-            dispatch_release( native );
-    }
-
-    dispatch_queue_t native;
-    std::string label;
-};
-
-
 queue::queue (
     dispatch_queue_t q
 )
-    : object(),
-      d( new data )
+    : m_native( q ),
+      m_label( dispatch_queue_get_label( q ) )
 {
-    XDISPATCH_ASSERT( d.get() );
-    dispatch_retain( q );
-    d->native = q;
-    XDISPATCH_ASSERT( d->native );
-    d->label = std::string( dispatch_queue_get_label( q ) );
+    XDISPATCH_ASSERT( m_native );
+    dispatch_retain( m_native );
 }
 
 
 queue::queue (
     const queue &other
 )
-    : object( other ),
-      d( new data( *other.d ) )
+    : m_native( other.m_native ),
+      m_label( other.m_label )
 {
-    XDISPATCH_ASSERT( d.get() );
+    XDISPATCH_ASSERT( m_native );
+    dispatch_retain( m_native );
 }
 
 
 queue::queue (
     const std::string &label
 )
-    : object(),
-      d( new data )
+    : m_native( dispatch_queue_create( label.c_str(), NULL ) ),
+      m_label( label )
 {
-    XDISPATCH_ASSERT( d.get() );
-    d->native = dispatch_queue_create( label.c_str(), NULL );
-    XDISPATCH_ASSERT( d->native );
-    d->label = label;
+    XDISPATCH_ASSERT( m_native );
 }
 
 
 queue::queue (
     const char *label
 )
-    : object(),
-      d( new data )
+    : m_native( dispatch_queue_create( label, NULL ) ),
+      m_label( label )
 {
-    XDISPATCH_ASSERT( label );
-    XDISPATCH_ASSERT( d.get() );
-    d->native = dispatch_queue_create( label, NULL );
-    XDISPATCH_ASSERT( d->native );
-    d->label = std::string( label );
+    XDISPATCH_ASSERT( m_native );
 }
 
 
-queue::~queue (){ }
+queue::~queue ()
+{
+    dispatch_release( m_native );
+    m_native = 0;
+}
 
 
 void queue::async(
     operation *op
 )
 {
-    dispatch_async_f( d->native, op, _xdispatch_run_operation );
+    dispatch_async_f( m_native, op, _xdispatch_run_operation );
 }
 
 
@@ -122,7 +90,7 @@ void queue::apply(
 {
     iteration_wrap wrap( op, times );
 
-    dispatch_apply_f( times, d->native, &wrap, _xdispatch_run_iter_wrap );
+    dispatch_apply_f( times, m_native, &wrap, _xdispatch_run_iter_wrap );
 }
 
 
@@ -140,7 +108,7 @@ void queue::after(
     operation *op
 )
 {
-    dispatch_after_f( time, d->native, op, _xdispatch_run_operation );
+    dispatch_after_f( time, m_native, op, _xdispatch_run_operation );
 }
 
 
@@ -148,7 +116,7 @@ void queue::sync(
     operation *op
 )
 {
-    dispatch_sync_f( d->native, op, _xdispatch_run_operation );
+    dispatch_sync_f( m_native, op, _xdispatch_run_operation );
 }
 
 
@@ -157,27 +125,27 @@ void queue::finalizer(
     const queue &q
 )
 {
-    dispatch_set_finalizer_f( d->native, _xdispatch_run_operation );
-    dispatch_set_context( d->native, op );
-    dispatch_set_target_queue( d->native, (dispatch_queue_t)q.native() );
+    dispatch_set_finalizer_f( m_native, _xdispatch_run_operation );
+    dispatch_set_context( m_native, op );
+    dispatch_set_target_queue( m_native, (dispatch_queue_t)q.native() );
 }
 
 
 const std::string & queue::label() const
 {
-    return d->label;
+    return m_label;
 }
 
 
 dispatch_object_t queue::native() const
 {
-    return d->native;
+    return m_native;
 }
 
 
 dispatch_queue_t queue::native_queue() const
 {
-    return d->native;
+    return m_native;
 }
 
 
@@ -191,8 +159,10 @@ xdispatch::queue & queue::operator = (
             other
         );
 
-        d = pointer< data >::unique( new data( *other.d ) );
-        XDISPATCH_ASSERT( d.get() );
+        m_native = other.m_native;
+        XDISPATCH_ASSERT( m_native );
+        dispatch_retain( m_native );
+        m_label = other.m_label;
     }
 
     return *this;

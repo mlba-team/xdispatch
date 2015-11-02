@@ -24,75 +24,54 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-class semaphore::data
-{
-public:
-    data (){ }
-
-
-    data (
-        const data &other
-    )
-        : native( other.native )
-    {
-        XDISPATCH_ASSERT( native );
-        dispatch_retain( native );
-    }
-
-    ~data ()
-    {
-        if( native )
-            dispatch_release( native );
-    }
-
-    dispatch_semaphore_t native;
-};
-
-
 semaphore::semaphore (
     int val
 )
-    : d( new data )
+    : m_native( dispatch_semaphore_create( val ) )
 {
-    XDISPATCH_ASSERT( d.get() );
-    d->native = dispatch_semaphore_create( val );
-    XDISPATCH_ASSERT( d->native );
+    XDISPATCH_ASSERT( m_native );
 }
 
 
 semaphore::semaphore (
     dispatch_semaphore_t sem
 )
-    : d( new data )
+    : m_native( sem )
 {
-    XDISPATCH_ASSERT( sem );
-    XDISPATCH_ASSERT( d.get() );
-    d->native = sem;
-    dispatch_retain( sem );
+    XDISPATCH_ASSERT( m_native );
+    dispatch_retain( m_native );
 }
 
 
 semaphore::semaphore (
     const semaphore &other
 )
-    : d( new data( *other.d ) )
+    : m_native( other.m_native )
 {
-    XDISPATCH_ASSERT( d.get() );
+    XDISPATCH_ASSERT( m_native );
+    dispatch_retain( m_native );
 }
 
 
-semaphore::~semaphore () { }
+semaphore::~semaphore ()
+{
+    if( m_native )
+    {
+        dispatch_release( m_native );
+        m_native = 0;
+    }
+}
 
 
 int semaphore::release()
 {
-    return dispatch_semaphore_signal( d->native );
+    return dispatch_semaphore_signal( m_native );
 }
 
 
 void semaphore::acquire()
 {
-    dispatch_semaphore_wait( d->native, time_forever );
+    dispatch_semaphore_wait( m_native, time_forever );
 }
 
 
@@ -100,7 +79,7 @@ bool semaphore::try_acquire(
     dispatch_time_t time
 )
 {
-    return dispatch_semaphore_wait( d->native, time ) == 0;
+    return dispatch_semaphore_wait( m_native, time ) == 0;
 }
 
 
@@ -114,7 +93,7 @@ bool semaphore::try_acquire(
 
 const dispatch_semaphore_t semaphore::native_semaphore() const
 {
-    return d->native;
+    return m_native;
 }
 
 
@@ -124,8 +103,9 @@ xdispatch::semaphore & semaphore::operator = (
 {
     if( *this != other )
     {
-        d = pointer< data >::unique( new data( *other.d ) );
-        XDISPATCH_ASSERT( d.get() );
+        m_native = other.m_native;
+        XDISPATCH_ASSERT( m_native );
+        dispatch_retain( m_native );
     }
 
     return *this;
@@ -136,7 +116,7 @@ bool semaphore::operator == (
     const semaphore &other
 )
 {
-    return d.get() != NULL && other.d.get() != NULL && d->native == other.d->native;
+    return m_native == other.m_native;
 }
 
 
@@ -144,7 +124,7 @@ bool semaphore::operator != (
     const semaphore &other
 )
 {
-    return d.get() == NULL || other.d.get() == NULL || d->native != other.d->native;
+    return m_native != other.m_native;
 }
 
 
@@ -152,7 +132,7 @@ bool semaphore::operator == (
     const dispatch_semaphore_t &other
 )
 {
-    return d.get() != NULL && d->native == other;
+    return m_native == other;
 }
 
 
@@ -160,7 +140,7 @@ bool semaphore::operator != (
     const dispatch_semaphore_t &other
 )
 {
-    return d.get() == NULL || d->native != other;
+    return m_native != other;
 }
 
 

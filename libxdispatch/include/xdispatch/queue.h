@@ -358,8 +358,8 @@ public:
 
 
 private:
-    class data;
-    pointer< data >::unique d;
+    dispatch_queue_t m_native;
+    std::string m_label;
 };
 
 

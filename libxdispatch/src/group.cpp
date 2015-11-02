@@ -24,38 +24,12 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-class group::data
-{
-public:
-    data (){ }
-
-
-    data (
-        const data &other
-    )
-        : native( other.native )
-    {
-        XDISPATCH_ASSERT( native );
-        dispatch_retain( native );
-    }
-
-    ~data ()
-    {
-        if( native )
-            dispatch_release( native );
-    }
-
-    dispatch_group_t native;
-};
-
 
 group::group ()
     : object(),
-      d( new data )
+      m_native( dispatch_group_create() )
 {
-    XDISPATCH_ASSERT( d.get() );
-    d->native = dispatch_group_create();
-    XDISPATCH_ASSERT( d->native );
+    XDISPATCH_ASSERT( m_native );
 }
 
 
@@ -63,12 +37,10 @@ group::group (
     dispatch_group_t g
 )
     : object(),
-      d( new data )
+      m_native( g )
 {
-    XDISPATCH_ASSERT( g );
-    XDISPATCH_ASSERT( d.get() );
-    dispatch_retain( g );
-    d->native = g;
+    XDISPATCH_ASSERT( m_native );
+    dispatch_retain( m_native );
 }
 
 
@@ -76,14 +48,18 @@ group::group (
     const group &other
 )
     : object( other ),
-      d( new data( *other.d ) )
+      m_native( other.m_native )
 {
-    XDISPATCH_ASSERT( d.get() );
-    XDISPATCH_ASSERT( d->native );
+    XDISPATCH_ASSERT( m_native );
+    dispatch_retain( m_native );
 }
 
 
-group::~group () { }
+group::~group ()
+{
+    dispatch_release( m_native );
+    m_native = 0;
+}
 
 
 void group::async(
@@ -94,7 +70,7 @@ void group::async(
     dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
 
     XDISPATCH_ASSERT( nat_q );
-    dispatch_group_async_f( d->native, nat_q, r, _xdispatch_run_operation );
+    dispatch_group_async_f( m_native, nat_q, r, _xdispatch_run_operation );
 }
 
 
@@ -102,7 +78,7 @@ bool group::wait(
     dispatch_time_t time
 )
 {
-    return dispatch_group_wait( d->native, time ) == 0;
+    return dispatch_group_wait( m_native, time ) == 0;
 }
 
 
@@ -122,19 +98,19 @@ void group::notify(
     dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
 
     XDISPATCH_ASSERT( nat_q );
-    dispatch_group_notify_f( d->native, nat_q, r, _xdispatch_run_operation );
+    dispatch_group_notify_f( m_native, nat_q, r, _xdispatch_run_operation );
 }
 
 
 dispatch_object_t group::native() const
 {
-    return d->native;
+    return m_native;
 }
 
 
 dispatch_group_t group::native_group() const
 {
-    return d->native;
+    return m_native;
 }
 
 
@@ -148,8 +124,9 @@ group & group::operator = (
             other
         );
 
-        d = pointer< data >::unique( new data( *other.d ) );
-        XDISPATCH_ASSERT( d.get() );
+        m_native = other.m_native;
+        XDISPATCH_ASSERT( m_native );
+        dispatch_retain( m_native );
     }
 
     return *this;

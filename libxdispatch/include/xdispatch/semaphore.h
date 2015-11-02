@@ -145,8 +145,7 @@ public:
 
 
 private:
-    class data;
-    pointer< data >::unique d;
+    dispatch_semaphore_t m_native;
 };
 
 
