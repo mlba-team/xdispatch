@@ -29,130 +29,41 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-// static member variables, initialized during library initialization
-static std::map< std::string, semaphore > user_lock_semaphores;
-static synclock rw_lock;
-
-void init_synchronized_feature()
-{
-    // initialize the static variables manually
-    // during library initialization to ensure
-    // everything is set up properly on first use
-    user_lock_semaphores = std::map< std::string, semaphore > ();
-    rw_lock = synclock();
-}
-
-
-synclock::synclock ()
-    : _semaphore( 1 ),
-      _lock_active( false ) { }
-
-
-synclock::synclock (
-    const semaphore &s,
-    const bool auto_lock
+scope_lock::scope_lock (
+    semaphore const &s
 )
-    : _semaphore( s ),
-      _lock_active( false )
+    : _semaphore( const_cast<semaphore&>( s ) ),
+      _lock_active( true )
 {
     XDISPATCH_ASSERT( s.native_semaphore() );
-
-    if( auto_lock )
-        this->lock();
+    _semaphore.acquire();
 }
 
 
-synclock::synclock (
-    const synclock &other,
-    const bool auto_lock
+scope_lock::scope_lock (
+    semaphore const * const s
 )
-    : _semaphore( other._semaphore ),
-      _lock_active( false )
+    : _semaphore( *const_cast<semaphore* const >( s ) ),
+      _lock_active( true )
 {
-    // this could have ugly side-effects like the semaphore
-    // getting assigned a new value but the old one not getting released
-    // so we need to ensure that no lock is currently active
-    XDISPATCH_ASSERT( !other._lock_active );
-
-    if( auto_lock )
-        this->lock();
+    XDISPATCH_ASSERT( s->native_semaphore() );
+    _semaphore.acquire();
 }
 
 
-synclock::synclock (
-    const synclock *other,
-    const bool auto_lock
-)
-    : _semaphore( other->_semaphore ),
-      _lock_active( false )
-{
-    XDISPATCH_ASSERT( other );
-    // this could have ugly side-effects like the semaphore
-    // getting assigned a new value but the old one not getting released
-    // so we need to ensure that no lock is currently active
-    XDISPATCH_ASSERT( !other->_lock_active );
-
-    if( auto_lock )
-        this->lock();
-}
-
-
-synclock::synclock (
-    const std::string &key,
-    const bool auto_lock
-)
-    : _semaphore( 1 ),
-      _lock_active( false )
-{
-    if( user_lock_semaphores.count( key ) != 0 )
-        _semaphore = user_lock_semaphores[ key ];
-    else
-    {
-        XDISPATCH_SYNC_HEADER( rw_lock )
-        {
-            // in the meantime the semaphore might have been created
-            if( user_lock_semaphores.count( key ) != 0 )
-                _semaphore = user_lock_semaphores[ key ];
-            else
-            {
-                // if not create it
-                user_lock_semaphores.insert( std::pair< std::string, semaphore > ( key, _semaphore ) );
-            }
-        }
-    }
-
-    if( auto_lock )
-        this->lock();
-}
-
-
-synclock & synclock::operator = (
-    const synclock &other
-)
-{
-    // this could have ugly side-effects like the semaphore
-    // getting assigned a new value but the old one not getting released
-    // so we need to ensure that no lock is currently active
-    XDISPATCH_ASSERT( !_lock_active );
-    XDISPATCH_ASSERT( !other._lock_active )
-    _semaphore = other._semaphore;
-
-    return *this;
-}
-
-
-synclock::~synclock ()
+scope_lock::~scope_lock ()
 {
     // in a rare case there might an exception have
-    // been thrown and due to this the synclock is
+    // been thrown and due to this the scope_lock is
     // not unlocked properly. We need to handle this rare
     // case by testing for an exception and doing an unlock
     // during destruction.
     // FIXME: After a call to return within the owning loop this
     // is needed as well because no other call to unlock happens...
     if( _lock_active ) // && std::uncaught_exception())
-        this->unlock();
-
+    {
+        release();
+    }
     // the _lock_active variable is
     // used as some kind of state variable
     // to notify if the current object is holding
@@ -164,41 +75,23 @@ synclock::~synclock ()
 }
 
 
-synclock::operator bool () const
+scope_lock::operator bool () const
 {
     return _lock_active;
 }
 
 
-synclock & synclock::lock()
+void scope_lock::release()
 {
-    XDISPATCH_ASSERT( !_lock_active );
-
-    // lock() - and unlock() are called from the same thread,
-    // so no race condition here. Thread-safety is
-    // provided by the used semaphores
-    _semaphore.acquire();
-    _lock_active = true;
-
-    return *this;
+    if( _lock_active )
+    {
+        _semaphore.release();
+        _lock_active = false;
+    }
 }
 
 
-synclock & synclock::unlock()
-{
-    XDISPATCH_ASSERT( _lock_active );
-
-    // lock() - and unlock() are called from the same thread,
-    // so no race condition here. Thread-safety is
-    // provided by the used semaphores
-    _lock_active = false;
-    _semaphore.release();
-
-    return *this;
-}
-
-
-void xdispatch::init_semaphore_for_synclock(
+void xdispatch::init_semaphore_for_scope_lock(
     void *dt
 )
 {

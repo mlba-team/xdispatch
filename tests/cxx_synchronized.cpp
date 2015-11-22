@@ -33,7 +33,7 @@ static const size_t ITERATIONS = 10000; // 10 000
 
 static xdispatch::pointer<std::ostringstream>::shared current_string;
 static std::ostringstream reference_string;
-static xdispatch::synclock lock;
+static xdispatch::semaphore lock = xdispatch::semaphore( 1 );
 static pthread_mutex_t mutex;
 
 inline void append_str(std::ostringstream& str) {

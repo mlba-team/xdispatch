@@ -79,14 +79,8 @@ BOOL WINAPI DllMain(
 
 #endif // ifndef _WIN32
 
-// declared within synchronized.cpp
-void
-init_synchronized_feature();
-
 extern "C" int init()
 {
-    init_synchronized_feature();
-
     return 0;
 }
 

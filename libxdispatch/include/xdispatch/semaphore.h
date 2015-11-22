@@ -71,7 +71,7 @@ public:
     semaphore (
         const semaphore &
     );
-    ~semaphore ();
+    virtual ~semaphore ();
 
     /**
         Release the semaphore.

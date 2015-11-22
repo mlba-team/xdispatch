@@ -119,20 +119,25 @@ public:
     // objects as they cannot be passed a custom argument to their handler
     // function
     // TODO(marius): Still looking for a better solution as those objects will
-    // never get
-    // deleted
-    static std::map< dispatch_source_t, pointer< native_source_wrapper >::shared > xdispatch_source_wrappers;
+    // never get deleted
+    typedef std::map< dispatch_source_t, pointer< native_source_wrapper >::shared > source_wrapper_map;
+    static source_wrapper_map xdispatch_source_wrappers;
 
     inline static pointer< native_source_wrapper >::shared atomic_get(
         dispatch_source_t obj
     )
     {
         synchronized {
-            if( xdispatch_source_wrappers.count( obj ) == 0 )
-                xdispatch_source_wrappers[ obj ] = pointer< native_source_wrapper >::shared( new native_source_wrapper( obj ) );
+            source_wrapper_map::iterator it = xdispatch_source_wrappers.find( obj );
+            if( xdispatch_source_wrappers.end() == it )
+            {
+                it = xdispatch_source_wrappers.insert( xdispatch_source_wrappers.begin(),
+                                                       std::make_pair( obj, pointer< native_source_wrapper >::shared( new native_source_wrapper( obj ) ) )
+                                                     );
+            }
+            return it->second;
         }
-
-        return xdispatch_source_wrappers[ obj ];
+        return pointer< native_source_wrapper >::shared();
     }
 
     dispatch_source_t _source;

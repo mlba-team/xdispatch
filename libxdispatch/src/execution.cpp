@@ -56,17 +56,30 @@ bool iteration_wrap::deref()
     return dispatch_atomic_dec( &ref ) == 0;
 }
 
-
+#if (defined DEBUG)
 inline void set_debugger_threadname( const std::string& name = std::string() )
 {
-#if (defined DEBUG) && (defined __APPLE__ || defined __linux__)
 #  if (defined __linux__)
     prctl(PR_SET_NAME, (unsigned long)( name.c_str() ), 0, 0, 0);
 #  elif (defined __APPLE__)
     pthread_setname_np( name.c_str() );
+#  else
+    // noop
 #  endif
-#endif
 }
+
+inline void set_debugger_threadname_from_queue()
+{
+#  ifdef __APPLE__
+      // disable deprecation warning for get_current_queue
+#     pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#  endif
+    set_debugger_threadname( dispatch_queue_get_label( dispatch_get_current_queue() ) );
+}
+#else
+#  define set_debugger_threadname_from_queue()
+#  define set_debugger_threadname( ... )
+#endif
 
 extern "C"
 void _xdispatch_run_operation(
@@ -79,14 +92,13 @@ void _xdispatch_run_operation(
 
     try
     {
-        set_debugger_threadname( xdispatch::current_queue().label() );
+        set_debugger_threadname_from_queue();
         ( *w )();
         set_debugger_threadname();
     }
     catch( const std::exception &e )
     {
         std::cerr << "##################################################################" << std::endl;
-        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
         std::cerr << "           not recommended, please make sure to catch them before:\n" << std::endl;
         std::cerr << e.what() << std::endl;
@@ -96,7 +108,6 @@ void _xdispatch_run_operation(
     catch( ... )
     {
         std::cerr << "##################################################################" << std::endl;
-        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
         std::cerr << "           not recommended, please make sure to catch them before!" << std::endl;
         std::cerr << "##################################################################" << std::endl;
@@ -119,14 +130,13 @@ void _xdispatch_run_iter_wrap(
 
     try
     {
-        set_debugger_threadname( xdispatch::current_queue().label() );
+        set_debugger_threadname_from_queue();
         ( *( wrap->operation() ) )( index );
         set_debugger_threadname();
     }
     catch( const std::exception &e )
     {
         std::cerr << "##################################################################" << std::endl;
-        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
         std::cerr << "           not recommended, please make sure to catch them before:\n" << std::endl;
         std::cerr << e.what() << std::endl;
@@ -136,7 +146,6 @@ void _xdispatch_run_iter_wrap(
     catch( ... )
     {
         std::cerr << "##################################################################" << std::endl;
-        std::cerr << "           Queue '" << xdispatch::current_queue().label() << "'" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
         std::cerr << "           not recommended, please make sure to catch them before!" << std::endl;
         std::cerr << "##################################################################" << std::endl;
