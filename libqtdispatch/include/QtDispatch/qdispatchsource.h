@@ -70,7 +70,7 @@ protected:
     ) = 0;
 
 
-signals:
+Q_SIGNALS:
     /**
      This signal shall be emitted each time the source the
      type represents has news available. The passed QObject*
@@ -99,6 +99,8 @@ signals:
 class Q_DISPATCH_EXPORT QDispatchSourceTypeSignal
     : public QDispatchSourceType
 {
+    Q_OBJECT
+
 public:
     QDispatchSourceTypeSignal (
         QObject *sender,
@@ -145,7 +147,7 @@ protected:
     );
 
 
-private slots:
+private Q_SLOTS:
     void avail();
 
 
@@ -207,7 +209,7 @@ protected:
     );
 
 
-private slots:
+private Q_SLOTS:
     void finished( qint64 );
 
 
@@ -238,7 +240,7 @@ public:
     ~QDispatchSourceTypeNetworkManager ();
 
 
-private slots:
+private Q_SLOTS:
     void finished(
         QNetworkReply *
     );
@@ -351,7 +353,7 @@ public:
         return qobject_cast< T * > ( _data() );
     }
 
-public slots:
+public Q_SLOTS:
     /**
       Suspends the source, i.e. it will stop
       dispatching the handler. Calls to resume()
@@ -366,9 +368,9 @@ public slots:
     void suspend();
 
 
-private slots:
+private Q_SLOTS:
     void signal(
-        QObject * = NULL
+        QObject*
     );
 
 

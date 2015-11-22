@@ -45,9 +45,8 @@ signals:
 };
 
 extern "C" void Qt_dispatch_source_signal_blocks(){
-    char argv[] = "test";
-    int argc = 1;
-    QDispatchApplication app(argc, (char**)&argv);
+    QTDISPATCH_decl_argv_argc;
+    QDispatchApplication app(argc, argv);
 
         MU_BEGIN_TEST(Qt_dispatch_source_signal_blocks);
 

@@ -38,9 +38,8 @@ extern "C" void Qt_early_dispatch1_lambda(){
     MU_ASSERT_NOT_NULL( q.native() );
     q.async( [=]{ MU_PASS(""); } );
 
-    char argv[] = "test";
-    int argc = 1;
-    QDispatchApplication app(argc, (char**)&argv);
+    QTDISPATCH_decl_argv_argc;
+    QDispatchApplication app(argc, argv);
 
 	app.exec();
 	MU_END_TEST;

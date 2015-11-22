@@ -85,7 +85,7 @@ static void register_cxx_tests(){
     MU_REGISTER_TEST(cxx_dispatch_timer);
     MU_REGISTER_TEST(cxx_dispatch_once1);
     MU_REGISTER_TEST(cxx_synchronized);
-    MU_REGISTER_TEST(cxx_dispatch_fibo);
+    //MU_REGISTER_TEST(cxx_dispatch_fibo);
 
 #if TEST_CXX_BLOCKS
     MU_REGISTER_TEST(cxx_dispatch_cascade_blocks);

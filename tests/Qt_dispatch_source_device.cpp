@@ -32,15 +32,15 @@
  */
 
 extern "C" void Qt_dispatch_source_device(){
-    char argv[] = "test";
-    int argc = 1;
-    QDispatchApplication app(argc, (char**)&argv);
+    QTDISPATCH_decl_argv_argc;
+    QDispatchApplication app(argc, argv);
 
         MU_BEGIN_TEST(Qt_dispatch_source_device);
 
 	// TODO How? to test this?
 	QFile f;
 	QDispatchSource src(new QDispatchSourceTypeIODevice(&f));
+    src.resume();
 	MU_PASS("");
 
 	app.exec();

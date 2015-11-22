@@ -1,16 +1,16 @@
 #
 # CMakeLists.txt
-# 
+#
 # Copyright (c) 2011-2014 MLBA-Team
 # All rights reserved.
-# 
+#
 # @LICENSE_HEADER_START@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,13 +46,13 @@ endif()
 # define file groups
 
 file(GLOB TEST_DISPATCH
-	dispatch_*.c
-	dispatch_*.cpp
-	tests.h 
-	atomic_operations.c
-	posix_api.c
-	pthread_api.c
-	queue_finalizer.c
+  dispatch_*.c
+  dispatch_*.cpp
+  tests.h
+  atomic_operations.c
+  posix_api.c
+  pthread_api.c
+  queue_finalizer.c
 )
 file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c dispatch_*_blocks.cpp)
 file(GLOB TEST_DISPATCH_LAMBDA dispatch_*_lambda.cpp)
@@ -65,9 +65,9 @@ if(HAS_BLOCKS OR NOT HAS_LAMBDAS)
     list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_LAMBDA})
 endif()
 
-file(GLOB TEST_XDISPATCH 
-	cxx_*.cpp
-	cxx_tests.h
+file(GLOB TEST_XDISPATCH
+  cxx_*.cpp
+  cxx_tests.h
 )
 file(GLOB TEST_XDISPATCH_BLOCKS cxx_*_blocks.cpp)
 file(GLOB TEST_XDISPATCH_LAMBDA cxx_*_lambda.cpp)
@@ -94,7 +94,7 @@ if(XDISPATCH_QT_SUPPORT)
     if(NOT HAS_BLOCKS OR MZ_COMPILER_VERSION STREQUAL "42" ) # gcc 4.2 has broken c++ blocks
         list(REMOVE_ITEM TEST_QT ${TEST_QT_BLOCKS})
     endif()
-	
+
     mz_add_definition(XDISPATCH_QT_SUPPORT=1)
 
     # we need to manually define mocced files
@@ -149,12 +149,12 @@ if(MINGW)
     execute_process(COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
-	# and all other times automatically
-	add_custom_command( TARGET xdispatch_tests PRE_LINK
-						COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
-						WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-	)
-	set(RES_OBJECT ${CMAKE_CURRENT_BINARY_DIR}/tests.res)
+  # and all other times automatically
+  add_custom_command( TARGET xdispatch_tests PRE_LINK
+            COMMAND windres --input ${CMAKE_CURRENT_SOURCE_DIR}/tests.rc --output tests.res --output-format=coff
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+  set(RES_OBJECT ${CMAKE_CURRENT_BINARY_DIR}/tests.res)
 endif()
 
 # link this target with all needed libraries

@@ -22,8 +22,14 @@
 # error "no blocks"
 #endif
 
+typedef void (*block_test)(void *);
+
 int main(int argc, char* argv[]) {
 
-  return 0;
+    block_test bt = ^(){
+        printf( "Hello World" );
+    };
+    bt();
+    return 0;
 
 }

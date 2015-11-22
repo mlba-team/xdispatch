@@ -45,11 +45,10 @@ signals:
 };
 
 extern "C" void Qt_dispatch_source_signal_lambda(){
-    char argv[] = "test";
-    int argc = 1;
-    QDispatchApplication app(argc, (char**)&argv);
+    QTDISPATCH_decl_argv_argc;
+    QDispatchApplication app(argc, argv);
 
-        MU_BEGIN_TEST(Qt_dispatch_source_signal_lambda);
+    MU_BEGIN_TEST(Qt_dispatch_source_signal_lambda);
 
     EmitterLambda object;
 
@@ -69,6 +68,7 @@ extern "C" void Qt_dispatch_source_signal_lambda(){
 		MU_ASSERT_EQUAL_HEX(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), QDispatch::currentQueue().native());
 		MU_PASS("");
 	});
+    src.resume();
 
 	// trigger the signal
 	object.notify();

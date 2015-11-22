@@ -369,7 +369,7 @@ int run(
     {
         if( wait( &res ) == pid )
         {
-            if( WEXITSTATUS( res ) == EXIT_SUCCESS )
+            if( WIFEXITED( res ) && WEXITSTATUS( res ) == EXIT_SUCCESS )
                 return 0;
             else
                 return EXIT_FAILURE;

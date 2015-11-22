@@ -85,9 +85,8 @@ static void Qt_dispatch_outer(){
 extern "C" void Qt_free_lambda(){
     MU_BEGIN_TEST(Qt_free_lambda);
 
-    char argv[] = "test";
-    int argc = 1;
-    QDispatchApplication app(argc, (char**)&argv);
+    QTDISPATCH_decl_argv_argc;
+    QDispatchApplication app(argc, argv);
 
 
     Qt_dispatch_outer();

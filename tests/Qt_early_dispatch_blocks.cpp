@@ -54,9 +54,8 @@ extern "C" void Qt_early_dispatch2_blocks(){
     MU_ASSERT_NOT_NULL( q.native() );
     q.async( ^{ MU_PASS(""); } );
 
-    char argv[] = "test";
-    int argc = 1;
-    QDispatchCoreApplication app(argc, (char**)&argv);
+    QTDISPATCH_decl_argv_argc;
+    QDispatchApplication app(argc, argv);
 
     app.exec();
     MU_END_TEST;

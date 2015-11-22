@@ -30,6 +30,11 @@
 # include <QtDispatch/QDispatch>
 #endif
 
+#define QTDISPATCH_decl_argv_argc \
+    char argv0[] = {'t','e','s','t','\0'}; \
+    char* argv[] = { &argv0[0] }; \
+    int argc = 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -76,7 +81,7 @@ void Qt_early_dispatch2_blocks();
 #endif
 
 static void register_qt_tests(){
-  MU_REGISTER_TEST(Qt_dispatch_fibo);
+  //MU_REGISTER_TEST(Qt_dispatch_fibo);
   MU_REGISTER_TEST(Qt_dispatch_debug);
   MU_REGISTER_TEST(Qt_dispatch_source_device);
   MU_REGISTER_TEST(Qt_dispatch_timer);
