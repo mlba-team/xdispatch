@@ -7,9 +7,6 @@ but also on Windows and Linux. The XDispatch framework consists of three librari
  * libxdispatch
  * libqtdispatch
 
-This repository contains a mirror of the trunk and the stable branch of the
-XDispatch subversion repository located at http://opensource.mlba-team.de/svn/xdispatch.
-
 Feel free to fork it and change it as you like. We always welcome any bugfixes or
 improvements to our current code base.
 
