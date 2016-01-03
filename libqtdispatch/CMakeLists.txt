@@ -1,16 +1,16 @@
 #
 # CMakeLists.txt
-# 
+#
 # Copyright (c) 2011-2016 MLBA-Team
 # All rights reserved.
-# 
+#
 # @LICENSE_HEADER_START@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ file(GLOB QINCLUDE_H
 )
 file(GLOB QINCLUDE include/QtDispatch/Q*)
 
-# include qt headers (if found)	
+# include qt headers (if found)
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -62,19 +62,19 @@ source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
 
 # res file
 if(WIN32)
-	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+        set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
 
 if( IOS )
-	set( QTDISPATCH_BUILD_TYPE STATIC )
+        set( QTDISPATCH_BUILD_TYPE STATIC )
 else()
-	set( QTDISPATCH_BUILD_TYPE SHARED )
+        set( QTDISPATCH_BUILD_TYPE SHARED )
 endif()
 
 add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QMOC} ${QINCLUDE_H} ${RES_FILE})
 
-target_link_libraries(QtDispatch xdispatch)
+target_link_libraries(QtDispatch xdispatch dispatch)
 qt5_use_modules(QtDispatch Widgets Network)
 
 mz_target_props(QtDispatch)
@@ -100,7 +100,7 @@ if(IOS)
     install(DIRECTORY include/QtDispatch
                 DESTINATION include
                 PATTERN "*.svn" EXCLUDE)
-                
+
 elseif(APPLE)
     set_property(TARGET QtDispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET QtDispatch PROPERTY PUBLIC_HEADER ${QINCLUDE_H})
