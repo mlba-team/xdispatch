@@ -74,7 +74,10 @@ endif()
 
 add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QMOC} ${QINCLUDE_H} ${RES_FILE})
 
-target_link_libraries(QtDispatch xdispatch dispatch)
+target_link_libraries(QtDispatch xdispatch)
+if( NOT APPLE )
+    target_link_libraries(QtDispatch dispatch)
+endif()
 qt5_use_modules(QtDispatch Widgets Network)
 
 mz_target_props(QtDispatch)
