@@ -153,13 +153,13 @@ public:
     void enableAllFinishedSignal();
 
 
-public slots:
+public Q_SLOTS:
     void resume();
 
     void suspend();
 
 
-signals:
+Q_SIGNALS:
     /**
     This will be emitted additionally to any function
     or block submitted via notify().

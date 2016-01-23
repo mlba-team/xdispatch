@@ -182,7 +182,7 @@ public:
     );
 
 
-public slots:
+public Q_SLOTS:
     void suspend();
 
     void resume();

@@ -172,7 +172,7 @@ public:
     );
 
 
-public slots:
+public Q_SLOTS:
     /**
       Starts the timer.
       @remarks A new created timer will be stopped.
