@@ -60,7 +60,7 @@ bool iteration_wrap::deref()
 inline void set_debugger_threadname( const std::string& name = std::string() )
 {
 #  if (defined __linux__)
-    prctl(PR_SET_NAME, (unsigned long)( name.c_str() ), 0, 0, 0);
+    prctl(PR_SET_NAME, (unsigned long)( name.c_str() ), 0, 0, 0); // NOLINT(runtime/int)
 #  elif (defined __APPLE__)
     pthread_setname_np( name.c_str() );
 #  else

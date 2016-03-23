@@ -121,7 +121,7 @@ public:
         C++ object. Use this, if you need to use the plain C Interface
         of libdispatch.
     */
-    const dispatch_semaphore_t native_semaphore() const;
+    dispatch_semaphore_t native_semaphore() const;
 
     semaphore & operator = (
         const semaphore &

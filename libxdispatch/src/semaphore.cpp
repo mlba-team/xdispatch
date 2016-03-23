@@ -91,7 +91,7 @@ bool semaphore::try_acquire(
 }
 
 
-const dispatch_semaphore_t semaphore::native_semaphore() const
+dispatch_semaphore_t semaphore::native_semaphore() const
 {
     return m_native;
 }
