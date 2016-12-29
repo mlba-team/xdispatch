@@ -62,7 +62,7 @@ enum {
 #define dx_debug(x, y, z) (x)->do_vtable->do_debug((x), (y), (z))
 #define dx_dispose(x) (x)->do_vtable->do_dispose(x)
 #define dx_invoke(x) (x)->do_vtable->do_invoke(x)
-#define dx_probe(x) (x)->do_vtable->do_probe(x)
+#define dx_probe(x) (((x)->do_vtable->do_probe) ? (x)->do_vtable->do_probe(x) : 1)
 
 #define DISPATCH_STRUCT_HEADER(x, y)	\
 	const struct y *do_vtable;	\
