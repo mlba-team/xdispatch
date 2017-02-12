@@ -90,12 +90,15 @@ void _xdispatch_run_operation(
     operation *w = static_cast< operation * > ( dt );
     XDISPATCH_ASSERT( w );
 
+#if !(defined DEBUG)
     try
+#endif
     {
         set_debugger_threadname_from_queue();
         ( *w )();
         set_debugger_threadname();
     }
+#if !(defined DEBUG)
     catch( const std::exception &e )
     {
         std::cerr << "##################################################################" << std::endl;
@@ -113,6 +116,7 @@ void _xdispatch_run_operation(
         std::cerr << "##################################################################" << std::endl;
         std::terminate();
     }
+#endif
     if( w->auto_delete() )
         delete w;
 } // _xdispatch_run_operation
@@ -128,12 +132,15 @@ void _xdispatch_run_iter_wrap(
     iteration_wrap *wrap = static_cast< iteration_wrap * > ( dt );
     XDISPATCH_ASSERT( wrap );
 
+#if !(defined DEBUG)
     try
+#endif
     {
         set_debugger_threadname_from_queue();
         ( *( wrap->operation() ) )( index );
         set_debugger_threadname();
     }
+#if !(defined DEBUG)
     catch( const std::exception &e )
     {
         std::cerr << "##################################################################" << std::endl;
@@ -151,6 +158,7 @@ void _xdispatch_run_iter_wrap(
         std::cerr << "##################################################################" << std::endl;
         std::terminate();
     }
+#endif
 } // _xdispatch_run_iter_wrap
 
 
