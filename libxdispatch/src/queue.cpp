@@ -59,12 +59,14 @@ queue::queue (
 
 
 queue::queue (
-    const char *label
+    const std::string &label,
+    const queue& target
 )
-    : m_native( dispatch_queue_create( label, NULL ) ),
+    : m_native( dispatch_queue_create( label.c_str(), NULL ) ),
       m_label( label )
 {
     XDISPATCH_ASSERT( m_native );
+    target_queue( target );
 }
 
 

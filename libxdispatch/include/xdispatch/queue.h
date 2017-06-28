@@ -56,18 +56,20 @@ public:
       Creates a new queue using the given
       dispatch_queue_t object
       */
-    queue (
+    explicit queue (
         dispatch_queue_t
     );
     /**
       Creates a new serial queue featuring
-      the given label
+      the given label and optionally using the
+      given target queue
       */
-    queue (
-        const char *label
+    explicit queue (
+        const std::string &
     );
     queue (
-        const std::string &
+        const std::string &,
+        const queue&
     );
     queue (
         const queue &
