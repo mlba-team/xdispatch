@@ -87,13 +87,6 @@ set_target_properties( QtDispatch PROPERTIES
     SOVERSION ${XDISPATCH_VERSION}
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
 )
-if( MZ_IS_CLANG )
-    set_target_properties( QtDispatch PROPERTIES
-        # supress a warning with Qt5 and clang deprecating 'register'
-        INTERFACE_COMPILE_DEFINITIONS register={};
-        COMPILE_FLAGS -Dregister={};
-    )
-endif()
 
 if(IOS)
     install(TARGETS QtDispatch
