@@ -36,7 +36,7 @@ enable_testing()
 if(NOT HAS_MZ_GLOBAL)
     set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
     include(build/global.cmake)
-	
+
 	# We need to ouput everything into the same directory
     set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
     set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
@@ -46,8 +46,8 @@ endif()
 # is the used compiler clang? if so we need blocks support
 if(MZ_IS_CLANG AND NOT APPLE)
     message("-- linking with the BlocksRuntime")
-    mz_find_include_library(BlocksRuntime 
-        SYS 0 
+    mz_find_include_library(BlocksRuntime
+        SYS 0
         SRC libblocksruntime libblocksruntime BlocksRuntime
     )
 
@@ -169,6 +169,6 @@ if( XDISPATCH_INCLUDE_PACKAGING )
     else() # Windows ...
         include(package/windows/zip.cmake)
     endif()
-                
+
     include(CPack)
 endif()

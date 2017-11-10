@@ -80,8 +80,6 @@ if( NOT APPLE )
 endif()
 qt5_use_modules(QtDispatch Widgets Network)
 
-mz_target_props(QtDispatch)
-mz_auto_format(QtDispatch)
 set_target_properties( QtDispatch PROPERTIES
     VERSION ${XDISPATCH_VERSION}
     SOVERSION ${XDISPATCH_VERSION}
@@ -115,3 +113,6 @@ else()
                 COMPONENT libQtDispatch-dev
                 PATTERN "*.svn" EXCLUDE)
 endif()
+
+mz_target_props(QtDispatch)
+mz_auto_format(QtDispatch)

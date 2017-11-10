@@ -88,7 +88,7 @@ if(WIN32)
 	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
-  
+
 # add new target
 add_definitions(-DDISPATCH_MAKEDLL)
 add_definitions(-D_GNU_SOURCE)
@@ -96,7 +96,7 @@ if(XDISPATCH_QT_SUPPORT)
     add_definitions(-DXDISPATCH_QT_SUPPORT)
 endif()
 add_library(${NAME} SHARED ${INCL} ${CORE} ${SHIM} ${PLATFORM_OS} ${PLATFORM} ${RES_FILE})
-  
+
 # link this target with all needed libraries
 message("-- linking dispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})

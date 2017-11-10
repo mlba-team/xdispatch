@@ -33,13 +33,13 @@ file(GLOB CXX_INCL include/xdispatch/*.h include/xdispatch/dispatch)
 file(GLOB CXX src/*.cpp src/*.h)
 source_group(xdispatch FILES ${CXX_INCL})
 source_group(cxx FILES ${CXX})
-  
+
 # res file
 if(WIN32)
 	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
-  
+
 # add new target xdispatch
 mz_add_definition(XDISPATCH_MAKEDLL)
 if( IOS )
@@ -49,12 +49,10 @@ else()
 endif()
 
 add_library(${NAME} ${XDISPATCH_BUILD_TYPE} ${CXX_INCL} ${CXX} ${RES_FILE})
-  
+
 # link this target with all needed libraries
 message("-- linking xdispatch with: ${LIBS}")
 target_link_libraries(${NAME} ${LIBS})
-mz_target_props(${NAME})
-mz_auto_format(${NAME})
 
 set_target_properties( xdispatch PROPERTIES
     VERSION ${XDISPATCH_VERSION}
@@ -69,8 +67,8 @@ if(IOS)
                 ARCHIVE DESTINATION lib)
     install(DIRECTORY include/xdispatch
                 DESTINATION include
-                PATTERN "*.svn" EXCLUDE)                
-		
+                PATTERN "*.svn" EXCLUDE)
+
 elseif(APPLE)
     set_property(TARGET xdispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET xdispatch PROPERTY PUBLIC_HEADER ${CXX_INCL})
@@ -90,3 +88,5 @@ else()
                 PATTERN "*.svn" EXCLUDE)
 endif()
 
+mz_target_props(${NAME})
+mz_auto_format(${NAME})
