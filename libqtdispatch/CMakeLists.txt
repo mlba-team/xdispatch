@@ -38,18 +38,8 @@ file(GLOB QINCLUDE_H
 )
 file(GLOB QINCLUDE include/QtDispatch/Q*)
 
-# include qt headers (if found)
-include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
-
 # tell qt we're building a dll
 mz_add_definition(QT_MAKEDLL)
-
-# assume an installation
-include_directories(
-    include
-)
 
 # moc qt files
 set( CMAKE_AUTOMOC OFF )
@@ -67,13 +57,17 @@ if(WIN32)
 endif()
 
 if( IOS )
-        set( QTDISPATCH_BUILD_TYPE STATIC )
+    set( QTDISPATCH_BUILD_TYPE STATIC )
 else()
-        set( QTDISPATCH_BUILD_TYPE SHARED )
+    set( QTDISPATCH_BUILD_TYPE SHARED )
 endif()
 
 add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QMOC} ${QINCLUDE_H} ${RES_FILE})
-
+# include qt headers (if found)
+target_include_directories(QtDispatch
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+    INTERFACE include
+)
 target_link_libraries(QtDispatch xdispatch)
 if( NOT APPLE )
     target_link_libraries(QtDispatch dispatch)
@@ -83,7 +77,6 @@ qt5_use_modules(QtDispatch Widgets Network)
 set_target_properties( QtDispatch PROPERTIES
     VERSION ${XDISPATCH_VERSION}
     SOVERSION ${XDISPATCH_VERSION}
-    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
 )
 
 if(IOS)

@@ -37,7 +37,7 @@ if(NOT HAS_MZ_GLOBAL)
     set(MZ_TOOLS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build")
     include(build/global.cmake)
 
-	# We need to ouput everything into the same directory
+    # We need to ouput everything into the same directory
     set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Library output path")
     set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/ CACHE PATH "Executable output path")
     message("-- Setting binary output path: ${CMAKE_BINARY_DIR}/bin/")
@@ -52,17 +52,16 @@ if(MZ_IS_CLANG AND NOT APPLE)
     )
 
     mz_add_flag(CLANG -fblocks)
-    include_directories(${BLOCKSRUNTIME_INCLUDE_DIRS})
-    set(LIBS ${LIBS} ${BLOCKSRUNTIME_LIBRARIES})
+    set(LIBS ${LIBS} BlocksRuntime)
 endif()
 
 # are we running on mac os and want to build universal binaries?
 if(APPLE)
-	option(XDISPATCH_UNIVERSAL "Enable to build universal binaries" off)
-	if( XDISPATCH_UNIVERSAL )
-		message("-- building universal binaries")
-		mz_add_flag(GCC -arch i386 -arch x86_64)
-	endif()
+    option(XDISPATCH_UNIVERSAL "Enable to build universal binaries" off)
+    if( XDISPATCH_UNIVERSAL )
+            message("-- building universal binaries")
+            mz_add_flag(GCC -arch i386 -arch x86_64)
+    endif()
 endif()
 
 check_include_files(sys/event.h FOUND_KQUEUE_IMPL)
@@ -91,28 +90,28 @@ if(FORCE_OWN_LIBKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_KQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_KQUEUE=1)
     mz_add_library(libkqueue libkqueue)
-    include_directories(
-    	libkqueue/include
+    target_include_directories(libkqueue
+        PUBLIC libkqueue/include
     )
 endif()
 
 # currently there's a bug in mingw causing the
 # builtin atomic opts not to work without this
 if(MINGW AND MZ_32BIT)
-	mz_add_flag(GCC -march=i486)
+        mz_add_flag(GCC -march=i486)
 endif()
 
 # we hide all unneeded symbols
 if(NOT WIN32)
-	mz_add_flag(GCC -fvisibility=hidden)
+        mz_add_flag(GCC -fvisibility=hidden)
 endif()
 
 if(FORCE_OWN_LIBPTHREAD_WORKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_WORKQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_WORKQUEUE=1)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
-    include_directories(
-    	libpthread_workqueue/include
+    target_include_directories(libpthread_workqueue
+        PUBLIC libpthread_workqueue/include
     )
 endif()
 
@@ -137,9 +136,9 @@ mz_add_library(xdispatch libxdispatch)
 find_package(Qt5Core QUIET)
 
 if( Qt5Core_VERSION )
-	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
+    option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
 else()
-	option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
+    option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
 endif()
 
 if(XDISPATCH_QT_SUPPORT)
