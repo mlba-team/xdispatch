@@ -26,16 +26,19 @@ mz_add_flag(CLANG -DBlocksRuntime_EXPORTS -fPIC -std=c99 -Wall -Wextra -W -pedan
 
 OPTION(STATIC_BLOCKSRUNTIME "Enable to build libBlocksRuntime as static library" OFF)
 if(STATIC_BLOCKSRUNTIME)
-	add_library(BlocksRuntime STATIC ${HEADERS} ${SRC})
+        add_library(BlocksRuntime STATIC ${HEADERS} ${SRC})
 else()
-	add_library(BlocksRuntime SHARED ${HEADERS} ${SRC})
+        add_library(BlocksRuntime SHARED ${HEADERS} ${SRC})
 endif()
 
 set_target_properties(BlocksRuntime PROPERTIES DEBUG_POSTFIX "D")
 set_property(TARGET BlocksRuntime PROPERTY VERSION 0.1-1)
 set_property(TARGET BlocksRuntime PROPERTY SOVERSION 0.1-1)
+target_include_directories(BlocksRuntime
+    PUBLIC ${CMAKE_CURRENT_LIST_DIR}
+)
 
-            
+
 if(APPLE)
     set_property(TARGET BlocksRuntime PROPERTY FRAMEWORK TRUE)
     set_property(TARGET BlocksRuntime PROPERTY PUBLIC_HEADER Block.h)
@@ -52,4 +55,4 @@ else()
     install(FILES Block.h Block_private.h
             DESTINATION include
             COMPONENT libxdispatch)
-endif()            
+endif()

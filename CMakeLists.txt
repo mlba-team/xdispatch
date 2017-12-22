@@ -90,7 +90,7 @@ if(FORCE_OWN_LIBKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_KQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_KQUEUE=1)
     mz_add_library(libkqueue libkqueue)
-    target_include_directories(libkqueue
+    target_include_directories(kqueue
         PUBLIC libkqueue/include
     )
 endif()
@@ -110,7 +110,7 @@ if(FORCE_OWN_LIBPTHREAD_WORKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_WORKQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_WORKQUEUE=1)
     mz_add_library(libpthread_workqueue libpthread_workqueue)
-    target_include_directories(libpthread_workqueue
+    target_include_directories(pthread_workqueue
         PUBLIC libpthread_workqueue/include
     )
 endif()
