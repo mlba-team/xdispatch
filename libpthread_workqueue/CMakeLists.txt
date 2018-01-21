@@ -23,27 +23,27 @@ project(pthread_workqueue)
 file(GLOB_RECURSE INCL include/*.h)
 source_group(includes FILES ${INCL})
 
-if(WIN32)
-	file(GLOB SRC 
-		src/windows/*.h
-		src/windows/*.c
-		src/*.h
-		src/*.c
-	)
-	add_definitions(
-		-DLIBPTHREAD_WORKQUEUE_EXPORTS
-		-D_USRDLL
-		-D_WINDLL
-	)
+if(MZ_WINDOWS)
+    file(GLOB SRC
+        src/windows/*.h
+        src/windows/*.c
+        src/*.h
+        src/*.c
+    )
+    add_definitions(
+        -DLIBPTHREAD_WORKQUEUE_EXPORTS
+        -D_USRDLL
+        -D_WINDLL
+    )
 else()
-	file(GLOB SRC 
-		src/posix/*.h
-		src/posix/*.c
+    file(GLOB SRC
+        src/posix/*.h
+        src/posix/*.c
                 src/linux/*.h
                 src/linux/*.c
-		src/*.h
-		src/*.c
-	)
+        src/*.h
+        src/*.c
+    )
         include_directories(
             src
         )
@@ -59,7 +59,7 @@ source_group(src FILES ${SRC})
 
 #includes
 include_directories(
-	include
+    include
 )
 
 #library (static or shared)
@@ -71,7 +71,7 @@ if(STATIC_WORKQUEUE)
 else()
     add_library(pthread_workqueue SHARED ${SRC} ${INCL})
 endif()
-if(NOT WIN32)
+if(NOT MZ_WINDOWS)
     target_link_libraries(pthread_workqueue pthread rt)
 endif()
 set_target_properties(pthread_workqueue PROPERTIES DEBUG_POSTFIX "D")
@@ -80,6 +80,6 @@ set_target_properties(pthread_workqueue PROPERTIES DEBUG_POSTFIX "D")
 option(WORKQUEUE_TESTS "Enable to build tests for libpthread_workqueue" OFF)
 if(WORKQUEUE_TESTS)
         message("-- Adding tests for libpthread_workqueue")
-	add_subdirectory(testing)
+    add_subdirectory(testing)
 endif()
 

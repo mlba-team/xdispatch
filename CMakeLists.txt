@@ -1,7 +1,7 @@
 #
 # CMakeLists.txt
 #
-# Copyright (c) 2011-2017 MLBA-Team
+# Copyright (c) 2011-2018 MLBA-Team
 # All rights reserved.
 #
 # @LICENSE_HEADER_START@
@@ -44,7 +44,7 @@ if(NOT HAS_MZ_GLOBAL)
 endif()
 
 # is the used compiler clang? if so we need blocks support
-if(MZ_IS_CLANG AND NOT APPLE)
+if(MZ_IS_CLANG AND NOT MZ_MACOS)
     message("-- linking with the BlocksRuntime")
     mz_find_include_library(BlocksRuntime
         SYS 0
@@ -56,7 +56,7 @@ if(MZ_IS_CLANG AND NOT APPLE)
 endif()
 
 # are we running on mac os and want to build universal binaries?
-if(APPLE)
+if(MZ_MACOS)
     option(XDISPATCH_UNIVERSAL "Enable to build universal binaries" off)
     if( XDISPATCH_UNIVERSAL )
             message("-- building universal binaries")
@@ -102,7 +102,7 @@ if(MINGW AND MZ_32BIT)
 endif()
 
 # we hide all unneeded symbols
-if(NOT WIN32)
+if(NOT MZ_WINDOWS)
         mz_add_flag(GCC -fvisibility=hidden)
 endif()
 
@@ -119,7 +119,7 @@ endif()
 if(NOT FORCE_OWN_LIBDISPATCH)
     message("   >> using system installed libdispatch")
     mz_add_definition("HAVE_NATIVE_DISPATCH_H=1")
-    if(NOT APPLE) # mac os is currently the only operating system with auto linking
+    if(NOT MZ_MACOS) # mac os is currently the only operating system with auto linking
         set(LIBS ${LIBS} dispatch)
     endif()
 else()
@@ -159,9 +159,9 @@ endif()
 # packaging
 
 if( XDISPATCH_INCLUDE_PACKAGING )
-    if(APPLE)
+    if(MZ_MACOS)
         include(package/osx/pkg.cmake)
-    elseif(UNIX)
+    elseif(MZ_LINUX)
         include(package/rpm/rpm.cmake)
         include(package/debian/deb.cmake)
         include(package/ubuntu/deb.cmake)

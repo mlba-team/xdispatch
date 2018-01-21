@@ -41,7 +41,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DI
 file(GLOB_RECURSE INCL include/*.h)
 source_group(includes FILES ${INCL})
 
-if(WIN32)
+if(MZ_WINDOWS)
     file(GLOB SRC
         src/windows/*.h
         src/windows/*.c
@@ -113,10 +113,9 @@ else()
     add_library(kqueue SHARED ${SRC} ${INCL})
 endif()
 
-if(WIN32)
+if(MZ_WINDOWS)
     set(LIB ${LIB} Ws2_32)
-endif()
-if(NOT WIN32)
+else()
     set(LIB ${LIB} pthread rt)
 endif()
 target_link_libraries(kqueue ${LIB})

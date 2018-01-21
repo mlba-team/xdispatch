@@ -28,7 +28,7 @@ set(NAME dispatch)
 project(${NAME} C)
 
 # do we have kernel support for pthread_workqueues?
-if(NOT APPLE)
+if(NOT MZ_MACOS)
     set(LIBS ${LIBS} pthread_workqueue)
 endif()
 
@@ -49,11 +49,11 @@ check_symbol_exists( CLOCK_UPTIME "time.h" HAVE_DECL_CLOCK_UPTIME)
 check_symbol_exists( CLOCK_MONOTONIC "time.h" HAVE_DECL_CLOCK_MONOTONIC)
 check_function_exists( sysconf HAVE_SYSCONF)
 
-if(LINUX)
+if(MZ_LINUX)
     set(LIBS ${LIBS} rt m)
 endif()
 
-if(NOT WIN32)
+if(NOT MZ_WINDOWS)
     set(LIBS ${LIBS} pthread)
 endif()
 
@@ -62,15 +62,15 @@ if(MINGW)
 endif()
 
 # platforms
-if(WIN32)
-	file(GLOB PLATFORM_OS platform/windows/*.c platform/windows/*.h)
-	source_group(platform\\windows FILES ${PLATFORM_OS})
-elseif(APPLE)
-	file(GLOB PLATFORM_OS platform/darwin/*.c platform/darwin/*.h)
-	source_group(platform\\darwin FILES ${PLATFORM_OS})
+if(MZ_WINDOWS)
+    file(GLOB PLATFORM_OS platform/windows/*.c platform/windows/*.h)
+    source_group(platform\\windows FILES ${PLATFORM_OS})
+elseif(MZ_MACOS)
+    file(GLOB PLATFORM_OS platform/darwin/*.c platform/darwin/*.h)
+    source_group(platform\\darwin FILES ${PLATFORM_OS})
 else()
-	file(GLOB PLATFORM_OS platform/posix/*.c platform/posix/*.h)
-	source_group(platform\\posix FILES ${PLATFORM_OS})
+    file(GLOB PLATFORM_OS platform/posix/*.c platform/posix/*.h)
+    source_group(platform\\posix FILES ${PLATFORM_OS})
 endif()
 file(GLOB PLATFORM platform/*.h platform/*.c)
 source_group(platform FILES ${PLATFORM})
@@ -84,9 +84,9 @@ source_group(core FILES ${CORE})
 source_group(core\\shims FILES ${SHIM})
 
 # res file
-if(WIN32)
-	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+if(MZ_WINDOWS)
+    set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
 
 # add new target
@@ -115,7 +115,7 @@ include_directories(
 )
 
 
-if(APPLE)
+if(MZ_MACOS)
     set_property(TARGET dispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET dispatch PROPERTY PUBLIC_HEADER ${INCL})
 

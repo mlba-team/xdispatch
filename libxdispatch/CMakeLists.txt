@@ -1,7 +1,7 @@
 #
 # CMakeLists.txt
 #
-# Copyright (c) 2011-2017 MLBA-Team
+# Copyright (c) 2011-2018 MLBA-Team
 # All rights reserved.
 #
 # @LICENSE_HEADER_START@
@@ -35,17 +35,17 @@ source_group(xdispatch FILES ${CXX_INCL})
 source_group(cxx FILES ${CXX})
 
 # res file
-if(WIN32)
-	set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+if(MZ_WINDOWS)
+    set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
 
 # add new target xdispatch
 mz_add_definition(XDISPATCH_MAKEDLL)
-if( IOS )
-	set( XDISPATCH_BUILD_TYPE STATIC )
+if( MZ_IOS )
+    set( XDISPATCH_BUILD_TYPE STATIC )
 else()
-	set( XDISPATCH_BUILD_TYPE SHARED )
+    set( XDISPATCH_BUILD_TYPE SHARED )
 endif()
 
 add_library(${NAME} ${XDISPATCH_BUILD_TYPE} ${CXX_INCL} ${CXX} ${RES_FILE})
@@ -60,7 +60,7 @@ set_target_properties( xdispatch PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include"
 )
 
-if(IOS)
+if(MZ_IOS)
     install(TARGETS xdispatch
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
@@ -69,7 +69,7 @@ if(IOS)
                 DESTINATION include
                 PATTERN "*.svn" EXCLUDE)
 
-elseif(APPLE)
+elseif(MZ_MACOS)
     set_property(TARGET xdispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET xdispatch PROPERTY PUBLIC_HEADER ${CXX_INCL})
 

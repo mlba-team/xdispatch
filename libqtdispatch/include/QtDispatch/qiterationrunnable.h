@@ -1,7 +1,7 @@
 /*
 * qiterationrunnable.h
 *
-* Copyright (c) 2011-2017 MLBA-Team
+* Copyright (c) 2011-2018 MLBA-Team
 * All rights reserved.
 *
 * @LICENSE_HEADER_START@

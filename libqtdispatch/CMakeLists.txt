@@ -1,7 +1,7 @@
 #
 # CMakeLists.txt
 #
-# Copyright (c) 2011-2017 MLBA-Team
+# Copyright (c) 2011-2018 MLBA-Team
 # All rights reserved.
 #
 # @LICENSE_HEADER_START@
@@ -51,12 +51,12 @@ source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
 
 # res file
-if(WIN32)
+if(MZ_WINDOWS)
         set(RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 endif()
 
-if( IOS )
+if( MZ_IOS )
     set( QTDISPATCH_BUILD_TYPE STATIC )
 else()
     set( QTDISPATCH_BUILD_TYPE SHARED )
@@ -69,7 +69,7 @@ target_include_directories(QtDispatch
     INTERFACE include
 )
 target_link_libraries(QtDispatch xdispatch)
-if( NOT APPLE )
+if( NOT MZ_MACOS )
     target_link_libraries(QtDispatch dispatch)
 endif()
 qt5_use_modules(QtDispatch Widgets Network)
@@ -79,7 +79,7 @@ set_target_properties( QtDispatch PROPERTIES
     SOVERSION ${XDISPATCH_VERSION}
 )
 
-if(IOS)
+if(MZ_IOS)
     install(TARGETS QtDispatch
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
@@ -88,7 +88,7 @@ if(IOS)
                 DESTINATION include
                 PATTERN "*.svn" EXCLUDE)
 
-elseif(APPLE)
+elseif(MZ_APPLE)
     set_property(TARGET QtDispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET QtDispatch PROPERTY PUBLIC_HEADER ${QINCLUDE_H})
 
