@@ -228,6 +228,6 @@ QDebug operator << (
 }
 
 
-#include <moc_qdispatchgroup.moc>
+#include <qdispatchgroup.moc>
 
 QT_END_NAMESPACE

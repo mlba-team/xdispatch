@@ -1,0 +1,3 @@
+[submodule "build"]
+	path = build
+	url = ssh://git@heimdall.mlba-team.de:10022/opensource/mz-cmaketools.git

@@ -42,10 +42,7 @@ file(GLOB QINCLUDE include/QtDispatch/Q*)
 mz_add_definition(QT_MAKEDLL)
 
 # moc qt files
-set( CMAKE_AUTOMOC OFF )
-mz_auto_moc(MOC ${QHEADER} ${QINCLUDE_H})
-qt5_generate_moc(src/qdispatchgroup.cpp ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
-set(QMOC ${CMAKE_CURRENT_BINARY_DIR}/moc_qdispatchgroup.moc)
+set( CMAKE_AUTOMOC ON )
 
 source_group(src FILES ${QSRC} ${QHEADER})
 source_group(includes FILES ${QINCLUDE} ${QINCLUDE_H})
@@ -62,7 +59,7 @@ else()
     set( QTDISPATCH_BUILD_TYPE SHARED )
 endif()
 
-add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QMOC} ${QINCLUDE_H} ${RES_FILE})
+add_library(QtDispatch ${QTDISPATCH_BUILD_TYPE} ${QSRC} ${MOC} ${QHEADER} ${QINCLUDE} ${QINCLUDE_H} ${RES_FILE})
 # include qt headers (if found)
 target_include_directories(QtDispatch
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
