@@ -87,10 +87,7 @@ __XDISPATCH_BEGIN_NAMESPACE
 template< typename _Type >
 struct pointer
 {
-    // although we have std::unique_ptr, we cannot use it
-    // as this would mean different sizes whenever mixing
-    // clang and gcc
-    typedef ::std::auto_ptr< _Type > unique;
+    typedef ::std::unique_ptr< _Type > unique;
     typedef ::std::shared_ptr< _Type > shared;
     typedef ::std::weak_ptr< _Type > weak;
 };

@@ -22,15 +22,7 @@
 # error "no blocks"
 #endif
 
-#include <stdio.h>
-
-typedef void (*block_test)(void *);
-
-int main(int argc, char* argv[]) {
-
-    (void)^(){
-        printf( "Hello World" );
-    };
+int main(int argc, char* argv[])
+{
     return 0;
-
 }

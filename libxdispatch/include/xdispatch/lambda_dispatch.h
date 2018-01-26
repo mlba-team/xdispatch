@@ -96,7 +96,7 @@ inline void dispatch_group_async(
     const _Func &block
 )
 {
-    xdispatch::group( group ).async( block, queue );
+    xdispatch::group( group ).async( block, xdispatch::queue( queue ) );
 }
 
 
@@ -107,7 +107,7 @@ inline void dispatch_group_notify(
     const _Func &block
 )
 {
-    xdispatch::group( group ).notify( block, queue );
+    xdispatch::group( group ).notify( block, xdispatch::queue( queue ) );
 }
 
 

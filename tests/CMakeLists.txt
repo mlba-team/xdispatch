@@ -133,10 +133,7 @@ if(NOT HAVE_NATIVE_DISPATCH_H)
 endif()
 
 # add new exec target
-if( MZ_IS_CLANG OR MZ_COMPILER_VERSION STRGREATER "45" )
-    mz_add_flag(GCC -Wno-unused-private-field)
-endif()
-if( IOS )
+if( MZ_IOS )
     add_library(xdispatch_tests STATIC main_ios.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
 else()
     add_executable(xdispatch_tests main.c ${TEST_DISPATCH} ${TEST_XDISPATCH} ${SHIMS} ${TESTMOC} ${TEST_QT} ${RES_FILES})
