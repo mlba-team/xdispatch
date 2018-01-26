@@ -57,11 +57,13 @@ file(GLOB TEST_DISPATCH
 file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c dispatch_*_blocks.cpp)
 file(GLOB TEST_DISPATCH_LAMBDA dispatch_*_lambda.cpp)
 if(NOT HAS_BLOCKS)
+    mz_message("Skipping block tests")
     list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_BLOCKS})
 else()
     mz_add_definition(TEST_C_BLOCKS=1)
 endif()
 if(HAS_BLOCKS OR NOT HAS_LAMBDAS)
+    mz_message("Skipping lambda tests")
     list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_LAMBDA})
 endif()
 
@@ -72,6 +74,7 @@ file(GLOB TEST_XDISPATCH
 file(GLOB TEST_XDISPATCH_BLOCKS cxx_*_blocks.cpp)
 file(GLOB TEST_XDISPATCH_LAMBDA cxx_*_lambda.cpp)
 if(NOT HAS_LAMBDAS)
+    mz_message("Skipping lambda tests")
     list(REMOVE_ITEM TEST_XDISPATCH ${TEST_XDISPATCH_LAMBDA})
 endif()
 if(NOT HAS_BLOCKS OR MZ_COMPILER_VERSION STREQUAL "42" ) # gcc 4.2 has broken c++ blocks

@@ -1,0 +1,47 @@
+variables:
+  GIT_SSL_NO_VERIFY: "1"
+  GIT_STRATEGY: fetch
+  GIT_SUBMODULE_STRATEGY: recursive
+
+ubuntu-1604-clang:
+    stage: build
+    image: builder-1604-clang:latest
+    tags:
+      - docker
+    script:
+      - cd build
+      - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd clang-ninja-release
+      - ninja
+
+ubuntu-1604-gcc:
+    stage: build
+    image: builder-1604-clang:latest
+    tags:
+      - docker
+    script:
+      - cd build
+      - ./generator.sh mode=release compiler=gcc generator=makefiles location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd gcc-makefiles-release
+      - make all
+
+ubuntu-1404-clang:
+    stage: build
+    image: builder-1404-clang:latest
+    tags:
+      - docker
+    script:
+      - cd build
+      - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd clang-ninja-release
+      - ninja
+
+macos-1013-clang:
+    stage: build
+    tags:
+      - macos
+    script:
+      - cd build
+      - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd clang-ninja-release
+      - ninja
