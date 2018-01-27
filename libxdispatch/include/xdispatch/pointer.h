@@ -98,7 +98,7 @@ __XDISPATCH_END_NAMESPACE
 #else // all others
 
  # include <memory>
- # include <tr1/memory>
+ # include <tr1/memory> // NOLINT(build/c++tr1)
 
 __XDISPATCH_BEGIN_NAMESPACE
 

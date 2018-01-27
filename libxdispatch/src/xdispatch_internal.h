@@ -58,7 +58,7 @@
 #include <assert.h>
 #include <stdexcept>
 #define XDISPATCH_ASSERT( X ) \
-    { if( !( X ) ) \
+    { if( !( X ) ) /* NOLINT(readability/braces) */ \
       { \
           std::cerr << "Assertion failed: " #X " (at " << __FILE__ ":" << __LINE__ << ")" << std::endl; \
           std::terminate(); \

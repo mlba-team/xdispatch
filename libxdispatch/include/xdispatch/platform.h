@@ -98,7 +98,7 @@
   #  define XDISPATCH_CPP11_FUNCTIONAL 1
  # elif __GLIBCXX__ < 20120322 || ( !XDISPATCH_CPP11 )
   #  define XDISPATCH_TR1_FUNCTIONAL 1
-  #  include <tr1/functional>
+  #  include <tr1/functional> // NOLINT(build/c++tr1)
  # endif // if __GLIBCXX__ < 20120322
 
  # if XDISPATCH_TR1_FUNCTIONAL || XDISPATCH_CPP11_FUNCTIONAL
