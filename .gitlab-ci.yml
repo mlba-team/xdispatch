@@ -10,6 +10,7 @@ ubuntu-1604-clang:
       - docker
     script:
       - cd build
+      - git clean -ffdx
       - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd clang-ninja-release
       - ninja
@@ -21,6 +22,7 @@ ubuntu-1604-gcc:
       - docker
     script:
       - cd build
+      - git clean -ffdx
       - ./generator.sh mode=release compiler=gcc generator=makefiles location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd gcc-makefiles-release
       - make all
@@ -32,6 +34,7 @@ ubuntu-1404-clang:
       - docker
     script:
       - cd build
+      - git clean -ffdx
       - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd clang-ninja-release
       - ninja
@@ -42,6 +45,7 @@ macos-1013-clang:
       - macos
     script:
       - cd build
+      - git clean -ffdx
       - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd clang-ninja-release
       - ninja

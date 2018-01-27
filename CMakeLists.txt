@@ -86,6 +86,17 @@ else()
     option(FORCE_OWN_LIBDISPATCH "Enable to force the use of the shipped libdispatch version" ON)
 endif()
 
+# Qt Extension if Qt is available
+# new: Qt5 is separated into modules
+find_package(Qt5Core QUIET)
+
+if( Qt5Core_VERSION )
+    option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
+else()
+    option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
+endif()
+
+
 if(FORCE_OWN_LIBKQUEUE AND FORCE_OWN_LIBDISPATCH)
     option(STATIC_KQUEUE "" ON)
     mz_add_definition(MAKE_STATIC=1 STATIC_KQUEUE=1)
@@ -129,17 +140,6 @@ endif()
 
 # the xdispatch target
 mz_add_library(xdispatch libxdispatch)
-
-
-# Qt Extension if Qt is available
-# new: Qt5 is separated into modules
-find_package(Qt5Core QUIET)
-
-if( Qt5Core_VERSION )
-    option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
-else()
-    option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
-endif()
 
 if(XDISPATCH_QT_SUPPORT)
     mz_add_library(QtDispatch libqtdispatch)
