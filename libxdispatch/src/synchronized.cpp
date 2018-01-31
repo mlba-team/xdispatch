@@ -29,8 +29,8 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-scope_lock::scope_lock (
-    semaphore const &s
+scope_lock::scope_lock(
+    semaphore const& s
 )
     : _semaphore( const_cast<semaphore&>( s ) ),
       _lock_active( true )
@@ -40,10 +40,10 @@ scope_lock::scope_lock (
 }
 
 
-scope_lock::scope_lock (
-    semaphore const * const s
+scope_lock::scope_lock(
+    semaphore const* const s
 )
-    : _semaphore( *const_cast<semaphore* const >( s ) ),
+    : _semaphore( *const_cast<semaphore * const >( s ) ),
       _lock_active( true )
 {
     XDISPATCH_ASSERT( s->native_semaphore() );
@@ -51,7 +51,7 @@ scope_lock::scope_lock (
 }
 
 
-scope_lock::~scope_lock ()
+scope_lock::~scope_lock()
 {
     // in a rare case there might an exception have
     // been thrown and due to this the scope_lock is
@@ -92,11 +92,11 @@ void scope_lock::release()
 
 
 void xdispatch::init_semaphore_for_scope_lock(
-    void *dt
+    void* dt
 )
 {
     XDISPATCH_ASSERT( dt );
-    semaphore *sem_ptr = reinterpret_cast< semaphore * > ( dt );
+    semaphore* sem_ptr = reinterpret_cast< semaphore* >( dt );
     XDISPATCH_ASSERT( sem_ptr );
 
     ( *sem_ptr ) = semaphore( 1 );

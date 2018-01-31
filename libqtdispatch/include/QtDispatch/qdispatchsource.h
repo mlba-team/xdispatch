@@ -35,7 +35,7 @@
  */
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QRunnable;
 class QIODevice;
@@ -66,7 +66,7 @@ protected:
      @deprecated
      */
     virtual void init(
-        QThread *
+        QThread*
     ) = 0;
 
 
@@ -81,7 +81,7 @@ Q_SIGNALS:
      by using QDispatchSource::data()
      */
     void ready(
-        QObject * = NULL
+        QObject* = NULL
     );
 
     friend class QDispatchSource;
@@ -102,16 +102,16 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeSignal
     Q_OBJECT
 
 public:
-    QDispatchSourceTypeSignal (
-        QObject *sender,
-        const char *signal
+    QDispatchSourceTypeSignal(
+        QObject* sender,
+        const char* signal
     );
-    ~QDispatchSourceTypeSignal ();
+    ~QDispatchSourceTypeSignal();
 
 
 protected:
     virtual void init(
-        QThread *
+        QThread*
     );
 
 
@@ -135,15 +135,15 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeIODevice
 
 
 public:
-    QDispatchSourceTypeIODevice (
-        QIODevice *
+    QDispatchSourceTypeIODevice(
+        QIODevice*
     );
-    ~QDispatchSourceTypeIODevice ();
+    ~QDispatchSourceTypeIODevice();
 
 
 protected:
     virtual void init(
-        QThread *
+        QThread*
     );
 
 
@@ -153,7 +153,7 @@ private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY( QDispatchSourceTypeIODevice )
-    QIODevice * dev;
+    QIODevice* dev;
 };
 
 
@@ -172,8 +172,8 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceRead
 
 
 public:
-    QDispatchSourceTypeIODeviceRead (
-        QIODevice *
+    QDispatchSourceTypeIODeviceRead(
+        QIODevice*
     );
 
 
@@ -197,15 +197,15 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeIODeviceWrite
 
 
 public:
-    QDispatchSourceTypeIODeviceWrite (
-        QIODevice *
+    QDispatchSourceTypeIODeviceWrite(
+        QIODevice*
     );
-    ~QDispatchSourceTypeIODeviceWrite ();
+    ~QDispatchSourceTypeIODeviceWrite();
 
 
 protected:
     virtual void init(
-        QThread *
+        QThread*
     );
 
 
@@ -215,7 +215,7 @@ private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY( QDispatchSourceTypeIODeviceWrite )
-    QIODevice * dev;
+    QIODevice* dev;
 };
 
 
@@ -234,27 +234,27 @@ class Q_DISPATCH_EXPORT QDispatchSourceTypeNetworkManager
 
 
 public:
-    QDispatchSourceTypeNetworkManager (
-        QNetworkAccessManager *
+    QDispatchSourceTypeNetworkManager(
+        QNetworkAccessManager*
     );
-    ~QDispatchSourceTypeNetworkManager ();
+    ~QDispatchSourceTypeNetworkManager();
 
 
 private Q_SLOTS:
     void finished(
-        QNetworkReply *
+        QNetworkReply*
     );
 
 
 protected:
     void init(
-        QThread *
+        QThread*
     );
 
 
 private:
     Q_DISABLE_COPY( QDispatchSourceTypeNetworkManager )
-    QNetworkAccessManager * manager;
+    QNetworkAccessManager* manager;
 };
 
 
@@ -287,10 +287,10 @@ public:
      Creates a new source waiting for the given type.
      The passed type will be deleted as soon as the source is deleted
      */
-    QDispatchSource (
-        QDispatchSourceType *
+    QDispatchSource(
+        QDispatchSourceType*
     );
-    ~QDispatchSource ();
+    ~QDispatchSource();
     /**
      Sets the given runnable as handler that will be executed each time
      the source has become ready.
@@ -299,7 +299,7 @@ public:
             information about the reason the source has become ready
      */
     void setHandler(
-        QRunnable *
+        QRunnable*
     );
 
     /**
@@ -311,7 +311,7 @@ public:
      */
     template< typename _Func >
     inline void setHandler(
-        const _Func &b
+        const _Func& b
     )
     {
         setHandler( QDispatchMakeRunnable( b ) );
@@ -328,7 +328,7 @@ public:
      on. Defaults to QDispatch::globalQueue().
      */
     void setTargetQueue(
-        const QDispatchQueue &
+        const QDispatchQueue&
     );
 
     /**
@@ -348,9 +348,9 @@ public:
         to release the data or not.
      */
     template< typename T >
-    static T * data()
+    static T* data()
     {
-        return qobject_cast< T * > ( _data() );
+        return qobject_cast< T* > ( _data() );
     }
 
 public Q_SLOTS:
@@ -379,12 +379,12 @@ private:
     class Private;
     QScopedPointer< Private > d;
 
-    static QObject * _data();
+    static QObject* _data();
 };
 
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

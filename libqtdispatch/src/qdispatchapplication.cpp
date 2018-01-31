@@ -26,13 +26,13 @@
 
 #ifndef Q_OS_MAC
 
- # include "qdispatchapplicationprivate.h"
+# include "qdispatchapplicationprivate.h"
 
 QT_BEGIN_NAMESPACE
 
-QDispatchApplication::QDispatchApplication (
-    int &argc,
-    char **argv
+QDispatchApplication::QDispatchApplication(
+    int& argc,
+    char** argv
 )
     : QApplication( argc, argv )
 {
@@ -40,7 +40,7 @@ QDispatchApplication::QDispatchApplication (
 }
 
 
-QDispatchApplication::~QDispatchApplication ()
+QDispatchApplication::~QDispatchApplication()
 {
     QDispatchLibBridge::removeCallback();
 }

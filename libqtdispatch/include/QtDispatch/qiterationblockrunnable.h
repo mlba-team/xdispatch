@@ -28,11 +28,11 @@
 #include "qdispatchglobal.h"
 
 #if XDISPATCH_CPP11_TYPE_TRAITS
- # include <type_traits>
+    #include <type_traits>
 #endif
 
 #if XDISPATCH_CPP11_FUNCTIONAL
- # include <functional>
+    #include <functional>
 #endif
 
 /**
@@ -54,21 +54,21 @@ class QDispatchIterationRunnable
     : public QIterationRunnable
 {
 public:
-    QDispatchIterationRunnable (
-        const _Func &b
+    QDispatchIterationRunnable(
+        const _Func& b
     )
         : QIterationRunnable(),
           _function( b ) { }
 
 
-    QDispatchIterationRunnable (
-        const QDispatchIterationRunnable< _Func > &other
+    QDispatchIterationRunnable(
+        const QDispatchIterationRunnable< _Func >& other
     )
         : QIterationRunnable( other ),
           _function( other._function ) { }
 
 
-    ~QDispatchIterationRunnable () { }
+    ~QDispatchIterationRunnable() { }
 
 
     void run(
@@ -103,21 +103,21 @@ public:
     QIterationBlockRunnable task((size_t index){cout << "Hello World at" << index << "\n";}, 3);
     @endcode
     */
-    QDispatchIterationRunnable (
+    QDispatchIterationRunnable(
         dispatch_iteration_block_t b
     )
         : QIterationRunnable(),
           _block( Block_copy( b ) ) { }
 
 
-    QDispatchIterationRunnable (
-        const QDispatchIterationRunnable< dispatch_block_t > &other
+    QDispatchIterationRunnable(
+        const QDispatchIterationRunnable< dispatch_block_t >& other
     )
         : QIterationRunnable( other ),
           _block( Block_copy( other._block ) ) { }
 
 
-    virtual ~QDispatchIterationRunnable ()
+    virtual ~QDispatchIterationRunnable()
     {
         Block_release( _block );
     }
@@ -146,9 +146,9 @@ QT_END_HEADER
 
 __XDISPATCH_BEGIN_NAMESPACE
 
-Q_DISPATCH_EXPORT xdispatch::iteration_operation *
+Q_DISPATCH_EXPORT xdispatch::iteration_operation*
 make_iteration_operation(
-    QIterationRunnable *
+    QIterationRunnable*
 );
 
 __XDISPATCH_END_NAMESPACE
@@ -156,11 +156,11 @@ __XDISPATCH_END_NAMESPACE
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
 template< typename _Func >
-inline typename std::enable_if<
-    !std::is_pointer< _Func >::value,
-    QIterationRunnable
->::type * QDispatchMakeIterationRunnable(
-    const _Func &f
+inline typename std::enable_if <
+!std::is_pointer< _Func >::value,
+QIterationRunnable
+>::type* QDispatchMakeIterationRunnable(
+    const _Func& f
 )
 {
     return new QDispatchIterationRunnable< _Func > ( f );
@@ -169,49 +169,49 @@ inline typename std::enable_if<
 __XDISPATCH_BEGIN_NAMESPACE
 
 template< typename _Func >
-inline typename std::enable_if<
-    std::is_convertible< _Func, QIterationRunnable * >::value,
+inline typename std::enable_if <
+std::is_convertible< _Func, QIterationRunnable* >::value,
     xdispatch::iteration_operation
->::type * make_iteration_operation(
-    const _Func &f
-)
+    >::type* make_iteration_operation(
+        const _Func& f
+    )
 {
-    return make_iteration_operation( static_cast< QIterationRunnable * > ( f ) );
+    return make_iteration_operation( static_cast< QIterationRunnable* >( f ) );
 }
 
 __XDISPATCH_END_NAMESPACE
 
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
- # if XDISPATCH_HAS_FUNCTION
-  #  if XDISPATCH_TR1_FUNCTIONAL
+# if XDISPATCH_HAS_FUNCTION
+#  if XDISPATCH_TR1_FUNCTIONAL
 
-inline QIterationRunnable * QDispatchMakeIterationRunnable(
-    const ::std::tr1::function< void(size_t) > &f
+inline QIterationRunnable* QDispatchMakeIterationRunnable(
+    const ::std::tr1::function< void( size_t ) >& f
 )
 {
-    return new QDispatchIterationRunnable< ::std::tr1::function< void(size_t) > > ( f );
+    return new QDispatchIterationRunnable< ::std::tr1::function< void( size_t ) > > ( f );
 }
 
 
-  #  elif XDISPATCH_CPP11_FUNCTIONAL
+#  elif XDISPATCH_CPP11_FUNCTIONAL
 
-inline QIterationRunnable * QDispatchMakeIterationRunnable(
-    const ::std::function< void(size_t) > &f
+inline QIterationRunnable* QDispatchMakeIterationRunnable(
+    const ::std::function< void( size_t ) >& f
 )
 {
-    return new QDispatchIterationRunnable< ::std::function< void(size_t) > > ( f );
+    return new QDispatchIterationRunnable< ::std::function< void( size_t ) > > ( f );
 }
 
 
-  #  endif // if XDISPATCH_TR1_FUNCTIONAL
- # endif // if XDISPATCH_HAS_FUNCTION
+#  endif // if XDISPATCH_TR1_FUNCTIONAL
+# endif // if XDISPATCH_HAS_FUNCTION
 
 #endif // if XDISPATCH_CPP11_TYPE_TRAITS
 
 #if XDISPATCH_HAS_BLOCKS
 
-inline QIterationRunnable * QDispatchMakeIterationRunnable(
+inline QIterationRunnable* QDispatchMakeIterationRunnable(
     dispatch_iteration_block_t b
 )
 {

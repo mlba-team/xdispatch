@@ -24,7 +24,7 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-semaphore::semaphore (
+semaphore::semaphore(
     int val
 )
     : m_native( dispatch_semaphore_create( val ) )
@@ -33,7 +33,7 @@ semaphore::semaphore (
 }
 
 
-semaphore::semaphore (
+semaphore::semaphore(
     dispatch_semaphore_t sem
 )
     : m_native( sem )
@@ -43,8 +43,8 @@ semaphore::semaphore (
 }
 
 
-semaphore::semaphore (
-    const semaphore &other
+semaphore::semaphore(
+    const semaphore& other
 )
     : m_native( other.m_native )
 {
@@ -53,7 +53,7 @@ semaphore::semaphore (
 }
 
 
-semaphore::~semaphore ()
+semaphore::~semaphore()
 {
     if( m_native )
     {
@@ -84,7 +84,7 @@ bool semaphore::try_acquire(
 
 
 bool semaphore::try_acquire(
-    struct tm *time
+    struct tm* time
 )
 {
     return try_acquire( as_dispatch_time( time ) );
@@ -97,8 +97,8 @@ dispatch_semaphore_t semaphore::native_semaphore() const
 }
 
 
-xdispatch::semaphore & semaphore::operator = (
-    const semaphore &other
+xdispatch::semaphore& semaphore::operator = (
+    const semaphore& other
 )
 {
     if( *this != other )
@@ -113,7 +113,7 @@ xdispatch::semaphore & semaphore::operator = (
 
 
 bool semaphore::operator == (
-    const semaphore &other
+    const semaphore& other
 )
 {
     return m_native == other.m_native;
@@ -121,7 +121,7 @@ bool semaphore::operator == (
 
 
 bool semaphore::operator != (
-    const semaphore &other
+    const semaphore& other
 )
 {
     return m_native != other.m_native;
@@ -129,7 +129,7 @@ bool semaphore::operator != (
 
 
 bool semaphore::operator == (
-    const dispatch_semaphore_t &other
+    const dispatch_semaphore_t& other
 )
 {
     return m_native == other;
@@ -137,16 +137,16 @@ bool semaphore::operator == (
 
 
 bool semaphore::operator != (
-    const dispatch_semaphore_t &other
+    const dispatch_semaphore_t& other
 )
 {
     return m_native != other;
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const semaphore *q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const semaphore* q
 )
 {
     stream << "xdispatch::semaphore";
@@ -154,9 +154,9 @@ std::ostream & xdispatch::operator << (
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const semaphore &q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const semaphore& q
 )
 {
     stream << "xdispatch::semaphore";

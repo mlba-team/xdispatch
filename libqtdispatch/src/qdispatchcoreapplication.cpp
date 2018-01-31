@@ -27,16 +27,16 @@
 
 #ifndef Q_OS_MAC
 
- # include "qdispatchapplicationprivate.h"
+# include "qdispatchapplicationprivate.h"
 
 QT_BEGIN_NAMESPACE
 
 QEvent::Type QDispatchEvent::TYPECONSTANT;
-QDispatchLibBridge *QDispatchLibBridge::instance;
+QDispatchLibBridge* QDispatchLibBridge::instance;
 
-QDispatchCoreApplication::QDispatchCoreApplication (
-    int &argc,
-    char **argv
+QDispatchCoreApplication::QDispatchCoreApplication(
+    int& argc,
+    char** argv
 )
     : QCoreApplication( argc, argv )
 {
@@ -44,7 +44,7 @@ QDispatchCoreApplication::QDispatchCoreApplication (
 }
 
 
-QDispatchCoreApplication::~QDispatchCoreApplication ()
+QDispatchCoreApplication::~QDispatchCoreApplication()
 {
     QDispatchLibBridge::removeCallback();
 }

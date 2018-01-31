@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <typeinfo>
@@ -49,30 +49,30 @@ Distributed under the Boost Software License, Version 1.0. (See http://www.boost
 */
 struct any
 {
-    any ()
+    any()
         : stored( 0 ) { }
 
 
     template< typename Type >
-    any (
-        const Type &val
+    any(
+        const Type& val
     )
         : stored( new holder< Type > ( val ) ) { }
 
 
-    any (
-        const any &other
+    any(
+        const any& other
     )
         : stored( other.stored ? other.stored->clone() : 0 ) { }
 
 
-    virtual ~any ()
+    virtual ~any()
     {
         delete stored;
     }
 
-    any & swap(
-        any &v
+    any& swap(
+        any& v
     )
     {
         std::swap( stored, v.stored );
@@ -81,15 +81,15 @@ struct any
     }
 
     template< typename OtherType >
-    any & operator = (
-        const OtherType &v
+    any& operator = (
+        const OtherType& v
     )
     {
         any( v ).swap( *this ); // NOLINT(runtime/explicit)
         return *this;
     }
 
-    any & operator = (
+    any& operator = (
         any v
     )
     {
@@ -101,20 +101,24 @@ struct any
     TargetType cast() const
     {
         if( stored->type() == typeid( TargetType ) )
-            return static_cast< holder< TargetType > * > ( stored )->value;
+        {
+            return static_cast< holder< TargetType > * >( stored )->value;
+        }
         else
+        {
             throw std::bad_cast();
+        }
     }
 
 private:
     struct place_holder
     {
-        virtual ~place_holder () { }
+        virtual ~place_holder() { }
 
 
-        virtual place_holder * clone() const = 0;
+        virtual place_holder* clone() const = 0;
 
-        virtual const std::type_info & type() const = 0;
+        virtual const std::type_info& type() const = 0;
     };
 
 
@@ -122,18 +126,18 @@ private:
     struct holder
         : public place_holder
     {
-        holder (
-            const Type &val
+        holder(
+            const Type& val
         )
             : value( val ) { }
 
 
-        virtual place_holder * clone() const
+        virtual place_holder* clone() const
         {
             return new holder( value );
         }
 
-        virtual const std::type_info & type() const
+        virtual const std::type_info& type() const
         {
             return typeid( Type );
         }
@@ -141,14 +145,14 @@ private:
         Type value;
 
 
-private:
-        holder & operator = (
-            const holder &
+    private:
+        holder& operator = (
+            const holder&
         );
     };
 
 
-    place_holder *stored;
+    place_holder* stored;
 };
 
 

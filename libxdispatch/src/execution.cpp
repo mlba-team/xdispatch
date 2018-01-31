@@ -24,11 +24,11 @@
 #include "xdispatch_internal.h"
 
 #if (defined __linux__)
-#include <sys/prctl.h>
+    #include <sys/prctl.h>
 #endif
 
-__XDISPATCH_USE_NAMESPACE iteration_wrap::iteration_wrap (
-    iteration_operation *o,
+__XDISPATCH_USE_NAMESPACE iteration_wrap::iteration_wrap(
+    iteration_operation* o,
     size_t ct
 )
     : op( o ),
@@ -38,14 +38,16 @@ __XDISPATCH_USE_NAMESPACE iteration_wrap::iteration_wrap (
 }
 
 
-iteration_wrap::~iteration_wrap ()
+iteration_wrap::~iteration_wrap()
 {
     if( op && op->auto_delete() )
+    {
         delete op;
+    }
 }
 
 
-iteration_operation * iteration_wrap::operation()
+iteration_operation* iteration_wrap::operation()
 {
     return op;
 }
@@ -60,7 +62,7 @@ bool iteration_wrap::deref()
 inline void set_debugger_threadname( const std::string& name = std::string() )
 {
 #  if (defined __linux__)
-    prctl(PR_SET_NAME, (unsigned long)( name.c_str() ), 0, 0, 0); // NOLINT(runtime/int)
+    prctl( PR_SET_NAME, ( unsigned long )( name.c_str() ), 0, 0, 0 ); // NOLINT(runtime/int)
 #  elif (defined __APPLE__)
     pthread_setname_np( name.c_str() );
 #  else
@@ -71,7 +73,7 @@ inline void set_debugger_threadname( const std::string& name = std::string() )
 inline void set_debugger_threadname_from_queue()
 {
 #  ifdef __APPLE__
-      // disable deprecation warning for get_current_queue
+    // disable deprecation warning for get_current_queue
 #     pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #  endif
     set_debugger_threadname( dispatch_queue_get_label( dispatch_get_current_queue() ) );
@@ -83,11 +85,11 @@ inline void set_debugger_threadname_from_queue()
 
 extern "C"
 void _xdispatch_run_operation(
-    void *dt
+    void* dt
 )
 {
     XDISPATCH_ASSERT( dt );
-    operation *w = static_cast< operation * > ( dt );
+    operation* w = static_cast< operation* >( dt );
     XDISPATCH_ASSERT( w );
 
 #if !(defined DEBUG)
@@ -99,7 +101,7 @@ void _xdispatch_run_operation(
         set_debugger_threadname();
     }
 #if !(defined DEBUG)
-    catch( const std::exception &e )
+    catch( const std::exception& e )
     {
         std::cerr << "##################################################################" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;
@@ -118,18 +120,20 @@ void _xdispatch_run_operation(
     }
 #endif
     if( w->auto_delete() )
+    {
         delete w;
+    }
 } // _xdispatch_run_operation
 
 
 extern "C"
 void _xdispatch_run_iter_wrap(
-    void *dt,
+    void* dt,
     size_t index
 )
 {
     XDISPATCH_ASSERT( dt );
-    iteration_wrap *wrap = static_cast< iteration_wrap * > ( dt );
+    iteration_wrap* wrap = static_cast< iteration_wrap* >( dt );
     XDISPATCH_ASSERT( wrap );
 
 #if !(defined DEBUG)
@@ -141,7 +145,7 @@ void _xdispatch_run_iter_wrap(
         set_debugger_threadname();
     }
 #if !(defined DEBUG)
-    catch( const std::exception &e )
+    catch( const std::exception& e )
     {
         std::cerr << "##################################################################" << std::endl;
         std::cerr << "xdispatch: Throwing exceptions within an xdispatch::operation is" << std::endl;

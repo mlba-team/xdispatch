@@ -33,8 +33,8 @@ class timer_type
     : public native_source
 {
 public:
-    timer_type (
-        timer *parent,
+    timer_type(
+        timer* parent,
         uint64_t interval,
         dispatch_time_t first,
         dispatch_queue_t q
@@ -77,34 +77,34 @@ protected:
     }
 
 private:
-    timer *_parent;
+    timer* _parent;
     uint64_t _interval;
     uint64_t _latency;
 };
 
 
-timer::timer (
+timer::timer(
     uint64_t i,
-    const xdispatch::queue &q,
-    const xdispatch::time &first
+    const xdispatch::queue& q,
+    const xdispatch::time& first
 )
     : source( new timer_type( this, i, as_native_dispatch_time( first ), q.native_queue() ) ) { }
 
 
-timer::timer (
-    const timer &t
+timer::timer(
+    const timer& t
 )
     : source( t ) { }
 
 
-timer::~timer (){ }
+timer::~timer() { }
 
 
 void timer::interval(
     uint64_t i
 )
 {
-    static_cast< timer_type * > ( source::source_type() )->interval( i );
+    static_cast< timer_type* >( source::source_type() )->interval( i );
 }
 
 
@@ -112,20 +112,20 @@ void timer::latency(
     uint64_t l
 )
 {
-    static_cast< timer_type * > ( source::source_type() )->latency( l );
+    static_cast< timer_type* >( source::source_type() )->latency( l );
 }
 
 
-timer * timer::current()
+timer* timer::current()
 {
-    return source::data< timer * > ();
+    return source::data< timer* > ();
 }
 
 
 void timer::single_shot(
     dispatch_time_t t,
-    const xdispatch::queue &q,
-    xdispatch::operation *op
+    const xdispatch::queue& q,
+    xdispatch::operation* op
 )
 {
     xdispatch::queue( q ).after( t, op );
@@ -133,17 +133,17 @@ void timer::single_shot(
 
 
 void timer::single_shot(
-    struct tm *t,
-    const xdispatch::queue &q,
-    xdispatch::operation *op
+    struct tm* t,
+    const xdispatch::queue& q,
+    xdispatch::operation* op
 )
 {
     xdispatch::queue( q ).after( t, op );
 }
 
 
-timer & timer::operator = (
-    const timer &other
+timer& timer::operator = (
+    const timer& other
 )
 {
     if( *this != other )

@@ -25,15 +25,15 @@
 #include "../include/QtDispatch/qiterationblockrunnable.h"
 
 
-xdispatch::iteration_operation * xdispatch::make_iteration_operation(
-    QIterationRunnable *runnable
+xdispatch::iteration_operation* xdispatch::make_iteration_operation(
+    QIterationRunnable* runnable
 )
 {
     return new IterationRunnableOperation( runnable );
 }
 
-xdispatch::operation * xdispatch::make_operation(
-    QRunnable *runnable
+xdispatch::operation* xdispatch::make_operation(
+    QRunnable* runnable
 )
 {
     return new RunnableOperation( runnable );

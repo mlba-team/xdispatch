@@ -31,8 +31,8 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
- # include "platform.h"
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    #include "platform.h"
 #endif
 
 // Note: This header provides some memory management classes
@@ -44,7 +44,7 @@
 // MSVC 2010
 #if XDISPATCH_COMPILER_MSVC2010
 
- # include <memory>
+# include <memory>
 
 __XDISPATCH_BEGIN_NAMESPACE
 
@@ -62,7 +62,7 @@ __XDISPATCH_END_NAMESPACE
 
 #elif XDISPATCH_COMPILER_MSVC2008SP1
 
- # include <memory>
+# include <memory>
 
 __XDISPATCH_BEGIN_NAMESPACE
 
@@ -80,7 +80,7 @@ __XDISPATCH_END_NAMESPACE
 
 #elif XDISPATCH_CPP11_MEMORY
 
- # include <memory>
+# include <memory>
 
 __XDISPATCH_BEGIN_NAMESPACE
 
@@ -97,8 +97,8 @@ __XDISPATCH_END_NAMESPACE
 
 #else // all others
 
- # include <memory>
- # include <tr1/memory> // NOLINT(build/c++tr1)
+# include <memory>
+# include <tr1/memory> // NOLINT(build/c++tr1)
 
 __XDISPATCH_BEGIN_NAMESPACE
 

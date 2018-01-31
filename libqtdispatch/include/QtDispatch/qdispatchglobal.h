@@ -35,22 +35,22 @@
  */
 
 #ifndef QT_MODULE
- # define QT_MODULE( X )
- # define QT_LICENSED_MODULE( X )
- # define QT_BEGIN_NAMESPACE
- # define QT_END_NAMESPACE
- # define QT_BEGIN_HEADER
- # define QT_END_HEADER
+    #define QT_MODULE( X )
+    #define QT_LICENSED_MODULE( X )
+    #define QT_BEGIN_NAMESPACE
+    #define QT_END_NAMESPACE
+    #define QT_BEGIN_HEADER
+    #define QT_END_HEADER
 #endif // ifndef QT_MODULE
 
 #if defined ( QT_MAKEDLL ) || !defined ( _WIN32 )
- # define Q_DISPATCH_EXPORT Q_DECL_EXPORT
+    #define Q_DISPATCH_EXPORT Q_DECL_EXPORT
 #else
- # define Q_DISPATCH_EXPORT Q_DECL_IMPORT
+    #define Q_DISPATCH_EXPORT Q_DECL_IMPORT
 #endif
 
 #ifdef QT_LICENSED_MODULE
-QT_LICENSED_MODULE( Dispatch )
+    QT_LICENSED_MODULE( Dispatch )
 #endif
 
 QT_BEGIN_HEADER

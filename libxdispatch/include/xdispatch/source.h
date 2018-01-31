@@ -29,8 +29,8 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
- # include "dispatch.h"
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    #include "dispatch.h"
 #endif
 
 #include "any.h"
@@ -51,11 +51,11 @@ you want to make available via source::data() to your handler
 class XDISPATCH_EXPORT sourcetype
 {
 public:
-    virtual ~sourcetype ();
+    virtual ~sourcetype();
 
 
 protected:
-    sourcetype ();
+    sourcetype();
 
     /**
     This method needs to be called every time
@@ -64,7 +64,7 @@ protected:
     source::data()
     */
     void ready(
-        const any & = any()
+        const any& = any()
     );
 
     /**
@@ -128,17 +128,17 @@ protected:
     }
 
 private:
-    sourcetype (
-        const sourcetype &
-    ){ }
+    sourcetype(
+        const sourcetype&
+    ) { }
 
 
     void set_cb(
-        source *
+        source*
     );
 
     friend class source;
-    source *cb;
+    source* cb;
 };
 
 
@@ -157,10 +157,10 @@ class XDISPATCH_EXPORT native_source
     : public sourcetype
 {
 public:
-    native_source (
+    native_source(
         dispatch_source_t
     );
-    ~native_source ();
+    ~native_source();
 
 
 protected:
@@ -208,10 +208,10 @@ public:
     /**
     Creates a new source waiting for the given source type
     */
-    source (
-        sourcetype *
+    source(
+        sourcetype*
     );
-    ~source ();
+    ~source();
 
     void resume();
 
@@ -224,7 +224,7 @@ public:
     reason for the handler to be dispatched.
     */
     void handler(
-        xdispatch::operation *
+        xdispatch::operation*
     );
 
     /**
@@ -235,7 +235,7 @@ public:
     */
     template< typename _Func >
     inline void handler(
-        const _Func &b
+        const _Func& b
     )
     {
         handler( ::xdispatch::make_operation( b ) );
@@ -245,7 +245,7 @@ public:
     Sets the queue the handler will be executed on
     */
     void target_queue(
-        const xdispatch::queue &
+        const xdispatch::queue&
     );
 
     /**
@@ -318,7 +318,7 @@ public:
     and the source's event handler block has returned.
     */
     void cancel_handler(
-        xdispatch::operation *
+        xdispatch::operation*
     );
 
     /**
@@ -331,30 +331,30 @@ public:
     */
     template< typename _Func >
     inline void cancel_handler(
-        const _Func &b
+        const _Func& b
     )
     {
         cancel_handler( ::xdispatch::make_operation( b ) );
     }
 
 private:
-    source (
-        const source &
+    source(
+        const source&
     );
-    source & operator = (
-        const source &
+    source& operator = (
+        const source&
     );
 
     class pdata;
     pointer< pdata >::shared d;
 
     void notify(
-        const any &
+        const any&
     );
 
-    sourcetype * source_type();
+    sourcetype* source_type();
 
-    static const any * _data();
+    static const any* _data();
 
     friend class sourcetype;
     friend class timer;

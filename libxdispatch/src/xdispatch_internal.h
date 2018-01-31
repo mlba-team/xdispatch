@@ -27,7 +27,7 @@
 #include <dispatch/dispatch.h>
 
 #ifndef NSEC_PER_MSEC
- # define NSEC_PER_MSEC 1000000ll
+    #define NSEC_PER_MSEC 1000000ll
 #endif
 
 #include <assert.h>
@@ -41,18 +41,18 @@
 #define __XDISPATCH_USE_NAMESPACE using namespace xdispatch; // NOLINT(build/namespaces)
 
 #ifndef __XDISPATCH_INDIRECT__
- # define __XDISPATCH_INDIRECT__
+    #define __XDISPATCH_INDIRECT__
 #endif
 
 #include "../include/xdispatch/platform.h"
 
 #if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
- # pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
- # define XDISPATCH_EXPORT __declspec( dllexport )
- # define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
+    #pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
+    #define XDISPATCH_EXPORT __declspec( dllexport )
+    #define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
 #elif XDISPATCH_COMPILER_GCC || XDISPATCH_COMPILER_CLANG
- # define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
- # define XDISPATCH_DEPRECATED( F ) __attribute__ ( ( __deprecated__ ) ) F
+    #define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
+    #define XDISPATCH_DEPRECATED( F ) __attribute__ ( ( __deprecated__ ) ) F
 #endif // if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
 
 #include <assert.h>

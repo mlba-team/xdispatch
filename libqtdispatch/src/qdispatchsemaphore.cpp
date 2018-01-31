@@ -28,31 +28,31 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatchSemaphore::QDispatchSemaphore (
-    const QDispatchSemaphore &obj
-)
-    : xdispatch::semaphore( obj ){ }
-
-
-QDispatchSemaphore::QDispatchSemaphore (
-    int value
-)
-    : xdispatch::semaphore( 1 ){ }
-
-
-QDispatchSemaphore::QDispatchSemaphore (
-    dispatch_semaphore_t t
-)
-    : xdispatch::semaphore( t ){ }
-
-
-QDispatchSemaphore::QDispatchSemaphore (
-    const xdispatch::semaphore &obj
+QDispatchSemaphore::QDispatchSemaphore(
+    const QDispatchSemaphore& obj
 )
     : xdispatch::semaphore( obj ) { }
 
 
-QDispatchSemaphore::~QDispatchSemaphore (){ }
+QDispatchSemaphore::QDispatchSemaphore(
+    int value
+)
+    : xdispatch::semaphore( 1 ) { }
+
+
+QDispatchSemaphore::QDispatchSemaphore(
+    dispatch_semaphore_t t
+)
+    : xdispatch::semaphore( t ) { }
+
+
+QDispatchSemaphore::QDispatchSemaphore(
+    const xdispatch::semaphore& obj
+)
+    : xdispatch::semaphore( obj ) { }
+
+
+QDispatchSemaphore::~QDispatchSemaphore() { }
 
 
 bool QDispatchSemaphore::tryAcquire(
@@ -64,7 +64,7 @@ bool QDispatchSemaphore::tryAcquire(
 
 
 bool QDispatchSemaphore::tryAcquire(
-    struct tm *t
+    struct tm* t
 )
 {
     return try_acquire( t );
@@ -72,7 +72,7 @@ bool QDispatchSemaphore::tryAcquire(
 
 
 bool QDispatchSemaphore::tryAcquire(
-    const QTime &t
+    const QTime& t
 )
 {
     return try_acquire( QDispatch::asDispatchTime( t ) );
@@ -81,7 +81,7 @@ bool QDispatchSemaphore::tryAcquire(
 
 QDebug operator << (
     QDebug dbg,
-    const QDispatchSemaphore &s
+    const QDispatchSemaphore& s
 )
 {
     dbg.nospace() << "QDispatchSemaphore (no info available)";

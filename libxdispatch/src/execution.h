@@ -22,12 +22,12 @@
 #define XDISPATCH_INT_EXECUTION_H_
 
 extern "C" {
-XDISPATCH_EXPORT void
-_xdispatch_run_operation(
-    void *
-);
+    XDISPATCH_EXPORT void
+    _xdispatch_run_operation(
+        void*
+    );
 
-XDISPATCH_EXPORT void _xdispatch_run_iter_wrap( void *, size_t );
+    XDISPATCH_EXPORT void _xdispatch_run_iter_wrap( void*, size_t );
 }
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -36,18 +36,18 @@ __XDISPATCH_BEGIN_NAMESPACE
 class XDISPATCH_EXPORT iteration_wrap
 {
 public:
-    iteration_wrap (
-        iteration_operation *o,
+    iteration_wrap(
+        iteration_operation* o,
         size_t ct
     );
-    ~iteration_wrap ();
-    iteration_operation * operation();
+    ~iteration_wrap();
+    iteration_operation* operation();
 
     bool deref();
 
 
 private:
-    iteration_operation *op;
+    iteration_operation* op;
     uintptr_t ref;
 };
 

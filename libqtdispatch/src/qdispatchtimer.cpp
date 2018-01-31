@@ -33,9 +33,9 @@ QT_BEGIN_NAMESPACE
 
 using xdispatch::timer;
 
-QDispatchTimer::QDispatchTimer (
+QDispatchTimer::QDispatchTimer(
     int msec,
-    QObject *parent
+    QObject* parent
 )
     : QObject( parent ),
       timer( NSEC_PER_MSEC * msec )
@@ -44,22 +44,22 @@ QDispatchTimer::QDispatchTimer (
 }
 
 
-QDispatchTimer::QDispatchTimer (
-    const xdispatch::timer &t,
-    QObject *parent
+QDispatchTimer::QDispatchTimer(
+    const xdispatch::timer& t,
+    QObject* parent
 )
     : QObject( parent ),
-      timer( t ){ }
+      timer( t ) { }
 
 
-QDispatchTimer::QDispatchTimer (
-    const QDispatchTimer &other
+QDispatchTimer::QDispatchTimer(
+    const QDispatchTimer& other
 )
     : QObject(),
-      timer( other ){ }
+      timer( other ) { }
 
 
-QDispatchTimer::~QDispatchTimer (){ }
+QDispatchTimer::~QDispatchTimer() { }
 
 
 void QDispatchTimer::setInterval(
@@ -71,7 +71,7 @@ void QDispatchTimer::setInterval(
 
 
 void QDispatchTimer::setTargetQueue(
-    const xdispatch::queue &q
+    const xdispatch::queue& q
 )
 {
     timer::target_queue( q );
@@ -79,7 +79,7 @@ void QDispatchTimer::setTargetQueue(
 
 
 void QDispatchTimer::setHandler(
-    QRunnable *r
+    QRunnable* r
 )
 {
     timer::handler( new RunnableOperation( r ) );
@@ -96,8 +96,8 @@ void QDispatchTimer::setLatency(
 
 void QDispatchTimer::singleShot(
     dispatch_time_t t,
-    const xdispatch::queue &q,
-    QRunnable *r
+    const xdispatch::queue& q,
+    QRunnable* r
 )
 {
     xdispatch::timer::single_shot( t, q, new RunnableOperation( r ) );
@@ -105,20 +105,20 @@ void QDispatchTimer::singleShot(
 
 
 void QDispatchTimer::singleShot(
-    const QTime &t,
-    const xdispatch::queue &q,
-    QRunnable *r
+    const QTime& t,
+    const xdispatch::queue& q,
+    QRunnable* r
 )
 {
     xdispatch::timer::single_shot( QDispatch::asDispatchTime( t ), q, new RunnableOperation( r ) );
 }
 
 
-QDispatchTimer * QDispatchTimer::current()
+QDispatchTimer* QDispatchTimer::current()
 {
-    timer *curr = timer::current();
+    timer* curr = timer::current();
 
-    return static_cast< QDispatchTimer * > ( curr );
+    return static_cast< QDispatchTimer* >( curr );
 }
 
 
@@ -135,10 +135,10 @@ void QDispatchTimer::stop()
 
 
 Q_DISPATCH_EXPORT bool QDispatchTimer::operator == (
-    const QDispatchTimer &b
+    const QDispatchTimer& b
 )
 {
-    return *( static_cast< timer * > ( this ) ) == static_cast< timer > ( b );
+    return *( static_cast< timer* >( this ) ) == static_cast< timer >( b );
 }
 
 

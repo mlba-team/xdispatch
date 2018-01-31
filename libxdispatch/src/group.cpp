@@ -25,7 +25,7 @@
 __XDISPATCH_USE_NAMESPACE
 
 
-group::group ()
+group::group()
     : object(),
       m_native( dispatch_group_create() )
 {
@@ -33,7 +33,7 @@ group::group ()
 }
 
 
-group::group (
+group::group(
     dispatch_group_t g
 )
     : object(),
@@ -44,8 +44,8 @@ group::group (
 }
 
 
-group::group (
-    const group &other
+group::group(
+    const group& other
 )
     : object( other ),
       m_native( other.m_native )
@@ -55,7 +55,7 @@ group::group (
 }
 
 
-group::~group ()
+group::~group()
 {
     dispatch_release( m_native );
     m_native = 0;
@@ -63,11 +63,11 @@ group::~group ()
 
 
 void group::async(
-    operation *r,
-    const queue &q
+    operation* r,
+    const queue& q
 )
 {
-    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
+    dispatch_queue_t nat_q = ( dispatch_queue_t )q.native();
 
     XDISPATCH_ASSERT( nat_q );
     dispatch_group_async_f( m_native, nat_q, r, _xdispatch_run_operation );
@@ -83,7 +83,7 @@ bool group::wait(
 
 
 bool group::wait(
-    struct tm *t
+    struct tm* t
 )
 {
     return wait( as_dispatch_time( t ) );
@@ -91,11 +91,11 @@ bool group::wait(
 
 
 void group::notify(
-    operation *r,
-    const queue &q
+    operation* r,
+    const queue& q
 )
 {
-    dispatch_queue_t nat_q = (dispatch_queue_t)q.native();
+    dispatch_queue_t nat_q = ( dispatch_queue_t )q.native();
 
     XDISPATCH_ASSERT( nat_q );
     dispatch_group_notify_f( m_native, nat_q, r, _xdispatch_run_operation );
@@ -114,8 +114,8 @@ dispatch_group_t group::native_group() const
 }
 
 
-group & group::operator = (
-    const group &other
+group& group::operator = (
+    const group& other
 )
 {
     if( *this != other )
@@ -133,9 +133,9 @@ group & group::operator = (
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const group *q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const group* q
 )
 {
     stream << "xdispatch::group";
@@ -143,9 +143,9 @@ std::ostream & xdispatch::operator << (
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const group &q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const group& q
 )
 {
     stream << "xdispatch::group";

@@ -31,7 +31,7 @@
  */
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QTime;
 
@@ -60,19 +60,19 @@ public:
 
     @remarks Never pass a value less than zero here
     */
-    QDispatchSemaphore (
+    QDispatchSemaphore(
         int = 1
     );
-    QDispatchSemaphore (
-        const QDispatchSemaphore &
+    QDispatchSemaphore(
+        const QDispatchSemaphore&
     );
-    QDispatchSemaphore (
+    QDispatchSemaphore(
         dispatch_semaphore_t
     );
-    QDispatchSemaphore (
-        const xdispatch::semaphore &
+    QDispatchSemaphore(
+        const xdispatch::semaphore&
     );
-    ~QDispatchSemaphore ();
+    ~QDispatchSemaphore();
 
     /**
         Tries to acquire the semaphore.
@@ -84,12 +84,12 @@ public:
         @return true if acquiring the semaphore succeeded.
     */
     bool tryAcquire(
-        const QTime &
+        const QTime&
     );
 
     bool tryAcquire( dispatch_time_t );
     bool tryAcquire(
-        struct tm *
+        struct tm*
     );
 };
 
@@ -97,11 +97,11 @@ public:
 Q_DECL_EXPORT QDebug
 operator << (
     QDebug,
-    const QDispatchSemaphore &
+    const QDispatchSemaphore&
 );
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

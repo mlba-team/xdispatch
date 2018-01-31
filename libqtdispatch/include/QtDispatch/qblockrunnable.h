@@ -28,11 +28,11 @@
 #include <QRunnable>
 
 #if XDISPATCH_CPP11_TYPE_TRAITS
- # include <type_traits>
+    #include <type_traits>
 #endif
 
 #if XDISPATCH_CPP11_FUNCTIONAL
- # include <functional>
+    #include <functional>
 #endif
 
 /**
@@ -54,21 +54,21 @@ class QDispatchRunnable
     : public QRunnable
 {
 public:
-    QDispatchRunnable (
-        const _Func &b
+    QDispatchRunnable(
+        const _Func& b
     )
         : QRunnable(),
           _function( b ) { }
 
 
-    QDispatchRunnable (
-        const QDispatchRunnable< _Func > &other
+    QDispatchRunnable(
+        const QDispatchRunnable< _Func >& other
     )
         : QRunnable( other ),
           _function( other._function ) { }
 
 
-    ~QDispatchRunnable () { }
+    ~QDispatchRunnable() { }
 
 
     void run()
@@ -101,21 +101,21 @@ public:
       QBlockRunnable task(^{cout << "Hello World\n";});
       @endcode
       */
-    QDispatchRunnable (
+    QDispatchRunnable(
         dispatch_block_t b
     )
         : QRunnable(),
           _block( Block_copy( b ) ) { }
 
 
-    QDispatchRunnable (
-        const QDispatchRunnable< dispatch_block_t > &other
+    QDispatchRunnable(
+        const QDispatchRunnable< dispatch_block_t >& other
     )
         : QRunnable( other ),
           _block( Block_copy( other._block ) ) { }
 
 
-    ~QDispatchRunnable ()
+    ~QDispatchRunnable()
     {
         Block_release( _block );
     }
@@ -142,9 +142,9 @@ QT_END_HEADER
 
 __XDISPATCH_BEGIN_NAMESPACE
 
-Q_DISPATCH_EXPORT xdispatch::operation *
+Q_DISPATCH_EXPORT xdispatch::operation*
 make_operation(
-    QRunnable *
+    QRunnable*
 );
 
 __XDISPATCH_END_NAMESPACE
@@ -152,39 +152,39 @@ __XDISPATCH_END_NAMESPACE
 #if XDISPATCH_CPP11_TYPE_TRAITS
 
 template< typename _Func >
-inline typename std::enable_if<
-    !std::is_pointer< _Func >::value,
-    QRunnable
->::type * QDispatchMakeRunnable(
-    const _Func &f
+inline typename std::enable_if <
+!std::is_pointer< _Func >::value,
+QRunnable
+>::type* QDispatchMakeRunnable(
+    const _Func& f
 )
 {
     return new QDispatchRunnable< _Func > ( f );
 }
 
 template< typename _Func >
-inline typename std::enable_if<
-    std::is_convertible< _Func, QRunnable * >::value,
+inline typename std::enable_if <
+std::is_convertible< _Func, QRunnable* >::value,
     QRunnable
->::type * QDispatchMakeRunnable(
-    const _Func &f
-)
+    >::type* QDispatchMakeRunnable(
+        const _Func& f
+    )
 {
-    return static_cast< QRunnable * > ( f );
+    return static_cast< QRunnable* >( f );
 }
 
 
 __XDISPATCH_BEGIN_NAMESPACE
 
 template< typename _Func >
-inline typename std::enable_if<
-    std::is_convertible< _Func, QRunnable * >::value,
+inline typename std::enable_if <
+std::is_convertible< _Func, QRunnable* >::value,
     xdispatch::operation
->::type * make_operation(
-    const _Func &f
-)
+    >::type* make_operation(
+        const _Func& f
+    )
 {
-    return make_operation( static_cast< QRunnable * > ( f ) );
+    return make_operation( static_cast< QRunnable* >( f ) );
 }
 
 __XDISPATCH_END_NAMESPACE
@@ -192,44 +192,44 @@ __XDISPATCH_END_NAMESPACE
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
 
-inline QRunnable * QDispatchMakeRunnable(
-    QRunnable *r
+inline QRunnable* QDispatchMakeRunnable(
+    QRunnable* r
 )
 {
     return r;
 }
 
 
- # if XDISPATCH_HAS_FUNCTION
-  #  if XDISPATCH_TR1_FUNCTIONAL
+# if XDISPATCH_HAS_FUNCTION
+#  if XDISPATCH_TR1_FUNCTIONAL
 
-inline QRunnable * QDispatchMakeRunnable(
-    const ::std::tr1::function< void(void) > &f
+inline QRunnable* QDispatchMakeRunnable(
+    const ::std::tr1::function< void( void ) >& f
 )
 {
-    return new QDispatchRunnable< ::std::tr1::function< void(void) > > ( f );
+    return new QDispatchRunnable< ::std::tr1::function< void( void ) > > ( f );
 }
 
 
-  #  elif XDISPATCH_CPP11_FUNCTIONAL
+#  elif XDISPATCH_CPP11_FUNCTIONAL
 
-inline QRunnable * QDispatchMakeRunnable(
-    const ::std::function< void(void) > &f
+inline QRunnable* QDispatchMakeRunnable(
+    const ::std::function< void( void ) >& f
 )
 {
-    return new QDispatchRunnable< ::std::function< void(void) > > ( f );
+    return new QDispatchRunnable< ::std::function< void( void ) > > ( f );
 }
 
 
-  #  endif // if XDISPATCH_TR1_FUNCTIONAL
- # endif // if XDISPATCH_HAS_FUNCTION
+#  endif // if XDISPATCH_TR1_FUNCTIONAL
+# endif // if XDISPATCH_HAS_FUNCTION
 
 
 #endif // if XDISPATCH_CPP11_TYPE_TRAITS
 
 #if XDISPATCH_HAS_BLOCKS
 
-inline QRunnable * QDispatchMakeRunnable(
+inline QRunnable* QDispatchMakeRunnable(
     dispatch_block_t b
 )
 {

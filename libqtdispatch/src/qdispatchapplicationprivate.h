@@ -27,24 +27,24 @@
 #include <QEvent>
 
 extern "C" {
-/* copied from libdispatch/private.h */
-typedef void (_dispatch_main_q_handler_4QT)(
-    void
-);
-DISPATCH_EXPORT void
-_dispatch_main_queue_callback_4QT();
+    /* copied from libdispatch/private.h */
+    typedef void ( _dispatch_main_q_handler_4QT )(
+        void
+    );
+    DISPATCH_EXPORT void
+    _dispatch_main_queue_callback_4QT();
 
-DISPATCH_EXPORT void _dispatch_register_signal_handler_4QT( _dispatch_main_q_handler_4QT );
+    DISPATCH_EXPORT void _dispatch_register_signal_handler_4QT( _dispatch_main_q_handler_4QT );
 }
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QDispatchEvent
     : public QEvent
 {
 public:
-    QDispatchEvent ()
+    QDispatchEvent()
         : QEvent( TYPECONSTANT ) { }
 
 
@@ -56,16 +56,18 @@ class QDispatchLibBridge
     : public QObject
 {
 public:
-    QDispatchLibBridge ()
+    QDispatchLibBridge()
         : QObject( NULL ) { }
 
 
     bool event(
-        QEvent *e
+        QEvent* e
     )
     {
         if( e->type() != QDispatchEvent::TYPECONSTANT )
+        {
             return false;
+        }
 
         _dispatch_main_queue_callback_4QT();
         return true;
@@ -93,7 +95,7 @@ public:
         delete instance;
     }
 
-    static QDispatchLibBridge *instance;
+    static QDispatchLibBridge* instance;
 
 
 private:
@@ -101,6 +103,6 @@ private:
 
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 #endif /* QDISPATCH_APPLICATIONPRIVATE_H_ */

@@ -35,7 +35,7 @@
  */
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QTime;
 class QRunnable;
@@ -66,18 +66,18 @@ public:
 
     @remarks Never pass a value less than zero here
     */
-    QDispatchTimer (
+    QDispatchTimer(
         int msec,
-        QObject *parent = NULL
+        QObject* parent = NULL
     );
-    QDispatchTimer (
-        const QDispatchTimer &
+    QDispatchTimer(
+        const QDispatchTimer&
     );
-    QDispatchTimer (
-        const xdispatch::timer &,
-        QObject *parent = NULL
+    QDispatchTimer(
+        const xdispatch::timer&,
+        QObject* parent = NULL
     );
-    ~QDispatchTimer ();
+    ~QDispatchTimer();
     /**
       Changes the interval of the timer to msec
       */
@@ -89,7 +89,7 @@ public:
       Sets the queue the timer will execute on
       */
     void setTargetQueue(
-        const xdispatch::queue &
+        const xdispatch::queue&
     );
 
     /**
@@ -97,7 +97,7 @@ public:
       every time the timer fires
       */
     void setHandler(
-        QRunnable *
+        QRunnable*
     );
 
     /**
@@ -106,7 +106,7 @@ public:
       */
     template< typename _Func >
     inline void setHandler(
-        const _Func &b
+        const _Func& b
     )
     {
         setHandler( QDispatchMakeRunnable( b ) );
@@ -126,15 +126,15 @@ public:
       Creates a single shot timer executing the given runnable on the given
       queue at the given time. This is quite similar to using QDispatchQueue::after()
       */
-    static void singleShot( dispatch_time_t, const xdispatch::queue &, QRunnable * );
+    static void singleShot( dispatch_time_t, const xdispatch::queue&, QRunnable* );
     /**
       Creates a single shot timer executing the given runnable on the given
       queue at the given time. This is quite similar to using QDispatchQueue::after()
       */
     static void singleShot(
-        const QTime &,
-        const xdispatch::queue &,
-        QRunnable *
+        const QTime&,
+        const xdispatch::queue&,
+        QRunnable*
     );
 
     /**
@@ -144,8 +144,8 @@ public:
     template< typename _Func >
     static void singleShot(
         dispatch_time_t t,
-        const xdispatch::queue &q,
-        const _Func &b
+        const xdispatch::queue& q,
+        const _Func& b
     )
     {
         singleShot( t, q, QDispatchMakeRunnable( b ) );
@@ -157,18 +157,18 @@ public:
       */
     template< typename _Func >
     static void singleShot(
-        const QTime &t,
-        const xdispatch::queue &q,
-        const _Func &b
+        const QTime& t,
+        const xdispatch::queue& q,
+        const _Func& b
     )
     {
         singleShot( t, q, QDispatchMakeRunnable( b ) );
     }
 
-    static QDispatchTimer * current();
+    static QDispatchTimer* current();
 
     bool operator == (
-        const QDispatchTimer &
+        const QDispatchTimer&
     );
 
 
@@ -188,7 +188,7 @@ public Q_SLOTS:
 
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

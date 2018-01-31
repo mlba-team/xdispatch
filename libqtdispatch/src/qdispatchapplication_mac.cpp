@@ -26,20 +26,20 @@
 
 #ifdef Q_OS_MAC
 
- # if !defined ( QT_MAC_USE_COCOA ) && !defined ( Q_OS_MAC /* Qt 5+ only */ )
-  #  error "QtDispatch is supporting Qt built on Cocoa only"
- # endif
+#if !defined ( QT_MAC_USE_COCOA ) && !defined ( Q_OS_MAC /* Qt 5+ only */ )
+    #  error "QtDispatch is supporting Qt built on Cocoa only"
+#endif
 
 QT_BEGIN_NAMESPACE
 
-QDispatchApplication::QDispatchApplication (
-    int &argc,
-    char **argv
+QDispatchApplication::QDispatchApplication(
+    int& argc,
+    char** argv
 )
     : QApplication( argc, argv ) { }
 
 
-QDispatchApplication::~QDispatchApplication (){ }
+QDispatchApplication::~QDispatchApplication() { }
 
 
 QT_END_NAMESPACE

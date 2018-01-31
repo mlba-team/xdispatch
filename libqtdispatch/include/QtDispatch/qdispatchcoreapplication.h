@@ -53,9 +53,9 @@ class Q_DISPATCH_EXPORT QDispatchCoreApplication
 
 
 public:
-    QDispatchCoreApplication (
-        int &argc,
-        char **argv
+    QDispatchCoreApplication(
+        int& argc,
+        char** argv
     );
 
 
@@ -72,11 +72,11 @@ class Q_DISPATCH_EXPORT QDispatchCoreApplication
 
 
 public:
-    QDispatchCoreApplication (
-        int &argc,
-        char **argv
+    QDispatchCoreApplication(
+        int& argc,
+        char** argv
     );
-    ~QDispatchCoreApplication ();
+    ~QDispatchCoreApplication();
 
 
 private:
@@ -87,7 +87,7 @@ private:
 #endif // ifdef Q_OS_MAC
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

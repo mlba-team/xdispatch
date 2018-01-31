@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -54,15 +54,15 @@ public:
     @param target The queue to execute the timer on, defaults to the global_queue
     @param starting The time at which the timer will fire for the first time
     */
-    timer (
+    timer(
         uint64_t interval,
-        const xdispatch::queue &target = global_queue(),
-        const time &starting = time_now
+        const xdispatch::queue& target = global_queue(),
+        const time& starting = time_now
     );
-    timer (
-        const timer &
+    timer(
+        const timer&
     );
-    ~timer ();
+    ~timer();
 
     /**
       Use this to set the interval in nanoseconds.
@@ -102,21 +102,21 @@ public:
       @returns The timer responsible for the handler to be executed or
                NULL if the handler was not executed because of a timer firing
       */
-    static timer * current();
+    static timer* current();
 
     /**
       Creates a single shot timer executing the given operation on the given
       queue at the given time. This is quite similar to using xdispatch::queue::after()
       */
-    static void single_shot( dispatch_time_t, const xdispatch::queue &, xdispatch::operation * );
+    static void single_shot( dispatch_time_t, const xdispatch::queue&, xdispatch::operation* );
     /**
       Creates a single shot timer executing the given operation on the given
       queue at the given time. This is quite similar to using xdispatch::queue::after()
       */
     static void single_shot(
-        struct tm *,
-        const xdispatch::queue &,
-        xdispatch::operation *
+        struct tm*,
+        const xdispatch::queue&,
+        xdispatch::operation*
     );
 
     /**
@@ -126,8 +126,8 @@ public:
     template< typename _Func >
     static void single_shot(
         dispatch_time_t t,
-        const xdispatch::queue &q,
-        const _Func &b
+        const xdispatch::queue& q,
+        const _Func& b
     )
     {
         single_shot( t, q, ::xdispatch::make_operation( b ) );
@@ -139,16 +139,16 @@ public:
       */
     template< typename _Func >
     static void single_shot(
-        struct tm *t,
-        const xdispatch::queue &q,
-        const _Func &b
+        struct tm* t,
+        const xdispatch::queue& q,
+        const _Func& b
     )
     {
         single_shot( t, q, ::xdispatch::make_operation( b ) );
     }
 
-    timer & operator = (
-        const timer &
+    timer& operator = (
+        const timer&
     );
 };
 

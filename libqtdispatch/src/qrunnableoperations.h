@@ -29,32 +29,34 @@ class RunnableOperation
     : public xdispatch::operation
 {
 public:
-    RunnableOperation (
-        QRunnable *r
+    RunnableOperation(
+        QRunnable* r
     )
         : runnable( r )
     {
         Q_ASSERT( r );
     }
 
-    ~RunnableOperation ()
+    ~RunnableOperation()
     {
         if( runnable->autoDelete() )
+        {
             delete runnable;
+        }
     }
 
-    void operator () ()
+    void operator()()
     {
         runnable->run();
     }
 
 private:
-    RunnableOperation (
-        const RunnableOperation &
+    RunnableOperation(
+        const RunnableOperation&
     ) { }
 
 
-    QRunnable *runnable;
+    QRunnable* runnable;
 };
 
 
@@ -62,21 +64,23 @@ class IterationRunnableOperation
     : public xdispatch::iteration_operation
 {
 public:
-    IterationRunnableOperation (
-        QIterationRunnable *r
+    IterationRunnableOperation(
+        QIterationRunnable* r
     )
         : runnable( r )
     {
         Q_ASSERT( r );
     }
 
-    ~IterationRunnableOperation ()
+    ~IterationRunnableOperation()
     {
         if( runnable->autoDelete() )
+        {
             delete runnable;
+        }
     }
 
-    void operator () (
+    void operator()(
         size_t index
     )
     {
@@ -84,12 +88,12 @@ public:
     }
 
 private:
-    IterationRunnableOperation (
-        const IterationRunnableOperation &
+    IterationRunnableOperation(
+        const IterationRunnableOperation&
     ) { }
 
 
-    QIterationRunnable *runnable;
+    QIterationRunnable* runnable;
 };
 
 

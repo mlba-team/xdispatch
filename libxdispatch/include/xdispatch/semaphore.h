@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <memory>
@@ -58,20 +58,20 @@ public:
 
         @remarks Never pass a value less than zero here
     */
-    semaphore (
+    semaphore(
         int = 1
     );
     /**
         Constructs a new semaphore using the given dispatch_semaphore_t
         object
         */
-    semaphore (
+    semaphore(
         dispatch_semaphore_t
     );
-    semaphore (
-        const semaphore &
+    semaphore(
+        const semaphore&
     );
-    virtual ~semaphore ();
+    virtual ~semaphore();
 
     /**
         Release the semaphore.
@@ -113,7 +113,7 @@ public:
         @return true if acquiring the semaphore succeeded.
     */
     bool try_acquire(
-        struct tm *
+        struct tm*
     );
 
     /**
@@ -123,24 +123,24 @@ public:
     */
     dispatch_semaphore_t native_semaphore() const;
 
-    semaphore & operator = (
-        const semaphore &
+    semaphore& operator = (
+        const semaphore&
     );
 
     bool operator == (
-        const semaphore &
+        const semaphore&
     );
 
     bool operator == (
-        const dispatch_semaphore_t &
+        const dispatch_semaphore_t&
     );
 
     bool operator != (
-        const semaphore &
+        const semaphore&
     );
 
     bool operator != (
-        const dispatch_semaphore_t &
+        const dispatch_semaphore_t&
     );
 
 
@@ -149,28 +149,28 @@ private:
 };
 
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const semaphore *
+    std::ostream&,
+    const semaphore*
 );
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const semaphore &
+    std::ostream&,
+    const semaphore&
 );
 
 XDISPATCH_EXPORT bool
 operator == (
-    const dispatch_semaphore_t &,
-    const semaphore &
+    const dispatch_semaphore_t&,
+    const semaphore&
 );
 
 XDISPATCH_EXPORT bool
 operator != (
-    const dispatch_semaphore_t &,
-    const semaphore &
+    const dispatch_semaphore_t&,
+    const semaphore&
 );
 
 __XDISPATCH_END_NAMESPACE

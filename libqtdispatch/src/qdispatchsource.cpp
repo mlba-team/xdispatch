@@ -63,25 +63,27 @@ template< typename T >
 class QDispatchThreadStorage
 {
 public:
-    QDispatchThreadStorage ()
+    QDispatchThreadStorage()
     {
         if( pthread_key_create( &_tls, NULL ) )
+        {
             throw "Unable to create tls";
+        }
     }
 
-    ~QDispatchThreadStorage (){ }
+    ~QDispatchThreadStorage() { }
 
 
     void setLocalData(
-        T *o
+        T* o
     )
     {
         pthread_setspecific( _tls, o );
     }
 
-    T * localData()
+    T* localData()
     {
-        return reinterpret_cast< T * > ( pthread_getspecific( _tls ) );
+        return reinterpret_cast< T* >( pthread_getspecific( _tls ) );
     }
 
 private:
@@ -93,10 +95,10 @@ class QDispatchNotifySource
     : public QRunnable
 {
 public:
-    QDispatchNotifySource (
-        QObject *obj,
-        QDispatchThreadStorage< QObject > *stor,
-        QRunnable *h
+    QDispatchNotifySource(
+        QObject* obj,
+        QDispatchThreadStorage< QObject >* stor,
+        QRunnable* h
     )
         : object( obj ),
           storage( stor ),
@@ -109,7 +111,9 @@ public:
     void run()
     {
         if( !handler )
+        {
             return;
+        }
 
         storage->setLocalData( object );
         handler->run();
@@ -117,16 +121,16 @@ public:
     }
 
 private:
-    QObject *object;
-    QDispatchThreadStorage< QObject > *storage;
-    QRunnable *handler;
+    QObject* object;
+    QDispatchThreadStorage< QObject >* storage;
+    QRunnable* handler;
 };
 
 
 class QDispatchSource::Private
 {
 public:
-    Private ()
+    Private()
         : suspend_ct( 0 ),
           target( QDispatch::globalQueue() )
     {
@@ -134,19 +138,21 @@ public:
         // qstart_source_thread);
     }
 
-    ~Private ()
+    ~Private()
     {
         delete type;
 
         if( handler->autoDelete() )
+        {
             delete handler;
+        }
     }
 
-    QDispatchSourceType *type;
+    QDispatchSourceType* type;
     // The suspend count. A value less than zero means suspended
     QAtomicInt suspend_ct;
     QDispatchQueue target;
-    QRunnable *handler;
+    QRunnable* handler;
     // QDispatchSourceThread* thread;
     static QDispatchThreadStorage< QObject > storage;
 };
@@ -154,24 +160,24 @@ public:
 
 QDispatchThreadStorage< QObject > QDispatchSource::Private::storage;
 
-QDispatchSource::QDispatchSource (
-    QDispatchSourceType *t
+QDispatchSource::QDispatchSource(
+    QDispatchSourceType* t
 )
     : d( new Private )
 {
     Q_CHECK_PTR( d );
     Q_ASSERT( t );
     d->type = t;
-    connect( t, SIGNAL( ready( QObject * ) ), this, SLOT( signal( QObject * ) ), Qt::DirectConnection );
+    connect( t, SIGNAL( ready( QObject* ) ), this, SLOT( signal( QObject* ) ), Qt::DirectConnection );
     // t->init(d->thread);
 }
 
 
-QDispatchSource::~QDispatchSource (){ }
+QDispatchSource::~QDispatchSource() { }
 
 
 void QDispatchSource::setTargetQueue(
-    const QDispatchQueue &q
+    const QDispatchQueue& q
 )
 {
     d->target = q;
@@ -185,7 +191,7 @@ QDispatchQueue QDispatchSource::targetQueue() const
 
 
 void QDispatchSource::setHandler(
-    QRunnable *r
+    QRunnable* r
 )
 {
     Q_ASSERT( r );
@@ -193,27 +199,33 @@ void QDispatchSource::setHandler(
 }
 
 
-QObject * QDispatchSource::_data()
+QObject* QDispatchSource::_data()
 {
     return Private::storage.localData();
 }
 
 
 void QDispatchSource::signal(
-    QObject *obj
+    QObject* obj
 )
 {
     if( !d->handler )
+    {
         return;
+    }
 
     // TODO(marius): Validate this implementation
     if( d->suspend_ct.fetchAndAddAcquire( 0 ) <= 0 )
+    {
         return;
+    }
 
     if( obj == NULL )
+    {
         obj = d->type;
+    }
 
-    d->target.async( static_cast< QRunnable * > ( new QDispatchNotifySource( obj, &d->storage, d->handler ) ) );
+    d->target.async( static_cast< QRunnable* >( new QDispatchNotifySource( obj, &d->storage, d->handler ) ) );
 }
 
 

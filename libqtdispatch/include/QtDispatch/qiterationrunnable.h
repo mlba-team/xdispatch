@@ -54,12 +54,12 @@ public:
     Constructs a new QBlockRunnable passing
     the given parameter.
     */
-    QIterationRunnable ()
+    QIterationRunnable()
         : QRunnable() { }
 
 
-    QIterationRunnable (
-        const QIterationRunnable &o
+    QIterationRunnable(
+        const QIterationRunnable& o
     )
         : QRunnable( o ) { }
 
@@ -70,12 +70,12 @@ public:
 
 
 private:
-    virtual void run(){ }
+    virtual void run() { }
 };
 
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

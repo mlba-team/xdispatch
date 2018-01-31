@@ -26,7 +26,7 @@
 
 __XDISPATCH_USE_NAMESPACE
 
-queue::queue (
+queue::queue(
     dispatch_queue_t q
 )
     : m_native( q ),
@@ -37,8 +37,8 @@ queue::queue (
 }
 
 
-queue::queue (
-    const queue &other
+queue::queue(
+    const queue& other
 )
     : m_native( other.m_native ),
       m_label( other.m_label )
@@ -48,8 +48,8 @@ queue::queue (
 }
 
 
-queue::queue (
-    const std::string &label
+queue::queue(
+    const std::string& label
 )
     : m_native( dispatch_queue_create( label.c_str(), NULL ) ),
       m_label( label )
@@ -58,8 +58,8 @@ queue::queue (
 }
 
 
-queue::queue (
-    const std::string &label,
+queue::queue(
+    const std::string& label,
     const queue& target
 )
     : m_native( dispatch_queue_create( label.c_str(), NULL ) ),
@@ -70,7 +70,7 @@ queue::queue (
 }
 
 
-queue::~queue ()
+queue::~queue()
 {
     dispatch_release( m_native );
     m_native = 0;
@@ -78,7 +78,7 @@ queue::~queue ()
 
 
 void queue::async(
-    operation *op
+    operation* op
 )
 {
     dispatch_async_f( m_native, op, _xdispatch_run_operation );
@@ -87,7 +87,7 @@ void queue::async(
 
 void queue::apply(
     size_t times,
-    iteration_operation *op
+    iteration_operation* op
 )
 {
     iteration_wrap wrap( op, times );
@@ -97,8 +97,8 @@ void queue::apply(
 
 
 void queue::after(
-    struct tm *time,
-    operation *op
+    struct tm* time,
+    operation* op
 )
 {
     after( as_dispatch_time( time ), op );
@@ -107,7 +107,7 @@ void queue::after(
 
 void queue::after(
     dispatch_time_t time,
-    operation *op
+    operation* op
 )
 {
     dispatch_after_f( time, m_native, op, _xdispatch_run_operation );
@@ -115,7 +115,7 @@ void queue::after(
 
 
 void queue::sync(
-    operation *op
+    operation* op
 )
 {
     dispatch_sync_f( m_native, op, _xdispatch_run_operation );
@@ -123,17 +123,17 @@ void queue::sync(
 
 
 void queue::finalizer(
-    operation *op,
-    const queue &q
+    operation* op,
+    const queue& q
 )
 {
     dispatch_set_finalizer_f( m_native, _xdispatch_run_operation );
     dispatch_set_context( m_native, op );
-    dispatch_set_target_queue( m_native, (dispatch_queue_t)q.native() );
+    dispatch_set_target_queue( m_native, ( dispatch_queue_t )q.native() );
 }
 
 
-const std::string & queue::label() const
+const std::string& queue::label() const
 {
     return m_label;
 }
@@ -151,8 +151,8 @@ dispatch_queue_t queue::native_queue() const
 }
 
 
-xdispatch::queue & queue::operator = (
-    const queue &other
+xdispatch::queue& queue::operator = (
+    const queue& other
 )
 {
     if( *this != other )
@@ -171,9 +171,9 @@ xdispatch::queue & queue::operator = (
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const queue *q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const queue* q
 )
 {
     stream << "xdispatch::queue (" << q->label() << ")";
@@ -181,9 +181,9 @@ std::ostream & xdispatch::operator << (
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const queue &q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const queue& q
 )
 {
     stream << "xdispatch::queue (" << q.label() << ")";

@@ -32,7 +32,7 @@
  */
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QDispatchQueue;
 class QTime;
@@ -82,9 +82,9 @@ public:
     static const uint64_t USecPerSec = xdispatch::usec_per_sec;
 
     /**
-Three priority classes used for the three standard
-global queues
-*/
+    Three priority classes used for the three standard
+    global queues
+    */
     enum Priority
     {
         HIGH, DEFAULT, LOW
@@ -92,57 +92,57 @@ global queues
 
 
     /**
-Returns the main queue. This is the queue running
-within the Qt Event Loop. Thus only items put
-on this queue can change the GUI.
-*/
+    Returns the main queue. This is the queue running
+    within the Qt Event Loop. Thus only items put
+    on this queue can change the GUI.
+    */
     static QDispatchQueue mainQueue();
 
     /**
-Returns the global queue associated to the given
-Priority p.
+    Returns the global queue associated to the given
+    Priority p.
 
-Runnables submitted to these global concurrent queues
-may be executed concurrently with respect to
-each other.
-*/
+    Runnables submitted to these global concurrent queues
+    may be executed concurrently with respect to
+    each other.
+    */
     static QDispatchQueue globalQueue(
         Priority p = DEFAULT
     );
 
     /**
-@return The queue the currently active
+    @return The queue the currently active
     runnable (or block) is executed in.
-*/
+    */
     static QDispatchQueue currentQueue();
 
     /**
-@return The given QTime converted to a dispatch_time_t
-*/
+    @return The given QTime converted to a dispatch_time_t
+    */
     static xdispatch::time asDispatchTime(
-        const QTime &
+        const QTime&
     );
 
     /**
-@remarks Please be careful when using this converter as
-a QTime is tracking 24 hours max, whereas a
-dispatch_time_t can hold way more. This additional
-time will be cropped while converting.
+    @remarks Please be careful when using this converter as
+    a QTime is tracking 24 hours max, whereas a
+    dispatch_time_t can hold way more. This additional
+    time will be cropped while converting.
 
-@return The given dispatch_time_t as QTime
-*/
+    @return The given dispatch_time_t as QTime
+    */
     static QTime asQTime(
-        const xdispatch::time &t
+        const xdispatch::time& t
     );
 
 
 private:
-    QDispatch ();
+    QDispatch();
 };
 
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

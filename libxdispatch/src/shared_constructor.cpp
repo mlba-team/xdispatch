@@ -54,23 +54,25 @@ BOOL WINAPI DllMain(
     // Perform actions based on the reason for calling.
     switch( fdwReason )
     {
-     case DLL_PROCESS_ATTACH:
+    case DLL_PROCESS_ATTACH:
 
-         // Initialize once for each new process.
-         // Return FALSE to fail DLL load.
-         if( init() < 0 )
-             return FALSE;
+        // Initialize once for each new process.
+        // Return FALSE to fail DLL load.
+        if( init() < 0 )
+        {
+            return FALSE;
+        }
 
-         break;
+        break;
 
-     case DLL_PROCESS_DETACH:
-         // Perform any necessary cleanup.
-         cleanup();
-         break;
+    case DLL_PROCESS_DETACH:
+        // Perform any necessary cleanup.
+        cleanup();
+        break;
 
-     case DLL_THREAD_DETACH:
-         // Perform cleanup on a per thread base
-         break;
+    case DLL_THREAD_DETACH:
+        // Perform cleanup on a per thread base
+        break;
     } // switch
 
     return TRUE; // Successful DLL_PROCESS_ATTACH.
@@ -85,4 +87,4 @@ extern "C" int init()
 }
 
 
-extern "C" void cleanup(){ }
+extern "C" void cleanup() { }

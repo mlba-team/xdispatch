@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <iostream>
@@ -53,17 +53,17 @@ public:
     /**
     Creates a new group.
     */
-    group ();
+    group();
     /**
     Creates a new group out of the existing dispatch_group_t
     */
-    group (
+    group(
         dispatch_group_t
     );
-    group (
-        const group &
+    group(
+        const group&
     );
-    ~group ();
+    ~group();
 
     /**
     Dispatches an operation on the given Queue
@@ -71,8 +71,8 @@ public:
     @param q The Queue to use. If no Queue is given, the system default queue will be used
     */
     void async(
-        operation *r,
-        const queue &q = global_queue()
+        operation* r,
+        const queue& q = global_queue()
     );
 
     /**
@@ -81,8 +81,8 @@ public:
     */
     template< typename _Func >
     inline void async(
-        const _Func &b,
-        const queue &q = global_queue()
+        const _Func& b,
+        const queue& q = global_queue()
     )
     {
         async( ::xdispatch::make_operation( b ), q );
@@ -105,7 +105,7 @@ public:
     @return false if the timeout occured or true if all operations were executed
     */
     bool wait(
-        struct tm *timeout
+        struct tm* timeout
     );
 
     /**
@@ -121,8 +121,8 @@ public:
     @see dispatch() for more information.
     */
     void notify(
-        operation *r,
-        const queue &q = global_queue()
+        operation* r,
+        const queue& q = global_queue()
     );
 
     /**
@@ -139,8 +139,8 @@ public:
     */
     template< typename _Func >
     inline void notify(
-        const _Func &b,
-        const queue &q = global_queue()
+        const _Func& b,
+        const queue& q = global_queue()
     )
     {
         notify( ::xdispatch::make_operation( b ), q );
@@ -160,8 +160,8 @@ public:
     */
     dispatch_group_t native_group() const;
 
-    group & operator = (
-        const group &
+    group& operator = (
+        const group&
     );
 
 
@@ -170,16 +170,16 @@ private:
 };
 
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const group *
+    std::ostream&,
+    const group*
 );
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const group &
+    std::ostream&,
+    const group&
 );
 
 __XDISPATCH_END_NAMESPACE

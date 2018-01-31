@@ -36,7 +36,7 @@
  */
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QRunnable;
 class QDispatchQueue;
@@ -65,17 +65,17 @@ public:
     /**
     Creates a new QDispatchGroup.
     */
-    QDispatchGroup ();
-    QDispatchGroup (
+    QDispatchGroup();
+    QDispatchGroup(
         dispatch_group_t
     );
-    QDispatchGroup (
-        const QDispatchGroup &
+    QDispatchGroup(
+        const QDispatchGroup&
     );
-    QDispatchGroup (
-        const xdispatch::group &
+    QDispatchGroup(
+        const xdispatch::group&
     );
-    ~QDispatchGroup ();
+    ~QDispatchGroup();
 
     /**
     Dispatches a Runnable on the given Queue
@@ -83,8 +83,8 @@ public:
     @param q The Queue to use. If no Queue is given, the system default queue will be used
     */
     void async(
-        QRunnable *r,
-        const xdispatch::queue &q = xdispatch::global_queue()
+        QRunnable* r,
+        const xdispatch::queue& q = xdispatch::global_queue()
     );
 
     using xdispatch::group::async;
@@ -95,7 +95,7 @@ public:
     @return false if the timeout occured or true if all runnables were executed
     */
     bool wait(
-        const QTime &t
+        const QTime& t
     );
 
     using xdispatch::group::wait;
@@ -112,16 +112,16 @@ public:
     @see dispatch() for more information.
     */
     void notify(
-        QRunnable *r,
-        const xdispatch::queue & = xdispatch::global_queue()
+        QRunnable* r,
+        const xdispatch::queue& = xdispatch::global_queue()
     );
 
     /**
      @see notify(QRunnable* r, const xdispatch::queue&);
      */
     void notify(
-        xdispatch::operation *,
-        const xdispatch::queue & = xdispatch::global_queue()
+        xdispatch::operation*,
+        const xdispatch::queue& = xdispatch::global_queue()
     );
 
     /**
@@ -129,8 +129,8 @@ public:
      */
     template< typename _Func >
     inline void notify(
-        const _Func &b,
-        const xdispatch::queue &q = xdispatch::global_queue()
+        const _Func& b,
+        const xdispatch::queue& q = xdispatch::global_queue()
     )
     {
         notify( ::xdispatch::make_operation( b ), q );
@@ -177,7 +177,7 @@ private:
     friend class Emitter;
     friend Q_DECL_EXPORT QDebug operator << (
         QDebug,
-        const QDispatchGroup &
+        const QDispatchGroup&
     );
 
     class Private;
@@ -188,11 +188,11 @@ private:
 Q_DECL_EXPORT QDebug
 operator << (
     QDebug,
-    const QDispatchGroup &
+    const QDispatchGroup&
 );
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

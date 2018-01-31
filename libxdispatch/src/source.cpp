@@ -38,43 +38,43 @@ std::map< dispatch_source_t, pointer< native_source_wrapper >::shared > native_s
 
 
 static void run_tls_initializer(
-    void *
+    void*
 )
 {
     pthread_key_create( &data_tls, NULL );
 }
 
 
-sourcetype::sourcetype ()
+sourcetype::sourcetype()
     : cb( NULL ) { }
 
 
-sourcetype::~sourcetype () { }
+sourcetype::~sourcetype() { }
 
 
 void sourcetype::set_cb(
-    source *s
+    source* s
 )
 {
     XDISPATCH_ASSERT( s );
 
-    (void)dispatch_atomic_ptr_xchg( reinterpret_cast< void ** > ( &cb ), s );
+    ( void )dispatch_atomic_ptr_xchg( reinterpret_cast< void** >( &cb ), s );
     XDISPATCH_ASSERT( cb );
 }
 
 
-void sourcetype::on_resume(){ }
+void sourcetype::on_resume() { }
 
 
-void sourcetype::on_suspend(){ }
+void sourcetype::on_suspend() { }
 
 
 void sourcetype::ready(
-    const any &dt
+    const any& dt
 )
 {
-    void **void_cb = reinterpret_cast< void ** > ( &cb );
-    source *callback = reinterpret_cast< source * > ( dispatch_atomic_ptr_xchg( void_cb, cb ) );
+    void** void_cb = reinterpret_cast< void** >( &cb );
+    source* callback = reinterpret_cast< source* >( dispatch_atomic_ptr_xchg( void_cb, cb ) );
 
     XDISPATCH_ASSERT( callback );
     callback->notify( dt );
@@ -92,7 +92,7 @@ void sourcetype::on_cancel() { }
 
 // sourcetype for using dispatch_source_t
 
-native_source::native_source (
+native_source::native_source(
     dispatch_source_t s
 )
     : sourcetype(),
@@ -105,7 +105,7 @@ native_source::native_source (
 }
 
 
-native_source::~native_source () { }
+native_source::~native_source() { }
 
 
 dispatch_source_t native_source::native()
@@ -150,9 +150,9 @@ class src_notify_operation
     : public operation
 {
 public:
-    src_notify_operation (
-        const any &dt,
-        operation *op
+    src_notify_operation(
+        const any& dt,
+        operation* op
     )
         : op( op ),
           dt( dt )
@@ -160,7 +160,7 @@ public:
         XDISPATCH_ASSERT( op );
     }
 
-    void operator () ()
+    void operator()()
     {
         pthread_setspecific( data_tls, &dt );
         ( *op )();
@@ -168,7 +168,7 @@ public:
     }
 
 private:
-    operation *op;
+    operation* op;
     any dt;
 };
 
@@ -176,8 +176,8 @@ private:
 class source::pdata
 {
 public:
-    pdata (
-        sourcetype *src_t
+    pdata(
+        sourcetype* src_t
     )
         : suspend_ct( /* suspended by default */ 0 ),
           cancelled( 0 ),
@@ -190,13 +190,17 @@ public:
         XDISPATCH_ASSERT( src_t );
     }
 
-    ~pdata ()
+    ~pdata()
     {
         if( handler && handler->auto_delete() )
+        {
             delete handler;
+        }
 
         if( cancel_handler && cancel_handler->auto_delete() )
+        {
             delete cancel_handler;
+        }
     }
 
     inline bool fast_dispatch() const
@@ -208,13 +212,13 @@ public:
     uintptr_t cancelled;
     pointer< sourcetype >::unique type;
     queue target;
-    operation *handler;
-    operation *cancel_handler;
+    operation* handler;
+    operation* cancel_handler;
 };
 
 
-source::source (
-    sourcetype *src_t
+source::source(
+    sourcetype* src_t
 )
     : d( new pdata( src_t ) )
 {
@@ -224,14 +228,14 @@ source::source (
 }
 
 
-source::source (
-    const source &other
+source::source(
+    const source& other
 )
     : object(),
       d( other.d ) { }
 
 
-source::~source (){ }
+source::~source() { }
 
 
 void source::suspend()
@@ -240,7 +244,9 @@ void source::suspend()
     // the old value, as such we need to suspend
     // the sourcetype as the state changed
     if( dispatch_atomic_dec( &d->suspend_ct ) == 0 )
+    {
         d->type->on_suspend();
+    }
 }
 
 
@@ -250,16 +256,20 @@ void source::resume()
     // need to signal to the sourcetype when
     // the state changed from 0 to 1
     if( dispatch_atomic_inc( &d->suspend_ct ) == 1 )
+    {
         d->type->on_resume();
+    }
 }
 
 
 void source::target_queue(
-    const queue &q
+    const queue& q
 )
 {
     if( d->fast_dispatch() )
+    {
         dispatch_set_target_queue( native(), q.native_queue() );
+    }
 
     // TODO(marius): Make this atomic?
     d->target = q;
@@ -274,29 +284,35 @@ queue source::target_queue() const
 
 
 void source::handler(
-    operation *op
+    operation* op
 )
 {
     XDISPATCH_ASSERT( op );
 
-    void **void_handler = reinterpret_cast< void ** > ( &d->handler );
-    operation *old_op = static_cast< operation * > ( dispatch_atomic_ptr_xchg( void_handler, op ) );
+    void** void_handler = reinterpret_cast< void** >( &d->handler );
+    operation* old_op = static_cast< operation* >( dispatch_atomic_ptr_xchg( void_handler, op ) );
 
     if( old_op && old_op->auto_delete() )
+    {
         delete old_op;
+    }
 }
 
 
 void source::notify(
-    const any &dt
+    const any& dt
 )
 {
     if( d->suspend_ct <= 0 )
+    {
         return;
+    }
 
     // only run the handler if there is any and the source was not cancelled
     if( !d->handler || ( dispatch_atomic_cmpxchg( &d->cancelled, 1, 1 ) != 0 ) )
+    {
         return;
+    }
 
     if( d->fast_dispatch() )
     {
@@ -304,7 +320,9 @@ void source::notify(
         temp_op();
     }
     else
+    {
         target_queue().async( new src_notify_operation( dt, d->handler ) );
+    }
 }
 
 
@@ -320,25 +338,27 @@ dispatch_source_t source::native_source() const
 }
 
 
-const any * source::_data()
+const any* source::_data()
 {
-    const any *dt_pt = reinterpret_cast< any * > ( pthread_getspecific( data_tls ) );
+    const any* dt_pt = reinterpret_cast< any* >( pthread_getspecific( data_tls ) );
 
     if( dt_pt == NULL )
+    {
         throw std::runtime_error( "xdispatch::source::data() - There is no data available for you." );
+    }
 
     return dt_pt;
 }
 
 
-sourcetype * source::source_type()
+sourcetype* source::source_type()
 {
     return d->type.get();
 }
 
 
-source & source::operator = (
-    const source &other
+source& source::operator = (
+    const source& other
 )
 {
     if( ( *this ) != other )
@@ -355,16 +375,18 @@ source & source::operator = (
 
 
 void source::cancel_handler(
-    operation *op
+    operation* op
 )
 {
     XDISPATCH_ASSERT( op );
 
-    void **void_handler = reinterpret_cast< void ** > ( &d->cancel_handler );
-    operation *old_op = static_cast< operation * > ( dispatch_atomic_ptr_xchg( void_handler, op ) );
+    void** void_handler = reinterpret_cast< void** >( &d->cancel_handler );
+    operation* old_op = static_cast< operation* >( dispatch_atomic_ptr_xchg( void_handler, op ) );
 
     if( old_op && old_op->auto_delete() )
+    {
         delete old_op;
+    }
 }
 
 
@@ -372,15 +394,19 @@ void source::cancel()
 {
     // we may only cancel once
     if( dispatch_atomic_xchg( &d->cancelled, 1 ) == 1 )
+    {
         return;
+    }
 
     // notify the source type
     d->type->on_cancel();
 
     // execute any cancel handlers
-    void **void_handler = reinterpret_cast< void ** > ( &d->cancel_handler );
-    operation *c_op = static_cast< operation * > ( dispatch_atomic_ptr_xchg( void_handler, NULL ) );
+    void** void_handler = reinterpret_cast< void** >( &d->cancel_handler );
+    operation* c_op = static_cast< operation* >( dispatch_atomic_ptr_xchg( void_handler, NULL ) );
 
     if( c_op )
+    {
         target_queue().async( c_op );
+    }
 }

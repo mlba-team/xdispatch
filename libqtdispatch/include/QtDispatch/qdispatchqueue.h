@@ -35,7 +35,7 @@
  */
 
 QT_BEGIN_HEADER
-    QT_BEGIN_NAMESPACE
+QT_BEGIN_NAMESPACE
 
 class QTime;
 class QRunnable;
@@ -62,22 +62,22 @@ class Q_DISPATCH_EXPORT QDispatchQueue
 
 
 public:
-    QDispatchQueue (
-        const QString &label
+    QDispatchQueue(
+        const QString& label
     );
-    QDispatchQueue (
-        const char *
+    QDispatchQueue(
+        const char*
     );
-    QDispatchQueue (
+    QDispatchQueue(
         dispatch_queue_t
     );
-    QDispatchQueue (
-        const xdispatch::queue &
+    QDispatchQueue(
+        const xdispatch::queue&
     );
-    QDispatchQueue (
-        const QDispatchQueue &
+    QDispatchQueue(
+        const QDispatchQueue&
     );
-    ~QDispatchQueue ();
+    ~QDispatchQueue();
 
     using xdispatch::queue::async;
     using xdispatch::queue::apply;
@@ -86,24 +86,24 @@ public:
      * @deprecated Use the version with swapped arguments instead
      */
     XDISPATCH_DEPRECATED( inline void
-        after(
-            QRunnable * r,
-            const QTime &time
-        )
-    )
+                          after(
+                              QRunnable* r,
+                              const QTime& time
+                          )
+                        )
     {
         after( time, r );
     }
 
     /**
-   Applies the given QRunnable for async execution
-   in this queue after the given time and returns immediately
-   @param time The time to wait until the QRunnable is applied to
-   the queue.
-   */
+    Applies the given QRunnable for async execution
+    in this queue after the given time and returns immediately
+    @param time The time to wait until the QRunnable is applied to
+    the queue.
+    */
     void after(
-        const QTime &time,
-        QRunnable *
+        const QTime& time,
+        QRunnable*
     );
 
     using xdispatch::queue::after;
@@ -115,8 +115,8 @@ public:
     */
     template< typename _Func >
     inline void after(
-        const QTime &time,
-        const _Func &b
+        const QTime& time,
+        const _Func& b
     )
     {
         after( time, QDispatchMakeRunnable( b ) );
@@ -127,11 +127,11 @@ public:
      */
     template< typename _Func >
     XDISPATCH_DEPRECATED( inline void
-        after(
-            const _Func &b,
-            const QTime &time
-        )
-    )
+                          after(
+                              const _Func& b,
+                              const QTime& time
+                          )
+                        )
     {
         after( time, QDispatchMakeRunnable( b ) );
     }
@@ -149,19 +149,19 @@ public:
     global queues or the main queue.
     */
     void setFinalizer(
-        QRunnable *,
-        const xdispatch::queue & = xdispatch::global_queue()
+        QRunnable*,
+        const xdispatch::queue& = xdispatch::global_queue()
     );
 
     void setFinalizer(
-        xdispatch::operation *,
-        const xdispatch::queue & = xdispatch::global_queue()
+        xdispatch::operation*,
+        const xdispatch::queue& = xdispatch::global_queue()
     );
 
     template< typename _Func >
     inline void setFinalizer(
-        const _Func &b,
-        const xdispatch::queue &q = xdispatch::global_queue()
+        const _Func& b,
+        const xdispatch::queue& q = xdispatch::global_queue()
     )
     {
         setFinalizer( QDispatchMakeRunnable( b ), q );
@@ -174,11 +174,11 @@ public:
     @remarks This has no effect on the global queues and the main queue.
     */
     void setTarget(
-        const xdispatch::queue &
+        const xdispatch::queue&
     );
 
-    QDispatchQueue & operator = (
-        const QDispatchQueue &
+    QDispatchQueue& operator = (
+        const QDispatchQueue&
     );
 
 
@@ -192,17 +192,17 @@ public Q_SLOTS:
 Q_DECL_EXPORT QDebug
 operator << (
     QDebug dbg,
-    const QDispatchQueue *q
+    const QDispatchQueue* q
 );
 
 Q_DECL_EXPORT QDebug
 operator << (
     QDebug dbg,
-    const QDispatchQueue &q
+    const QDispatchQueue& q
 );
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

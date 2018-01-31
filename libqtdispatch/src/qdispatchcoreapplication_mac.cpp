@@ -30,9 +30,9 @@
 QT_BEGIN_NAMESPACE
 
 
-QDispatchCoreApplication::QDispatchCoreApplication (
-    int &argc,
-    char **argv
+QDispatchCoreApplication::QDispatchCoreApplication(
+    int& argc,
+    char** argv
 )
     : QDispatchApplication( argc, argv )
 {

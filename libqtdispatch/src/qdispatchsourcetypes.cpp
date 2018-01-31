@@ -28,25 +28,25 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatchSourceTypeSignal::QDispatchSourceTypeSignal (
-    QObject *sender,
-    const char *signal
+QDispatchSourceTypeSignal::QDispatchSourceTypeSignal(
+    QObject* sender,
+    const char* signal
 )
 {
     connect( sender, signal, this, SIGNAL( ready() ), Qt::DirectConnection );
 }
 
 
-QDispatchSourceTypeSignal::~QDispatchSourceTypeSignal (){ }
+QDispatchSourceTypeSignal::~QDispatchSourceTypeSignal() { }
 
 
 void QDispatchSourceTypeSignal::init(
-    QThread *unused
-){ }
+    QThread* unused
+) { }
 
 
-QDispatchSourceTypeIODevice::QDispatchSourceTypeIODevice (
-    QIODevice *d
+QDispatchSourceTypeIODevice::QDispatchSourceTypeIODevice(
+    QIODevice* d
 )
     : dev( d )
 {
@@ -55,11 +55,11 @@ QDispatchSourceTypeIODevice::QDispatchSourceTypeIODevice (
 }
 
 
-QDispatchSourceTypeIODevice::~QDispatchSourceTypeIODevice (){ }
+QDispatchSourceTypeIODevice::~QDispatchSourceTypeIODevice() { }
 
 
 void QDispatchSourceTypeIODevice::init(
-    QThread *t
+    QThread* t
 )
 {
     dev->moveToThread( t );
@@ -72,14 +72,14 @@ void QDispatchSourceTypeIODevice::avail()
 }
 
 
-QDispatchSourceTypeIODeviceRead::QDispatchSourceTypeIODeviceRead (
-    QIODevice *d
+QDispatchSourceTypeIODeviceRead::QDispatchSourceTypeIODeviceRead(
+    QIODevice* d
 )
     : QDispatchSourceTypeIODevice( d ) { }
 
 
-QDispatchSourceTypeIODeviceWrite::QDispatchSourceTypeIODeviceWrite (
-    QIODevice *d
+QDispatchSourceTypeIODeviceWrite::QDispatchSourceTypeIODeviceWrite(
+    QIODevice* d
 )
     : dev( d )
 {
@@ -88,11 +88,11 @@ QDispatchSourceTypeIODeviceWrite::QDispatchSourceTypeIODeviceWrite (
 }
 
 
-QDispatchSourceTypeIODeviceWrite::~QDispatchSourceTypeIODeviceWrite (){ }
+QDispatchSourceTypeIODeviceWrite::~QDispatchSourceTypeIODeviceWrite() { }
 
 
 void QDispatchSourceTypeIODeviceWrite::init(
-    QThread *t
+    QThread* t
 )
 {
     dev->moveToThread( t );
@@ -107,21 +107,21 @@ void QDispatchSourceTypeIODeviceWrite::finished(
 }
 
 
-QDispatchSourceTypeNetworkManager::QDispatchSourceTypeNetworkManager (
-    QNetworkAccessManager *man
+QDispatchSourceTypeNetworkManager::QDispatchSourceTypeNetworkManager(
+    QNetworkAccessManager* man
 )
     : manager( man )
 {
     Q_ASSERT( man );
-    connect( man, SIGNAL( finished( QNetworkReply * ) ), this, SLOT( finished( QNetworkReply * ) ), Qt::DirectConnection );
+    connect( man, SIGNAL( finished( QNetworkReply* ) ), this, SLOT( finished( QNetworkReply* ) ), Qt::DirectConnection );
 }
 
 
-QDispatchSourceTypeNetworkManager::~QDispatchSourceTypeNetworkManager (){ }
+QDispatchSourceTypeNetworkManager::~QDispatchSourceTypeNetworkManager() { }
 
 
 void QDispatchSourceTypeNetworkManager::finished(
-    QNetworkReply *r
+    QNetworkReply* r
 )
 {
     emit ready( r );
@@ -129,7 +129,7 @@ void QDispatchSourceTypeNetworkManager::finished(
 
 
 void QDispatchSourceTypeNetworkManager::init(
-    QThread *t
+    QThread* t
 )
 {
     manager->moveToThread( t );

@@ -29,16 +29,16 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
- # include "dispatch.h"
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    #include "dispatch.h"
 #endif
 
 #if XDISPATCH_CPP11_TYPE_TRAITS
- # include <type_traits>
+    #include <type_traits>
 #endif
 
 #if XDISPATCH_CPP11_FUNCTIONAL
- # include <functional>
+    #include <functional>
 #endif
 
 #include <iostream>
@@ -63,30 +63,30 @@ public:
     /**
      * Method for running a simple function pointer on a once object
      */
-    static void simple( dispatch_once_t *, dispatch_function_t, void * = NULL );
+    static void simple( dispatch_once_t*, dispatch_function_t, void* = NULL );
     /**
      * Method for running a simple function pointer on a once object
      */
-    static void simple( once &, dispatch_function_t, void * = NULL );
+    static void simple( once&, dispatch_function_t, void* = NULL );
     /**
       Creates a new once object, marked
       as not having been executed yet
       */
-    once ();
+    once();
     /**
       Creates a new once object, the
       execution state is shared with
       the given dispatch_once_t object.
       */
-    once (
-        dispatch_once_t *
+    once(
+        dispatch_once_t*
     );
 
     /**
      @returns the native dispatch object associated to
      the xdispatch object
      */
-    dispatch_once_t * native_once() const;
+    dispatch_once_t* native_once() const;
 
     /**
       Executes the given operation when the
@@ -98,8 +98,8 @@ public:
         operations only and will not take posession
         of the operation
         */
-    void operator () (
-        operation &
+    void operator()(
+        operation&
     );
 
     /**
@@ -112,71 +112,71 @@ public:
       */
 #if XDISPATCH_CPP11_TYPE_TRAITS
     template< typename _Func >
-    inline typename std::enable_if< std::is_base_of< operation, _Func >::value, void >::type operator () (
-        _Func &b
+    inline typename std::enable_if< std::is_base_of< operation, _Func >::value, void >::type operator()(
+        _Func& b
     )
     {
         once_op< _Func > op( b );
 
-        operator () ( static_cast< operation & > ( op ) );
+        operator()( static_cast< operation& >( op ) );
     }
 
     template< typename _Func >
-    inline typename std::enable_if< !std::is_base_of< operation, _Func >::value, void >::type operator () (
-        const _Func &b
+    inline typename std::enable_if < !std::is_base_of< operation, _Func >::value, void >::type operator()(
+        const _Func& b
     )
     {
         once_op< const _Func > op( b );
 
-        operator () ( static_cast< operation & > ( op ) );
+        operator()( static_cast< operation& >( op ) );
     }
 
 #else // if XDISPATCH_CPP11_TYPE_TRAITS
 
- # if XDISPATCH_HAS_BLOCKS
-    inline void operator () (
+# if XDISPATCH_HAS_BLOCKS
+    inline void operator()(
         dispatch_block_t b
     )
     {
         once_op< dispatch_block_t > op( b );
 
-        operator () ( static_cast< operation & > ( op ) );
+        operator()( static_cast< operation& >( op ) );
     }
 
- # endif // if XDISPATCH_HAS_BLOCKS
+# endif // if XDISPATCH_HAS_BLOCKS
 
- # if XDISPATCH_HAS_FUNCTION
-  #  if XDISPATCH_CPP11_FUNCTIONAL
+# if XDISPATCH_HAS_FUNCTION
+#  if XDISPATCH_CPP11_FUNCTIONAL
 
-    inline void operator () (
-        const ::std::function< void(void) > &f
+    inline void operator()(
+        const ::std::function< void( void ) >& f
     )
     {
-        once_op< const ::std::function< void(void) > > op( f );
+        once_op< const ::std::function< void( void ) > > op( f );
 
-        operator () ( static_cast< operation & > ( op ) );
+        operator()( static_cast< operation& >( op ) );
     }
 
-  #  elif XDISPATCH_TR1_FUNCTIONAL
+#  elif XDISPATCH_TR1_FUNCTIONAL
 
-    inline void operator () (
-        const ::std::tr1::function< void(void) > &f
+    inline void operator()(
+        const ::std::tr1::function< void( void ) >& f
     )
     {
-        once_op< const ::std::tr1::function< void(void) > > op( f );
+        once_op< const ::std::tr1::function< void( void ) > > op( f );
 
-        operator () ( static_cast< operation & > ( op ) );
+        operator()( static_cast< operation& >( op ) );
     }
 
-  #  endif // if XDISPATCH_CPP11_FUNCTIONAL
+#  endif // if XDISPATCH_CPP11_FUNCTIONAL
 
- # endif // if XDISPATCH_HAS_FUNCTION
+# endif // if XDISPATCH_HAS_FUNCTION
 #endif // if XDISPATCH_CPP11_TYPE_TRAITS
 
 
 private:
     dispatch_once_t _once_obj;
-    dispatch_once_t *_once;
+    dispatch_once_t* _once;
 
     // we define our own operation class
     // as the function_operation does a
@@ -186,41 +186,41 @@ private:
     class once_op
         : public operation
     {
-public:
-        once_op (
-            _Func &b
+    public:
+        once_op(
+            _Func& b
         )
             : operation(),
               _func( b ) { }
 
 
-        void operator () ()
+        void operator()()
         {
             _func();
         }
 
-private:
-        _Func &_func;
+    private:
+        _Func& _func;
     };
 
 
-    friend XDISPATCH_EXPORT std::ostream & operator << (
-        std::ostream &,
-        const once &
+    friend XDISPATCH_EXPORT std::ostream& operator << (
+        std::ostream&,
+        const once&
     );
 };
 
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const once *
+    std::ostream&,
+    const once*
 );
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const once &
+    std::ostream&,
+    const once&
 );
 
 __XDISPATCH_END_NAMESPACE

@@ -21,8 +21,8 @@
 
 
 #ifdef _MSC_VER
- # define _CRT_SECURE_NO_WARNINGS 1
- # pragma warning (disable : 4996)
+    #define _CRT_SECURE_NO_WARNINGS 1
+    #pragma warning (disable : 4996)
 #endif
 
 #include <iostream>
@@ -30,10 +30,10 @@
 
 #include "xdispatch_internal.h"
 
-__XDISPATCH_USE_NAMESPACE object::object () { }
+__XDISPATCH_USE_NAMESPACE object::object() { }
 
 
-object::~object () { }
+object::~object() { }
 
 
 void object::resume()
@@ -49,7 +49,7 @@ void object::suspend()
 
 
 void object::target_queue(
-    const queue &q
+    const queue& q
 )
 {
     dispatch_set_target_queue( native(), q.native_queue() );
@@ -57,7 +57,7 @@ void object::target_queue(
 
 
 bool object::operator == (
-    const object &other
+    const object& other
 )
 {
     return native() == other.native();
@@ -65,7 +65,7 @@ bool object::operator == (
 
 
 bool object::operator == (
-    const dispatch_object_t &other
+    const dispatch_object_t& other
 )
 {
     return native() == other;
@@ -73,7 +73,7 @@ bool object::operator == (
 
 
 bool object::operator != (
-    const object &other
+    const object& other
 )
 {
     return native() != other.native();
@@ -81,7 +81,7 @@ bool object::operator != (
 
 
 bool object::operator != (
-    const dispatch_object_t &other
+    const dispatch_object_t& other
 )
 {
     return native() != other;
@@ -89,8 +89,8 @@ bool object::operator != (
 
 
 bool operator == (
-    const dispatch_object_t &a,
-    const object &b
+    const dispatch_object_t& a,
+    const object& b
 )
 {
     return a == b.native();
@@ -98,8 +98,8 @@ bool operator == (
 
 
 bool operator != (
-    const dispatch_object_t &a,
-    const object &b
+    const dispatch_object_t& a,
+    const object& b
 )
 {
     return a == b.native();
@@ -120,16 +120,16 @@ queue xdispatch::global_queue(
 
     switch( p )
     {
-     case LOW:
-         selection = DISPATCH_QUEUE_PRIORITY_LOW;
-         break;
+    case LOW:
+        selection = DISPATCH_QUEUE_PRIORITY_LOW;
+        break;
 
-     case HIGH:
-         selection = DISPATCH_QUEUE_PRIORITY_HIGH;
-         break;
+    case HIGH:
+        selection = DISPATCH_QUEUE_PRIORITY_HIGH;
+        break;
 
-     default:
-         selection = DISPATCH_QUEUE_PRIORITY_DEFAULT;
+    default:
+        selection = DISPATCH_QUEUE_PRIORITY_DEFAULT;
     }
 
     return queue( dispatch_get_global_queue( selection, 0 ) );
@@ -140,7 +140,7 @@ queue xdispatch::current_queue()
 {
 #ifdef __APPLE__
     // disable deprecation warning for get_current_queue
- # pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+# pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
     return queue( dispatch_get_current_queue() );
 }
@@ -156,7 +156,7 @@ dispatch_time_t xdispatch::as_delayed_time(
 
 
 dispatch_time_t xdispatch::as_dispatch_time(
-    struct tm *t
+    struct tm* t
 )
 {
     time_t now = time( NULL );
@@ -172,12 +172,12 @@ dispatch_time_t xdispatch::as_dispatch_time(
         return as_delayed_time( 0 );
     }
 
-    return as_delayed_time( (uint64_t)( diff * nsec_per_sec ) );
+    return as_delayed_time( ( uint64_t )( diff * nsec_per_sec ) );
 }
 
 
 struct tm xdispatch::as_struct_tm(
-    const time &t
+    const time& t
 )
 {
     time_t rawtime = time( NULL );
@@ -187,11 +187,11 @@ struct tm xdispatch::as_struct_tm(
 
     res = *( localtime( &rawtime ) );
 
-    res.tm_hour += static_cast< int > ( dtt / ( 3600 * nsec_per_sec ) );
-    dtt %= ( 3600 * (uint64_t)NSEC_PER_SEC );
-    res.tm_min += static_cast< int > ( dtt / ( 60 * nsec_per_sec ) );
-    dtt %= ( 60 * (uint64_t)NSEC_PER_SEC );
-    res.tm_sec += static_cast< int > ( dtt / nsec_per_sec );
+    res.tm_hour += static_cast< int >( dtt / ( 3600 * nsec_per_sec ) );
+    dtt %= ( 3600 * ( uint64_t )NSEC_PER_SEC );
+    res.tm_min += static_cast< int >( dtt / ( 60 * nsec_per_sec ) );
+    dtt %= ( 60 * ( uint64_t )NSEC_PER_SEC );
+    res.tm_sec += static_cast< int >( dtt / nsec_per_sec );
 
     return res;
 }

@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <string>
@@ -44,11 +44,11 @@ class XDISPATCH_EXPORT queue;
 class XDISPATCH_EXPORT object
 {
 protected:
-    object ();
+    object();
 
 
 public:
-    virtual ~object ();
+    virtual ~object();
     /**
      Resumes the invocation of operations
      or blocks assigned to the object
@@ -73,7 +73,7 @@ public:
      @remarks This has no effect on the global queues and the main queue.
     */
     virtual void target_queue(
-        const queue &
+        const queue&
     );
 
     /**
@@ -83,33 +83,33 @@ public:
     virtual dispatch_object_t native() const = 0;
 
     bool operator == (
-        const object &
+        const object&
     );
 
     bool operator != (
-        const object &
+        const object&
     );
 
     bool operator == (
-        const dispatch_object_t &
+        const dispatch_object_t&
     );
 
     bool operator != (
-        const dispatch_object_t &
+        const dispatch_object_t&
     );
 };
 
 
 XDISPATCH_EXPORT bool
 operator == (
-    const dispatch_object_t &,
-    const object &
+    const dispatch_object_t&,
+    const object&
 );
 
 XDISPATCH_EXPORT bool
 operator != (
-    const dispatch_object_t &,
-    const object &
+    const dispatch_object_t&,
+    const object&
 );
 
 class queue;
@@ -192,14 +192,14 @@ current_queue();
     */
 XDISPATCH_EXPORT time
 as_dispatch_time(
-    struct tm *
+    struct tm*
 );
 
 /**
     @return The given time converted to a dispatch time
     */
 inline dispatch_time_t as_native_dispatch_time(
-    const time &t
+    const time& t
 )
 {
     return t;
@@ -210,8 +210,8 @@ inline dispatch_time_t as_native_dispatch_time(
     @return The given dispatch_time_t as time_t
     */
 XDISPATCH_EXPORT struct tm
-as_struct_tm(
-    const time &t
+    as_struct_tm(
+    const time& t
 );
 
 /**

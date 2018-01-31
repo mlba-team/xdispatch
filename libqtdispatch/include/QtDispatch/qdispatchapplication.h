@@ -49,11 +49,11 @@ class Q_DISPATCH_EXPORT QDispatchApplication
 
 
 public:
-    QDispatchApplication (
-        int &argc,
-        char **argv
+    QDispatchApplication(
+        int& argc,
+        char** argv
     );
-    ~QDispatchApplication ();
+    ~QDispatchApplication();
 
 
 private:
@@ -62,7 +62,7 @@ private:
 
 
 QT_END_NAMESPACE
-    QT_END_HEADER
+QT_END_HEADER
 
 /** @} */
 

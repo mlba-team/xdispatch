@@ -29,12 +29,12 @@
 
 extern "C" void
 native_source_wrapper__run_event_operation(
-    void *
+    void*
 );
 
 extern "C" void
 native_source_wrapper__run_cancel_operation(
-    void *
+    void*
 );
 
 __XDISPATCH_BEGIN_NAMESPACE
@@ -48,7 +48,7 @@ __XDISPATCH_BEGIN_NAMESPACE
 class native_source_wrapper
 {
 public:
-    native_source_wrapper (
+    native_source_wrapper(
         dispatch_source_t source
     )
         : _source( source ),
@@ -58,8 +58,8 @@ public:
         dispatch_retain( source );
     }
 
-    native_source_wrapper (
-        const native_source_wrapper &other
+    native_source_wrapper(
+        const native_source_wrapper& other
     )
         : _source( other._source ),
           _op( other._op )
@@ -69,7 +69,7 @@ public:
         dispatch_retain( _source );
     }
 
-    ~native_source_wrapper ()
+    ~native_source_wrapper()
     {
         dispatch_release( _source );
     }
@@ -90,7 +90,7 @@ public:
     }
 
     void event_operation(
-        operation *op
+        operation* op
     )
     {
         XDISPATCH_ASSERT( op );
@@ -103,7 +103,7 @@ public:
     }
 
     void cancel_operation(
-        operation *op
+        operation* op
     )
     {
         XDISPATCH_ASSERT( op );
@@ -127,12 +127,13 @@ public:
         dispatch_source_t obj
     )
     {
-        synchronized {
+        synchronized
+        {
             source_wrapper_map::iterator it = xdispatch_source_wrappers.find( obj );
             if( xdispatch_source_wrappers.end() == it )
             {
                 it = xdispatch_source_wrappers.insert( xdispatch_source_wrappers.begin(),
-                                                       std::make_pair( obj, pointer< native_source_wrapper >::shared( new native_source_wrapper( obj ) ) )
+                std::make_pair( obj, pointer< native_source_wrapper >::shared( new native_source_wrapper( obj ) ) )
                                                      );
             }
             return it->second;

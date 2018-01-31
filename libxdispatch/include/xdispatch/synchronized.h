@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <string>
@@ -60,8 +60,8 @@ public:
         Construction will block until the semaphore was acquired.
         It will be released again upon destruction.
      */
-    scope_lock (
-        semaphore const &
+    scope_lock(
+        semaphore const&
     );
     /**
         Creates a lock acquiring the given semaphore.
@@ -69,10 +69,10 @@ public:
         Construction will block until the semaphore was acquired.
         It will be released again upon destruction.
      */
-    scope_lock (
-        semaphore const * const
+    scope_lock(
+        semaphore const* const
     );
-    virtual ~scope_lock ();
+    virtual ~scope_lock();
 
     /**
         @brief Indicates if the lock has the semaphore acquired.
@@ -103,7 +103,7 @@ private:
  */
 XDISPATCH_EXPORT void
 init_semaphore_for_scope_lock(
-    void *
+    void*
 );
 
 
@@ -287,13 +287,13 @@ init_semaphore_for_scope_lock(
   @see synchronize
   */
 #ifndef XDISPATCH_NO_KEYWORDS
- # ifndef synchronize
-  #  define synchronize( semaphore ) XDISPATCH_SYNCHRONIZE( semaphore )
- # endif
+    #ifndef synchronize
+        #define synchronize( semaphore ) XDISPATCH_SYNCHRONIZE( semaphore )
+    #endif
 
- # ifndef synchronized
-  #  define synchronized XDISPATCH_SYNCHRONIZED
- # endif
+    #ifndef synchronized
+        #define synchronized XDISPATCH_SYNCHRONIZED
+    #endif
 #endif // ifndef XDISPATCH_NO_KEYWORDS
 
 __XDISPATCH_END_NAMESPACE

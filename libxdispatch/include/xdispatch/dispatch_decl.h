@@ -26,16 +26,16 @@
 #include "platform.h"
 
 #if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
- # pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
- # ifdef XDISPATCH_MAKEDLL
-  #  define XDISPATCH_EXPORT __declspec( dllexport )
- # else
-  #  define XDISPATCH_EXPORT __declspec( dllimport )
- # endif
- # define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
+    #pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
+    #ifdef XDISPATCH_MAKEDLL
+        #define XDISPATCH_EXPORT __declspec( dllexport )
+    #else
+        #define XDISPATCH_EXPORT __declspec( dllimport )
+    #endif
+    #define XDISPATCH_DEPRECATED( F ) __declspec( deprecated ) F
 #elif XDISPATCH_COMPILER_GCC || XDISPATCH_COMPILER_CLANG
- # define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
- # define XDISPATCH_DEPRECATED( F ) __attribute__ ( ( __deprecated__ ) ) F
+    #define XDISPATCH_EXPORT __attribute__( ( __visibility__( "default" ) ) )
+    #define XDISPATCH_DEPRECATED( F ) __attribute__ ( ( __deprecated__ ) ) F
 #endif // if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
 
 

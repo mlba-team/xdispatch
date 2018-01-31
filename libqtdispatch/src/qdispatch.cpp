@@ -29,7 +29,7 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatch::QDispatch () { }
+QDispatch::QDispatch() { }
 
 
 QDispatchQueue QDispatch::currentQueue()
@@ -46,16 +46,16 @@ QDispatchQueue QDispatch::globalQueue(
 
     switch( p )
     {
-     case QDispatch::LOW:
-         prio = xdispatch::LOW;
-         break;
+    case QDispatch::LOW:
+        prio = xdispatch::LOW;
+        break;
 
-     case QDispatch::HIGH:
-         prio = xdispatch::HIGH;
-         break;
+    case QDispatch::HIGH:
+        prio = xdispatch::HIGH;
+        break;
 
-     default:
-         prio = xdispatch::DEFAULT;
+    default:
+        prio = xdispatch::DEFAULT;
     }
 
     return QDispatchQueue( xdispatch::global_queue( prio ) );
@@ -69,24 +69,24 @@ QDispatchQueue QDispatch::mainQueue()
 
 
 QTime QDispatch::asQTime(
-    const xdispatch::time &t
+    const xdispatch::time& t
 )
 {
     xdispatch::time xdt = t;
 
-    int hours = static_cast< int > ( xdt ) / ( NSEC_PER_SEC * 3600 );
+    int hours = static_cast< int >( xdt ) / ( NSEC_PER_SEC * 3600 );
 
     xdt %= ( NSEC_PER_SEC * 3600 );
-    int min = static_cast< int > ( xdt ) / ( NSEC_PER_SEC * 60 );
+    int min = static_cast< int >( xdt ) / ( NSEC_PER_SEC * 60 );
     xdt %= ( NSEC_PER_SEC * 60 );
-    int sec = static_cast< int > ( xdt ) / ( NSEC_PER_SEC );
+    int sec = static_cast< int >( xdt ) / ( NSEC_PER_SEC );
     xdt %= ( NSEC_PER_SEC );
     return QTime( hours, min, sec, xdt / NSEC_PER_MSEC );
 }
 
 
 xdispatch::time QDispatch::asDispatchTime(
-    const QTime &t
+    const QTime& t
 )
 {
     return dispatch_time( DISPATCH_TIME_NOW, QTime::currentTime().msecsTo( t ) * NSEC_PER_MSEC );

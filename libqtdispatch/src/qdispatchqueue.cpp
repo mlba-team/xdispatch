@@ -30,46 +30,48 @@
 
 QT_BEGIN_NAMESPACE
 
-QDispatchQueue::QDispatchQueue (
-    const QString &label
+QDispatchQueue::QDispatchQueue(
+    const QString& label
 )
     : xdispatch::queue( label.toStdString() ) { }
 
 
-QDispatchQueue::QDispatchQueue (
-    const char *label
+QDispatchQueue::QDispatchQueue(
+    const char* label
 )
     : xdispatch::queue( label ) { }
 
 
-QDispatchQueue::QDispatchQueue (
+QDispatchQueue::QDispatchQueue(
     dispatch_queue_t dq
 )
     : xdispatch::queue( dq )
 {
     if( dq == NULL )
-        throw ( "Cannot construct queue" );
+    {
+        throw( "Cannot construct queue" );
+    }
 }
 
 
-QDispatchQueue::QDispatchQueue (
-    const QDispatchQueue &obj
+QDispatchQueue::QDispatchQueue(
+    const QDispatchQueue& obj
 )
-    : xdispatch::queue( obj ){ }
+    : xdispatch::queue( obj ) { }
 
 
-QDispatchQueue::QDispatchQueue (
-    const xdispatch::queue &obj
+QDispatchQueue::QDispatchQueue(
+    const xdispatch::queue& obj
 )
-    : xdispatch::queue( obj ){ }
+    : xdispatch::queue( obj ) { }
 
 
-QDispatchQueue::~QDispatchQueue (){ }
+QDispatchQueue::~QDispatchQueue() { }
 
 
 void QDispatchQueue::after(
-    const QTime &t,
-    QRunnable *runnable
+    const QTime& t,
+    QRunnable* runnable
 )
 {
     Q_ASSERT( runnable );
@@ -78,8 +80,8 @@ void QDispatchQueue::after(
 
 
 void QDispatchQueue::setFinalizer(
-    xdispatch::operation *op,
-    const xdispatch::queue &q
+    xdispatch::operation* op,
+    const xdispatch::queue& q
 )
 {
     finalizer( op, q );
@@ -87,8 +89,8 @@ void QDispatchQueue::setFinalizer(
 
 
 void QDispatchQueue::setFinalizer(
-    QRunnable *r,
-    const xdispatch::queue &dq
+    QRunnable* r,
+    const xdispatch::queue& dq
 )
 {
     Q_ASSERT( r );
@@ -98,7 +100,7 @@ void QDispatchQueue::setFinalizer(
 
 
 void QDispatchQueue::setTarget(
-    const xdispatch::queue &q
+    const xdispatch::queue& q
 )
 {
     target_queue( q );
@@ -117,8 +119,8 @@ void QDispatchQueue::resume()
 }
 
 
-QDispatchQueue & QDispatchQueue::operator = (
-    const QDispatchQueue &other
+QDispatchQueue& QDispatchQueue::operator = (
+    const QDispatchQueue& other
 )
 {
     if( this != &other )
@@ -132,7 +134,7 @@ QDispatchQueue & QDispatchQueue::operator = (
 
 Q_DECL_EXPORT QDebug operator << (
     QDebug dbg,
-    const QDispatchQueue *q
+    const QDispatchQueue* q
 )
 {
     dbg.nospace() << "QDispatchQueue (" << q->label().c_str() << ")";
@@ -142,7 +144,7 @@ Q_DECL_EXPORT QDebug operator << (
 
 Q_DECL_EXPORT QDebug operator << (
     QDebug dbg,
-    const QDispatchQueue &q
+    const QDispatchQueue& q
 )
 {
     dbg.nospace() << "QDispatchQueue (" << q.label().c_str() << ")";

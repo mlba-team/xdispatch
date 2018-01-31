@@ -41,7 +41,7 @@ class QDispatchGroup::Private
 
 
 public:
-    Private ()
+    Private()
         : QObject() { }
 
 
@@ -59,8 +59,8 @@ class QDispatchGroup::Emitter
     : public xdispatch::operation
 {
 public:
-    Emitter (
-        QDispatchGroup::Private *p
+    Emitter(
+        QDispatchGroup::Private* p
     )
         : operation(),
           _runnable( NULL ),
@@ -68,9 +68,9 @@ public:
           _group( p ) { }
 
 
-    Emitter (
-        QRunnable *qr,
-        QDispatchGroup::Private *p
+    Emitter(
+        QRunnable* qr,
+        QDispatchGroup::Private* p
     )
         : operation(),
           _runnable( qr ),
@@ -78,9 +78,9 @@ public:
           _group( p ) { }
 
 
-    Emitter (
-        xdispatch::operation *op,
-        QDispatchGroup::Private *p
+    Emitter(
+        xdispatch::operation* op,
+        QDispatchGroup::Private* p
     )
         : operation(),
           _runnable( NULL ),
@@ -88,42 +88,52 @@ public:
           _group( p ) { }
 
 
-    virtual ~Emitter ()
+    virtual ~Emitter()
     {
         if( _runnable && _runnable->autoDelete() )
+        {
             delete _runnable;
+        }
 
         if( _operation && _operation->auto_delete() )
+        {
             delete _operation;
+        }
     }
 
-    void operator () ()
+    void operator()()
     {
         if( _runnable )
+        {
             _runnable->run();
+        }
 
         if( _operation )
+        {
             ( *_operation )();
+        }
 
         if( _group )
+        {
             _group->emitFinished();
+        }
     }
 
 private:
-    QRunnable *_runnable;
-    xdispatch::operation *_operation;
-    QDispatchGroup::Private *_group;
+    QRunnable* _runnable;
+    xdispatch::operation* _operation;
+    QDispatchGroup::Private* _group;
 };
 
 
-QDispatchGroup::QDispatchGroup ()
+QDispatchGroup::QDispatchGroup()
     : d( new Private() )
 {
     connect( d.data(), SIGNAL( groupFinished() ), this, SIGNAL( allFinished() ) );
 }
 
 
-QDispatchGroup::QDispatchGroup (
+QDispatchGroup::QDispatchGroup(
     dispatch_group_t o
 )
     : xdispatch::group( o ),
@@ -133,8 +143,8 @@ QDispatchGroup::QDispatchGroup (
 }
 
 
-QDispatchGroup::QDispatchGroup (
-    const QDispatchGroup &obj
+QDispatchGroup::QDispatchGroup(
+    const QDispatchGroup& obj
 )
     : xdispatch::group( obj ),
       d( new Private() )
@@ -143,8 +153,8 @@ QDispatchGroup::QDispatchGroup (
 }
 
 
-QDispatchGroup::QDispatchGroup (
-    const xdispatch::group &obj
+QDispatchGroup::QDispatchGroup(
+    const xdispatch::group& obj
 )
     : xdispatch::group( obj ),
       d( new Private() )
@@ -153,7 +163,7 @@ QDispatchGroup::QDispatchGroup (
 }
 
 
-QDispatchGroup::~QDispatchGroup (){ }
+QDispatchGroup::~QDispatchGroup() { }
 
 
 void QDispatchGroup::enableAllFinishedSignal()
@@ -163,19 +173,23 @@ void QDispatchGroup::enableAllFinishedSignal()
 
 
 bool QDispatchGroup::wait(
-    const QTime &t
+    const QTime& t
 )
 {
     if( t.msec() == 0 )
+    {
         return wait( DISPATCH_TIME_FOREVER );
+    }
     else
+    {
         return wait( QDispatch::asDispatchTime( t ) );
+    }
 }
 
 
 void QDispatchGroup::async(
-    QRunnable *r,
-    const xdispatch::queue &q
+    QRunnable* r,
+    const xdispatch::queue& q
 )
 {
     Q_ASSERT( r );
@@ -185,8 +199,8 @@ void QDispatchGroup::async(
 
 
 void QDispatchGroup::notify(
-    QRunnable *r,
-    const xdispatch::queue &q
+    QRunnable* r,
+    const xdispatch::queue& q
 )
 {
     Q_ASSERT( r );
@@ -196,8 +210,8 @@ void QDispatchGroup::notify(
 
 
 void QDispatchGroup::notify(
-    xdispatch::operation *op,
-    const xdispatch::queue &q
+    xdispatch::operation* op,
+    const xdispatch::queue& q
 )
 {
     Q_ASSERT( op );
@@ -220,7 +234,7 @@ void QDispatchGroup::resume()
 
 QDebug operator << (
     QDebug dbg,
-    const QDispatchGroup &g
+    const QDispatchGroup& g
 )
 {
     dbg.nospace() << "QDispatchGroup (no details available)";

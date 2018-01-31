@@ -29,7 +29,7 @@
  */
 
 #ifndef __XDISPATCH_INDIRECT__
- # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
+    # error "Please #include <xdispatch/dispatch.h> instead of this file directly."
 #endif
 
 #include <iostream>
@@ -56,7 +56,7 @@ public:
       Creates a new queue using the given
       dispatch_queue_t object
       */
-    explicit queue (
+    explicit queue(
         dispatch_queue_t
     );
     /**
@@ -64,17 +64,17 @@ public:
       the given label and optionally using the
       given target queue
       */
-    explicit queue (
-        const std::string &
+    explicit queue(
+        const std::string&
     );
-    queue (
-        const std::string &,
+    queue(
+        const std::string&,
         const queue&
     );
-    queue (
-        const queue &
+    queue(
+        const queue&
     );
-    ~queue ();
+    ~queue();
 
     /**
       Will dispatch the given operation for
@@ -87,7 +87,7 @@ public:
       @see operation::auto_delete()
       */
     void async(
-        operation *
+        operation*
     );
 
     /**
@@ -98,7 +98,7 @@ public:
     */
     template< typename _Func >
     inline void async(
-        const _Func &b
+        const _Func& b
     )
     {
         async( ::xdispatch::make_operation( b ) );
@@ -118,15 +118,15 @@ public:
     */
     void apply(
         size_t times,
-        iteration_operation *
+        iteration_operation*
     );
 
     /**
      * @deprecated Use the version with swapped arguments instead
      */
     XDISPATCH_DEPRECATED( inline void
-        apply( iteration_operation * op, size_t times )
-    )
+                          apply( iteration_operation* op, size_t times )
+                        )
     {
         apply( times, op );
     }
@@ -142,7 +142,7 @@ public:
     template< typename _Func >
     inline void apply(
         size_t times,
-        const _Func &b
+        const _Func& b
     )
     {
         apply( times, ::xdispatch::make_iteration_operation( b ) );
@@ -153,11 +153,11 @@ public:
      */
     template< typename _Func >
     XDISPATCH_DEPRECATED( inline void
-        apply(
-            const _Func &b,
-            size_t times
-        )
-    )
+                          apply(
+                              const _Func& b,
+                              size_t times
+                          )
+                        )
     {
         apply< _Func > ( times, b );
     }
@@ -174,8 +174,8 @@ public:
     the queue.
     */
     void after(
-        struct tm *time,
-        operation *
+        struct tm* time,
+        operation*
     );
 
     /**
@@ -191,18 +191,18 @@ public:
     */
     void after(
         dispatch_time_t time,
-        operation *
+        operation*
     );
 
     /**
      * @deprecated Use the version with swapped arguments instead
      */
     XDISPATCH_DEPRECATED( inline void
-        after(
-            operation * op,
-            struct tm *time
-        )
-    )
+                          after(
+                              operation* op,
+                              struct tm* time
+                          )
+                        )
     {
         after( time, op );
     }
@@ -211,11 +211,11 @@ public:
      * @deprecated Use the version with swapped arguments instead
      */
     XDISPATCH_DEPRECATED( inline void
-        after(
-            operation * op,
-            dispatch_time_t time
-        )
-    )
+                          after(
+                              operation* op,
+                              dispatch_time_t time
+                          )
+                        )
     {
         after( time, op );
     }
@@ -227,8 +227,8 @@ public:
     */
     template< typename _Func >
     inline void after(
-        struct tm *time,
-        const _Func &b
+        struct tm* time,
+        const _Func& b
     )
     {
         after( time, ::xdispatch::make_operation( b ) );
@@ -242,7 +242,7 @@ public:
     template< typename _Func >
     inline void after(
         dispatch_time_t time,
-        const _Func &b
+        const _Func& b
     )
     {
         after( time, ::xdispatch::make_operation( b ) );
@@ -253,11 +253,11 @@ public:
      */
     template< typename _Func >
     XDISPATCH_DEPRECATED( inline void
-        after(
-            const _Func &b,
-            struct tm *time
-        )
-    )
+                          after(
+                              const _Func& b,
+                              struct tm* time
+                          )
+                        )
     {
         after( b, time );
     }
@@ -267,11 +267,11 @@ public:
      */
     template< typename _Func >
     XDISPATCH_DEPRECATED( inline void
-        after(
-            const _Func &b,
-            dispatch_time_t time
-        )
-    )
+                          after(
+                              const _Func& b,
+                              dispatch_time_t time
+                          )
+                        )
     {
         after( b, time );
     }
@@ -285,7 +285,7 @@ public:
     @see operation::auto_delete();
     */
     void sync(
-        operation *
+        operation*
     );
 
     /**
@@ -295,7 +295,7 @@ public:
     */
     template< typename _Func >
     inline void sync(
-        const _Func &b
+        const _Func& b
     )
     {
         sync( ::xdispatch::make_operation( b ) );
@@ -315,8 +315,8 @@ public:
     will be executed on the queue itself.
     */
     void finalizer(
-        operation *,
-        const queue & = global_queue()
+        operation*,
+        const queue& = global_queue()
     );
 
     /**
@@ -326,8 +326,8 @@ public:
     */
     template< typename _Func >
     inline void finalizer(
-        const _Func &b,
-        const queue &q = global_queue()
+        const _Func& b,
+        const queue& q = global_queue()
     )
     {
         finalizer( ::xdispatch::make_operation( b ), q );
@@ -336,7 +336,7 @@ public:
     /**
     @return The label of the queue that was used while creating it
     */
-    const std::string & label() const;
+    const std::string& label() const;
 
     /**
     @returns The dispatch_queue_t object associated with this
@@ -354,8 +354,8 @@ public:
     */
     virtual dispatch_queue_t native_queue() const;
 
-    queue & operator = (
-        const queue &
+    queue& operator = (
+        const queue&
     );
 
 
@@ -365,16 +365,16 @@ private:
 };
 
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const queue *
+    std::ostream&,
+    const queue*
 );
 
-XDISPATCH_EXPORT std::ostream &
+XDISPATCH_EXPORT std::ostream&
 operator << (
-    std::ostream &,
-    const queue &
+    std::ostream&,
+    const queue&
 );
 
 __XDISPATCH_END_NAMESPACE

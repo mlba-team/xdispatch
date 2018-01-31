@@ -28,10 +28,10 @@ __XDISPATCH_USE_NAMESPACE
 
 extern "C"
 void _xdispatch_once_operation(
-    void *blk
+    void* blk
 )
 {
-    operation *op = reinterpret_cast< operation * > ( blk );
+    operation* op = reinterpret_cast< operation* >( blk );
 
     ( *op )();
 }
@@ -40,9 +40,9 @@ void _xdispatch_once_operation(
 // class implementation
 
 void once::simple(
-    dispatch_once_t *obj,
+    dispatch_once_t* obj,
     dispatch_function_t func,
-    void *data
+    void* data
 )
 {
     dispatch_once_f( obj, data, func );
@@ -50,22 +50,22 @@ void once::simple(
 
 
 void once::simple(
-    once &obj,
+    once& obj,
     dispatch_function_t func,
-    void *data
+    void* data
 )
 {
     dispatch_once_f( obj.native_once(), data, func );
 }
 
 
-once::once ()
+once::once()
     : _once_obj( 0 ),
       _once( &_once_obj ) { }
 
 
-once::once (
-    dispatch_once_t *dot
+once::once(
+    dispatch_once_t* dot
 )
     : _once_obj( 0 ),
       _once( dot )
@@ -74,32 +74,32 @@ once::once (
 }
 
 
-void once::operator () (
-    operation &op
+void once::operator()(
+    operation& op
 )
 {
     dispatch_once_f( _once, &op, _xdispatch_once_operation );
 }
 
 
-dispatch_once_t * once::native_once() const
+dispatch_once_t* once::native_once() const
 {
     return _once;
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const once *q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const once* q
 )
 {
     return operator << ( stream, *q );
 }
 
 
-std::ostream & xdispatch::operator << (
-    std::ostream &stream,
-    const once &q
+std::ostream& xdispatch::operator << (
+    std::ostream& stream,
+    const once& q
 )
 {
     stream << "xdispatch::once (" << ( q._once == 0 ? "not" : "" ) << " executed)";
