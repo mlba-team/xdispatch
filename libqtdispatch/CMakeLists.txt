@@ -19,6 +19,10 @@
 # @LICENSE_HEADER_END@
 #
 
+# supress warning on compile_definitions_<mode> triggered by a target used
+# but not controlled in here
+cmake_policy(SET CMP0043 OLD)
+
 file(GLOB QSRC src/*.h src/*.cpp)
 file(GLOB QHEADER src/*.h)
 file(GLOB QINCLUDE_H
