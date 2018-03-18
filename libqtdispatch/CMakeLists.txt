@@ -80,7 +80,7 @@ set_target_properties( QtDispatch PROPERTIES
     SOVERSION ${XDISPATCH_VERSION}
 )
 
-if(MZ_IOS)
+if( MZ_IOS )
     install(TARGETS QtDispatch
                 LIBRARY DESTINATION lib
                 RUNTIME DESTINATION bin
@@ -89,7 +89,7 @@ if(MZ_IOS)
                 DESTINATION include
                 PATTERN "*.svn" EXCLUDE)
 
-elseif(MZ_APPLE)
+elseif( MZ_MACOS )
     set_property(TARGET QtDispatch PROPERTY FRAMEWORK TRUE)
     set_property(TARGET QtDispatch PROPERTY PUBLIC_HEADER ${QINCLUDE_H})
 
