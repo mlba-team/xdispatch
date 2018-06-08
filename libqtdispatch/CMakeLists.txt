@@ -19,10 +19,6 @@
 # @LICENSE_HEADER_END@
 #
 
-# supress warning on compile_definitions_<mode> triggered by a target used
-# but not controlled in here
-cmake_policy(SET CMP0043 OLD)
-
 file(GLOB QSRC src/*.h src/*.cpp)
 file(GLOB QHEADER src/*.h)
 file(GLOB QINCLUDE_H
@@ -69,11 +65,14 @@ target_include_directories(QtDispatch
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
     INTERFACE include
 )
-target_link_libraries(QtDispatch xdispatch)
+target_link_libraries(QtDispatch
+    Qt5::Widgets
+    Qt5::Network
+    xdispatch
+)
 if( NOT MZ_MACOS )
     target_link_libraries(QtDispatch dispatch)
 endif()
-qt5_use_modules(QtDispatch Widgets Network)
 
 set_target_properties( QtDispatch PROPERTIES
     VERSION ${XDISPATCH_VERSION}

@@ -88,9 +88,11 @@ endif()
 
 # Qt Extension if Qt is available
 # new: Qt5 is separated into modules
-find_package(Qt5Core QUIET)
+find_package(Qt5Core)
 
 if( Qt5Core_VERSION )
+    find_package(Qt5Network)
+    find_package(Qt5Widgets)
     option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" ON)
 else()
     option(XDISPATCH_QT_SUPPORT "Enable to build QtDispatch" OFF)
