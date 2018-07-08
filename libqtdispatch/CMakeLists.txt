@@ -89,8 +89,12 @@ if( MZ_IOS )
                 PATTERN "*.svn" EXCLUDE)
 
 elseif( MZ_MACOS )
-    set_property(TARGET QtDispatch PROPERTY FRAMEWORK TRUE)
-    set_property(TARGET QtDispatch PROPERTY PUBLIC_HEADER ${QINCLUDE_H})
+    set_target_properties( QtDispatch PROPERTIES
+        FRAMEWORK TRUE
+        MACOSX_FRAMEWORK_IDENTIFIER "de.mlba-team.qtdispatch"
+        MACOSX_FRAMEWORK_BUNDLE_VERSION "${XDISPATCH_VERSION}"
+        PUBLIC_HEADER "${QINCLUDE_H}"
+    )
 
     install(TARGETS QtDispatch
                 COMPONENT libQtDispatch

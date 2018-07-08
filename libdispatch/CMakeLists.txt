@@ -116,8 +116,12 @@ include_directories(
 
 
 if(MZ_MACOS)
-    set_property(TARGET dispatch PROPERTY FRAMEWORK TRUE)
-    set_property(TARGET dispatch PROPERTY PUBLIC_HEADER ${INCL})
+    set_target_properties( dispatch PROPERTIES
+        FRAMEWORK TRUE
+        MACOSX_FRAMEWORK_IDENTIFIER "de.mlba-team.dispatch"
+        MACOSX_FRAMEWORK_BUNDLE_VERSION "${XDISPATCH_VERSION}"
+        PUBLIC_HEADER ${INCL}
+    )
 
     install(TARGETS dispatch
                 COMPONENT libdispatch

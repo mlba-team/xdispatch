@@ -70,8 +70,12 @@ if(MZ_IOS)
                 PATTERN "*.svn" EXCLUDE)
 
 elseif(MZ_MACOS)
-    set_property(TARGET xdispatch PROPERTY FRAMEWORK TRUE)
-    set_property(TARGET xdispatch PROPERTY PUBLIC_HEADER ${CXX_INCL})
+    set_target_properties( xdispatch PROPERTIES
+        FRAMEWORK TRUE
+        MACOSX_FRAMEWORK_IDENTIFIER "de.mlba-team.xdispatch"
+        MACOSX_FRAMEWORK_BUNDLE_VERSION "${XDISPATCH_VERSION}"
+        PUBLIC_HEADER ${CXX_INCL}
+    )
 
     install(TARGETS xdispatch
                 COMPONENT libxdispatch
