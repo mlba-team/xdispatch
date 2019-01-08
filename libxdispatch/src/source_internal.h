@@ -133,7 +133,7 @@ public:
             if( xdispatch_source_wrappers.end() == it )
             {
                 it = xdispatch_source_wrappers.insert( xdispatch_source_wrappers.begin(),
-                std::make_pair( obj, pointer< native_source_wrapper >::shared( new native_source_wrapper( obj ) ) )
+                                                       std::make_pair( obj, pointer< native_source_wrapper >::shared( new native_source_wrapper( obj ) ) )
                                                      );
             }
             return it->second;
