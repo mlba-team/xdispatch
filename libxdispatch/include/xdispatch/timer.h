@@ -80,18 +80,18 @@ public:
       Will start the timer.
       @remarks A new created timer will be stopped and needs to me started first.
                Once started, ensure balanced calls between start() and stop().
-          @see resume();
+
+      Use the optional parameter to specify a time in nanoseconds after which
+      the timer will fire for the first time. By default it will fire immediately
+      and continue at the configured interval unless it was configured to be a
+      singleshot timer.
     */
-    inline void start()
-    {
-        resume();
-    }
+    void start( uint64_t = 0 );
 
     /**
       Will stop the timer.
       @remarks A new created timer will be stopped and needs to me started first.
                Once started, ensure balanced calls between start() and stop().
-          @see suspend()
     */
     inline void stop()
     {

@@ -42,7 +42,8 @@ public:
         : native_source( dispatch_source_create( DISPATCH_SOURCE_TYPE_TIMER, 0, 0, q ) ),
           _parent( parent ),
           _interval( interval ),
-          _latency( 0 )
+          _latency( 0 ),
+          _delay( 0 )
     {
         XDISPATCH_ASSERT( _parent );
 
@@ -53,7 +54,11 @@ public:
         uint64_t i
     )
     {
+        // changing the interval will also change the delay so that
+        // the timer is not firing prematurely in case it is already
+        // running and has its interval changed
         _interval = i;
+        _delay = i;
         update_timeout();
     }
 
@@ -65,6 +70,14 @@ public:
         update_timeout();
     }
 
+    void delay(
+        uint64_t d
+    )
+    {
+        _delay = d;
+        update_timeout();
+    }
+
     void on_source_ready()
     {
         ready( _parent );
@@ -73,13 +86,21 @@ public:
 protected:
     inline void update_timeout()
     {
-        dispatch_source_set_timer( native(), time_now, _interval, _latency );
+        if( 0 == _delay )
+        {
+            dispatch_source_set_timer( native(), time_now, _interval, _latency );
+        }
+        else
+        {
+            dispatch_source_set_timer( native(), as_delayed_time( _delay ), _interval, _latency );
+        }
     }
 
 private:
     timer* _parent;
     uint64_t _interval;
     uint64_t _latency;
+    uint64_t _delay;
 };
 
 
@@ -113,6 +134,14 @@ void timer::latency(
 )
 {
     static_cast< timer_type* >( source::source_type() )->latency( l );
+}
+
+void timer::start(
+    uint64_t d
+)
+{
+    static_cast< timer_type* >( source::source_type() )->delay( d );
+    resume();
 }
 
 
