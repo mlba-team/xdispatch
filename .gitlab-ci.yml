@@ -49,3 +49,14 @@ macos-1013-clang:
       - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd clang-ninja-release
       - ninja
+
+macos-ios:
+    stage: build
+    tags:
+      - macos
+    script:
+      - cd build
+      - git clean -ffdx
+      - ./generator.sh mode=release compiler=ios generator=makefiles location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd ios-makefiles-release
+      - make -j4

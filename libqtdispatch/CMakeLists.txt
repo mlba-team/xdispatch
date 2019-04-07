@@ -70,7 +70,7 @@ target_link_libraries(QtDispatch
     Qt5::Network
     xdispatch
 )
-if( NOT MZ_MACOS )
+if( NOT MZ_MACOS AND NOT MZ_IOS )
     target_link_libraries(QtDispatch dispatch)
 endif()
 

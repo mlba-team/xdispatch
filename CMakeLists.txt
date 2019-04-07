@@ -132,7 +132,7 @@ endif()
 if(NOT FORCE_OWN_LIBDISPATCH)
     message("   >> using system installed libdispatch")
     mz_add_definition("HAVE_NATIVE_DISPATCH_H=1")
-    if(NOT MZ_MACOS) # mac os is currently the only operating system with auto linking
+    if(NOT MZ_MACOS AND NOT MZ_IOS) # mac os / ios is currently the only operating system with auto linking
         set(LIBS ${LIBS} dispatch)
     endif()
 else()
