@@ -32,6 +32,13 @@
 # include <xdispatch/dispatch>
 #endif
 
+#ifdef _WIN32
+ // windows does offer read source support by now
+ // but the tests have not been adapted yet
+ # undef DISPATCH_SOURCE_HAS_READ
+ # define DISPATCH_SOURCE_HAS_READ 0
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

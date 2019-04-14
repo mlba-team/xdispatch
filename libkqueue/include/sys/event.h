@@ -176,10 +176,14 @@ extern "C" {
 
 #ifdef _WIN32
 
-struct timespec {
-    time_t  tv_sec;
-    long    tv_nsec;
-};
+#if defined(_MSC_VER) && (_MSC_VER >= 1910)
+    #include <time.h>
+#else
+    struct timespec {
+        time_t  tv_sec;
+        long    tv_nsec;
+    };
+#endif
 
 __declspec(dllexport) int
 kqueue(void);

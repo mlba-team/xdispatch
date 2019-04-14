@@ -11,7 +11,7 @@ struct timezone
 };
 
 // quick workaround in case this is included after event.h
-#ifndef _SYS_EVENT_H_
+#if !(defined _SYS_EVENT_H_) && ( !(defined _MSC_VER) || (_MSC_VER < 1910) )
 struct timespec {
     long tv_sec; /* seconds */
     long tv_nsec; /* nanoseconds */

@@ -2,19 +2,19 @@
  * Copyright (c) 2008-2009 Apple Inc. All rights reserved.
  *
  * @APPLE_APACHE_LICENSE_HEADER_START@
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * @APPLE_APACHE_LICENSE_HEADER_END@
  */
 
@@ -41,7 +41,7 @@ extern "C" void cxx_dispatch_read_lambda()
 
 	const char *path = "/usr/share/dict/words";
 	struct stat sb;
-	
+
 	int infd = open(path, O_RDONLY);
 	if (infd == -1) {
 		perror(path);
@@ -65,7 +65,7 @@ extern "C" void cxx_dispatch_read_lambda()
     MU_DESC_ASSERT_NOT_NULL("DISPATCH_SOURCE_TYPE_READ", native_reader);
     xdispatch::source* reader = new xdispatch::source( new xdispatch::native_source(native_reader) );
     MU_ASSERT_NOT_NULL( reader );
-	
+
     reader->handler([=]{
             size_t estimated = dispatch_source_get_data( reader->native_source() );
             MU_MESSAGE("bytes available: %zu", estimated);
@@ -82,7 +82,7 @@ extern "C" void cxx_dispatch_read_lambda()
                 reader->cancel();
 			}
 	});
-	
+
     reader->cancel_handler([=]{
         MU_DESC_ASSERT_EQUAL("Bytes read", bytes_read, bytes_total);
 		int res = close(infd);
