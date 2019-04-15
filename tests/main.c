@@ -20,7 +20,11 @@
 */
 
 #include "munit/MUnit.h"
-#include "tests.h"
+#if DISPATCH_C_SUPPORT
+# include "tests.h"
+#else
+  static void register_tests(){}
+#endif
 #include "cxx_tests.h"
 
 #if XDISPATCH_QT_SUPPORT

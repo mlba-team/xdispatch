@@ -66,6 +66,7 @@ if(FORCE_OWN_LIBDISPATCH)
         mz_message("Skipping lambda tests")
         list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_LAMBDA})
     endif()
+    mz_add_definition(DISPATCH_C_SUPPORT=1)
 endif()
 
 file(GLOB TEST_XDISPATCH
