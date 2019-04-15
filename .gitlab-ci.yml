@@ -17,8 +17,20 @@ ubuntu-1604-clang:
       - cp -rvf bin $CI_PROJECT_DIR
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
+
+ubuntu-1604-test:
+    stage: test
+    image: builder-1604-clang:latest
+    tags:
+      - docker
+    dependencies:
+      - ubuntu-1604-clang
+    script:
+      - cd bin
+      - ls -l
+      - ./xdispatch_tests
 
 ubuntu-1604-gcc:
     stage: build
@@ -33,7 +45,7 @@ ubuntu-1604-gcc:
       - cp -rvf bin $CI_PROJECT_DIR
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
 
 ubuntu-1404-clang:
@@ -49,7 +61,7 @@ ubuntu-1404-clang:
       - cp -rvf bin $CI_PROJECT_DIR
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
 
 macos-1013-clang:
@@ -64,8 +76,19 @@ macos-1013-clang:
       - cp -rvf bin $CI_PROJECT_DIR
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
+
+macos-1013-test:
+    stage: test
+    tags:
+      - macos
+    dependencies:
+      - macos-1013-clang
+    script:
+      - cd bin
+      - ls -l
+      - ./xdispatch_tests
 
 macos-ios:
     stage: build
@@ -79,7 +102,7 @@ macos-ios:
       - cp -rvf bin $CI_PROJECT_DIR
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
 
 windows-vs2019-x86:
@@ -92,11 +115,22 @@ windows-vs2019-x86:
       - call generator.bat release ninja outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
       - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja-release
       - ninja
-      - robocopy bin %CI_PROJECT_DIR%/bin /e
+      - cp -rvf bin %CI_PROJECT_DIR%
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
+
+windows-vs2019-test:
+    stage: test
+    tags:
+      - windows
+    dependencies:
+      - windows-vs2019-x86
+    script:
+      - cd bin
+      - ls
+      - xdispatch_tests.exe
 
 windows-vs2019-amd64:
     stage: build
@@ -108,8 +142,8 @@ windows-vs2019-amd64:
       - call generator.bat release ninja_64 outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
       - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja_64-release
       - ninja
-      - robocopy bin %CI_PROJECT_DIR%/bin /e
+      - cp -rvf bin %CI_PROJECT_DIR%
     artifacts:
       paths:
-        - bin/*
+        - bin/
       expire_in: 1 week
