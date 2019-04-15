@@ -1,7 +1,8 @@
 variables:
   GIT_SSL_NO_VERIFY: "1"
   GIT_STRATEGY: fetch
-  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_STRATEGY: normal
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/opensource/xdispatch
 
 ubuntu-1604-clang:
     stage: build
@@ -9,11 +10,27 @@ ubuntu-1604-clang:
     tags:
       - docker
     script:
-      - cd build
-      - git clean -ffdx
-      - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
-      - cd clang-ninja-release
+      - cd $CI_PROJECT_DIR/build
+      - ./generator.sh mode=release compiler=clang generator=ninja location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd $CI_PROJECT_DIR/../xdispatch_clang-ninja-release
       - ninja
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week
+
+ubuntu-1604-test:
+    stage: test
+    image: builder-1604-clang:latest
+    tags:
+      - docker
+    dependencies:
+      - ubuntu-1604-clang
+    script:
+      - cd bin
+      - ls -l
+      - ./xdispatch_tests -k || true
 
 ubuntu-1604-gcc:
     stage: build
@@ -21,11 +38,15 @@ ubuntu-1604-gcc:
     tags:
       - docker
     script:
-      - cd build
-      - git clean -ffdx
-      - ./generator.sh mode=release compiler=gcc generator=makefiles location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
-      - cd gcc-makefiles-release
-      - make all
+      - cd $CI_PROJECT_DIR/build
+      - ./generator.sh mode=release compiler=gcc generator=makefiles location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd $CI_PROJECT_DIR/../xdispatch_gcc-makefiles-release
+      - make -j4 all
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week
 
 ubuntu-1404-clang:
     stage: build
@@ -33,30 +54,96 @@ ubuntu-1404-clang:
     tags:
       - docker
     script:
-      - cd build
-      - git clean -ffdx
-      - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
-      - cd clang-ninja-release
+      - cd $CI_PROJECT_DIR/build
+      - ./generator.sh mode=release compiler=clang generator=ninja location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd $CI_PROJECT_DIR/../xdispatch_clang-ninja-release
       - ninja
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week
 
 macos-1013-clang:
     stage: build
     tags:
       - macos
     script:
-      - cd build
-      - git clean -ffdx
-      - ./generator.sh mode=release compiler=clang generator=ninja location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
-      - cd clang-ninja-release
+      - cd $CI_PROJECT_DIR/build
+      - ./generator.sh mode=release compiler=clang generator=ninja location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd $CI_PROJECT_DIR/../xdispatch_clang-ninja-release
       - ninja
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week
+
+macos-1013-test:
+    stage: test
+    tags:
+      - macos
+    dependencies:
+      - macos-1013-clang
+    script:
+      - cd bin
+      - ls -l
+      - ./xdispatch_tests -k || true
 
 macos-ios:
     stage: build
     tags:
       - macos
     script:
-      - cd build
-      - git clean -ffdx
-      - ./generator.sh mode=release compiler=ios generator=makefiles location=inside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
-      - cd ios-makefiles-release
+      - cd $CI_PROJECT_DIR/build
+      - ./generator.sh mode=release compiler=ios generator=makefiles location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
+      - cd $CI_PROJECT_DIR/../xdispatch_ios-makefiles-release
       - make -j4
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week
+
+windows-vs2019-x86:
+    stage: build
+    tags:
+      - windows
+      - vs2019
+    script:
+      - cd /d %CI_PROJECT_DIR%/build
+      - call generator.bat release ninja outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
+      - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja-release
+      - ninja
+      - cp -rvf bin %CI_PROJECT_DIR%
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week
+
+windows-vs2019-test:
+    stage: test
+    tags:
+      - windows
+    dependencies:
+      - windows-vs2019-x86
+    script:
+      - cd bin
+      - ls
+      - xdispatch_tests.exe -k || true
+
+windows-vs2019-amd64:
+    stage: build
+    tags:
+      - windows
+      - vs2019
+    script:
+      - cd /d %CI_PROJECT_DIR%/build
+      - call generator.bat release ninja_64 outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
+      - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja_64-release
+      - ninja
+      - cp -rvf bin %CI_PROJECT_DIR%
+    artifacts:
+      paths:
+        - bin/
+      expire_in: 1 week

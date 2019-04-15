@@ -31,18 +31,25 @@ extern const struct filter evfilt_proc;
 extern const struct filter evfilt_timer;
 extern const struct filter evfilt_user;
 
+
 static int
 filter_register(struct kqueue *kq, short filter, const struct filter *src)
 {
     struct filter *dst;
     unsigned int filt;
-    int rv = 0;
 
     filt = (-1 * filter) - 1;
-    if (filt >= EVFILT_SYSCOUNT) 
+    if (filt >= EVFILT_SYSCOUNT)
         return (-1);
 
     dst = &kq->kq_filt[filt];
+    return filter_instantiate(kq, dst, src);
+}
+
+int filter_instantiate(struct kqueue *kq, struct filter *dst, const struct filter *src)
+{
+    int rv = 0;
+
     memcpy(dst, src, sizeof(*src));
     dst->kf_kqueue = kq;
     RB_INIT(&dst->kf_knote);
@@ -73,7 +80,7 @@ filter_register(struct kqueue *kq, short filter, const struct filter *src)
     /* Add the filter's event descriptor to the main fdset */
     if (dst->kf_pfd > 0) {
         FD_SET(dst->kf_pfd, &kq->kq_fds);
-        if (dst->kf_pfd > kq->kq_nfds)  
+        if (dst->kf_pfd > kq->kq_nfds)
             kq->kq_nfds = dst->kf_pfd;
         dbg_printf("fds: added %d (nfds=%d)", dst->kf_pfd, kq->kq_nfds);
     }
@@ -121,7 +128,7 @@ filter_unregister_all(struct kqueue *kq)
         if (kq->kq_filt[i].kf_id == 0)
             continue;
 
-        if (kq->kq_filt[i].kf_destroy != NULL) 
+        if (kq->kq_filt[i].kf_destroy != NULL)
             kq->kq_filt[i].kf_destroy(&kq->kq_filt[i]);
 
         //XXX-FIXME
@@ -153,6 +160,31 @@ filter_lookup(struct filter **filt, struct kqueue *kq, short id)
     return (0);
 }
 
+int
+filter_knote_create(struct filter *filt, struct knote **knp, const struct kevent *src)
+{
+    struct knote *kn;
+    *knp = NULL;
+    if ((kn = knote_new()) == NULL) {
+        errno = ENOENT;
+        return (-1);
+    }
+    memcpy(&kn->kev, src, sizeof(kn->kev));
+    kn->kev.flags &= ~EV_ENABLE;
+    kn->kev.flags |= EV_ADD;//FIXME why?
+    kn->kn_kq = filt->kf_kqueue;
+    assert(filt->kn_create);
+    if (filt->kn_create(filt, kn) < 0) {
+        knote_release(kn);
+        errno = EFAULT;
+        return (-1);
+    }
+    knote_insert(filt, kn);
+    dbg_printf("created kevent %s knote %p", kevent_dump(src), kn);
+    *knp = kn;
+    return 0;
+}
+
 const char *
 filter_name(short filt)
 {
@@ -160,14 +192,14 @@ filter_name(short filt)
     const char *fname[EVFILT_SYSCOUNT] = {
         "EVFILT_READ",
         "EVFILT_WRITE",
-        "EVFILT_AIO", 
+        "EVFILT_AIO",
         "EVFILT_VNODE",
         "EVFILT_PROC",
-        "EVFILT_SIGNAL", 
-        "EVFILT_TIMER", 
-        "EVFILT_NETDEV", 
-        "EVFILT_FS",    
-        "EVFILT_LIO",  
+        "EVFILT_SIGNAL",
+        "EVFILT_TIMER",
+        "EVFILT_NETDEV",
+        "EVFILT_FS",
+        "EVFILT_LIO",
         "EVFILT_USER"
     };
 

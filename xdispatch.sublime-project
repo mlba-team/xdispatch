@@ -1,0 +1,18 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				"*.pyc"
+			],
+			"folder_exclude_patterns":
+			[
+				"build/clang-*",
+				".git"
+			],
+			"follow_symlinks": true,
+			"path": "."
+		}
+	]
+}

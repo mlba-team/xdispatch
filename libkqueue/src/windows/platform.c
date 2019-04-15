@@ -36,16 +36,33 @@ static __thread struct event_buf iocp_buf;
  * Per-thread evt event buffer used to ferry data between
  * kevent_wait() and kevent_copyout().
  */
-#define iocp_buf (*( (struct event_buf*)TlsGetValue(event_buf_tls) ))
-static DWORD event_buf_tls;
+#define iocp_buf (*_iocp_buf())
+static DWORD event_buf_tls = 0;
+static int event_buf_tls_init = 0;
 
 
 // workaround for implicit TLS initialization
 // bug on Windows prior to Windows Vista
+struct event_buf* _libkqueue_thread_attach(){
+  struct event_buf* ev_buf = malloc(sizeof(struct event_buf));
+  assert(ev_buf);
+  TlsSetValue(event_buf_tls, ev_buf);
+  return ev_buf;
+}
+
 void libkqueue_thread_attach(){
-	struct event_buf* ev_buf = malloc(sizeof(struct event_buf));
-	assert(ev_buf);
-	TlsSetValue(event_buf_tls, ev_buf);
+  _libkqueue_thread_attach();
+}
+
+struct event_buf *_iocp_buf() {
+  if (!event_buf_tls_init)
+    libkqueue_process_attach();
+  struct event_buf* ev_buf = ((struct event_buf*)TlsGetValue(event_buf_tls));
+  if (!ev_buf) {
+    dbg_puts("AAARrrr, no iocp_buf? fixing up missing libkqueue_thread_attach");
+    ev_buf = _libkqueue_thread_attach();
+  }
+  return ev_buf;
 }
 
 void libkqueue_thread_detach(){
@@ -56,6 +73,7 @@ void libkqueue_thread_detach(){
 
 void libkqueue_process_attach(){
 	event_buf_tls = TlsAlloc();
+        event_buf_tls_init = 1;
 	libkqueue_thread_attach();
 }
 
@@ -66,7 +84,7 @@ void libkqueue_process_attach(){
 const struct filter evfilt_proc = EVFILT_NOTIMPL;
 const struct filter evfilt_vnode = EVFILT_NOTIMPL;
 const struct filter evfilt_signal = EVFILT_NOTIMPL;
-const struct filter evfilt_write = EVFILT_NOTIMPL;
+extern const struct filter evfilt_mux;
 
 const struct kqueue_vtable kqops = {
     windows_kqueue_init,
@@ -134,12 +152,25 @@ windows_kqueue_init(struct kqueue *kq)
     }
 #endif
 
-	if(filter_register_all(kq) < 0) {
+    if (filter_instantiate(kq, &kq->kq_rw_mux, &evfilt_mux) < 0 || filter_register_all(kq) < 0) {
 		CloseHandle(kq->kq_iocp);
 		return (-1);
 	}
 
     return (0);
+}
+
+int
+windows_kqueue_post(struct kqueue *kq, struct knote *kn)
+{
+  knote_retain(kn); // this pairs with windows_kevent_copyout
+  if (!PostQueuedCompletionStatus(kq->kq_iocp, 1, (ULONG_PTR)0, (LPOVERLAPPED)kn)) {
+    dbg_lasterror("PostQueuedCompletionStatus()");
+    knote_release(kn);
+    return -1;
+    /* FIXME: need more extreme action */
+  }
+  return 0;
 }
 
 void
@@ -180,10 +211,11 @@ windows_kevent_wait(struct kqueue *kq, int no, const struct timespec *timeout)
             &iocp_buf.bytes, &iocp_buf.key, &iocp_buf.overlap, 
             timeout_ms);
     if (success) {
+      dbg_printf("======= dequeued knote %p", iocp_buf.overlap);
         return (1);
     } else {
         if (GetLastError() == WAIT_TIMEOUT) {
-            dbg_puts("no events within the given timeout");
+            dbg_printf("no events within the given timeout");
             return (0);
         }
         dbg_lasterror("GetQueuedCompletionStatus");
@@ -199,10 +231,21 @@ windows_kevent_copyout(struct kqueue *kq, int nready,
 {
     struct filter *filt;
 	struct knote* kn;
-    int rv, nret;
+    int rv, nret = 0;
 
     //FIXME: not true for EVFILT_IOCP
     kn = (struct knote *) iocp_buf.overlap;
+    assert(kn);
+    if (kn->kn_flags & KNFL_KNOTE_DELETED) {
+      dbg_printf("Dropping deleted knote %p", kn);
+      knote_release(kn);
+      return 0;
+    }
+    if (kn->kev.flags & EV_DISABLE) {
+      dbg_printf("Dropping disabled knote %p", kn);
+      knote_release(kn);
+      return 0;
+    }
     filt = &kq->kq_filt[~(kn->kev.filter)];
     rv = filt->kf_copyout(eventlist, kn, &iocp_buf);
     if (slowpath(rv < 0)) {
@@ -212,6 +255,7 @@ windows_kevent_copyout(struct kqueue *kq, int nready,
     } else {
         nret = 1;
     }
+    knote_release(kn); // this pairs with windows_kqueue_post()
 
     /*
      * Certain flags cause the associated knote to be deleted
@@ -259,22 +303,31 @@ windows_get_descriptor_type(struct knote *kn)
     /*
      * Test if the descriptor is a socket.
      */
-    if (fstat( (int)kn->kev.ident, &sb) == 0) {
+	/* Assume that the HANDLE is a socket. */
+	/* TODO: we could do a WSAIoctl and check for WSAENOTSOCK */
+
+	/*
+	* Test if the socket is active or passive.
+	*/
+	slen = sizeof(lsock);
+	lsock = 0;
+	i = getsockopt(kn->kev.ident, SOL_SOCKET, SO_ACCEPTCONN, (char *)&lsock, &slen);
+	if (i == 0) {
+		// this is a socket
+		if (lsock) {
+			kn->kn_flags |= KNFL_PASSIVE_SOCKET;
+		}
+		else {
+			dbg_printf("HANDLE %d appears to a be an active socket ???", kn->kev.ident);
+			// ???
+		}
+	} else if (fstat((int)kn->kev.ident, &sb) == 0) {
         dbg_printf("HANDLE %d appears to a be regular file", kn->kev.ident);
         kn->kn_flags |= KNFL_REGULAR_FILE;
     } else {
-        /* Assume that the HANDLE is a socket. */
-        /* TODO: we could do a WSAIoctl and check for WSAENOTSOCK */
-
-        /*
-         * Test if the socket is active or passive.
-         */
-        slen = sizeof(lsock);
-        lsock = 0;
-        i = getsockopt(kn->kev.ident, SOL_SOCKET, SO_ACCEPTCONN, (char *) &lsock, &slen);
-        if (i == 0 && lsock) 
-            kn->kn_flags |= KNFL_PASSIVE_SOCKET;
-    }
+		// ???
+		dbg_printf("HANDLE %d appears to a be neither a file neither a socket???", kn->kev.ident);
+	}
 
     return (0);
 }

@@ -42,7 +42,7 @@
 // way they are used within xdispatch
 
 // MSVC 2010
-#if XDISPATCH_COMPILER_MSVC2010
+#if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2017
 
 # include <memory>
 

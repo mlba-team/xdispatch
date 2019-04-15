@@ -25,7 +25,7 @@
 
 #include "platform.h"
 
-#if XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
+#if XDISPATCH_COMPILER_MSVC2017 || XDISPATCH_COMPILER_MSVC2010 || XDISPATCH_COMPILER_MSVC2008SP1
     #pragma warning(disable: 4251) /* disable warning C4251 - * requires dll-interface */
     #ifdef XDISPATCH_MAKEDLL
         #define XDISPATCH_EXPORT __declspec( dllexport )

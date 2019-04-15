@@ -176,10 +176,14 @@ extern "C" {
 
 #ifdef _WIN32
 
-struct timespec {
-    time_t  tv_sec;
-    long    tv_nsec;
-};
+#if defined(_MSC_VER) && (_MSC_VER >= 1910)
+    #include <time.h>
+#else
+    struct timespec {
+        time_t  tv_sec;
+        long    tv_nsec;
+    };
+#endif
 
 __declspec(dllexport) int
 kqueue(void);
@@ -190,8 +194,8 @@ kevent(int kq, const struct kevent *changelist, int nchanges,
 	    const struct timespec *timeout);
 
 #ifdef MAKE_STATIC
-__declspec(dllexport) int
-libkqueue_init();
+__declspec(dllexport) void
+libkqueue_init(void);
 #endif
 
 #else
@@ -200,7 +204,7 @@ int     kevent(int kq, const struct kevent *changelist, int nchanges,
 	    struct kevent *eventlist, int nevents,
 	    const struct timespec *timeout);
 #ifdef MAKE_STATIC
-void     libkqueue_init();
+void     libkqueue_init(void);
 #endif
 #endif
 

@@ -1,3 +1,5 @@
 /*.txt.user
 /package/debian/changelog
 /package/ubuntu/changelog
+/*.sublime-workspace
+/libkqueue/config.h

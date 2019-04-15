@@ -31,30 +31,29 @@ static fd_set _dispatch_wfds;
 static void *_dispatch_rfd_ptrs[FD_SETSIZE];
 static void *_dispatch_wfd_ptrs[FD_SETSIZE];
 
-static int _dispatch_kq;
-
 static void
-_dispatch_get_kq_init(void *context DISPATCH_UNUSED)
+_dispatch_get_kq_init(void *context)
 {
+        int *_dispatch_kqp = (int*)context;
 	static const struct kevent kev = {
 		1,                /* .ident */
 		EVFILT_USER,      /* .filter */
 		EV_ADD|EV_CLEAR,  /* .flags */
 	};
 
-	_dispatch_kq = kqueue();
+	*_dispatch_kqp = kqueue();
 	_dispatch_safe_fork = false;
 	// in case we fall back to select()
-	FD_SET(_dispatch_kq, &_dispatch_rfds);
+        FD_SET(*_dispatch_kqp, &_dispatch_rfds);
 
-	if (_dispatch_kq == -1) {
+	if (*_dispatch_kqp == -1) {
 		dispatch_assert_zero(errno);
 	}
 
 #if defined(__GNUC__)
 	(void)
 #endif
-    dispatch_assume_zero(kevent(_dispatch_kq, &kev, 1, NULL, 0, NULL));
+    dispatch_assume_zero(kevent(*_dispatch_kqp, &kev, 1, NULL, 0, NULL));
     _dispatch_queue_push(_dispatch_mgr_q.do_targetq, (struct dispatch_object_s*)&_dispatch_mgr_q);
 }
 
@@ -62,8 +61,9 @@ static int
 _dispatch_get_kq(void)
 {
 	static dispatch_once_t pred;
+        static int _dispatch_kq;
 
-	dispatch_once_f(&pred, NULL, _dispatch_get_kq_init);
+	dispatch_once_f(&pred, &_dispatch_kq, _dispatch_get_kq_init);
 
 	return _dispatch_kq;
 }
@@ -95,6 +95,7 @@ _dispatch_mgr_invoke(dispatch_queue_t dq)
 	fd_set tmp_rfds, tmp_wfds;
 	struct kevent kev[1];
 	int k_cnt, k_err, i, r;
+        int _dispatch_kq = _dispatch_get_kq();
 
 	_dispatch_thread_setspecific(dispatch_queue_key, dq);
 

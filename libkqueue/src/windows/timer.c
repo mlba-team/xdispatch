@@ -69,9 +69,8 @@ static VOID CALLBACK evfilt_timer_callback(void* param, BOOLEAN fired){
 	} else {
 		kq = kn->kn_kq;
 		assert(kq);
-
-		if (!PostQueuedCompletionStatus(kq->kq_iocp, 1, (ULONG_PTR) 0, (LPOVERLAPPED) kn)) {
-			dbg_lasterror("PostQueuedCompletionStatus()");
+                dbg_printf("==== posting timer knote %p", kn);
+                if (!windows_kqueue_post(kq, kn)) {
 			return;
 			/* FIXME: need more extreme action */
 		}
@@ -138,7 +137,7 @@ evfilt_timer_knote_create(struct filter *filt, struct knote *kn)
 
     kn->data.handle = th;
 	RegisterWaitForSingleObject(&kn->kn_event_whandle, th, evfilt_timer_callback, kn, INFINITE, 0);
-	knote_retain(kn);
+	knote_retain(kn); // OS knows about the knote, keep it around
 
     return (0);
 }

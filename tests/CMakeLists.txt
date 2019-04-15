@@ -44,27 +44,29 @@ if(HAS_BLOCKS)
 endif()
 
 # define file groups
-
-file(GLOB TEST_DISPATCH
-  dispatch_*.c
-  dispatch_*.cpp
-  tests.h
-  atomic_operations.c
-  posix_api.c
-  pthread_api.c
-  queue_finalizer.c
-)
-file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c dispatch_*_blocks.cpp)
-file(GLOB TEST_DISPATCH_LAMBDA dispatch_*_lambda.cpp)
-if(NOT HAS_BLOCKS)
-    mz_message("Skipping block tests")
-    list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_BLOCKS})
-else()
-    mz_add_definition(TEST_C_BLOCKS=1)
-endif()
-if(HAS_BLOCKS OR NOT HAS_LAMBDAS)
-    mz_message("Skipping lambda tests")
-    list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_LAMBDA})
+if(FORCE_OWN_LIBDISPATCH)
+    file(GLOB TEST_DISPATCH
+      dispatch_*.c
+      dispatch_*.cpp
+      tests.h
+      atomic_operations.c
+      posix_api.c
+      pthread_api.c
+      queue_finalizer.c
+    )
+    file(GLOB TEST_DISPATCH_BLOCKS dispatch_*_blocks.c dispatch_*_blocks.cpp)
+    file(GLOB TEST_DISPATCH_LAMBDA dispatch_*_lambda.cpp)
+    if(NOT HAS_BLOCKS)
+        mz_message("Skipping block tests")
+        list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_BLOCKS})
+    else()
+        mz_add_definition(TEST_C_BLOCKS=1)
+    endif()
+    if(HAS_BLOCKS OR NOT HAS_LAMBDAS)
+        mz_message("Skipping lambda tests")
+        list(REMOVE_ITEM TEST_DISPATCH ${TEST_DISPATCH_LAMBDA})
+    endif()
+    mz_add_definition(DISPATCH_C_SUPPORT=1)
 endif()
 
 file(GLOB TEST_XDISPATCH
