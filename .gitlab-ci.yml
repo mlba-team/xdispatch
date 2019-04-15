@@ -89,7 +89,7 @@ windows-vs2019-x86:
       - vs2019
     script:
       - cd /d %CI_PROJECT_DIR%/build
-      - generator.bat release ninja outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
+      - call generator.bat release ninja outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
       - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja-release
       - ninja
       - robocopy bin %CI_PROJECT_DIR%/bin /e
@@ -105,7 +105,7 @@ windows-vs2019-amd64:
       - vs2019
     script:
       - cd /d %CI_PROJECT_DIR%/build
-      - generator.bat release ninja_64 outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
+      - call generator.bat release ninja_64 outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
       - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja_64-release
       - ninja
       - robocopy bin %CI_PROJECT_DIR%/bin /e
