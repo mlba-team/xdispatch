@@ -14,6 +14,11 @@ ubuntu-1604-clang:
       - ./generator.sh mode=release compiler=clang generator=ninja location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd $CI_PROJECT_DIR/../xdispatch_clang-ninja-release
       - ninja
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
 
 ubuntu-1604-gcc:
     stage: build
@@ -25,6 +30,11 @@ ubuntu-1604-gcc:
       - ./generator.sh mode=release compiler=gcc generator=makefiles location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd $CI_PROJECT_DIR/../xdispatch_gcc-makefiles-release
       - make -j4 all
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
 
 ubuntu-1404-clang:
     stage: build
@@ -36,6 +46,11 @@ ubuntu-1404-clang:
       - ./generator.sh mode=release compiler=clang generator=ninja location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd $CI_PROJECT_DIR/../xdispatch_clang-ninja-release
       - ninja
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
 
 macos-1013-clang:
     stage: build
@@ -46,6 +61,11 @@ macos-1013-clang:
       - ./generator.sh mode=release compiler=clang generator=ninja location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd $CI_PROJECT_DIR/../xdispatch_clang-ninja-release
       - ninja
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
 
 macos-ios:
     stage: build
@@ -56,6 +76,11 @@ macos-ios:
       - ./generator.sh mode=release compiler=ios generator=makefiles location=outside -DBUILD_XDISPATCH_TESTS=1 -DXDISPATCH_INCLUDE_PACKAGING=1
       - cd $CI_PROJECT_DIR/../xdispatch_ios-makefiles-release
       - make -j4
+      - cp -rvf bin $CI_PROJECT_DIR
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
 
 windows-vs2019-x86:
     stage: build
@@ -63,10 +88,15 @@ windows-vs2019-x86:
       - windows
       - vs2019
     script:
-      - cd /d $CI_PROJECT_DIR/build
+      - cd /d %CI_PROJECT_DIR%/build
       - generator.bat release ninja outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
-      - cd /d $CI_PROJECT_DIR/../xdispatch_win32-ninja-release
+      - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja-release
       - ninja
+      - robocopy bin %CI_PROJECT_DIR%/bin /e
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
 
 windows-vs2019-amd64:
     stage: build
@@ -74,7 +104,12 @@ windows-vs2019-amd64:
       - windows
       - vs2019
     script:
-      - cd /d $CI_PROJECT_DIR/build
+      - cd /d %CI_PROJECT_DIR%/build
       - generator.bat release ninja_64 outside "-DBUILD_XDISPATCH_TESTS=1" "-DXDISPATCH_INCLUDE_PACKAGING=1"
-      - cd /d $CI_PROJECT_DIR/../xdispatch_win32-ninja_64-release
+      - cd /d %CI_PROJECT_DIR%/../xdispatch_win32-ninja_64-release
       - ninja
+      - robocopy bin %CI_PROJECT_DIR%/bin /e
+    artifacts:
+      paths:
+        - bin/*
+      expire_in: 1 week
